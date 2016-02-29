@@ -4,6 +4,7 @@
 #include <Engine/Concepts/Basic/Location.h>
 #include "Performer.h"
 #include <Utils/Collections/ImmutableVector.h>
+#include <Engine/SceneManager/ScheduleActualization/ScheduleActualizer.h>
 #include "ConceptFactory.h"
 
 namespace Scheduler
@@ -55,7 +56,8 @@ namespace Scheduler
 
 		bool hasSpecificEndLocation() const;
 
-		void setLogger(LoggingService * logger);
+		void setScheduleActualizer(ScheduleActualizer* actualizer);
+		ScheduleActualizer* getScheduleActualizer();
 
 	private:
         size_t id;
@@ -77,5 +79,6 @@ namespace Scheduler
 		Location shift_end_location;
 
 		RoutingService* routing_service;
+		ScheduleActualizer* schedule_actualizer;
     };
 }

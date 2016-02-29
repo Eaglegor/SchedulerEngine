@@ -4,6 +4,7 @@
 #include "Vehicle.h"
 #include <Engine/PluginAPI/Services/RoutingService.h>
 #include <Engine/SceneManager/Views/RunStopsView.h>
+#include "ScheduleActualization/ScheduleActualizer.h"
 
 #include <iostream>
 
@@ -18,7 +19,9 @@ namespace Scheduler {
             start_stop(nullptr),
             end_stop(nullptr),
             vehicle(nullptr),
-            routing_service(nullptr) {
+            routing_service(nullptr),
+            schedule_actualizer(nullptr)
+    {
     }
 
     size_t Run::getId() {
@@ -71,6 +74,7 @@ namespace Scheduler {
 
     Stop *Run::allocateStartOperation(const Operation *operation) {
         start_stop->addOperation(operation);
+        start_stop->setScheduleActualizer(schedule_actualizer);
         return start_stop;
     }
 
@@ -81,8 +85,11 @@ namespace Scheduler {
 
         Stop *stop = stops_factory->createObject(operation->getLocation(), this);
         stop->addOperation(operation);
+        stop->setScheduleActualizer(schedule_actualizer);
 
         work_stops.insert(work_stops.begin() + index, stop);
+
+        schedule_actualizer->onStopAdded(this, stop, index);
 
         recalculateWorkStopRoutes(index);
 
@@ -91,6 +98,7 @@ namespace Scheduler {
 
     Stop *Run::allocateEndOperation(const Operation *operation) {
         end_stop->addOperation(operation);
+        end_stop->setScheduleActualizer(schedule_actualizer);
         return end_stop;
     }
 
@@ -108,6 +116,8 @@ namespace Scheduler {
                 if(work_stops.empty()) recalculateRoute(start_stop, end_stop);
                 else recalculateWorkStopRoutes(i > 0 ? i - 1 : 0);
 
+                schedule_actualizer->onStopRemoved(this);
+
                 return;
             }
         }
@@ -120,6 +130,8 @@ namespace Scheduler {
                 if(work_stops.empty()) recalculateRoute(start_stop, end_stop);
                 else recalculateWorkStopRoutes(i > 0 ? i - 1 : 0);
 
+                schedule_actualizer->onStopRemoved(this);
+
                 return;
             }
         }
@@ -127,11 +139,14 @@ namespace Scheduler {
 
     void Run::unallocateWorkOperationAt(size_t index) {
         assert(stops_factory);
+        assert(index >=0 && index < work_stops.size());
         stops_factory->destroyObject(work_stops[index]);
         work_stops.erase(work_stops.begin() + index);
 
         if(work_stops.empty()) recalculateRoute(start_stop, end_stop);
         else recalculateWorkStopRoutes(index > 0 ? index - 1 : 0);
+
+        schedule_actualizer->onStopRemoved(this);
     }
 
     void Run::unallocateEndOperation(const Operation *operation) {
@@ -158,6 +173,7 @@ namespace Scheduler {
         else {
             this->vehicle = vehicle;
         }
+        schedule_actualizer->onRunVehicleChanged(this, vehicle);
     }
 
     void Run::setRoutingService(RoutingService *routing_service) {
@@ -213,5 +229,11 @@ namespace Scheduler {
         {
             stops_factory->destroyObject(stop);
         }
+    }
+
+    void Run::setScheduleActualizer(ScheduleActualizer *actualizer) {
+        assert(actualizer);
+
+        this->schedule_actualizer = actualizer;
     }
 }

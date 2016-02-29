@@ -4,6 +4,7 @@
 #include "Schedule.h"
 #include "Vehicle.h"
 #include "Performer.h"
+#include "ScheduleActualization/ScheduleActualizersFactory.h"
 
 namespace Scheduler {
 
@@ -14,7 +15,8 @@ namespace Scheduler {
             performers_factory(nullptr),
             vehicles_factory(nullptr),
             schedules_factory(nullptr),
-			routing_service(nullptr)
+			routing_service(nullptr),
+            schedule_actualizers_factory(nullptr)
     {
 
     }
@@ -96,6 +98,10 @@ namespace Scheduler {
 		schedule->setRunsFactory(runs_factory);
 		schedule->setStopsFactory(stops_factory);
 		schedule->setRoutingService(routing_service);
+
+        ScheduleActualizer* actualizer = schedule_actualizers_factory->createScheduleActualizer(schedule);
+        schedule->setScheduleActualizer(actualizer);
+
         schedules.push_back(schedule);
 
         return schedule;
@@ -117,6 +123,10 @@ namespace Scheduler {
         assert(schedules_factory);
         for(Schedule* schedule : schedules)
         {
+            ScheduleActualizer* actualizer = schedule->getScheduleActualizer();
+            assert(actualizer);
+            schedule_actualizers_factory->destroyScheduleActualizer(actualizer);
+
             schedules_factory->destroyObject(schedule);
         }
 
@@ -184,5 +194,9 @@ namespace Scheduler {
 	{
 		this->stops_factory = factory;
 	}
+
+    void Scene::setScheduleActualizersFactory(ScheduleActualizersFactory *factory) {
+        this->schedule_actualizers_factory = schedule_actualizers_factory;
+    }
 }
 

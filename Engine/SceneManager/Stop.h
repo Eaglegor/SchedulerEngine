@@ -8,6 +8,7 @@
 namespace Scheduler
 {
 	class Run;
+	class ScheduleActualizer;
 
 	class Stop
 	{
@@ -37,6 +38,8 @@ namespace Scheduler
 
 		const Location& getLocation() const;
 
+		void setScheduleActualizer(ScheduleActualizer* actualizer);
+
 	private:
 		size_t id;
 
@@ -46,5 +49,7 @@ namespace Scheduler
 		Route next_route;
 		Location location;
 		Run* run;
+
+		ScheduleActualizer* schedule_actualizer;
 	};
 }

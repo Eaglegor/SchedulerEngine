@@ -19,6 +19,8 @@ namespace Scheduler
 
 	class RoutingService;
 
+	class ScheduleActualizersFactory;
+
     class Scene
     {
     public:
@@ -55,6 +57,8 @@ namespace Scheduler
 
 		void setRoutingService(RoutingService *routing_service);
 
+		void setScheduleActualizersFactory(ScheduleActualizersFactory* factory);
+
     private:
         size_t id;
 
@@ -75,5 +79,7 @@ namespace Scheduler
 		ConceptFactory<Stop> *stops_factory;
 
 		RoutingService* routing_service;
+
+		ScheduleActualizersFactory* schedule_actualizers_factory;
     };
 }
