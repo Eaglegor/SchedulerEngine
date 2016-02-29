@@ -74,7 +74,6 @@ namespace Scheduler {
 
     Stop *Run::allocateStartOperation(const Operation *operation) {
         start_stop->addOperation(operation);
-        start_stop->setScheduleActualizer(schedule_actualizer);
         return start_stop;
     }
 
@@ -84,8 +83,8 @@ namespace Scheduler {
         if (!stops_factory) return nullptr;
 
         Stop *stop = stops_factory->createObject(operation->getLocation(), this);
+		stop->setScheduleActualizer(schedule_actualizer);
         stop->addOperation(operation);
-        stop->setScheduleActualizer(schedule_actualizer);
 
         work_stops.insert(work_stops.begin() + index, stop);
 
@@ -98,7 +97,6 @@ namespace Scheduler {
 
     Stop *Run::allocateEndOperation(const Operation *operation) {
         end_stop->addOperation(operation);
-        end_stop->setScheduleActualizer(schedule_actualizer);
         return end_stop;
     }
 
@@ -160,6 +158,9 @@ namespace Scheduler {
 
         start_stop = stops_factory->createObject(start_location, this);
         end_stop = stops_factory->createObject(end_location, this);
+
+		if(schedule_actualizer) start_stop->setScheduleActualizer(schedule_actualizer);
+		if(schedule_actualizer) end_stop->setScheduleActualizer(schedule_actualizer);
 
         recalculateRoute(start_stop, end_stop);
     }
@@ -235,5 +236,8 @@ namespace Scheduler {
         assert(actualizer);
 
         this->schedule_actualizer = actualizer;
+
+		if(start_stop) start_stop->setScheduleActualizer(actualizer);
+		if(end_stop) end_stop->setScheduleActualizer(actualizer);
     }
 }

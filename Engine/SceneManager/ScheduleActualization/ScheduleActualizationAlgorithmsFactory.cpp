@@ -1,6 +1,7 @@
 #include "ScheduleActualizationAlgorithmsFactory.h"
 
-#include "Algorithms/SimpleArrivalTimeActualizationAlgorithm.h"
+#include "Algorithms/StopDurationActualizationAlgorithm.h"
+#include "Algorithms/StopArrivalTimeActualizationAlgorithm.h"
 
 namespace Scheduler
 {
@@ -10,8 +11,10 @@ namespace Scheduler
 
         switch(type)
         {
-            case ScheduleActualizationAlgorithmType::SIMPLE_ARRIVAL_TIME:
-                return new SimpleArrivalTimeActualizationAlgorithm(schedule);
+            case ScheduleActualizationAlgorithmType::STOP_ARRIVAL_TIME_ACTUALIZER:
+                return new StopArrivalTimeActualizationAlgorithm(schedule);
+			case ScheduleActualizationAlgorithmType::STOP_DURATION_ACTUALIZER:
+				return new StopDurationActualizationAlgorithm(schedule);
         }
     }
 

@@ -24,6 +24,9 @@ namespace Scheduler
 
 		bool containsOperation(const Operation *operation) const;
 
+		void setStartTime(const TimePoint& time);
+		void setEndTime(const TimePoint& time);
+
 		const TimeWindow& getAllocationTime() const;
 		void setAllocationTime(const TimeWindow &time);
 

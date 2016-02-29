@@ -164,10 +164,12 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
         REQUIRE_FALSE(schedule->hasSpecificEndLocation());
         REQUIRE(schedule->getRuns().empty());
         REQUIRE(schedule->getPerformer() == performer);
+		REQUIRE(schedule->getShift() == TimeWindow());
     }
 
     schedule->setName("Schedule1");
     schedule->setDepotLocation(depot);
+	schedule->setShift(make_time_window(0, 3600));
 
     SECTION("[Schedule] Schedule state is changed corretly") {
         REQUIRE(strcmp(schedule->getName(), "Schedule1") == 0);
@@ -178,6 +180,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
         REQUIRE_FALSE(schedule->hasSpecificEndLocation());
         REQUIRE(schedule->getRuns().empty());
         REQUIRE(schedule->getPerformer() == performer);
+		REQUIRE(schedule->getShift() == make_time_window(0, 3600));
     }
 
     schedule->setShiftEndLocation(shift_end);
@@ -369,7 +372,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     SECTION("[Run] Stop is created in default state")
     {
         REQUIRE(free_operation_stop->getLocation() == free_operation->getLocation());
-        REQUIRE(free_operation_stop->getAllocationTime() == TimeWindow());
+        //REQUIRE(free_operation_stop->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
         REQUIRE(free_operation_stop->getDuration() == Duration());
         REQUIRE(free_operation_stop->getOperations().size() == 1);
 		REQUIRE(std::contains_key(free_operation_stop->getOperations(), free_operation));
@@ -382,7 +385,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	SECTION("[Run] Stop is created in default state")
 	{
 		REQUIRE(work_stop1->getLocation() == order1_work_operation2->getLocation());
-		REQUIRE(work_stop1->getAllocationTime() == TimeWindow());
+		//REQUIRE(work_stop1->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
 		REQUIRE(work_stop1->getDuration() == Duration());
 		REQUIRE(work_stop1->getOperations().size() == 1);
 		REQUIRE(std::contains_key(work_stop1->getOperations(), order1_work_operation2));
@@ -395,7 +398,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	SECTION("[Run] Stop is created in default state")
 	{
 		REQUIRE(work_stop0->getLocation() == order1_work_operation1->getLocation());
-		REQUIRE(work_stop0->getAllocationTime() == TimeWindow());
+		//REQUIRE(work_stop0->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
 		REQUIRE(work_stop0->getDuration() == Duration());
 		REQUIRE(work_stop0->getOperations().size() == 1);
 		REQUIRE(std::contains_key(work_stop0->getOperations(), order1_work_operation1));

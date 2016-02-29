@@ -59,6 +59,9 @@ namespace Scheduler
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
 		ScheduleActualizer* getScheduleActualizer();
 
+		const TimeWindow& getShift() const;
+		void setShift(const TimeWindow &shift);
+
 	private:
         size_t id;
         std::string name;
@@ -77,6 +80,8 @@ namespace Scheduler
 
 		bool shift_end_location_specified;
 		Location shift_end_location;
+
+		TimeWindow shift;
 
 		RoutingService* routing_service;
 		ScheduleActualizer* schedule_actualizer;

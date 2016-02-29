@@ -25,10 +25,14 @@ add_library(SchedulerEngine SHARED
         SceneManager/Vehicle.cpp
 
         SceneManager/Views/RunStopsView.cpp
+        SceneManager/Views/ScheduleStopsView.cpp
 
         SceneManager/ScheduleActualization/ScheduleActualizer.cpp
         SceneManager/ScheduleActualization/ScheduleActualizationAlgorithmsFactory.cpp
         SceneManager/ScheduleActualization/ScheduleActualizersFactory.cpp
 
-        SceneManager/ScheduleActualization/Algorithms/SimpleArrivalTimeActualizationAlgorithm.cpp
+        SceneManager/ScheduleActualization/TimeWindowSelectors/FirstTimeWindowSelector.cpp
+
+        SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.cpp
+        SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.cpp
         )

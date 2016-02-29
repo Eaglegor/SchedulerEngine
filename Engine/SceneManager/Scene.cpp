@@ -196,7 +196,7 @@ namespace Scheduler {
 	}
 
     void Scene::setScheduleActualizersFactory(ScheduleActualizersFactory *factory) {
-        this->schedule_actualizers_factory = schedule_actualizers_factory;
+        this->schedule_actualizers_factory = factory;
     }
 }
 

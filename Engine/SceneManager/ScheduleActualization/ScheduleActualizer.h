@@ -33,12 +33,14 @@ namespace Scheduler
 
         void actualize();
 
-        ScheduleActualizationAlgorithm* createAlgorithm(ScheduleActualizationAlgorithmType& type);
+        ScheduleActualizationAlgorithm* createAlgorithm(const ScheduleActualizationAlgorithmType& type);
 
     private:
         Schedule* schedule;
 
         ScheduleActualizationAlgorithmsFactory* algorithms_factory;
         std::vector<ScheduleActualizationAlgorithm*> algorithms;
+
+		bool is_actualizing;
     };
 }

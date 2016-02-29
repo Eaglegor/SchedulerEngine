@@ -8,7 +8,8 @@ namespace Scheduler
 
     ScheduleActualizer::ScheduleActualizer(Schedule *schedule, ScheduleActualizationAlgorithmsFactory* algorithms_factory):
     schedule(schedule),
-    algorithms_factory(algorithms_factory)
+    algorithms_factory(algorithms_factory),
+	is_actualizing(false)
     {
     }
 
@@ -41,10 +42,13 @@ namespace Scheduler
     }
 
     void ScheduleActualizer::actualize() {
+		if(is_actualizing) return;
+		is_actualizing = true;
         for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithm->actualize();
+		is_actualizing = false;
     }
 
-    ScheduleActualizationAlgorithm* ScheduleActualizer::createAlgorithm(ScheduleActualizationAlgorithmType &type) {
+    ScheduleActualizationAlgorithm* ScheduleActualizer::createAlgorithm(const ScheduleActualizationAlgorithmType &type) {
         assert(algorithms_factory);
 
         ScheduleActualizationAlgorithm* algorithm = algorithms_factory->createAlgorithm(type, schedule);

@@ -4,6 +4,7 @@ namespace Scheduler
 {
     enum class ScheduleActualizationAlgorithmType
     {
-        SIMPLE_ARRIVAL_TIME
+        STOP_ARRIVAL_TIME_ACTUALIZER,
+		STOP_DURATION_ACTUALIZER
     };
 }

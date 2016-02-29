@@ -5,10 +5,10 @@
 
 namespace Scheduler
 {
-    class SimpleArrivalTimeActualizationAlgorithm : public ScheduleActualizationAlgorithm
+    class StopArrivalTimeActualizationAlgorithm : public ScheduleActualizationAlgorithm
     {
     public:
-        SimpleArrivalTimeActualizationAlgorithm(Schedule* schedule);
+        StopArrivalTimeActualizationAlgorithm(Schedule* schedule);
 
         virtual void onOperationAdded(const Stop *stop, const Operation *operation) override;
 
@@ -33,6 +33,6 @@ namespace Scheduler
     private:
         bool dirty_flag;
 
-        ScheduleActualizationAlgorithmType type = ScheduleActualizationAlgorithmType::SIMPLE_ARRIVAL_TIME;
+        ScheduleActualizationAlgorithmType type = ScheduleActualizationAlgorithmType::STOP_ARRIVAL_TIME_ACTUALIZER;
     };
 }

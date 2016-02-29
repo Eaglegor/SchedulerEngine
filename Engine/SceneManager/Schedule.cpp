@@ -151,4 +151,14 @@ namespace Scheduler {
 	ScheduleActualizer *Schedule::getScheduleActualizer() {
 		return schedule_actualizer;
 	}
+
+	const TimeWindow& Schedule::getShift() const
+	{
+		return shift;
+	}
+
+	void Schedule::setShift(const TimeWindow &shift)
+	{
+		this->shift = shift;
+	}
 }
