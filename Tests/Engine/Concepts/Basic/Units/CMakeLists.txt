@@ -1,0 +1,8 @@
+add_executable(UFTest_DurationUnits UFTest_DurationUnits.cpp)
+add_test(UFTest_DurationUnits UFTest_DurationUnits)
+target_link_libraries(UFTest_DurationUnits SchedulerEngine)
+
+add_executable(UFTest_SpeedUnits UFTest_SpeedUnits.cpp)
+add_test(UFTest_SpeedUnits UFTest_SpeedUnits)
+target_link_libraries(UFTest_SpeedUnits SchedulerEngine)
+

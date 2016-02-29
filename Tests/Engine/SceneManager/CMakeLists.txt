@@ -1,0 +1,4 @@
+add_executable(IFTest_SceneManager IFTest_SceneManager.cpp)
+add_test(IFTest_SceneManager IFTest_SceneManager)
+target_link_libraries(IFTest_SceneManager CrowFlyRoutingService)
+target_link_libraries(IFTest_SceneManager SchedulerEngine)

@@ -1,0 +1,2 @@
+add_executable(UFTest_Collections_Algorithms UFTest_Collections_Algorithms.cpp)
+add_test(UFTest_Collections_Algorithms UFTest_Collections_Algorithms)

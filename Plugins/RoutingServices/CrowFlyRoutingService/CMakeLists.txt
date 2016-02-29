@@ -1,0 +1,2 @@
+add_library(CrowFlyRoutingService SHARED CrowFlyRoutingService.cpp)
+target_link_libraries(CrowFlyRoutingService SchedulerEngine)

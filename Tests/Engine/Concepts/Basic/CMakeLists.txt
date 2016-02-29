@@ -1,0 +1,49 @@
+add_executable(UFTest_Capacity UFTest_Capacity.cpp)
+add_test(UFTest_Capacity UFTest_Capacity)
+target_link_libraries(UFTest_Capacity SchedulerEngine)
+
+add_executable(UFTest_Coordinate UFTest_Coordinate.cpp)
+add_test(UFTest_Coordinate UFTest_Coordinate)
+target_link_libraries(UFTest_Coordinate SchedulerEngine)
+
+add_executable(UFTest_Cost UFTest_Cost.cpp)
+add_test(UFTest_Cost UFTest_Cost)
+target_link_libraries(UFTest_Cost SchedulerEngine)
+
+add_executable(UFTest_Distance UFTest_Distance.cpp)
+add_test(UFTest_Distance UFTest_Distance)
+target_link_libraries(UFTest_Distance SchedulerEngine)
+
+add_executable(UFTest_Duration UFTest_Duration.cpp)
+add_test(UFTest_Duration UFTest_Duration)
+target_link_libraries(UFTest_Duration SchedulerEngine)
+
+add_executable(UFTest_Location UFTest_Location.cpp)
+add_test(UFTest_Location UFTest_Location)
+target_link_libraries(UFTest_Location SchedulerEngine)
+
+add_executable(UFTest_Route UFTest_Route.cpp)
+add_test(UFTest_Route UFTest_Route)
+target_link_libraries(UFTest_Route SchedulerEngine)
+
+add_executable(UFTest_TimePoint UFTest_TimePoint.cpp)
+add_test(UFTest_TimePoint UFTest_TimePoint)
+target_link_libraries(UFTest_TimePoint SchedulerEngine)
+
+add_executable(UFTest_RoutingProfile UFTest_RoutingProfile.cpp)
+add_test(UFTest_RoutingProfile UFTest_RoutingProfile)
+target_link_libraries(UFTest_RoutingProfile SchedulerEngine)
+
+add_executable(UFTest_Speed UFTest_Speed.cpp)
+add_test(UFTest_Speed UFTest_Speed)
+target_link_libraries(UFTest_Speed SchedulerEngine)
+
+add_executable(UFTest_TimeWindow UFTest_TimeWindow.cpp)
+add_test(UFTest_TimeWindow UFTest_TimeWindow)
+target_link_libraries(UFTest_TimeWindow SchedulerEngine)
+
+add_executable(UFTest_SpeedDurationDistanceOperations UFTest_SpeedDurationDistanceOperations.cpp)
+add_test(UFTest_SpeedDurationDistanceOperations UFTest_SpeedDurationDistanceOperations)
+target_link_libraries(UFTest_SpeedDurationDistanceOperations SchedulerEngine)
+
+add_subdirectory(Units)
