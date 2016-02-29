@@ -39,7 +39,8 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
     REQUIRE(scene != nullptr);
 
-    SECTION("[SceneManager] Scene is created in default state") {
+	INFO("[SceneManager] Checking if scene is created in default state")
+    {
         REQUIRE(scene->getFreeOperations().empty());
         REQUIRE(scene->getVehicles().empty());
         REQUIRE(scene->getPerformers().empty());
@@ -51,7 +52,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
     REQUIRE(free_operation != nullptr);
 
-    SECTION("[Scene] Operation is created in default state") {
+    INFO("[Scene] Checking if operation is created in default state") {
         REQUIRE(strcmp(free_operation->getName(), "") == 0);
         REQUIRE(free_operation->getDuration() == Duration(0));
         REQUIRE(free_operation->getLoad() == Capacity(0, 0, 0, 0));
@@ -66,7 +67,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     free_operation->setLoad(Capacity(1, 3, 4, 5));
     free_operation->setTimeWindows({make_time_window(0, 45)});
 
-    SECTION("[Operation] Operation state is changed correctly") {
+    INFO("[Operation] Checking if operation state is changed correctly") {
         REQUIRE(strcmp(free_operation->getName(), "Operation1") == 0);
         REQUIRE(free_operation->getDuration() == Units::minutes(10));
         REQUIRE(free_operation->getLoad() == Capacity(1, 3, 4, 5));
@@ -85,7 +86,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
     REQUIRE(vehicle != nullptr);
 
-    SECTION("[Scene] Vehicle is created in default state") {
+    INFO("[Scene] Checking if vehicle is created in default state") {
         REQUIRE(strcmp(vehicle->getName(), "") == 0);
         REQUIRE(vehicle->getActivationCost() == Cost(0));
         REQUIRE(vehicle->getDurationUnitCost() == Cost(0));
@@ -108,7 +109,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     vehicle->setDurationUnitCost(Cost(5));
     vehicle->setRoutingProfile(defaultRoutingProfile);
 
-    SECTION("[Vehicle] Vehicle state is changed correctly") {
+    INFO("[Vehicle] Checking if vehicle state is changed correctly") {
         REQUIRE(strcmp(vehicle->getName(), "Vehicle1") == 0);
         REQUIRE(vehicle->getActivationCost() == Cost(4));
         REQUIRE(vehicle->getDurationUnitCost() == Cost(5));
@@ -126,7 +127,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
     REQUIRE(performer != nullptr);
 
-    SECTION("[Scene] Performer is created in default state") {
+    INFO("[Scene] Checking if performer is created in default state") {
         REQUIRE(strcmp(performer->getName(), "") == 0);
         REQUIRE(performer->getActivationCost() == Cost(0));
         REQUIRE(performer->getDurationUnitCost() == Cost(0));
@@ -140,7 +141,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     performer->setActivationCost(Cost(6));
     performer->setSkills({skill1, skill2});
 
-    SECTION("[Performer] Performer state is changed correctly") {
+    INFO("[Performer] Checking if performer state is changed correctly") {
         REQUIRE(strcmp(performer->getName(), "Performer1") == 0);
         REQUIRE(performer->getActivationCost() == Cost(6));
         REQUIRE(performer->getDurationUnitCost() == Cost(5));
@@ -155,7 +156,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
     REQUIRE(schedule != nullptr);
 
-    SECTION("[Scene] Schedule is created in default state") {
+    INFO("[Scene] Checking if schedule is created in default state") {
         REQUIRE(strcmp(schedule->getName(), "") == 0);
         REQUIRE(schedule->getDepotLocation() == make_location(0, 0));
         REQUIRE(schedule->getShiftStartLocation() == schedule->getDepotLocation());
@@ -171,7 +172,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     schedule->setDepotLocation(depot);
 	schedule->setShift(make_time_window(0, 3600));
 
-    SECTION("[Schedule] Schedule state is changed corretly") {
+    INFO("[Schedule] Checking if schedule state is changed corretly") {
         REQUIRE(strcmp(schedule->getName(), "Schedule1") == 0);
         REQUIRE(schedule->getDepotLocation() == depot);
         REQUIRE(schedule->getShiftStartLocation() == schedule->getDepotLocation());
@@ -185,7 +186,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
     schedule->setShiftEndLocation(shift_end);
 
-    SECTION("[Schedule] Schedule end location is set correctly") {
+    INFO("[Schedule] Checking if schedule end location is set correctly") {
         REQUIRE(schedule->getShiftEndLocation() == shift_end);
         REQUIRE(schedule->hasSpecificEndLocation());
         REQUIRE(schedule->hasSpecificEndLocation());
@@ -193,7 +194,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
     schedule->setShiftStartLocation(shift_start);
 
-    SECTION("[Schedule] Schedule start location is set correctly") {
+    INFO("[Schedule] Checking if start location is set correctly") {
         REQUIRE(schedule->getShiftStartLocation() == shift_start);
         REQUIRE(schedule->hasSpecificStartLocation());
     }
@@ -202,7 +203,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
     REQUIRE(order != nullptr);
 
-    SECTION("[Scene] Order is created in default state") {
+    INFO("[Scene] Checking if order is created in default state") {
         REQUIRE(strcmp(order->getName(), "") == 0);
         REQUIRE(order->getPerformerSkillsRequirements().empty());
         REQUIRE(order->getVehicleRequirements().empty());
@@ -215,7 +216,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     order->setPerformerSkillsRequirements({skill1, skill2});
     order->setVehicleRequirements({attr1, attr2});
 
-    SECTION("[Order] Order state is changed correctly") {
+    INFO("[Order] Checking if order state is changed correctly") {
         REQUIRE(strcmp(order->getName(), "Order1") == 0);
         REQUIRE(order->getPerformerSkillsRequirements().size() == 2);
         REQUIRE(std::contains_key(order->getPerformerSkillsRequirements(), skill1));
@@ -232,7 +233,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     REQUIRE(order1_start_operation != nullptr);
     REQUIRE(order->getStartOperation() == order1_start_operation);
 
-    SECTION("[Order] Start operation is created in default state") {
+    INFO("[Order] Checking if start operation is created in default state") {
         REQUIRE(strcmp(order1_start_operation->getName(), "") == 0);
         REQUIRE(order1_start_operation->getDuration() == Duration(0));
         REQUIRE(order1_start_operation->getLoad() == Capacity(0, 0, 0, 0));
@@ -251,7 +252,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     REQUIRE(order1_end_operation != nullptr);
     REQUIRE(order->getEndOperation() == order1_end_operation);
 
-    SECTION("[Order] End operation is created in default state") {
+    INFO("[Order] Checking if end operation is created in default state") {
         REQUIRE(strcmp(order1_end_operation->getName(), "") == 0);
         REQUIRE(order1_end_operation->getDuration() == Duration(0));
         REQUIRE(order1_end_operation->getLoad() == Capacity(0, 0, 0, 0));
@@ -271,7 +272,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     REQUIRE(order->getWorkOperations().size() == 1);
     REQUIRE(order->getWorkOperations()[0] == order1_work_operation1);
 
-    SECTION("[Order] Work operation 1 is created in default state") {
+    INFO("[Order] Checking if work operation 1 is created in default state") {
         REQUIRE(strcmp(order1_work_operation1->getName(), "") == 0);
         REQUIRE(order1_work_operation1->getDuration() == Duration(0));
         REQUIRE(order1_work_operation1->getLoad() == Capacity(0, 0, 0, 0));
@@ -292,7 +293,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     REQUIRE(order->getWorkOperations()[0] == order1_work_operation1);
     REQUIRE(order->getWorkOperations()[1] == order1_work_operation2);
 
-    SECTION("[Order] Work operation 2 is created in default state") {
+    INFO("[Order] Checking if work operation 2 is created in default state") {
         REQUIRE(strcmp(order1_work_operation2->getName(), "") == 0);
         REQUIRE(order1_work_operation2->getDuration() == Duration(0));
         REQUIRE(order1_work_operation2->getLoad() == Capacity(0, 0, 0, 0));
@@ -310,7 +311,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     Run* run1 = schedule->createRun(shift_start, depot);
     REQUIRE(run1 != nullptr);
 
-    SECTION("[Schedule] Run 1 is created in default state")
+    INFO("[Schedule] Checking if run 1 is created in default state")
     {
         REQUIRE(run1->getStartLocation() == shift_start);
         REQUIRE(run1->getEndLocation() == depot);
@@ -327,7 +328,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     Run* run0 = schedule->createRun(shift_start, shift_start, 0);
     REQUIRE(run0 != nullptr);
 
-    SECTION("[Schedule] Run 0 is created in default state")
+    INFO("[Schedule] Checking if run 0 is created in default state")
     {
         REQUIRE(run0->getStartLocation() == shift_start);
         REQUIRE(run0->getEndLocation() == shift_start);
@@ -344,7 +345,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     Run* run2 = schedule->createRun(depot, shift_end, 2);
     REQUIRE(run2 != nullptr);
 
-    SECTION("[Schedule] Run 2 is created in default state")
+    INFO("[Schedule] Checking if run 2 is created in default state")
     {
         REQUIRE(run2->getStartLocation() == depot);
         REQUIRE(run2->getEndLocation() == shift_end);
@@ -358,7 +359,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
         REQUIRE(run2->getVehicle() == nullptr);
     }
 
-    SECTION("[Schedule] Runs are ordered correctly")
+    INFO("[Schedule] Checking if runs are ordered correctly")
     {
         REQUIRE(schedule->getRuns().size() == 3);
         REQUIRE(schedule->getRuns()[0] == run0);
@@ -369,7 +370,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     Stop* free_operation_stop = run1->allocateWorkOperation(free_operation, 0);
     REQUIRE(free_operation_stop != nullptr);
 
-    SECTION("[Run] Stop is created in default state")
+    INFO("[Run] Checking if stop is created in default state")
     {
         REQUIRE(free_operation_stop->getLocation() == free_operation->getLocation());
         //REQUIRE(free_operation_stop->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
@@ -382,7 +383,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	Stop* work_stop1 = run1->allocateWorkOperation(order1_work_operation2, 1);
 	REQUIRE(work_stop1 != nullptr);
 
-	SECTION("[Run] Stop is created in default state")
+	INFO("[Run] Checking if stop is created in default state")
 	{
 		REQUIRE(work_stop1->getLocation() == order1_work_operation2->getLocation());
 		//REQUIRE(work_stop1->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
@@ -395,7 +396,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	Stop* work_stop0 = run1->allocateWorkOperation(order1_work_operation1, 0);
 	REQUIRE(work_stop0 != nullptr);
 
-	SECTION("[Run] Stop is created in default state")
+	INFO("[Run] Checking if stop is created in default state")
 	{
 		REQUIRE(work_stop0->getLocation() == order1_work_operation1->getLocation());
 		//REQUIRE(work_stop0->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
@@ -405,7 +406,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 		REQUIRE(work_stop0->getRun() == run1);
 	}
 
-	SECTION("[Run] Stops are ordered correctly")
+	INFO("[Run] Checking if stops are ordered correctly")
 	{
 		REQUIRE(run1->getWorkStops().size() == 3);
 		REQUIRE(run1->getWorkStops()[0] == work_stop0);
@@ -413,7 +414,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 		REQUIRE(run1->getWorkStops()[2] == work_stop1);
 	}
 
-	SECTION("[Run] Only work stops are allocated")
+	INFO("[Run] Checking if only work stops are allocated")
 	{
 		REQUIRE(run1->getStartStop()->getOperations().empty());
 		REQUIRE(run1->getEndStop()->getOperations().empty());
@@ -422,7 +423,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	Stop* start_stop = run1->allocateStartOperation(order1_start_operation);
 	REQUIRE(start_stop != nullptr);
 
-	SECTION("[Run] Start operation allocated")
+	INFO("[Run] Checking if start operation allocated")
 	{
 		REQUIRE(start_stop == run1->getStartStop());
 		REQUIRE(start_stop->getOperations().size() == 1);
@@ -432,7 +433,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	Stop* end_stop = run1->allocateEndOperation(order1_end_operation);
 	REQUIRE(end_stop != nullptr);
 
-	SECTION("[Run] End operation allocated")
+	INFO("[Run] Checking if end operation allocated")
 	{
 		REQUIRE(end_stop == run1->getEndStop());
 		REQUIRE(end_stop->getOperations().size() == 1);
@@ -441,7 +442,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 
 	run1->setVehicle(vehicle);
 
-	SECTION("[Run] Routes are set correctly")
+	INFO("[Run] Checking if routes are set correctly")
 	{
 		REQUIRE(checkRoute(run1->getStartStop(), run1->getWorkStops()[0], &routing_service, vehicle));
 		REQUIRE(checkRoute(run1->getWorkStops()[0], run1->getWorkStops()[1], &routing_service, vehicle));
@@ -454,7 +455,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	run1->unallocateWorkOperation(free_operation);
 	run1->unallocateWorkOperationAt(0);
 
-	SECTION("[Run] Operations are unallocated correctly")
+	INFO("[Run] Checking if operations are unallocated correctly")
 	{
 		REQUIRE(run1->getStartStop()->getOperations().empty());
 		REQUIRE(run1->getEndStop()->getOperations().empty());
