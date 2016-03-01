@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include "../Factory.h"
+#include "ScheduleActualizationAlgorithm.h"
 
 namespace Scheduler
 {
@@ -38,7 +39,10 @@ namespace Scheduler
         template<typename T, typename... Args>
         bool createAlgorithm(Args&&...args)
         {
-            algorithms_factory->createObject<T>(schedule, std::forward<Args>(args)...);
+            ScheduleActualizationAlgorithm* algorithm = algorithms_factory->createObject<T>(schedule, std::forward<Args>(args)...);
+            if(!algorithm) return false;
+            algorithms.push_back(algorithm);
+            return true;
         };
 
     private:

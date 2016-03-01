@@ -25,7 +25,7 @@ bool checkRoute(Scheduler::Stop* from, Scheduler::Stop* to, Scheduler::RoutingSe
 	return from->getNextRoute() == routing_service->calculateRoute(from->getLocation(), to->getLocation(), vehicle->getRoutingProfile());
 }
 
-TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
+TEST_CASE("SceneManager", "[integration][scene_manager]") {
     using namespace Scheduler;
 
     CrowFlyRoutingService routing_service;
@@ -155,9 +155,6 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     }
 
     Schedule *schedule = scene->createSchedule(performer);
-
-    schedule->getScheduleActualizer()->createAlgorithm<StopDurationActualizationAlgorithm>();
-    schedule->getScheduleActualizer()->createAlgorithm<StopArrivalTimeActualizationAlgorithm>();
 
     REQUIRE(schedule != nullptr);
 
@@ -378,7 +375,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
     INFO("[Run] Checking if stop is created in default state")
     {
         REQUIRE(free_operation_stop->getLocation() == free_operation->getLocation());
-        //REQUIRE(free_operation_stop->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
+        REQUIRE(free_operation_stop->getAllocationTime() == TimeWindow());
         REQUIRE(free_operation_stop->getDuration() == Duration());
         REQUIRE(free_operation_stop->getOperations().size() == 1);
 		REQUIRE(std::contains_key(free_operation_stop->getOperations(), free_operation));
@@ -391,7 +388,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	INFO("[Run] Checking if stop is created in default state")
 	{
 		REQUIRE(work_stop1->getLocation() == order1_work_operation2->getLocation());
-		//REQUIRE(work_stop1->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
+		REQUIRE(work_stop1->getAllocationTime() == TimeWindow());
 		REQUIRE(work_stop1->getDuration() == Duration());
 		REQUIRE(work_stop1->getOperations().size() == 1);
 		REQUIRE(std::contains_key(work_stop1->getOperations(), order1_work_operation2));
@@ -404,7 +401,7 @@ TEST_CASE("SceneManager", "[unit][integration][scene_manager]") {
 	INFO("[Run] Checking if stop is created in default state")
 	{
 		REQUIRE(work_stop0->getLocation() == order1_work_operation1->getLocation());
-		//REQUIRE(work_stop0->getAllocationTime() == TimeWindow()); is no more actual due to the schedule actualization algorithm
+		REQUIRE(work_stop0->getAllocationTime() == TimeWindow());
 		REQUIRE(work_stop0->getDuration() == Duration());
 		REQUIRE(work_stop0->getOperations().size() == 1);
 		REQUIRE(std::contains_key(work_stop0->getOperations(), order1_work_operation1));

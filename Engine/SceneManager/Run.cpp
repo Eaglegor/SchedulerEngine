@@ -77,6 +77,10 @@ namespace Scheduler {
         return start_stop;
     }
 
+    Stop *Run::allocateWorkOperation(const Operation *operation) {
+        return allocateWorkOperation(operation, work_stops.size());
+    }
+
     Stop *Run::allocateWorkOperation(const Operation *operation, size_t index) {
         assert(stops_factory);
         assert(index >= 0 && index <= work_stops.size());

@@ -43,6 +43,7 @@ namespace Scheduler
 
 		Stop* allocateStartOperation(const Operation *operation);
 		Stop* allocateWorkOperation(const Operation *operation, size_t index);
+		Stop* allocateWorkOperation(const Operation *operation);
 		Stop* allocateEndOperation(const Operation *operation);
 
 		void unallocateStartOperation(const Operation *operation);

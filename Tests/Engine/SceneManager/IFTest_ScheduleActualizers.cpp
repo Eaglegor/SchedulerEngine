@@ -1,0 +1,122 @@
+#define CATCH_CONFIG_MAIN
+
+#include <catch.hpp>
+
+#include <Plugins/RoutingServices/CrowFlyRoutingService/CrowFlyRoutingService.h>
+#include <Engine/SceneManager/SceneManager.h>
+#include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/Operation.h>
+#include <Engine/Concepts/Basic/Capacity.h>
+#include <Engine/SceneManager/Vehicle.h>
+#include <Engine/SceneManager/Performer.h>
+#include <Engine/SceneManager/Schedule.h>
+#include <Engine/Concepts/Basic/RoutingProfile.h>
+#include <Tests/Utils/Concepts/MakeLocation.h>
+#include <Utils/Units/DurationUnits.h>
+#include <Tests/Utils/Concepts/MakeTimeWindow.h>
+#include <Utils/Collections/Algorithms.h>
+#include <Engine/SceneManager/Run.h>
+#include <Engine/SceneManager/Stop.h>
+#include <engine/SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.h>
+#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.h>
+
+TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integration][schedule_actualizers]")
+{
+    using namespace Scheduler;
+
+    CrowFlyRoutingService routing_service;
+
+    SceneManager sm;
+
+    sm.setRoutingService(&routing_service);
+
+    Location start_location = make_location(0, 0);
+    Location end_location = make_location(0, 0.5);
+
+    Location loc1 = make_location(0, 0.1);
+    Location loc2 = make_location(0, 0.2);
+    Location loc3 = make_location(0, 0.3);
+    Location loc4 = make_location(0, 0.4);
+
+    Scene* s = sm.createScene();
+
+    Duration dur = Units::minutes(10);
+
+    Operation* op1 = s->createFreeOperation();
+    op1->setDuration(dur);
+    op1->setLocation(loc1);
+
+    Operation* op2 = s->createFreeOperation();
+    op2->setDuration(dur);
+    op2->setLocation(loc2);
+
+    Operation* op3 = s->createFreeOperation();
+    op3->setDuration(dur);
+    op3->setLocation(loc3);
+
+    Operation* op4 = s->createFreeOperation();
+    op4->setDuration(dur);
+    op4->setLocation(loc4);
+
+    Performer* performer = s->createPerformer();
+    Vehicle* vehicle = s->createVehicle();
+
+    Schedule* schedule = s->createSchedule(performer);
+    schedule->setDepotLocation(start_location);
+    schedule->setShiftEndLocation(end_location);
+
+    Run* r = schedule->createRun(start_location, end_location);
+    r->setVehicle(vehicle);
+
+    Route r1 = routing_service.calculateRoute(start_location, loc1, vehicle->getRoutingProfile());
+    Route r2 = routing_service.calculateRoute(loc1, loc2, vehicle->getRoutingProfile());
+    Route r3 = routing_service.calculateRoute(loc2, loc3, vehicle->getRoutingProfile());
+    Route r4 = routing_service.calculateRoute(loc3, loc4, vehicle->getRoutingProfile());
+    Route r5 = routing_service.calculateRoute(loc4, end_location, vehicle->getRoutingProfile());
+
+    schedule->getScheduleActualizer()->createAlgorithm<StopDurationActualizationAlgorithm>();
+    schedule->getScheduleActualizer()->createAlgorithm<StopArrivalTimeActualizationAlgorithm>();
+
+    SECTION("Broad time windows")
+    {
+        Stop *s1 = r->getStartStop();
+        Stop *s2 = r->allocateWorkOperation(op1, 0);
+        Stop *s3 = r->allocateWorkOperation(op2, 1);
+        Stop *s4 = r->allocateWorkOperation(op3, 2);
+        Stop *s5 = r->allocateWorkOperation(op4, 3);
+        Stop *s6 = r->getEndStop();
+
+        TimeWindow estimated_allocation_1;
+        estimated_allocation_1.setStartTime(TimePoint(0));
+        estimated_allocation_1.setEndTime(TimePoint(0));
+
+        TimeWindow estimated_allocation_2;
+        estimated_allocation_2.setStartTime(estimated_allocation_1.getEndTime() + r1.getDuration());
+        estimated_allocation_2.setEndTime(estimated_allocation_2.getStartTime() + dur);
+
+        TimeWindow estimated_allocation_3;
+        estimated_allocation_3.setStartTime(estimated_allocation_2.getEndTime() + r2.getDuration());
+        estimated_allocation_3.setEndTime(estimated_allocation_3.getStartTime() + dur);
+
+        TimeWindow estimated_allocation_4;
+        estimated_allocation_4.setStartTime(estimated_allocation_3.getEndTime() + r3.getDuration());
+        estimated_allocation_4.setEndTime(estimated_allocation_4.getStartTime() + dur);
+
+        TimeWindow estimated_allocation_5;
+        estimated_allocation_5.setStartTime(estimated_allocation_4.getEndTime() + r4.getDuration());
+        estimated_allocation_5.setEndTime(estimated_allocation_5.getStartTime() + dur);
+
+        TimeWindow estimated_allocation_6;
+        estimated_allocation_6.setStartTime(estimated_allocation_5.getEndTime() + r5.getDuration());
+        estimated_allocation_6.setEndTime(estimated_allocation_6.getStartTime() + dur);
+
+        REQUIRE(s1->getAllocationTime() == estimated_allocation_1);
+        REQUIRE(s2->getAllocationTime() == estimated_allocation_2);
+        REQUIRE(s3->getAllocationTime() == estimated_allocation_3);
+        REQUIRE(s4->getAllocationTime() == estimated_allocation_4);
+        REQUIRE(s5->getAllocationTime() == estimated_allocation_5);
+        REQUIRE(s6->getAllocationTime() == estimated_allocation_6);
+    }
+
+    sm.destroyScene(s);
+}
