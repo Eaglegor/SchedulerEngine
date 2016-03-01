@@ -4,8 +4,7 @@
 namespace Scheduler
 {
 	SceneManager::SceneManager() :
-			routing_service(nullptr),
-			schedule_actualizers_factory(&schedule_actualization_algorithms_factory)
+			routing_service(nullptr)
 	{
 	}
 
@@ -22,7 +21,7 @@ namespace Scheduler
 		scene->setStopsFactory(&stops_factory);
 
 		scene->setRoutingService(routing_service);
-		scene->setScheduleActualizersFactory(&schedule_actualizers_factory);
+		scene->setScheduleActualizationAlgorithmsFactory(&schedule_actualization_algorithms_factory);
 
 		scenes.insert(scene);
 		return scene;

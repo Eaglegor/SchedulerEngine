@@ -1,14 +1,13 @@
 #include <assert.h>
 #include "ScheduleActualizer.h"
-#include "ScheduleActualizationAlgorithmsFactory.h"
 #include "ScheduleActualizationAlgorithm.h"
 
 namespace Scheduler
 {
 
-    ScheduleActualizer::ScheduleActualizer(Schedule *schedule, ScheduleActualizationAlgorithmsFactory* algorithms_factory):
+    ScheduleActualizer::ScheduleActualizer(Schedule *schedule):
     schedule(schedule),
-    algorithms_factory(algorithms_factory),
+    algorithms_factory(nullptr),
 	is_actualizing(false)
     {
     }
@@ -48,22 +47,16 @@ namespace Scheduler
 		is_actualizing = false;
     }
 
-    ScheduleActualizationAlgorithm* ScheduleActualizer::createAlgorithm(const ScheduleActualizationAlgorithmType &type) {
-        assert(algorithms_factory);
-
-        ScheduleActualizationAlgorithm* algorithm = algorithms_factory->createAlgorithm(type, schedule);
-
-        if(algorithm == nullptr) return nullptr;
-
-        algorithms.push_back(algorithm);
-        return algorithm;
-    }
-
     ScheduleActualizer::~ScheduleActualizer() {
-        for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithms_factory->destroyAlgorithm(algorithm);
+        for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithms_factory->destroyObject(algorithm);
     }
 
     void ScheduleActualizer::onStopNextRouteChanged(const Stop *stop) {
         for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithm->onStopNextRouteChanged(stop);
+    }
+
+    void ScheduleActualizer::setScheduleActualizationAlgorithmsFactory(
+            Factory<ScheduleActualizationAlgorithm> *factory) {
+        this->algorithms_factory = factory;
     }
 }

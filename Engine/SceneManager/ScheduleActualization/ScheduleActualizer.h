@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <vector>
-#include "ScheduleActualizationAlgorithmType.h"
+#include "../Factory.h"
 
 namespace Scheduler
 {
@@ -17,7 +17,7 @@ namespace Scheduler
     class ScheduleActualizer
     {
     public:
-        ScheduleActualizer(Schedule* schedule, ScheduleActualizationAlgorithmsFactory* algorithms_factory);
+        ScheduleActualizer(Schedule* schedule);
         ~ScheduleActualizer();
 
         void onOperationAdded(const Stop* stop, const Operation* operation);
@@ -33,12 +33,18 @@ namespace Scheduler
 
         void actualize();
 
-        ScheduleActualizationAlgorithm* createAlgorithm(const ScheduleActualizationAlgorithmType& type);
+        void setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm>* factory);
+
+        template<typename T, typename... Args>
+        bool createAlgorithm(Args&&...args)
+        {
+            algorithms_factory->createObject<T>(schedule, std::forward<Args>(args)...);
+        };
 
     private:
         Schedule* schedule;
 
-        ScheduleActualizationAlgorithmsFactory* algorithms_factory;
+        Factory<ScheduleActualizationAlgorithm>* algorithms_factory;
         std::vector<ScheduleActualizationAlgorithm*> algorithms;
 
 		bool is_actualizing;

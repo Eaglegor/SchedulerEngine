@@ -56,7 +56,6 @@ namespace Scheduler
 
 		bool hasSpecificEndLocation() const;
 
-		void setScheduleActualizer(ScheduleActualizer* actualizer);
 		ScheduleActualizer* getScheduleActualizer();
 
 		const TimeWindow& getShift() const;
@@ -84,6 +83,6 @@ namespace Scheduler
 		TimeWindow shift;
 
 		RoutingService* routing_service;
-		ScheduleActualizer* schedule_actualizer;
+		ScheduleActualizer schedule_actualizer;
     };
 }

@@ -28,8 +28,6 @@ add_library(SchedulerEngine SHARED
         SceneManager/Views/ScheduleStopsView.cpp
 
         SceneManager/ScheduleActualization/ScheduleActualizer.cpp
-        SceneManager/ScheduleActualization/ScheduleActualizationAlgorithmsFactory.cpp
-        SceneManager/ScheduleActualization/ScheduleActualizersFactory.cpp
 
         SceneManager/ScheduleActualization/TimeWindowSelectors/FirstTimeWindowSelector.cpp
 
