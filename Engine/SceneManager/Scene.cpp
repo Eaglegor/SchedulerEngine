@@ -14,9 +14,10 @@ namespace Scheduler {
             performers_factory(nullptr),
             vehicles_factory(nullptr),
             schedules_factory(nullptr),
-			routing_service(nullptr)
+			routing_service(nullptr),
+            run_vehicle_binders_factory(nullptr),
+            run_vehicle_binder(nullptr)
     {
-
     }
 
     size_t Scene::getId() const {
@@ -96,6 +97,7 @@ namespace Scheduler {
 		schedule->setRunsFactory(runs_factory);
 		schedule->setStopsFactory(stops_factory);
 		schedule->setRoutingService(routing_service);
+        schedule->setRunVehicleBinder(run_vehicle_binder);
 
         ScheduleActualizer* actualizer = schedule->getScheduleActualizer();
         actualizer->setScheduleActualizationAlgorithmsFactory(schedule_actualization_algorithms_factory);
@@ -106,6 +108,9 @@ namespace Scheduler {
     }
 
     Scene::~Scene() {
+        assert(run_vehicle_binders_factory);
+        if(run_vehicle_binder) run_vehicle_binders_factory->destroyObject(run_vehicle_binder);
+
         assert(orders_factory);
         for(Order* order : orders)
         {
@@ -191,6 +196,10 @@ namespace Scheduler {
 
     void Scene::setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm> *factory) {
         this->schedule_actualization_algorithms_factory = factory;
+    }
+
+    void Scene::setRunVehicleSelectorsFactory(Factory<RunVehicleBinder> *factory) {
+        this->run_vehicle_binders_factory = factory;
     }
 }
 

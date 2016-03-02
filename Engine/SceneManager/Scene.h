@@ -1,8 +1,10 @@
 #pragma once
 
+#include <assert.h>
 #include <cstdint>
 #include <Utils/Collections/ImmutableVector.h>
 #include <Engine/SceneManager/ScheduleActualization/ScheduleActualizationAlgorithm.h>
+#include <Engine/SceneManager/RunVehicleBinding/RunVehicleBinder.h>
 
 #include "ConceptFactory.h"
 #include "Factory.h"
@@ -22,6 +24,7 @@ namespace Scheduler
 	class RoutingService;
 
 	class ScheduleActualizersFactory;
+	class RunVehicleBinder;
 
     class Scene
     {
@@ -61,6 +64,23 @@ namespace Scheduler
 
 		void setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm>* factory);
 
+		void setRunVehicleSelectorsFactory(Factory<RunVehicleBinder>* factory);
+
+		template<typename T, typename... Args>
+		bool createRunVehicleBinder(Args &&... args)
+		{
+			assert(run_vehicle_binders_factory);
+
+			RunVehicleBinder* new_binder = run_vehicle_binders_factory->createObject<T>(this, std::forward<Args>(args)...);
+
+			if(!new_binder) return false;
+
+			if(run_vehicle_binder) run_vehicle_binders_factory->destroyObject(run_vehicle_binder);
+			run_vehicle_binder = new_binder;
+
+			return true;
+		}
+
     private:
         size_t id;
 
@@ -81,6 +101,9 @@ namespace Scheduler
 		ConceptFactory<Stop> *stops_factory;
 
 		Factory<ScheduleActualizationAlgorithm> *schedule_actualization_algorithms_factory;
+		Factory<RunVehicleBinder> *run_vehicle_binders_factory;
+
+		RunVehicleBinder *run_vehicle_binder;
 
 		RoutingService* routing_service;
     };

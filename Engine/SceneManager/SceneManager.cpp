@@ -20,8 +20,10 @@ namespace Scheduler
 		scene->setRunsFactory(&runs_factory);
 		scene->setStopsFactory(&stops_factory);
 
-		scene->setRoutingService(routing_service);
 		scene->setScheduleActualizationAlgorithmsFactory(&schedule_actualization_algorithms_factory);
+		scene->setRunVehicleSelectorsFactory(&run_vehicle_selectors_factory);
+
+		scene->setRoutingService(routing_service);
 
 		scenes.insert(scene);
 		return scene;
