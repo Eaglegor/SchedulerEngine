@@ -99,7 +99,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
         Stop *s5 = r->allocateWorkOperation(op4, 3);
         Stop *s6 = r->getEndStop();
 
-        REQUIRE(s1->getDuration() == dur);
+        REQUIRE(s1->getDuration() == dur*2);
         REQUIRE(s2->getDuration() == dur);
         REQUIRE(s3->getDuration() == dur);
         REQUIRE(s4->getDuration() == dur);
@@ -167,46 +167,131 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
     schedule->getScheduleActualizer()->createAlgorithm<StopDurationActualizationAlgorithm>();
     schedule->getScheduleActualizer()->createAlgorithm<StopArrivalTimeActualizationAlgorithm>();
 
-    SECTION("Broad time windows")
-    {
-        Stop *s1 = r->getStartStop();
-        Stop *s2 = r->allocateWorkOperation(op1, 0);
-        Stop *s3 = r->allocateWorkOperation(op2, 1);
-        Stop *s4 = r->allocateWorkOperation(op3, 2);
-        Stop *s5 = r->allocateWorkOperation(op4, 3);
-        Stop *s6 = r->getEndStop();
+    TimeWindow estimated_allocation_1;
+    TimeWindow estimated_allocation_2;
+    TimeWindow estimated_allocation_3;
+    TimeWindow estimated_allocation_4;
+    TimeWindow estimated_allocation_5;
+    TimeWindow estimated_allocation_6;
 
-        TimeWindow estimated_allocation_1;
+    SECTION("Broad time windows") {
         estimated_allocation_1.setStartTime(TimePoint(0));
         estimated_allocation_1.setEndTime(TimePoint(0));
 
-        TimeWindow estimated_allocation_2;
         estimated_allocation_2.setStartTime(estimated_allocation_1.getEndTime() + r1.getDuration());
         estimated_allocation_2.setEndTime(estimated_allocation_2.getStartTime() + dur);
 
-        TimeWindow estimated_allocation_3;
         estimated_allocation_3.setStartTime(estimated_allocation_2.getEndTime() + r2.getDuration());
         estimated_allocation_3.setEndTime(estimated_allocation_3.getStartTime() + dur);
 
-        TimeWindow estimated_allocation_4;
         estimated_allocation_4.setStartTime(estimated_allocation_3.getEndTime() + r3.getDuration());
         estimated_allocation_4.setEndTime(estimated_allocation_4.getStartTime() + dur);
 
-        TimeWindow estimated_allocation_5;
         estimated_allocation_5.setStartTime(estimated_allocation_4.getEndTime() + r4.getDuration());
         estimated_allocation_5.setEndTime(estimated_allocation_5.getStartTime() + dur);
 
-        TimeWindow estimated_allocation_6;
         estimated_allocation_6.setStartTime(estimated_allocation_5.getEndTime() + r5.getDuration());
         estimated_allocation_6.setEndTime(estimated_allocation_6.getStartTime());
-
-        REQUIRE(s1->getAllocationTime() == estimated_allocation_1);
-        REQUIRE(s2->getAllocationTime() == estimated_allocation_2);
-        REQUIRE(s3->getAllocationTime() == estimated_allocation_3);
-        REQUIRE(s4->getAllocationTime() == estimated_allocation_4);
-        REQUIRE(s5->getAllocationTime() == estimated_allocation_5);
-        REQUIRE(s6->getAllocationTime() == estimated_allocation_6);
     }
+
+    SECTION("Narrow time windows")
+    {
+        op1->setTimeWindows({make_time_window(770, 1370)});
+        op2->setTimeWindows({make_time_window(2140, 2740)});
+        op3->setTimeWindows({make_time_window(3510, 4110)});
+        op4->setTimeWindows({make_time_window(4880, 5480)});
+
+        estimated_allocation_1.setStartTime(TimePoint(100));
+        estimated_allocation_1.setEndTime(TimePoint(100));
+
+        estimated_allocation_2.setStartTime(TimePoint(770));
+        estimated_allocation_2.setEndTime(estimated_allocation_2.getStartTime() + dur);
+
+        estimated_allocation_3.setStartTime(TimePoint(2140));
+        estimated_allocation_3.setEndTime(estimated_allocation_3.getStartTime() + dur);
+
+        estimated_allocation_4.setStartTime(TimePoint(3510));
+        estimated_allocation_4.setEndTime(estimated_allocation_4.getStartTime() + dur);
+
+        estimated_allocation_5.setStartTime(TimePoint(4880));
+        estimated_allocation_5.setEndTime(estimated_allocation_5.getStartTime() + dur);
+
+        estimated_allocation_6.setStartTime(estimated_allocation_5.getEndTime() + r5.getDuration());
+        estimated_allocation_6.setEndTime(estimated_allocation_6.getStartTime());
+    }
+
+    SECTION("Narrow time windows with budget")
+    {
+        op1->setTimeWindows({make_time_window(770, 20000)});
+        op2->setTimeWindows({make_time_window(2140, 20000)});
+        op3->setTimeWindows({make_time_window(3510, 20000)});
+        op4->setTimeWindows({make_time_window(4880, 20000)});
+
+        estimated_allocation_1.setStartTime(TimePoint(400));
+        estimated_allocation_1.setEndTime(estimated_allocation_1.getStartTime());
+
+        estimated_allocation_2.setStartTime(TimePoint(1070));
+        estimated_allocation_2.setEndTime(estimated_allocation_2.getStartTime() + dur);
+
+        estimated_allocation_3.setStartTime(TimePoint(2340));
+        estimated_allocation_3.setEndTime(estimated_allocation_3.getStartTime() + dur);
+
+        estimated_allocation_4.setStartTime(TimePoint(3610));
+        estimated_allocation_4.setEndTime(estimated_allocation_4.getStartTime() + dur);
+
+        estimated_allocation_5.setStartTime(TimePoint(4880));
+        estimated_allocation_5.setEndTime(estimated_allocation_5.getStartTime() + dur);
+
+        estimated_allocation_6.setStartTime(estimated_allocation_5.getEndTime() + r5.getDuration());
+        estimated_allocation_6.setEndTime(estimated_allocation_6.getStartTime());
+    }
+
+    SECTION("Narrow time windows with budget gap")
+    {
+        op1->setTimeWindows({make_time_window(770, 20000)});
+        op2->setTimeWindows({make_time_window(2140, 2740)}); // <== This stop can't be shifted to compensate waiting due to its time window
+        op3->setTimeWindows({make_time_window(3510, 20000)});
+        op4->setTimeWindows({make_time_window(4880, 20000)});
+
+        estimated_allocation_1.setStartTime(TimePoint(200));
+        estimated_allocation_1.setEndTime(estimated_allocation_1.getStartTime());
+
+        estimated_allocation_2.setStartTime(TimePoint(870));
+        estimated_allocation_2.setEndTime(estimated_allocation_2.getStartTime() + dur);
+
+        estimated_allocation_3.setStartTime(TimePoint(2140));
+        estimated_allocation_3.setEndTime(estimated_allocation_3.getStartTime() + dur);
+
+        estimated_allocation_4.setStartTime(TimePoint(3510));
+        estimated_allocation_4.setEndTime(estimated_allocation_4.getStartTime() + dur);
+
+        estimated_allocation_5.setStartTime(TimePoint(4880));
+        estimated_allocation_5.setEndTime(estimated_allocation_5.getStartTime() + dur);
+
+        estimated_allocation_6.setStartTime(estimated_allocation_5.getEndTime() + r5.getDuration());
+        estimated_allocation_6.setEndTime(estimated_allocation_6.getStartTime());
+    }
+
+    Stop *s1 = r->getStartStop();
+    Stop *s2 = r->allocateWorkOperation(op1, 0);
+    Stop *s3 = r->allocateWorkOperation(op2, 1);
+    Stop *s4 = r->allocateWorkOperation(op3, 2);
+    Stop *s5 = r->allocateWorkOperation(op4, 3);
+    Stop *s6 = r->getEndStop();
+
+    CAPTURE(s1->getAllocationTime());
+    CAPTURE(s2->getAllocationTime());
+    CAPTURE(s3->getAllocationTime());
+    CAPTURE(s4->getAllocationTime());
+    CAPTURE(s5->getAllocationTime());
+    CAPTURE(s6->getAllocationTime());
+
+    REQUIRE(s1->getAllocationTime() == estimated_allocation_1);
+    REQUIRE(s2->getAllocationTime() == estimated_allocation_2);
+    REQUIRE(s3->getAllocationTime() == estimated_allocation_3);
+    REQUIRE(s4->getAllocationTime() == estimated_allocation_4);
+    REQUIRE(s5->getAllocationTime() == estimated_allocation_5);
+    REQUIRE(s6->getAllocationTime() == estimated_allocation_6);
 
     sm.destroyScene(s);
 }
