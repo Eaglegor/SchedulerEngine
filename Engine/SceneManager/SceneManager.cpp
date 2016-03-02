@@ -47,7 +47,7 @@ namespace Scheduler
 	SceneManager::~SceneManager()
 	{
 		for (Scene *scene: scenes) {
-			destroyScene(scene);
+			scenes_factory.destroyObject(scene);
 		}
 	}
 
