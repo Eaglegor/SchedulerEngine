@@ -1,6 +1,7 @@
 #include "Stop.h"
 #include <Utils/Collections/Algorithms.h>
 #include <assert.h>
+#include "ScheduleActualization/ScheduleActualizer.h"
 
 namespace Scheduler
 {
@@ -8,7 +9,8 @@ namespace Scheduler
 	Stop::Stop(size_t id, const Location& location, Run* run):
 	id(id),
 	location(location),
-	run(run)
+	run(run),
+	schedule_actualizer(nullptr)
 	{
 	}
 
@@ -23,10 +25,14 @@ namespace Scheduler
 	void Stop::addOperation(const Operation *operation) {
 		assert(operation->getLocation() == location);
 		operations.insert(operation);
+
+		schedule_actualizer->onOperationAdded(this, operation);
 	}
 
 	void Stop::removeOperation(const Operation *operation) {
 		operations.erase(operation);
+
+		schedule_actualizer->onOperationRemoved(this);
 	}
 
 	bool Stop::containsOperation(const Operation *operation) const {
@@ -34,14 +40,19 @@ namespace Scheduler
 	}
 
 	const TimeWindow &Stop::getAllocationTime() const {
+		schedule_actualizer->actualize();
+
 		return allocation_time;
 	}
 
 	void Stop::setAllocationTime(const TimeWindow &time) {
+		assert(time.getEndTime() - time.getStartTime() == duration);
 		this->allocation_time = time;
 	}
 
 	const Duration &Stop::getDuration() const {
+		schedule_actualizer->actualize();
+
 		return duration;
 	}
 
@@ -51,6 +62,8 @@ namespace Scheduler
 
 	void Stop::setNextRoute(const Route &route) {
 		this->next_route = route;
+
+		schedule_actualizer->onStopNextRouteChanged(this);
 	}
 
 	const Run *Stop::getRun() const {
@@ -68,5 +81,22 @@ namespace Scheduler
 	const Route &Stop::getNextRoute()
 	{
 		return next_route;
+	}
+
+	void Stop::setScheduleActualizer(ScheduleActualizer *actualizer) {
+		assert(actualizer);
+
+		this->schedule_actualizer = actualizer;
+	}
+
+
+	void Stop::setStartTime(const TimePoint &time)
+	{
+		this->setAllocationTime(TimeWindow(time, time + duration));
+	}
+
+	void Stop::setEndTime(const TimePoint &time)
+	{
+		this->setAllocationTime(TimeWindow(time - duration, time));
 	}
 }

@@ -96,6 +96,10 @@ namespace Scheduler {
 		schedule->setRunsFactory(runs_factory);
 		schedule->setStopsFactory(stops_factory);
 		schedule->setRoutingService(routing_service);
+
+        ScheduleActualizer* actualizer = schedule->getScheduleActualizer();
+        actualizer->setScheduleActualizationAlgorithmsFactory(schedule_actualization_algorithms_factory);
+
         schedules.push_back(schedule);
 
         return schedule;
@@ -184,5 +188,9 @@ namespace Scheduler {
 	{
 		this->stops_factory = factory;
 	}
+
+    void Scene::setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm> *factory) {
+        this->schedule_actualization_algorithms_factory = factory;
+    }
 }
 

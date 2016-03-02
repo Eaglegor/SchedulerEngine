@@ -3,6 +3,8 @@
 
 #include <Engine/Concepts/Basic/Cost.h>
 
+#include <iostream>
+
 TEST_CASE("Concepts - Basic - Cost", "[unit][functional][concepts]")
 {
 	using namespace Scheduler;
@@ -11,7 +13,7 @@ TEST_CASE("Concepts - Basic - Cost", "[unit][functional][concepts]")
 	{
 		REQUIRE(sizeof(Cost) == sizeof(float));
 	}
-	
+
 	SECTION("Default constructor")
 	{
 		Cost c;

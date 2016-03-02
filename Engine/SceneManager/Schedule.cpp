@@ -11,7 +11,8 @@ namespace Scheduler {
 			runs_factory(nullptr),
 			routing_service(nullptr),
 			shift_start_location_specified(false),
-			shift_end_location_specified(false)
+			shift_end_location_specified(false),
+			schedule_actualizer(this)
 	{
     }
 
@@ -57,8 +58,11 @@ namespace Scheduler {
 
 		r->setRoutingService(routing_service);
 		r->setStopsFactory(stops_factory);
+		r->setScheduleActualizer(&schedule_actualizer);
 
 		runs.insert(runs.begin() + index, r);
+
+		schedule_actualizer.onRunAdded(r, index);
 
 		return r;
 	}
@@ -69,6 +73,8 @@ namespace Scheduler {
 		runs.erase(iter);
 		assert(runs_factory);
 		runs_factory->destroyObject(run);
+
+		schedule_actualizer.onRunRemoved();
 	}
 
 	void Schedule::destroyRun(size_t index) {
@@ -76,6 +82,8 @@ namespace Scheduler {
 		runs.erase(runs.begin() + index);
 		assert(runs_factory);
 		runs_factory->destroyObject(r);
+
+		schedule_actualizer.onRunRemoved();
 	}
 
 	void Schedule::setRoutingService(RoutingService *routing_service) {
@@ -135,4 +143,17 @@ namespace Scheduler {
 		this->stops_factory = factory;
 	}
 
+	ScheduleActualizer *Schedule::getScheduleActualizer() {
+		return &schedule_actualizer;
+	}
+
+	const TimeWindow& Schedule::getShift() const
+	{
+		return shift;
+	}
+
+	void Schedule::setShift(const TimeWindow &shift)
+	{
+		this->shift = shift;
+	}
 }

@@ -21,6 +21,7 @@ namespace Scheduler
 		scene->setStopsFactory(&stops_factory);
 
 		scene->setRoutingService(routing_service);
+		scene->setScheduleActualizationAlgorithmsFactory(&schedule_actualization_algorithms_factory);
 
 		scenes.insert(scene);
 		return scene;
@@ -46,7 +47,7 @@ namespace Scheduler
 	SceneManager::~SceneManager()
 	{
 		for (Scene *scene: scenes) {
-			destroyScene(scene);
+			scenes_factory.destroyObject(scene);
 		}
 	}
 

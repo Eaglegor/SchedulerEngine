@@ -6,6 +6,8 @@
 #include "Attribute.h"
 #include "ConceptFactory.h"
 
+#include "Factory.h"
+
 namespace Scheduler
 {
     class Scene;
@@ -16,6 +18,7 @@ namespace Scheduler
     class Schedule;
 	class Run;
 	class Stop;
+    class ScheduleActualizationAlgorithm;
 
 	class RoutingService;
 	class LoggingService;
@@ -43,6 +46,8 @@ namespace Scheduler
         ConceptFactory<Attribute> attributes_factory;
 		ConceptFactory<Run> runs_factory;
 		ConceptFactory<Stop> stops_factory;
+
+		Factory<ScheduleActualizationAlgorithm> schedule_actualization_algorithms_factory;
 
         std::unordered_set<Scene*> scenes;
         std::unordered_map<std::string, Attribute*> attributes;

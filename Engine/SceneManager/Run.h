@@ -12,6 +12,7 @@ namespace Scheduler
 	class Stop;
 	class RoutingService;
 	class RoutingProfile;
+	class ScheduleActualizer;
 
 	class Run
 	{
@@ -42,6 +43,7 @@ namespace Scheduler
 
 		Stop* allocateStartOperation(const Operation *operation);
 		Stop* allocateWorkOperation(const Operation *operation, size_t index);
+		Stop* allocateWorkOperation(const Operation *operation);
 		Stop* allocateEndOperation(const Operation *operation);
 
 		void unallocateStartOperation(const Operation *operation);
@@ -51,6 +53,8 @@ namespace Scheduler
 
 		void setStopsFactory(ConceptFactory<Stop> *factory);
 		void setRoutingService(RoutingService *routing_service);
+
+		void setScheduleActualizer(ScheduleActualizer* actualizer);
 
 	private:
 		size_t id;
@@ -66,6 +70,8 @@ namespace Scheduler
 
 		ConceptFactory<Stop> *stops_factory;
 		RoutingService *routing_service;
+
+		ScheduleActualizer* schedule_actualizer;
 
 	private:
 		void recalculateRoute(Stop *from, Stop *to);

@@ -2,8 +2,10 @@
 
 #include <cstdint>
 #include <Utils/Collections/ImmutableVector.h>
+#include <Engine/SceneManager/ScheduleActualization/ScheduleActualizationAlgorithm.h>
 
 #include "ConceptFactory.h"
+#include "Factory.h"
 
 namespace Scheduler
 {
@@ -18,6 +20,8 @@ namespace Scheduler
 	class LoggingService;
 
 	class RoutingService;
+
+	class ScheduleActualizersFactory;
 
     class Scene
     {
@@ -55,6 +59,8 @@ namespace Scheduler
 
 		void setRoutingService(RoutingService *routing_service);
 
+		void setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm>* factory);
+
     private:
         size_t id;
 
@@ -73,6 +79,8 @@ namespace Scheduler
 
 		ConceptFactory<Run> *runs_factory;
 		ConceptFactory<Stop> *stops_factory;
+
+		Factory<ScheduleActualizationAlgorithm> *schedule_actualization_algorithms_factory;
 
 		RoutingService* routing_service;
     };
