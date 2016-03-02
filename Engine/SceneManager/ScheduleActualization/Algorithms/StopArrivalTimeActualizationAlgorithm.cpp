@@ -43,8 +43,8 @@ namespace Scheduler
 			{
 				if(forward_shift_budget > Duration(0))
 				{
-					Duration shift = std::max(forward_shift_budget, waiting_time);
-					for(size_t j = 0; j < i; ++j)
+					Duration shift = std::min(forward_shift_budget, waiting_time);
+					for(size_t j = 0; j <= i; ++j)
 					{
 						stops[j]->setStartTime(stops[j]->getAllocationTime().getStartTime() + shift);
 					}
