@@ -68,6 +68,8 @@ namespace Scheduler
 			{
 				total_duration += operation->getDuration();
 			}
+
+			stop->setDuration(total_duration);
 		}
 
 		dirty_flag = false;
