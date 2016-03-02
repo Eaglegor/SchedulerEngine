@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "Schedule.h"
 #include "Run.h"
+#include "RunVehicleBinding/RunVehicleBinder.h"
 
 namespace Scheduler {
 
@@ -12,7 +13,8 @@ namespace Scheduler {
 			routing_service(nullptr),
 			shift_start_location_specified(false),
 			shift_end_location_specified(false),
-			schedule_actualizer(this)
+			schedule_actualizer(this),
+			run_vehicle_binder(nullptr)
 	{
     }
 
@@ -59,6 +61,8 @@ namespace Scheduler {
 		r->setRoutingService(routing_service);
 		r->setStopsFactory(stops_factory);
 		r->setScheduleActualizer(&schedule_actualizer);
+
+		if(run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
 
 		runs.insert(runs.begin() + index, r);
 
@@ -155,5 +159,9 @@ namespace Scheduler {
 	void Schedule::setShift(const TimeWindow &shift)
 	{
 		this->shift = shift;
+	}
+
+	void Schedule::setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder) {
+		this->run_vehicle_binder = run_vehicle_binder;
 	}
 }

@@ -19,6 +19,7 @@ namespace Scheduler
 	class Run;
 	class Stop;
     class ScheduleActualizationAlgorithm;
+	class RunVehicleBinder;
 
 	class RoutingService;
 	class LoggingService;
@@ -48,6 +49,7 @@ namespace Scheduler
 		ConceptFactory<Stop> stops_factory;
 
 		Factory<ScheduleActualizationAlgorithm> schedule_actualization_algorithms_factory;
+		Factory<RunVehicleBinder> run_vehicle_selectors_factory;
 
         std::unordered_set<Scene*> scenes;
         std::unordered_map<std::string, Attribute*> attributes;

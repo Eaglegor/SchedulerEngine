@@ -31,6 +31,8 @@ add_library(SchedulerEngine SHARED
 
         SceneManager/ScheduleActualization/TimeWindowSelectors/FirstTimeWindowSelector.cpp
 
+        SceneManager/RunVehicleBinding/PerformerAssignedVehicleBinder.cpp
+
         SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.cpp
         SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.cpp
         )

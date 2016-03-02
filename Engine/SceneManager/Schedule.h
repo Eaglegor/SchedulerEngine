@@ -13,6 +13,7 @@ namespace Scheduler
 	class Stop;
 	class RoutingService;
 	class LoggingService;
+	class RunVehicleBinder;
 
     class Schedule
     {
@@ -61,6 +62,8 @@ namespace Scheduler
 		const TimeWindow& getShift() const;
 		void setShift(const TimeWindow &shift);
 
+		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
+
 	private:
         size_t id;
         std::string name;
@@ -84,5 +87,7 @@ namespace Scheduler
 
 		RoutingService* routing_service;
 		ScheduleActualizer schedule_actualizer;
+
+		RunVehicleBinder* run_vehicle_binder;
     };
 }
