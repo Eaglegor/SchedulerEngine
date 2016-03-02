@@ -20,6 +20,8 @@
 #include <engine/SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.h>
 #include <Engine/SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.h>
 
+#include <Tests/ConceptStreamOperators.h>
+
 TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integration][schedule_actualizers]")
 {
     using namespace Scheduler;
@@ -97,7 +99,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
         Stop *s5 = r->allocateWorkOperation(op4, 3);
         Stop *s6 = r->getEndStop();
 
-        REQUIRE(s1->getDuration() == dur*2);
+        REQUIRE(s1->getDuration() == dur);
         REQUIRE(s2->getDuration() == dur);
         REQUIRE(s3->getDuration() == dur);
         REQUIRE(s4->getDuration() == dur);
