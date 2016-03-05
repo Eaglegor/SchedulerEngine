@@ -3,6 +3,8 @@ project(CPP_SCHEDULER)
 
 if(NOT MSVC)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+	add_definitions( "/wd4251" )
 endif()
 
 set(__CONAN_COMPILER_OPTIONS "--build=missing")
@@ -11,14 +13,14 @@ if (MSVC)
   set(__CONAN_COMPILER_OPTIONS "${__CONAN_COMPILER_OPTIONS} -s compiler=\"Visual Studio\"")
 endif()
 
-if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-	set(__CONAN_COMPILER_OPTIONS "${__CONAN_COMPILER_OPTIONS} -s arch=x86")
-else()
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(__CONAN_COMPILER_OPTIONS "${__CONAN_COMPILER_OPTIONS} -s arch=x86_64")
+else()
+	set(__CONAN_COMPILER_OPTIONS "${__CONAN_COMPILER_OPTIONS} -s arch=x86")
 endif()
 
 message(STATUS "Updating dependencies")
-execute_process(COMMAND conan install ${__CONAN_COMPILER_OPTIONS} WORKING_DIRECTORY ${CPP_SCHEDULER_SOURCE_DIR} RESULT_VARIABLE rv)
+execute_process(COMMAND conan install ${__CONAN_COMPILER_OPTIONS} WORKING_DIRECTORY ${CPP_SCHEDULER_SOURCE_DIR})
 
 include(conanbuildinfo.cmake)
 
