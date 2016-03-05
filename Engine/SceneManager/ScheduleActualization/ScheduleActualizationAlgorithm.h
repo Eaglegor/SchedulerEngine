@@ -3,6 +3,8 @@
 #include <cstdint>
 #include "ScheduleActualizationAlgorithmType.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
     class Schedule;
@@ -11,7 +13,7 @@ namespace Scheduler
     class Vehicle;
     class Operation;
 
-    class ScheduleActualizationAlgorithm
+    class SCHEDULERENGINE_EXPORT ScheduleActualizationAlgorithm
     {
     public:
         ScheduleActualizationAlgorithm(Schedule* schedule):schedule(schedule){}

@@ -2,8 +2,10 @@
 
 #include "Speed.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler {
-	class RoutingProfile {
+	class SCHEDULERENGINE_EXPORT RoutingProfile {
 	public:
 		RoutingProfile();
 		RoutingProfile(const RoutingProfile &rhs);

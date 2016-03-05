@@ -3,6 +3,8 @@
 #include "RunVehicleBinder.h"
 #include <unordered_map>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
     class Performer;
@@ -10,7 +12,7 @@ namespace Scheduler
     class Scene;
     class PerformerAssignedVehicleBinderSettings;
 
-    class PerformerAssignedVehicleBinder : public RunVehicleBinder
+    class SCHEDULERENGINE_EXPORT PerformerAssignedVehicleBinder : public RunVehicleBinder
     {
     public:
         PerformerAssignedVehicleBinder(Scene* scene, const PerformerAssignedVehicleBinderSettings &settings);

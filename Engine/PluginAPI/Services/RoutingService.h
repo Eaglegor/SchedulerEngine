@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Engine/Concepts/Basic/Route.h>
+#include <SchedulerEngine_export.h>
 
 namespace Scheduler
 {
 	class Location;
 	class RoutingProfile;
 
-	class RoutingService
+	class SCHEDULERENGINE_EXPORT RoutingService
 	{
 	public:
 		virtual ~RoutingService(){};

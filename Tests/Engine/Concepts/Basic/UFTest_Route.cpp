@@ -2,7 +2,7 @@
 #include <catch.hpp>
 
 #include <Engine/Concepts/Basic/Route.h>
-#include <Utils/Concepts/MakeLocation.h>
+#include <Tests/Utils/Concepts/MakeLocation.h>
 
 using namespace Scheduler;
 

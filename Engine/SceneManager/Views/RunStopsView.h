@@ -3,12 +3,14 @@
 #include <cstdint>
 #include <vector>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
 	class Stop;
 	class Run;
 
-	class RunStopsView
+	class SCHEDULERENGINE_EXPORT RunStopsView
 	{
 	public:
 		RunStopsView(Run* run);

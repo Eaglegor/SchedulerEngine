@@ -3,9 +3,11 @@
 #include <cmath>
 #include "Coordinate.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-	class Location
+	class SCHEDULERENGINE_EXPORT Location
 	{
 	public:
 		Location();

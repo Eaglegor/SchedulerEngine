@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
+#include <SchedulerEngine_export.h>
 
 namespace Scheduler
 {
-    class Attribute
+    class SCHEDULERENGINE_EXPORT Attribute
     {
     public:
         Attribute(size_t id, const char* name);

@@ -1,12 +1,14 @@
 #pragma once
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
 	class RoutingService;
 
 	class LoggingService;
 
-	struct Context
+	struct SCHEDULERENGINE_EXPORT Context
 	{
 	public:
 		Context() :

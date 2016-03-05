@@ -1,11 +1,13 @@
 #pragma once
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
 	class Stop;
 	class TimeWindow;
 
-	class TimeWindowSelector
+	class SCHEDULERENGINE_EXPORT TimeWindowSelector
 	{
 	public:
 		virtual TimeWindow selectTimeWindow(Stop* stop) = 0;

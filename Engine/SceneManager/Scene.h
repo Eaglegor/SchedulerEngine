@@ -9,6 +9,8 @@
 #include "ConceptFactory.h"
 #include "Factory.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
     class Operation;
@@ -26,7 +28,7 @@ namespace Scheduler
 	class ScheduleActualizersFactory;
 	class RunVehicleBinder;
 
-    class Scene
+    class SCHEDULERENGINE_EXPORT Scene
     {
     public:
         Scene(size_t id);

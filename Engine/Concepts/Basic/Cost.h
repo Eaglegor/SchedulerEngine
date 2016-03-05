@@ -2,10 +2,11 @@
 
 #include <cmath>
 #include <Math/FloatEpsilon.h>
+#include <SchedulerEngine_export.h>
 
 namespace Scheduler
 {
-	class Cost
+	class SCHEDULERENGINE_EXPORT Cost
 	{
 	public:
 		Cost();

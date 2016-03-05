@@ -2,7 +2,7 @@
 #include <catch.hpp>
 
 #include <Engine/Concepts/Basic/TimeWindow.h>
-#include <Utils/Concepts/MakeTimeWindow.h>
+#include <Tests/Utils/Concepts/MakeTimeWindow.h>
 
 TEST_CASE("Concepts - Basic - TimeWindow", "[unit][functional][concepts]")
 {

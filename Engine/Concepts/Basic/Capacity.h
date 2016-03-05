@@ -4,9 +4,11 @@
 #include <algorithm>
 #include <Math/FloatEpsilon.h>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-	class Capacity
+	class SCHEDULERENGINE_EXPORT Capacity
 	{
 	public:
 		Capacity();

@@ -1,10 +1,12 @@
 #pragma once
 
+#include <ScheduleEngine_export.h>
+
 namespace Scheduler
 {
     class PluginContext;
 
-    class Plugin
+    class SCHEDULERENGINE_EXPORT Plugin
     {
     public:
         virtual ~Plugin(){}

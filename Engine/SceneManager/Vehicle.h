@@ -9,9 +9,11 @@
 #include <Utils/Collections/ImmutableUnorderedSet.h>
 #include "Attribute.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-    class Vehicle
+    class SCHEDULERENGINE_EXPORT Vehicle
     {
     public:
 		Vehicle(size_t id);
