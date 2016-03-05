@@ -3,12 +3,14 @@
 #include <cstdint>
 #include <vector>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
 	class Stop;
 	class Schedule;
 
-	class ScheduleStopsView
+	class SCHEDULERENGINE_EXPORT ScheduleStopsView
 	{
 	public:
 		ScheduleStopsView(Schedule* schedule);

@@ -8,6 +8,8 @@
 
 #include "Factory.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
     class Scene;
@@ -24,7 +26,7 @@ namespace Scheduler
 	class RoutingService;
 	class LoggingService;
 
-    class SceneManager
+    class SCHEDULERENGINE_EXPORT SceneManager
     {
     public:
 		SceneManager();

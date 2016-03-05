@@ -3,9 +3,11 @@
 #include "../ScheduleActualizationAlgorithm.h"
 #include "../ScheduleActualizationAlgorithmType.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-    class StopArrivalTimeActualizationAlgorithm : public ScheduleActualizationAlgorithm
+    class SCHEDULERENGINE_EXPORT StopArrivalTimeActualizationAlgorithm : public ScheduleActualizationAlgorithm
     {
     public:
         StopArrivalTimeActualizationAlgorithm(Schedule* schedule);

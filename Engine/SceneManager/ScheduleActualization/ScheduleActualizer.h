@@ -5,6 +5,8 @@
 #include "../Factory.h"
 #include "ScheduleActualizationAlgorithm.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
     class Schedule;
@@ -15,7 +17,7 @@ namespace Scheduler
     class ScheduleActualizationAlgorithm;
     class ScheduleActualizationAlgorithmsFactory;
 
-    class ScheduleActualizer
+    class SCHEDULERENGINE_EXPORT ScheduleActualizer
     {
     public:
         ScheduleActualizer(Schedule* schedule);

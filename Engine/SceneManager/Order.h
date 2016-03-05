@@ -7,12 +7,14 @@
 
 #include "ConceptFactory.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
 	class Operation;
 	class Attribute;
 
-    class Order
+    class SCHEDULERENGINE_EXPORT Order
     {
     public:
 		Order(size_t id);

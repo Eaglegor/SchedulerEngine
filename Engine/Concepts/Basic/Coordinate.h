@@ -3,9 +3,11 @@
 #include <cmath>
 #include <Math/FloatEpsilon.h>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-	class Coordinate
+	class SCHEDULERENGINE_EXPORT Coordinate
 	{
 	public:
 		Coordinate();

@@ -4,9 +4,11 @@
 #include "Duration.h"
 #include "Location.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-	class Route
+	class SCHEDULERENGINE_EXPORT Route
 	{
 	public:
 		Route();

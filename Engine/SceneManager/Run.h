@@ -5,6 +5,8 @@
 #include "ConceptFactory.h"
 #include "Operation.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
 	class Schedule;
@@ -14,7 +16,7 @@ namespace Scheduler
 	class RoutingProfile;
 	class ScheduleActualizer;
 
-	class Run
+	class SCHEDULERENGINE_EXPORT Run
 	{
 	public:
 		Run(size_t id, const Location& start_location, const Location& end_location, Schedule* schedule);

@@ -3,9 +3,11 @@
 #include <Engine/Concepts/Basic/Distance.h>
 #include <Math/FloatEpsilon.h>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-	class Speed
+	class SCHEDULERENGINE_EXPORT Speed
 	{
 	public:
 		Speed();

@@ -5,12 +5,14 @@
 #include "Operation.h"
 #include <Engine/Concepts/Basic/Route.h>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
 	class Run;
 	class ScheduleActualizer;
 
-	class Stop
+	class SCHEDULERENGINE_EXPORT Stop
 	{
 	public:
 		Stop(size_t id, const Location &location, Run *run);

@@ -2,9 +2,11 @@
 
 #include <limits>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-	class Duration
+	class SCHEDULERENGINE_EXPORT Duration
 	{
 	public:
 		Duration();

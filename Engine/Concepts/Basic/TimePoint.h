@@ -3,9 +3,11 @@
 #include "Duration.h"
 #include <limits>
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-	class TimePoint
+	class SCHEDULERENGINE_EXPORT TimePoint
 	{
 	public:
 		TimePoint();

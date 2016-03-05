@@ -7,6 +7,8 @@
 #include <Engine/SceneManager/ScheduleActualization/ScheduleActualizer.h>
 #include "ConceptFactory.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
 	class Run;
@@ -15,7 +17,7 @@ namespace Scheduler
 	class LoggingService;
 	class RunVehicleBinder;
 
-    class Schedule
+    class SCHEDULERENGINE_EXPORT Schedule
     {
     public:
         Schedule(size_t id, const Performer *performer);

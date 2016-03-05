@@ -8,9 +8,11 @@
 #include <Engine/Concepts/Basic/Capacity.h>
 #include "Order.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-    class Operation
+    class SCHEDULERENGINE_EXPORT Operation
     {
     public:
         Operation(size_t id);

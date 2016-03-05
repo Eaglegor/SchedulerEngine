@@ -3,9 +3,11 @@
 #include <limits>
 #include "TimePoint.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-	class TimeWindow
+	class SCHEDULERENGINE_EXPORT TimeWindow
 	{
 	public:
 		TimeWindow();

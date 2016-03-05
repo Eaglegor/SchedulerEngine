@@ -36,3 +36,6 @@ add_library(SchedulerEngine SHARED
         SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.cpp
         SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.cpp
         )
+		
+include(GenerateExportHeader)
+generate_export_header(SchedulerEngine EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SchedulerEngine_export.h)

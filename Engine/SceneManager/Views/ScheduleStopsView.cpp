@@ -2,6 +2,7 @@
 #include "RunStopsView.h"
 #include "../Schedule.h"
 #include <algorithm>
+#include <iterator>
 
 namespace Scheduler
 {

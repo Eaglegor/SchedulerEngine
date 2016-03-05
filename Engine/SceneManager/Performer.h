@@ -9,9 +9,11 @@
 #include <Utils/Collections/ImmutableUnorderedSet.h>
 #include "Attribute.h"
 
+#include <SchedulerEngine_export.h>
+
 namespace Scheduler
 {
-    class Performer
+    class SCHEDULERENGINE_EXPORT Performer
     {
     public:
 		Performer(size_t id);
