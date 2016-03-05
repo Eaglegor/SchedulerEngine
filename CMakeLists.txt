@@ -24,6 +24,8 @@ include(conanbuildinfo.cmake)
 
 conan_basic_setup()
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 enable_testing()
 
 include_directories(${CPP_SCHEDULER_SOURCE_DIR})
