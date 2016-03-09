@@ -1,0 +1,3 @@
+add_executable(UFTest_JSONSceneLoader UFTest_JSONSceneLoader.cpp)
+add_test(NAME UFTest_JSONSceneLoader COMMAND $<TARGET_FILE:UFTest_JSONSceneLoader>)
+set_target_properties(UFTest_JSONSceneLoader PROPERTIES FOLDER "Tests/SceneLoaders")
