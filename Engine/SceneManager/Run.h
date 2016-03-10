@@ -16,6 +16,18 @@ namespace Scheduler
 	class RoutingProfile;
 	class ScheduleActualizer;
 
+	/**
+		Class representing single performer trip which starts and ends in the specified locations.
+
+		Each run must be associated with a vehicle to be correclty processed by the scene manager (otherwise all routes will be zero  because the routing profile is not provided).
+		Default vehicle assigner (if was set for the Scene) is populated by the Scene after the run is created.
+		User may explicitly override the vehicle set by the scene by this is not recommended.
+
+		Has 3 operation slots (according to the order's specification):
+		- start operations: are allocated to the first stop (at start location) - there can be multiple start operations for the first stop
+		- work operations: are allocated between the first and last stop - there is only one work operations for a single work stop
+		- end operations: are allocated to the last stop (at end location) - there can be multiple end operations for the last stop
+	*/
 	class SCHEDULERENGINE_EXPORT Run
 	{
 	public:
@@ -53,6 +65,7 @@ namespace Scheduler
 		void unallocateWorkOperationAt(size_t index);
 		void unallocateEndOperation(const Operation *operation);
 
+		// == framework internal ====================================
 		void setStopsFactory(ConceptFactory<Stop> *factory);
 		void setRoutingService(RoutingService *routing_service);
 

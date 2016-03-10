@@ -17,6 +17,9 @@ namespace Scheduler
     class ScheduleActualizationAlgorithm;
     class ScheduleActualizationAlgorithmsFactory;
 
+	/**
+		Aggregator class for all schedule actualization algorithms
+	*/
     class SCHEDULERENGINE_EXPORT ScheduleActualizer
     {
     public:
@@ -36,8 +39,6 @@ namespace Scheduler
 
         void actualize();
 
-        void setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm>* factory);
-
         template<typename T, typename... Args>
         bool createAlgorithm(Args&&...args)
         {
@@ -46,6 +47,9 @@ namespace Scheduler
             algorithms.push_back(algorithm);
             return true;
         };
+
+		// == framework internal ====================================
+		void setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm>* factory);
 
     private:
         Schedule* schedule;

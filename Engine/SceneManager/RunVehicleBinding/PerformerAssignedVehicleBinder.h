@@ -12,6 +12,7 @@ namespace Scheduler
     class Scene;
     class PerformerAssignedVehicleBinderSettings;
 
+	/// Vehicle binder using explicit performer to vehicle assignments (all runs of a single schedule get the same vehicle)
     class SCHEDULERENGINE_EXPORT PerformerAssignedVehicleBinder : public RunVehicleBinder
     {
     public:

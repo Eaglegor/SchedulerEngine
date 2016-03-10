@@ -14,6 +14,19 @@ namespace Scheduler
 	class Operation;
 	class Attribute;
 
+	/** 
+		Class representing single order. All order operations must be planned to a single vehicle run.
+
+		Contains 3 types of operations:
+		- start operation [0..1]: operation which must be done before the vehicle leaves it's start point (e.g. loading in depot for deliveries)
+		- work operations [0..*]: operations which must be done on client sites (e.g. delivering order to the customer or collecting the package from him)
+		- end_operation [0..1]: operation which must be done after the vehicle reaches it's end point (e.g. unloading packages, collected from the customers)
+
+		Each order may have vehicle requirements (to be able to complete the order vehicle must have the same or larger attributes set) and 
+		performer skills requirements (performer must have the same or larger skills set to be able to complete this order).
+
+		The total load of all operations must be zero (representing that no goods are leaved in a vehicle after the order is finished and that no goods appear magically in the vehicle).
+	*/
     class SCHEDULERENGINE_EXPORT Order
     {
     public:
@@ -41,6 +54,7 @@ namespace Scheduler
 		void setVehicleRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes);
 		void setPerformerSkillsRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes);
 
+		// == framework internal ====================================
 		void setOperationsFactory(ConceptFactory<Operation> *factory);
 
     private:
