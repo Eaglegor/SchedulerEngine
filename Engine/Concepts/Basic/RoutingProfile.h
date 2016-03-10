@@ -5,6 +5,7 @@
 #include <SchedulerEngine_export.h>
 
 namespace Scheduler {
+	/// Vehicle routing settings (vehicle type, average speed etc.) - used by routing service to build correct routes
 	class SCHEDULERENGINE_EXPORT RoutingProfile {
 	public:
 		RoutingProfile();

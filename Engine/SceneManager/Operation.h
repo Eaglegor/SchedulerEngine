@@ -12,6 +12,7 @@
 
 namespace Scheduler
 {
+	/// Class representing single operation which needs to be done to complete the order
     class SCHEDULERENGINE_EXPORT Operation
     {
     public:

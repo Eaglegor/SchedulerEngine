@@ -13,6 +13,16 @@
 
 namespace Scheduler
 {
+	/**
+		 Class representing a vehicle.
+
+		 Has routing profile which is used by the routing service to generate feasible routes (e.g. heavy trucks are not allowed to drive through the city center).
+		 
+		 Has 3 cost factors:
+		 - cost per duration unit
+		 - cost per distance unit (e.g. based on fuel price)
+		 - activation cost
+	*/
     class SCHEDULERENGINE_EXPORT Vehicle
     {
     public:

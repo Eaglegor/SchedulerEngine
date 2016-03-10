@@ -36,6 +36,11 @@ namespace Scheduler
 
         size_t getId() const;
 
+		/**
+		  Free operations are not bound to the orders and may have multiple instances on the scene. 
+		  They represent the mandatory service operations which must precede or follow some other operations 
+		  (e.g. visiting a veterinary station before delivering meat or visiting a bank to unload all the collected cash)
+		*/
 		const ImmutableVector<Operation*>& getFreeOperations() const;
 		const ImmutableVector<Order*>& getOrders() const;
 		const ImmutableVector<Schedule*>& getSchedules() const;
@@ -54,6 +59,22 @@ namespace Scheduler
 		Performer* createPerformer();
 		Vehicle* createVehicle();
 
+		template<typename T, typename... Args>
+		bool createRunVehicleBinder(Args &&... args)
+		{
+			assert(run_vehicle_binders_factory);
+
+			RunVehicleBinder* new_binder = run_vehicle_binders_factory->createObject<T>(this, std::forward<Args>(args)...);
+
+			if (!new_binder) return false;
+
+			if (run_vehicle_binder) run_vehicle_binders_factory->destroyObject(run_vehicle_binder);
+			run_vehicle_binder = new_binder;
+
+			return true;
+		}
+
+		// == framework internal ====================================
         void setOperationsfactory(ConceptFactory<Operation> *factory);
         void setOrdersFactory(ConceptFactory<Order> *factory);
         void setPerformersFactory(ConceptFactory<Performer> *factory);
@@ -67,21 +88,6 @@ namespace Scheduler
 		void setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm>* factory);
 
 		void setRunVehicleSelectorsFactory(Factory<RunVehicleBinder>* factory);
-
-		template<typename T, typename... Args>
-		bool createRunVehicleBinder(Args &&... args)
-		{
-			assert(run_vehicle_binders_factory);
-
-			RunVehicleBinder* new_binder = run_vehicle_binders_factory->createObject<T>(this, std::forward<Args>(args)...);
-
-			if(!new_binder) return false;
-
-			if(run_vehicle_binder) run_vehicle_binders_factory->destroyObject(run_vehicle_binder);
-			run_vehicle_binder = new_binder;
-
-			return true;
-		}
 
     private:
         size_t id;

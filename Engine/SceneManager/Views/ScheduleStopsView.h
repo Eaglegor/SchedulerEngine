@@ -10,6 +10,10 @@ namespace Scheduler
 	class Stop;
 	class Schedule;
 
+	/**
+		This is a linear vector representation of schedule's stops.
+		All stops of all runs are represented by this view as a single linear structure.
+	*/
 	class SCHEDULERENGINE_EXPORT ScheduleStopsView
 	{
 	public:
