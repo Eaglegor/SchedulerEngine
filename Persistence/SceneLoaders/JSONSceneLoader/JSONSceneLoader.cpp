@@ -24,6 +24,8 @@
 
 #include <locale>
 
+#include <boost/date_time.hpp>
+
 namespace Scheduler
 {
 	JSONSceneLoader::JSONSceneLoader(SceneManager * scene_manager):
@@ -33,24 +35,34 @@ namespace Scheduler
 
 	Duration parseDuration(const std::string &format, const std::string &duration_string)
 	{
-		std::tm t;
-		std::istringstream ss(duration_string);
-		if (!format.empty()) ss >> std::get_time(&t, format.c_str());
-		else ss >> std::get_time(&t, "%H:%M:%S");
+		boost::posix_time::ptime time;
 
-		std::time_t time = mktime(&t);
-		return Duration(time);
+		// This must be a pointer because std::local will try to delete it on destruction
+		boost::posix_time::time_input_facet *facet = new boost::posix_time::time_input_facet{ format.empty() ? format : "%H:%M:%S" };
+
+		std::istringstream ss(duration_string);
+		ss.imbue(std::locale(std::locale(), facet));
+		ss >> time;
+
+		boost::posix_time::time_duration dur = time - boost::posix_time::ptime(boost::gregorian::date(1400, 1, 1));
+
+		return Duration(dur.total_seconds());
 	}
 
 	TimePoint parseTimePoint(const std::string &format, const std::string &time_string)
 	{
-		std::tm t;
+		boost::posix_time::ptime time;
+
+		// This must be a pointer because std::local will try to delete it on destruction
+		boost::posix_time::time_input_facet *facet = new boost::posix_time::time_input_facet{ format.empty() ? format : "%H:%M:%S" };
+
 		std::istringstream ss(time_string);
-		if (!format.empty()) ss >> std::get_time(&t, format.c_str());
-		else ss >> std::get_time(&t, "%H:%M:%S");
-			
-		std::time_t time = mktime(&t);
-		return TimePoint(time);
+		ss.imbue(std::locale(std::locale(), facet));
+		ss >> time;
+		
+		boost::posix_time::time_duration dur = time - boost::posix_time::ptime(boost::gregorian::date(1400, 1, 1));
+
+		return TimePoint(dur.total_seconds());
 	}
 
 	TimeWindow createTimeWindow(const TimeWindowDesc &desc, const LoaderSettings& settings)

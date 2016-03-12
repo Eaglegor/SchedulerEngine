@@ -1,8 +1,8 @@
 {
   "settings": {
     "load_dimensions": 4,
-    "default_time_format": "hh:mm",
-    "default_duration_format": "hh:mm"
+    "default_time_format": "%H:%M",
+    "default_duration_format": "%H:%M"
   },
   "locations": [
     {
@@ -53,7 +53,7 @@
         "duration": "00:03",
         "time_windows": [
           {
-            "start_time": "08:00",
+            "start_time": "04:00",
             "end_time": "18:00"
           }
         ]

@@ -46,7 +46,7 @@ namespace Scheduler
 	}
 
 	void Stop::setAllocationTime(const TimeWindow &time) {
-		assert(time.getEndTime() - time.getStartTime() == duration);
+		//assert(time.getEndTime() - time.getStartTime() == duration);
 		this->allocation_time = time;
 	}
 
