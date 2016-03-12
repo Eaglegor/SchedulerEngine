@@ -2,6 +2,7 @@
 
 #include "Duration.h"
 #include <limits>
+#include <ctime>
 
 #include <SchedulerEngine_export.h>
 
@@ -11,11 +12,11 @@ namespace Scheduler
 	{
 	public:
 		TimePoint();
-		explicit TimePoint(long value);
+		explicit TimePoint(std::time_t value);
 		TimePoint(const TimePoint &rhs);
 
-		long getValue() const;
-		void setValue(long value);
+		std::time_t getValue() const;
+		void setValue(std::time_t value);
 
 		bool operator==(const TimePoint &rhs) const;
 		bool operator!=(const TimePoint &rhs) const;
@@ -39,6 +40,6 @@ namespace Scheduler
 		static TimePoint min();
 
 	private:
-		long value;
+		std::time_t value;
 	};
  }
