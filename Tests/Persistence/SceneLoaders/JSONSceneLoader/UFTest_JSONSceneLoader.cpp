@@ -1,10 +1,9 @@
-#define CATCH_CONFIG_MAIN
-
+#define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 #include <Persistence/SceneLoaders/JSONSceneLoader/Model/SceneDesc.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#include <sstream>
+#include <fstream>
 
 void checkTimeWindow(const boost::property_tree::ptree &tree, const Scheduler::TimeWindowDesc &time_window)
 {
@@ -102,13 +101,12 @@ void checkOrder(const boost::property_tree::ptree &tree, const Scheduler::OrderD
 	std::string name = tree.get<std::string>("name");
 	const boost::property_tree::ptree &vehicle_requirements = tree.get_child("vehicle_requirements");
 	const boost::property_tree::ptree &performer_skill_requirements = tree.get_child("performer_skill_requirements");
-	const boost::property_tree::ptree &operations = tree.get_child("operations");
-	boost::optional<std::string> start_operation = tree.get_optional<std::string>("start_operation");
+	boost::optional<const boost::property_tree::ptree&> start_operation = tree.get_child_optional("start_operation");
 	const boost::property_tree::ptree &work_operations = tree.get_child("work_operations");
-	boost::optional<std::string>  end_operation = tree.get_optional<std::string>("end_operation");
+	boost::optional<const boost::property_tree::ptree&> end_operation = tree.get_child_optional("end_operation");
 
 	REQUIRE(name == order.name);
-	
+
 	{
 		size_t i = 0;
 		for (const auto &iter : vehicle_requirements)
@@ -129,29 +127,27 @@ void checkOrder(const boost::property_tree::ptree &tree, const Scheduler::OrderD
 		}
 	}
 
+	if (order.start_operation)
 	{
-		size_t i = 0;
-		for (const auto &iter : operations)
-		{
-			REQUIRE(iter.first.empty());
-			checkOperation(iter.second, order.operations[i]);
-			++i;
-		}
+		REQUIRE(start_operation);
+		checkOperation(start_operation.get(), order.start_operation.get());
 	}
-
-	REQUIRE(start_operation == order.start_operation);
 
 	{
 		size_t i = 0;
 		for (const auto &iter : work_operations)
 		{
 			REQUIRE(iter.first.empty());
-			REQUIRE(order.work_operations[i] == iter.second.get_value<std::string>());
+			checkOperation(iter.second, order.work_operations[i]);
 			++i;
 		}
 	}
 
-	REQUIRE(end_operation == order.end_operation);
+	if (order.end_operation)
+	{
+		REQUIRE(end_operation);
+		checkOperation(end_operation.get(), order.end_operation.get());
+	}
 
 	INFO("Order check complete");
 }
@@ -404,263 +400,31 @@ void checkScene(const boost::property_tree::ptree &tree, const Scheduler::SceneD
 	INFO("Scene check complete");
 }
 
+std::string test_file1_path;
+
 TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit][functional][persistence]")
 {
 	boost::property_tree::ptree props;
 
-	std::string test_json = "{\
-  \"settings\": {\
-    \"load_dimensions\": 1,\
-    \"default_time_format\": \"hh:mm\",\
-    \"default_duration_format\": \"hh:mm\"\
-  },\
-  \"locations\": [\
-    {\
-      \"name\": \"DC_Location\",\
-      \"latitude\": 34.567,\
-      \"longitude\": 23.567\
-    },\
-    {\
-      \"name\": \"Order1_Location\",\
-      \"latitude\": 23.65,\
-      \"longitude\": 23.64\
-    },\
-    {\
-      \"name\": \"Order2_Pickup\",\
-      \"latitude\": 25.454,\
-      \"longitude\": 23.5353\
-    },\
-    {\
-      \"name\": \"Order2_Drop\",\
-      \"latitude\": 43.64,\
-      \"longitude\": 54.75\
-    },\
-    {\
-      \"name\": \"Order3_Location\",\
-      \"latitude\": 54.23,\
-      \"longitude\": 23.64\
-    },\
-    {\
-      \"name\": \"FreeOperation1_Location\",\
-      \"latitude\": 23.45,\
-      \"longitude\": 23.53\
-    }\
-  ],\
-  \"orders\": [\
-    {\
-      \"name\": \"Order1\",\
-      \"vehicle_requirements\": [\
-        \"Attr1\",\
-        \"Attr2\"\
-      ],\
-      \"performer_skill_requirements\": [],\
-      \"operations\": [\
-        {\
-          \"name\": \"pickup\",\
-          \"location\": \"DC_Location\",\
-          \"load\": [\
-            1\
-          ],\
-          \"duration\": \"00:03\",\
-          \"time_windows\": [\
-            {\
-              \"start_time\": \"08:00\",\
-              \"end_time\": \"18:00\"\
-            }\
-          ]\
-        },\
-        {\
-          \"name\": \"drop\",\
-          \"location\": \"Order1_Location\",\
-          \"load\": [\
-            -1\
-          ],\
-          \"time_windows\": [\
-            {\
-              \"start_time\": \"10:00\",\
-              \"end_time\": \"10:30\"\
-            }\
-          ],\
-          \"duration\": \"00:10\"\
-        }\
-      ],\
-      \"start_operation\": \"pickup\",\
-      \"work_operations\": [\
-        \"drop\"\
-      ],\
-      \"end_operation\": null\
-    },\
-    {\
-      \"name\": \"Order2\",\
-      \"vehicle_requirements\": [],\
-      \"performer_skill_requirements\": [],\
-      \"operations\": [\
-        {\
-          \"name\": \"collection\",\
-          \"location\": \"Order2_Pickup\",\
-          \"load\": [\
-            2\
-          ],\
-          \"time_windows\": [\
-            {\
-              \"start_time\": \"10:00\",\
-              \"end_time\": \"12:00\"\
-            }\
-          ],\
-          \"duration\": \"00:10\"\
-        },\
-        {\
-          \"name\": \"delivery\",\
-          \"location\": \"Order2_Drop\",\
-          \"load\": [\
-            -2\
-          ],\
-          \"time_windows\": [\
-            {\
-              \"start_time\": \"12:00\",\
-              \"end_time\": \"15:00\"\
-            }\
-          ],\
-          \"duration\": \"00:10\"\
-        }\
-      ],\
-      \"start_operation\": null,\
-      \"work_operations\": [\
-        \"collection\",\
-        \"delivery\"\
-      ],\
-      \"end_operation\": null\
-    },\
-    {\
-      \"name\": \"Order3\",\
-      \"vehicle_requirements\": [],\
-      \"performer_skill_requirements\": [],\
-      \"operations\": [\
-        {\
-          \"name\": \"work\",\
-          \"location\": \"Order2_Pickup\",\
-          \"load\": [\
-            0\
-          ],\
-          \"time_windows\": [\
-            {\
-              \"start_time\": \"12:00\",\
-              \"end_time\": \"16:00\"\
-            }\
-          ],\
-          \"duration\": \"00:10\"\
-        }\
-      ],\
-      \"start_operation\": null,\
-      \"work_operations\": [\
-        \"pickup\",\
-        \"FreeOperation1\"\
-      ]\
-    }\
-  ],\
-  \"free_operations\": [\
-    {\
-      \"name\": \"FreeOperation1\",\
-      \"location\": \"FreeOperation1_Location\",\
-      \"load\": [\
-        0\
-      ],\
-      \"time_windows\": [\
-        {\
-          \"start_time\": \"12:00\",\
-          \"end_time\": \"18:00\"\
-        }\
-      ],\
-      \"duration\": \"00:10\"\
-    }\
-  ],\
-  \"fleet\": {\
-    \"performers\": [\
-      {\
-        \"name\": \"Driver1\",\
-        \"availability_windows\": [\
-          {\
-            \"start_time\": \"08:00\",\
-            \"end_time\": \"18:00\"\
-          }\
-        ],\
-        \"skills\": [\
-          \"Driving\"\
-        ],\
-        \"hour_cost\": 0,\
-        \"activation_cost\": 0\
-      }\
-    ],\
-    \"vehicles\": [\
-      {\
-        \"name\": \"Vehicle1\",\
-        \"capacity\": [\
-          3\
-        ],\
-        \"availability_windows\": [\
-          {\
-            \"start_time\": \"08:00\",\
-            \"end_time\": \"18:00\"\
-          }\
-        ],\
-        \"attributes\": [\
-          \"Attr1\",\
-          \"Attr2\"\
-        ],\
-        \"routing_profile\": {\
-          \"vehicle_type\" : \"Truck\",\
-          \"average_speed\": 60\
-        },\
-        \"hour_cost\": 0,\
-        \"distance_unit_cost\": 1,\
-        \"activation_cost\": 0\
-      }\
-    ]\
-  },\
-  \"schedules\": [\
-    {\
-      \"performer\": \"Driver1\",\
-      \"shift\": {\
-        \"time_window\": {\
-          \"start_time\": \"08:00\",\
-          \"end_time\": \"18:00\"\
-        },\
-        \"start_location\": null,\
-        \"depot_location\": \"DC_Location\",\
-        \"end_location\": null\
-      },\
-      \"runs\": [\
-        {\
-          \"vehicle\": \"Vehicle1\",\
-          \"start_location\": \"DC_Location\",\
-          \"end_location\": \"DC_Location\",\
-          \"stops\": [\
-            {\
-              \"operation\": \"Order1.start\",\
-              \"allocation_time\": {\
-                \"start_time\": \"08:00\",\
-                \"end_time\": \"08:03\"\
-              }\
-            },\
-            {\
-              \"operation\": \"Order1.work[0]\",\
-              \"allocation_time\": {\
-                \"start_time\": \"09:00\",\
-                \"end_time\": \"09:10\"\
-              }\
-            }\
-          ]\
-        }\
-      ]\
-    }\
-  ]\
-}";
+	std::ifstream ifile;
+	ifile.open(test_file1_path);
+	
+	REQUIRE(ifile.is_open());
 
-	std::istringstream stream(test_json);
+	read_json(ifile, props);
 
-	read_json(stream, props);
+	ifile.close();
 
 	Scheduler::SceneDesc desc = Scheduler::PtreeDeserializer<Scheduler::SceneDesc>()(props);
 	
 	checkScene(props, desc);
+}
+
+int main(int argc, char* const argv[])
+{
+	test_file1_path = argv[1];
+
+	int result = Catch::Session().run(argc - 1, argv + 1);
+
+	return result;
 }

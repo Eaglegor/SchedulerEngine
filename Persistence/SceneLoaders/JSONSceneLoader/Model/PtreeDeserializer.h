@@ -44,6 +44,6 @@ namespace Scheduler
 	};
 
 	#define REQUIRED_SET(tree, descriptor, field_name) descriptor.field_name = PtreeDeserializer<decltype(descriptor.field_name)>()(tree.get_child(#field_name));
-	#define OPTIONAL_SET(tree, descriptor, field_name) if (tree.get_child_optional(#field_name)) descriptor.field_name = PtreeDeserializer<decltype(descriptor.field_name)>()(tree.get_child(#field_name));
-	#define OPTIONAL_SET_OR_DEFAULT(tree, descriptor, field_name, default_value) if (tree.get_child_optional(#field_name)) descriptor.field_name = PtreeDeserializer<decltype(descriptor.field_name)>()(tree.get_child(#field_name)); else descriptor.field_name = default_value;
+	#define OPTIONAL_SET(tree, descriptor, field_name) if (tree.get_child_optional(#field_name) && tree.get<std::string>(#field_name) != "null") descriptor.field_name = PtreeDeserializer<decltype(descriptor.field_name)>()(tree.get_child(#field_name));
+	#define OPTIONAL_SET_OR_DEFAULT(tree, descriptor, field_name, default_value) if (tree.get_child_optional(#field_name) && tree.get<std::string>(#field_name) != "null") descriptor.field_name = PtreeDeserializer<decltype(descriptor.field_name)>()(tree.get_child(#field_name)); else descriptor.field_name = default_value;
 }

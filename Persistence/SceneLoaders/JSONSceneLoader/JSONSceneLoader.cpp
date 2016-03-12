@@ -8,12 +8,15 @@
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Operation.h>
+#include <Engine/SceneManager/Order.h>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
 #include <Engine/Concepts/Basic/Location.h>
 #include <Utils/Units/DurationUnits.h>
+
+#include <locale>
 
 namespace Scheduler
 {
@@ -24,12 +27,24 @@ namespace Scheduler
 
 	Duration parseDuration(const std::string &format, const std::string &duration_string)
 	{
-		return Duration();
+		std::tm t;
+		std::istringstream ss(duration_string);
+		if (!format.empty()) ss >> std::get_time(&t, format.c_str());
+		else ss >> std::get_time(&t, "%H:%M:%S");
+
+		std::time_t time = mktime(&t);
+		return Duration(time);
 	}
 
 	TimePoint parseTimePoint(const std::string &format, const std::string &time_string)
 	{
-		return TimePoint();
+		std::tm t;
+		std::istringstream ss(time_string);
+		if (!format.empty()) ss >> std::get_time(&t, format.c_str());
+		else ss >> std::get_time(&t, "%H:%M:%S");
+			
+		std::time_t time = mktime(&t);
+		return TimePoint(time);
 	}
 
 	std::vector<TimeWindow> createTimeWindows(const std::vector<TimeWindowDesc> &desc, const LoaderSettings& settings)
@@ -49,6 +64,38 @@ namespace Scheduler
 		return time_windows;
 	}
 
+	void parseOperation(const OperationDesc& operation_desc, Operation* out_operation, const LoaderSettings &settings, const std::unordered_map<std::string, Location> &locations)
+	{
+		out_operation->setName(operation_desc.name.c_str());
+		out_operation->setLocation(locations.at(operation_desc.location));
+
+		Capacity load;
+		for (size_t i = 0; i < std::max(operation_desc.load.size(), settings.load_dimensions ? settings.load_dimensions.get() : 4); ++i)
+		{
+			load.setValue(i, operation_desc.load[i]);
+		}
+
+		out_operation->setLoad(load);
+
+		out_operation->setTimeWindows(createTimeWindows(operation_desc.time_windows, settings));
+
+		if (operation_desc.duration_format)
+		{
+			out_operation->setDuration(parseDuration(operation_desc.duration_format.get(), operation_desc.duration));
+		}
+		else
+		{
+			if (settings.default_duration_format)
+			{
+				out_operation->setDuration(parseDuration(settings.default_duration_format.get(), operation_desc.duration));
+			}
+			else
+			{
+				out_operation->setDuration(parseDuration("", operation_desc.duration));
+			}
+		}
+	}
+
 	Scene * JSONSceneLoader::loadScene(std::istream & stream)
 	{
 		assert(scene_manager);
@@ -59,6 +106,9 @@ namespace Scheduler
 		boost::property_tree::json_parser::read_json(stream, scene_tree);
 
 		SceneDesc scene_desc = PtreeDeserializer<SceneDesc>()(scene_tree);
+
+		LoaderSettings settings;
+		if (scene_desc.settings) settings = scene_desc.settings.get();
 
 		std::unordered_map<std::string, Location> locations;
 		for (const LocationDesc& location_desc : scene_desc.locations)
@@ -76,7 +126,7 @@ namespace Scheduler
 			performer->setName(performer_desc.name.c_str());
 			if (performer_desc.activation_cost) performer->setActivationCost(Cost(performer_desc.activation_cost.get()));
 			if (performer_desc.hour_cost) performer->setDurationUnitCost(Cost(performer_desc.hour_cost.get() / Units::hours(1).getValue()));
-			performer->setAvailabilityWindows(createTimeWindows(performer_desc.availability_windows, scene_desc.settings ? scene_desc.settings.get() : LoaderSettings()));
+			performer->setAvailabilityWindows(createTimeWindows(performer_desc.availability_windows, settings));
 			
 			std::unordered_set<const Attribute*> skills;
 			for (const std::string &skill : performer_desc.skills)
@@ -99,7 +149,7 @@ namespace Scheduler
 			if (vehicle_desc.hour_cost) vehicle->setDurationUnitCost(Cost(vehicle_desc.hour_cost.get() / Units::hours(1).getValue()));
 			if (vehicle_desc.distance_unit_cost) vehicle->setDistanceUnitCost(Cost(vehicle_desc.distance_unit_cost.get()));
 
-			vehicle->setAvailabilityWindows(createTimeWindows(vehicle_desc.availability_windows, scene_desc.settings ? scene_desc.settings.get() : LoaderSettings()));
+			vehicle->setAvailabilityWindows(createTimeWindows(vehicle_desc.availability_windows, settings));
 
 			std::unordered_set<const Attribute*> attributes;
 			for (const std::string &attr : vehicle_desc.attributes)
@@ -117,43 +167,49 @@ namespace Scheduler
 		for (const OperationDesc &operation_desc: scene_desc.free_operations)
 		{
 			Operation* operation = scene->createFreeOperation();
-
-			operation->setName(operation_desc.name.c_str());
-			operation->setLocation(locations[operation_desc.location]);
-			
-			Capacity load;
-			for (size_t i = 0; i < std::max(operation_desc.load.size(), scene_desc.settings ? (scene_desc.settings.get().load_dimensions ? scene_desc.settings.get().load_dimensions.get() : 4) : 4); ++i)
-			{
-				load.setValue(i, operation_desc.load[i]);
-			}
-			operation->setLoad(load);
-
-			operation->setTimeWindows(createTimeWindows(operation_desc.time_windows, scene_desc.settings ? scene_desc.settings.get() : LoaderSettings()));
-
-			if (operation_desc.duration_format)
-			{
-				operation->setDuration(parseDuration(operation_desc.duration_format.get(), operation_desc.duration));
-			}
-			else
-			{
-				if (scene_desc.settings)
-				{
-					if (scene_desc.settings.get().default_duration_format)
-					{
-						operation->setDuration(parseDuration(scene_desc.settings.get().default_duration_format.get(), operation_desc.duration));
-					}
-					else
-					{
-						operation->setDuration(parseDuration("", operation_desc.duration));
-					}
-				}
-				else
-				{
-					operation->setDuration(parseDuration("", operation_desc.duration));
-				}
-			}
-			
 			free_operations.emplace(operation_desc.name, operation);
+		}
+
+		std::unordered_map<std::string, Order*> orders;
+		for(const OrderDesc &order_desc : scene_desc.orders)
+		{
+			Order* order = scene->createOrder();
+
+			order->setName(order_desc.name.c_str());
+			
+			std::unordered_set<const Attribute*> vehicle_requirements;
+			for(const std::string &vehicle_requirement : order_desc.vehicle_requirements)
+			{
+				const Attribute* attribute = scene_manager->createAttribute(vehicle_requirement.c_str());
+				vehicle_requirements.emplace(attribute);
+			}
+			order->setVehicleRequirements(vehicle_requirements);
+
+			std::unordered_set<const Attribute*> performer_skill_requirements;
+			for (const std::string &performer_skill_requirement : order_desc.performer_skill_requirements)
+			{
+				const Attribute* attribute = scene_manager->createAttribute(performer_skill_requirement.c_str());
+				performer_skill_requirements.emplace(attribute);
+			}
+			order->setPerformerSkillsRequirements(performer_skill_requirements);
+
+			if(order_desc.start_operation)
+			{
+				Operation* operation = order->createStartOperation();
+				parseOperation(order_desc.start_operation.get(), operation, settings, locations);
+			}
+
+			for (const OperationDesc &operation_desc : order_desc.work_operations)
+			{
+				Operation* operation = order->createWorkOperation();
+				parseOperation(operation_desc, operation, settings, locations);
+			}
+			
+			if (order_desc.end_operation)
+			{
+				Operation* operation = order->createEndOperation();
+				parseOperation(order_desc.end_operation.get(), operation, settings, locations);
+			}
 		}
 
 		return scene;
