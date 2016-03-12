@@ -1,4 +1,4 @@
-#define CATCH_CONFIG_RUNNER
+#define CATCH_CONFIG_MAIN
 #include <catch.hpp>
 #include <Persistence/SceneLoaders/JSONSceneLoader/Model/SceneDesc.h>
 #include <boost/property_tree/ptree.hpp>
@@ -226,7 +226,9 @@ void checkRun(const boost::property_tree::ptree &tree, const Scheduler::RunDesc 
 	std::string start_location = tree.get<std::string>("start_location");
 	std::string end_location = tree.get<std::string>("end_location");
 
-	const boost::property_tree::ptree &stops = tree.get_child("stops");
+	const boost::property_tree::ptree &start_operations = tree.get_child("start_operations");
+	const boost::property_tree::ptree &work_operations = tree.get_child("work_operations");
+	const boost::property_tree::ptree &end_operations = tree.get_child("end_operations");
 
 	REQUIRE(vehicle == run.vehicle);
 	REQUIRE(start_location == run.start_location);
@@ -234,10 +236,30 @@ void checkRun(const boost::property_tree::ptree &tree, const Scheduler::RunDesc 
 
 	{
 		size_t i = 0;
-		for (const auto &iter : stops)
+		for (const auto &iter : start_operations)
 		{
 			REQUIRE(iter.first.empty());
-			checkStop(iter.second, run.stops[i]);
+			checkStop(iter.second, run.start_operations[i]);
+			++i;
+		}
+	}
+
+	{
+		size_t i = 0;
+		for (const auto &iter : work_operations)
+		{
+			REQUIRE(iter.first.empty());
+			checkStop(iter.second, run.work_operations[i]);
+			++i;
+		}
+	}
+
+	{
+		size_t i = 0;
+		for (const auto &iter : end_operations)
+		{
+			REQUIRE(iter.first.empty());
+			checkStop(iter.second, run.end_operations[i]);
 			++i;
 		}
 	}
@@ -400,14 +422,12 @@ void checkScene(const boost::property_tree::ptree &tree, const Scheduler::SceneD
 	INFO("Scene check complete");
 }
 
-std::string test_file1_path;
-
 TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit][functional][persistence]")
 {
 	boost::property_tree::ptree props;
 
 	std::ifstream ifile;
-	ifile.open(test_file1_path);
+	ifile.open("TestData/UFTest_JSONSceneLoader/TestScene1.json");
 	
 	REQUIRE(ifile.is_open());
 
@@ -418,13 +438,4 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit]
 	Scheduler::SceneDesc desc = Scheduler::PtreeDeserializer<Scheduler::SceneDesc>()(props);
 	
 	checkScene(props, desc);
-}
-
-int main(int argc, char* const argv[])
-{
-	test_file1_path = argv[1];
-
-	int result = Catch::Session().run(argc - 1, argv + 1);
-
-	return result;
 }

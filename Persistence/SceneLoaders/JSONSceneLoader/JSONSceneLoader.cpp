@@ -9,12 +9,18 @@
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/SceneManager/Order.h>
+#include <Engine/SceneManager/Schedule.h>
+#include <Engine/SceneManager/Run.h>
+#include <Engine/SceneManager/Stop.h>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
 #include <Engine/Concepts/Basic/Location.h>
 #include <Utils/Units/DurationUnits.h>
+
+#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.h>
+#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.h>
 
 #include <locale>
 
@@ -47,18 +53,23 @@ namespace Scheduler
 		return TimePoint(time);
 	}
 
+	TimeWindow createTimeWindow(const TimeWindowDesc &desc, const LoaderSettings& settings)
+	{
+		TimeWindow time_window;
+
+		time_window.setStartTime(parseTimePoint(desc.format ? desc.format.get() : (settings.default_time_format ? settings.default_time_format.get() : ""), desc.start_time));
+		time_window.setEndTime(parseTimePoint(desc.format ? desc.format.get() : (settings.default_time_format ? settings.default_time_format.get() : ""), desc.end_time));
+
+		return time_window;
+	}
+
 	std::vector<TimeWindow> createTimeWindows(const std::vector<TimeWindowDesc> &desc, const LoaderSettings& settings)
 	{
 		std::vector<TimeWindow> time_windows;
 
 		for (const TimeWindowDesc &tw_desc : desc)
 		{
-			TimeWindow time_window;
-			
-			time_window.setStartTime(parseTimePoint(tw_desc.format ? tw_desc.format.get() : (settings.default_time_format ? settings.default_time_format.get() : ""), tw_desc.start_time));
-			time_window.setEndTime(parseTimePoint(tw_desc.format ? tw_desc.format.get() : (settings.default_time_format ? settings.default_time_format.get() : ""), tw_desc.end_time));
-
-			time_windows.push_back(time_window);
+			time_windows.push_back(createTimeWindow(tw_desc, settings));
 		}
 
 		return time_windows;
@@ -70,7 +81,7 @@ namespace Scheduler
 		out_operation->setLocation(locations.at(operation_desc.location));
 
 		Capacity load;
-		for (size_t i = 0; i < std::max(operation_desc.load.size(), settings.load_dimensions ? settings.load_dimensions.get() : 4); ++i)
+		for (size_t i = 0; i < std::min(operation_desc.load.size(), settings.load_dimensions ? settings.load_dimensions.get() : 4); ++i)
 		{
 			load.setValue(i, operation_desc.load[i]);
 		}
@@ -163,11 +174,11 @@ namespace Scheduler
 			vehicles.emplace(vehicle_desc.name, vehicle);
 		}
 
-		std::unordered_map<std::string, Operation*> free_operations;
+		std::unordered_map<std::string, Operation*> operations;
 		for (const OperationDesc &operation_desc: scene_desc.free_operations)
 		{
 			Operation* operation = scene->createFreeOperation();
-			free_operations.emplace(operation_desc.name, operation);
+			operations.emplace(operation_desc.name, operation);
 		}
 
 		std::unordered_map<std::string, Order*> orders;
@@ -197,18 +208,64 @@ namespace Scheduler
 			{
 				Operation* operation = order->createStartOperation();
 				parseOperation(order_desc.start_operation.get(), operation, settings, locations);
+				operation->setName((std::string(order->getName()) + "." + std::string(operation->getName())).c_str());
+				operations.emplace(operation->getName(), operation);
 			}
 
 			for (const OperationDesc &operation_desc : order_desc.work_operations)
 			{
 				Operation* operation = order->createWorkOperation();
 				parseOperation(operation_desc, operation, settings, locations);
+				operation->setName((std::string(order->getName()) + "." + std::string(operation->getName())).c_str());
+				operations.emplace(operation->getName(), operation);
 			}
 			
 			if (order_desc.end_operation)
 			{
 				Operation* operation = order->createEndOperation();
 				parseOperation(order_desc.end_operation.get(), operation, settings, locations);
+				operation->setName((std::string(order->getName()) + "." + std::string(operation->getName())).c_str());
+				operations.emplace(operation->getName(), operation);
+			}
+		}
+
+		for(const ScheduleDesc &schedule_desc : scene_desc.schedules)
+		{
+			Performer* performer = performers.at(schedule_desc.performer);
+			Schedule* schedule = scene->createSchedule(performer);
+			if (schedule_desc.shift.start_location) schedule->setShiftStartLocation(locations.at(schedule_desc.shift.start_location.get()));
+			schedule->setDepotLocation(locations.at(schedule_desc.shift.depot_location));
+			if (schedule_desc.shift.end_location) schedule->setShiftEndLocation(locations.at(schedule_desc.shift.end_location.get()));
+
+			schedule->setShift(createTimeWindow(schedule_desc.shift.time_window, settings));
+
+			schedule->getScheduleActualizer()->createAlgorithm<StopDurationActualizationAlgorithm>();
+			schedule->getScheduleActualizer()->createAlgorithm<StopArrivalTimeActualizationAlgorithm>();
+
+			for(const RunDesc &run_desc : schedule_desc.runs)
+			{
+				Location start_location = locations.at(run_desc.start_location);
+				Location end_location = locations.at(run_desc.end_location);
+				Run* run = schedule->createRun(start_location, end_location);
+				
+				Vehicle* vehicle = vehicles.at(run_desc.vehicle);
+				run->setVehicle(vehicle);
+
+				for(const StopDesc &stop_desc : run_desc.start_operations)
+				{
+					run->allocateStartOperation(operations.at(stop_desc.operation));
+				}
+
+				for(const StopDesc &stop_desc : run_desc.work_operations)
+				{
+					Stop* stop = run->allocateWorkOperation(operations.at(stop_desc.operation));
+					stop->setAllocationTime(createTimeWindow(stop_desc.allocation_time, settings));
+				}
+
+				for(const StopDesc &stop_desc : run_desc.end_operations)
+				{
+					run->allocateEndOperation(operations.at(stop_desc.operation));
+				}
 			}
 		}
 

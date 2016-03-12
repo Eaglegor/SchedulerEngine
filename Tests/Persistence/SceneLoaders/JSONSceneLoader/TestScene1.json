@@ -206,22 +206,31 @@
           "vehicle": "Vehicle1",
           "start_location": "DC_Location",
           "end_location": "DC_Location",
-          "stops": [
+		  "start_operations" : [], 
+          "work_operations": [
             {
-              "operation": "Order1.start",
+              "operation": "Order1.drop",
               "allocation_time": {
                 "start_time": "08:00",
                 "end_time": "08:03"
               }
             },
             {
-              "operation": "Order1.work[0]",
+              "operation": "Order2.collection",
               "allocation_time": {
                 "start_time": "09:00",
                 "end_time": "09:10"
               }
+            },
+			{
+              "operation": "Order2.delivery",
+              "allocation_time": {
+                "start_time": "10:00",
+                "end_time": "11:10"
+              }
             }
-          ]
+          ],
+		  "end_operations" : []
         }
       ]
     }

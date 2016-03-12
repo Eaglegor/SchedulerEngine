@@ -10,7 +10,9 @@ namespace Scheduler
 		std::string vehicle;
 		std::string start_location;
 		std::string end_location;
-		std::vector<StopDesc> stops;
+		std::vector<StopDesc> start_operations;
+		std::vector<StopDesc> work_operations;
+		std::vector<StopDesc> end_operations;
 	};
 
 	template<>
@@ -22,7 +24,9 @@ namespace Scheduler
 			REQUIRED_SET(tree, desc, vehicle);
 			REQUIRED_SET(tree, desc, start_location);
 			REQUIRED_SET(tree, desc, end_location);
-			REQUIRED_SET(tree, desc, stops);
+			OPTIONAL_SET(tree, desc, start_operations);
+			OPTIONAL_SET(tree, desc, work_operations);
+			OPTIONAL_SET(tree, desc, end_operations);
 			return desc;
 		}
 	};
