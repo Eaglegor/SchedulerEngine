@@ -13,6 +13,13 @@
 
 namespace Scheduler
 {
+	/**
+		Class representing a human performer (e.g. driver of a vehicle).
+
+		Has 2 cost factors:
+		- cost per duration unit: performer's worktime cost
+		- activation cost: fixed price paid when performer starts his workday (or not paid if the performer is not used to complete orders).
+	*/
     class SCHEDULERENGINE_EXPORT Performer
     {
     public:

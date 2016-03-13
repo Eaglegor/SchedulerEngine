@@ -13,6 +13,7 @@ namespace Scheduler
     class Vehicle;
     class Operation;
 
+	/// The base class for all algorithms actualizing schedule after structural changes
     class SCHEDULERENGINE_EXPORT ScheduleActualizationAlgorithm
     {
     public:

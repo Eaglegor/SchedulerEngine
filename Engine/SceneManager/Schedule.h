@@ -17,6 +17,9 @@ namespace Scheduler
 	class LoggingService;
 	class RunVehicleBinder;
 
+	/**
+		Class representing single performer's work shift.
+	*/
     class SCHEDULERENGINE_EXPORT Schedule
     {
     public:
@@ -38,11 +41,6 @@ namespace Scheduler
 		void destroyRun(Run *run, size_t hint = 0);
 		void destroyRun(size_t index);
 
-		void setRunsFactory(ConceptFactory<Run> *factory);
-		void setStopsFactory(ConceptFactory<Stop> *factory);
-
-		void setRoutingService(RoutingService *routing_service);
-
 		const Location& getShiftStartLocation() const;
 
 		void setShiftStartLocation(const Location &shift_start_location);
@@ -63,6 +61,11 @@ namespace Scheduler
 
 		const TimeWindow& getShift() const;
 		void setShift(const TimeWindow &shift);
+
+		// == framework internal ====================================
+		void setRunsFactory(ConceptFactory<Run> *factory);
+		void setStopsFactory(ConceptFactory<Stop> *factory);
+		void setRoutingService(RoutingService *routing_service);
 
 		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
 

@@ -12,6 +12,9 @@ namespace Scheduler
 	class Run;
 	class ScheduleActualizer;
 
+	/**
+		Class representing a single stop to perform some operation (e.g. delivering order or working at a customer site).
+	*/
 	class SCHEDULERENGINE_EXPORT Stop
 	{
 	public:
@@ -43,6 +46,7 @@ namespace Scheduler
 
 		const Location& getLocation() const;
 
+		// == framework internal ====================================
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
 
 	private:

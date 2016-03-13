@@ -30,8 +30,7 @@ TEST_CASE("SceneManager", "[integration][scene_manager]") {
 
     CrowFlyRoutingService routing_service;
 
-    SceneManager scene_manager;
-    scene_manager.setRoutingService(&routing_service);
+    SceneManager scene_manager(&routing_service);
 
     Scene *scene = scene_manager.createScene();
 

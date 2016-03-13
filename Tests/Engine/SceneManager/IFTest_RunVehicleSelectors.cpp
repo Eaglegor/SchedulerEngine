@@ -29,8 +29,7 @@ TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][scene_manager]")
 
     CrowFlyRoutingService routing_service;
 
-    SceneManager sm;
-    sm.setRoutingService(&routing_service);
+    SceneManager sm(&routing_service);
 
     Scene* scene = sm.createScene();
 

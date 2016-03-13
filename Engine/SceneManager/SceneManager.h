@@ -29,15 +29,17 @@ namespace Scheduler
     class SCHEDULERENGINE_EXPORT SceneManager
     {
     public:
-		SceneManager();
+		SceneManager(RoutingService *routing_service);
         ~SceneManager();
 
+		/// Creates an empty scene
         Scene* createScene();
+
+		/// Destroys the scene recursively destroying all it's content
         void destroyScene(Scene *scene);
 
+		/// Creates or retrieves an existing attribute assignable to vehicles, performers and orders
         const Attribute*createAttribute(const char *name);
-
-		void setRoutingService(RoutingService *routing_service);
 
     private:
         ConceptFactory<Scene> scenes_factory;

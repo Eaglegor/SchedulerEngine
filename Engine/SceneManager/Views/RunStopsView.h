@@ -10,6 +10,9 @@ namespace Scheduler
 	class Stop;
 	class Run;
 
+	/** 
+		This is a linear vector representation of run's stops including start and end stops which are processed differently from the work stops.
+	*/
 	class SCHEDULERENGINE_EXPORT RunStopsView
 	{
 	public:

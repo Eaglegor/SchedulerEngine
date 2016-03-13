@@ -7,6 +7,7 @@
 
 namespace Scheduler
 {
+	/// Updates stops allocation times based on routes length, time windows and performer shift
     class SCHEDULERENGINE_EXPORT StopArrivalTimeActualizationAlgorithm : public ScheduleActualizationAlgorithm
     {
     public:

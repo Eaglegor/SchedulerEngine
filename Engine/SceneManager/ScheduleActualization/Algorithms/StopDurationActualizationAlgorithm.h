@@ -7,6 +7,7 @@
 
 namespace Scheduler
 {
+	/// Updates stops durations based on the operations scheduled to be performed at the stop
 	class SCHEDULERENGINE_EXPORT StopDurationActualizationAlgorithm : public ScheduleActualizationAlgorithm
 	{
 	public:

@@ -3,8 +3,8 @@
 
 namespace Scheduler
 {
-	SceneManager::SceneManager() :
-			routing_service(nullptr)
+	SceneManager::SceneManager(RoutingService* routing_service) :
+			routing_service(routing_service)
 	{
 	}
 
@@ -52,10 +52,4 @@ namespace Scheduler
 			scenes_factory.destroyObject(scene);
 		}
 	}
-
-	void SceneManager::setRoutingService(RoutingService *routing_service)
-	{
-		this->routing_service = routing_service;
-	}
-
 }
