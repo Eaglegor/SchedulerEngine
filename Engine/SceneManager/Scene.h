@@ -1,7 +1,7 @@
 #pragma once
 
 #include <assert.h>
-#include <cstdint>
+#include <cstddef>
 #include <Utils/Collections/ImmutableVector.h>
 #include <Engine/SceneManager/ScheduleActualization/ScheduleActualizationAlgorithm.h>
 #include <Engine/SceneManager/RunVehicleBinding/RunVehicleBinder.h>

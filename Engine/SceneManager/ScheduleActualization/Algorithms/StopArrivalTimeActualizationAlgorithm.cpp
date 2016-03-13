@@ -1,7 +1,7 @@
 #include "StopArrivalTimeActualizationAlgorithm.h"
 #include <Engine/SceneManager/Views/ScheduleStopsView.h>
-#include <engine/SceneManager/Stop.h>
-#include <engine/SceneManager/Schedule.h>
+#include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/ScheduleActualization/TimeWindowSelectors/FirstTimeWindowSelector.h>
 
 namespace Scheduler
