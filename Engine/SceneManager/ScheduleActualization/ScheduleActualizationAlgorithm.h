@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 #include "ScheduleActualizationAlgorithmType.h"
 
 #include <SchedulerEngine_export.h>
