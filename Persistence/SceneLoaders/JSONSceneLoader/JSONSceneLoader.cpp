@@ -183,6 +183,19 @@ namespace Scheduler
 
 			vehicle->setAttributes(attributes);
 
+			RoutingProfile rp;
+			rp.setAverageSpeed(Speed(Distance(vehicle_desc.routing_profile.average_speed)));
+
+			vehicle->setRoutingProfile(rp);
+
+			Capacity capacity;
+			for (size_t i = 0; i < std::min(vehicle_desc.capacity.size(), settings.load_dimensions ? settings.load_dimensions.get() : 4); ++i)
+			{
+				capacity.setValue(i, vehicle_desc.capacity[i]);
+			}
+
+			vehicle->setCapacity(capacity);
+
 			vehicles.emplace(vehicle_desc.name, vehicle);
 		}
 
@@ -190,6 +203,7 @@ namespace Scheduler
 		for (const OperationDesc &operation_desc: scene_desc.free_operations)
 		{
 			Operation* operation = scene->createFreeOperation();
+			parseOperation(operation_desc, operation, settings, locations);
 			operations.emplace(operation_desc.name, operation);
 		}
 

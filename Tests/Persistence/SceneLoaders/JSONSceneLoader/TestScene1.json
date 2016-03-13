@@ -1,6 +1,6 @@
 {
   "settings": {
-    "load_dimensions": 4,
+    "load_dimensions": 1,
     "default_time_format": "%H:%M",
     "default_duration_format": "%H:%M"
   },
@@ -117,7 +117,7 @@
       "work_operations": [
         {
           "name": "work",
-          "location": "Order2_Pickup",
+          "location": "Order3_Location",
           "load": [
             0
           ],
