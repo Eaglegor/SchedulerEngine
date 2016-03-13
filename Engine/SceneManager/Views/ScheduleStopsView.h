@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include <cstddef>
 #include <vector>
 
 #include <SchedulerEngine_export.h>

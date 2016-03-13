@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include <cstddef>
 #include <string>
 #include <Engine/Concepts/Basic/TimeWindow.h>
 #include <Engine/Concepts/Basic/Cost.h>
