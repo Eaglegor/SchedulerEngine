@@ -9,7 +9,7 @@ TEST_CASE("Concepts - Basic - TimePoint", "[unit][functional][concepts]")
 
 	SECTION("Object size")
 	{
-		REQUIRE(sizeof(TimePoint) == sizeof(long));
+		REQUIRE(sizeof(TimePoint) == sizeof(std::time_t));
 	}
 	
 	SECTION("Default constructor")

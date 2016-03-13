@@ -1,0 +1,238 @@
+{
+  "settings": {
+    "load_dimensions": 1,
+    "default_time_format": "%H:%M",
+    "default_duration_format": "%H:%M"
+  },
+  "locations": [
+    {
+      "name": "DC_Location",
+      "latitude": 34.567,
+      "longitude": 23.567
+    },
+    {
+      "name": "Order1_Location",
+      "latitude": 23.65,
+      "longitude": 23.64
+    },
+    {
+      "name": "Order2_Pickup",
+      "latitude": 25.454,
+      "longitude": 23.5353
+    },
+    {
+      "name": "Order2_Drop",
+      "latitude": 43.64,
+      "longitude": 54.75
+    },
+    {
+      "name": "Order3_Location",
+      "latitude": 54.23,
+      "longitude": 23.64
+    },
+    {
+      "name": "FreeOperation1_Location",
+      "latitude": 23.44,
+      "longitude": 23.53
+	}
+  ],
+  "orders": [
+    {
+      "name": "Order1",
+      "vehicle_requirements": [
+        "Attr1",
+        "Attr2"
+      ],
+      "performer_skill_requirements": [],
+      "start_operation": {
+        "name": "pickup",
+        "location": "DC_Location",
+        "load": [
+          1
+        ],
+        "duration": "00:03",
+        "time_windows": [
+          {
+            "start_time": "04:00",
+            "end_time": "18:00"
+          }
+        ]
+      },
+      "work_operations": [
+        {
+          "name": "drop",
+          "location": "Order1_Location",
+          "load": [
+            -1
+          ],
+          "time_windows": [
+            {
+              "start_time": "10:00",
+              "end_time": "10:30"
+            }
+          ],
+          "duration": "00:10"
+        }
+      ]
+    },
+    {
+      "name": "Order2",
+      "vehicle_requirements": [],
+      "performer_skill_requirements": [],
+      "work_operations": [
+        {
+          "name": "collection",
+          "location": "Order2_Pickup",
+          "load": [
+            2
+          ],
+          "time_windows": [
+            {
+              "start_time": "10:00",
+              "end_time": "12:00"
+            }
+          ],
+          "duration": "00:10"
+        },
+        {
+          "name": "delivery",
+          "location": "Order2_Drop",
+          "load": [
+            -2
+          ],
+          "time_windows": [
+            {
+              "start_time": "12:00",
+              "end_time": "15:00"
+            }
+          ],
+          "duration": "00:10"
+        }
+      ]
+    },
+    {
+      "name": "Order3",
+      "vehicle_requirements": [],
+      "performer_skill_requirements": [],
+      "work_operations": [
+        {
+          "name": "work",
+          "location": "Order3_Location",
+          "load": [
+            0
+          ],
+          "time_windows": [
+            {
+              "start_time": "12:00",
+              "end_time": "16:00"
+            }
+          ],
+          "duration": "00:10"
+        }
+      ]
+    }
+  ],
+  "free_operations": [
+    {
+      "name": "FreeOperation1",
+      "location": "FreeOperation1_Location",
+      "load": [
+        0
+      ],
+      "time_windows": [
+        {
+          "start_time": "12:00",
+          "end_time": "18:00"
+        }
+      ],
+      "duration": "00:10"
+    }
+  ],
+  "fleet": {
+    "performers": [
+      {
+        "name": "Driver1",
+        "availability_windows": [
+          {
+            "start_time": "08:00",
+            "end_time": "18:00"
+          }
+        ],
+        "skills": [
+          "Driving"
+        ],
+        "hour_cost": 0,
+        "activation_cost": 0
+      }
+    ],
+    "vehicles": [
+      {
+        "name": "Vehicle1",
+        "capacity": [
+          3
+        ],
+        "availability_windows": [
+          {
+            "start_time": "08:00",
+            "end_time": "18:00"
+          }
+        ],
+        "attributes": [
+          "Attr1",
+          "Attr2"
+        ],
+        "routing_profile": {
+          "vehicle_type": "Truck",
+          "average_speed": 60
+        },
+        "hour_cost": 0,
+        "distance_unit_cost": 1,
+        "activation_cost": 0
+      }
+    ]
+  },
+  "schedules": [
+    {
+      "performer": "Driver1",
+      "shift": {
+        "time_window": {
+          "start_time": "08:00",
+          "end_time": "18:00"
+        },
+        "depot_location": "DC_Location"
+      },
+      "runs": [
+        {
+          "vehicle": "Vehicle1",
+          "start_location": "DC_Location",
+          "end_location": "DC_Location",
+		  "start_operations" : [], 
+          "work_operations": [
+            {
+              "operation": "Order1.drop",
+              "allocation_time": {
+                "start_time": "08:00",
+                "end_time": "08:03"
+              }
+            },
+            {
+              "operation": "Order2.collection",
+              "allocation_time": {
+                "start_time": "09:00",
+                "end_time": "09:10"
+              }
+            },
+			{
+              "operation": "Order2.delivery",
+              "allocation_time": {
+                "start_time": "10:00",
+                "end_time": "11:10"
+              }
+            }
+          ],
+		  "end_operations" : []
+        }
+      ]
+    }
+  ]
+}

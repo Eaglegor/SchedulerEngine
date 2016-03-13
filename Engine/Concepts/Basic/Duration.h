@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <ctime>
 
 #include <SchedulerEngine_export.h>
 
@@ -10,11 +11,11 @@ namespace Scheduler
 	{
 	public:
 		Duration();
-		explicit Duration(long value);
+		explicit Duration(std::time_t value);
 		Duration(const Duration &rhs);
 
-		long getValue() const;
-		void setValue(long value);
+		std::time_t getValue() const;
+		void setValue(std::time_t value);
 
 		bool operator==(const Duration &rhs) const;
 		bool operator!=(const Duration &rhs) const;
@@ -42,6 +43,6 @@ namespace Scheduler
 		static Duration max();
 
 	private:
-		long value;
+		std::time_t value;
 	};
  }

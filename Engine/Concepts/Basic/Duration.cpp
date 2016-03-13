@@ -6,18 +6,18 @@ namespace Scheduler
 	Duration::Duration() : value(0)
 	{ }
 
-	Duration::Duration(long value) : value(value)
+	Duration::Duration(std::time_t value) : value(value)
 	{ }
 
 	Duration::Duration(const Duration &rhs) : value(rhs.value)
 	{ }
 
-	long Duration::getValue() const
+	std::time_t Duration::getValue() const
 	{
 		return value;
 	}
 
-	void Duration::setValue(long value)
+	void Duration::setValue(std::time_t value)
 	{
 		this->value = value;
 	}
@@ -109,6 +109,6 @@ namespace Scheduler
 
 	Duration Duration::max()
 	{
-		return Duration(std::numeric_limits<long>::max());
+		return Duration(std::numeric_limits<std::time_t>::max());
 	}
 }
