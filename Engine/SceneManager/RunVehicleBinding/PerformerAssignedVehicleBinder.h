@@ -10,13 +10,12 @@ namespace Scheduler
     class Performer;
     class Vehicle;
     class Scene;
-    class PerformerAssignedVehicleBinderSettings;
-
+    
 	/// Vehicle binder using explicit performer to vehicle assignments (all runs of a single schedule get the same vehicle)
     class SCHEDULERENGINE_EXPORT PerformerAssignedVehicleBinder : public RunVehicleBinder
     {
     public:
-        PerformerAssignedVehicleBinder(Scene* scene, const PerformerAssignedVehicleBinderSettings &settings);
+        PerformerAssignedVehicleBinder(Scene* scene);
 
         virtual bool bindVehicle(Run *run) override;
 

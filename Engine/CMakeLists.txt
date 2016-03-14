@@ -79,8 +79,6 @@ add_library(SchedulerEngine SHARED
 
 		SceneManager/RunVehicleBinding/RunVehicleBinder.h
 		
-		SceneManager/RunVehicleBinding/PerformerAssignedVehicleBinderSettings.h
-		
 		SceneManager/RunVehicleBinding/PerformerAssignedVehicleBinder.h
         SceneManager/RunVehicleBinding/PerformerAssignedVehicleBinder.cpp
 

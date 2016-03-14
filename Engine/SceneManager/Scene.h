@@ -60,18 +60,18 @@ namespace Scheduler
 		Vehicle* createVehicle();
 
 		template<typename T, typename... Args>
-		bool createRunVehicleBinder(Args &&... args)
+		T* createRunVehicleBinder(Args &&... args)
 		{
 			assert(run_vehicle_binders_factory);
 
-			RunVehicleBinder* new_binder = run_vehicle_binders_factory->createObject<T>(this, std::forward<Args>(args)...);
+			T* new_binder = run_vehicle_binders_factory->createObject<T>(this, std::forward<Args>(args)...);
 
-			if (!new_binder) return false;
+			if (!new_binder) return nullptr;
 
 			if (run_vehicle_binder) run_vehicle_binders_factory->destroyObject(run_vehicle_binder);
 			run_vehicle_binder = new_binder;
 
-			return true;
+			return new_binder;
 		}
 
 		// == framework internal ====================================

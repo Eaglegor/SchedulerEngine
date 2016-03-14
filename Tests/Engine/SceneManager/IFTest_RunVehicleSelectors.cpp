@@ -21,7 +21,6 @@
 #include <Engine/SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.h>
 
 #include <Engine/SceneManager/RunVehicleBinding/PerformerAssignedVehicleBinder.h>
-#include <Engine/SceneManager/RunVehicleBinding/PerformerAssignedVehicleBinderSettings.h>
 
 TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][scene_manager]")
 {
@@ -43,13 +42,12 @@ TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][scene_manager]")
 
     SECTION("PerformerAssignedVehicleBinder")
     {
-        PerformerAssignedVehicleBinderSettings settings;
-        settings.assignments.emplace(p1, v2);
-        settings.assignments.emplace(p2, v1);
+		PerformerAssignedVehicleBinder* binder = scene->createRunVehicleBinder<PerformerAssignedVehicleBinder>();
 
-        bool result = scene->createRunVehicleBinder<PerformerAssignedVehicleBinder>(settings);
+        REQUIRE(binder);
 
-        REQUIRE(result);
+		binder->assign(p1, v2);
+		binder->assign(p2, v1);
 
         Schedule* sch1 = scene->createSchedule(p1);
         Schedule* sch2 = scene->createSchedule(p2);
