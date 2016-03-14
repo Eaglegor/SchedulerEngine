@@ -1,0 +1,4 @@
+add_executable(UFTest_TransparentVRPSolver UFTest_TransparentVRPSolver.cpp)
+add_test(NAME UFTest_TransparentVRPSolver COMMAND $<TARGET_FILE:UFTest_TransparentVRPSolver>)
+target_link_libraries(UFTest_TransparentVRPSolver SchedulerEngine)
+set_target_properties(UFTest_TransparentVRPSolver PROPERTIES FOLDER "Tests")

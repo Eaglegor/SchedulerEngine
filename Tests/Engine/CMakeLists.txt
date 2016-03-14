@@ -1,2 +1,3 @@
 add_subdirectory(Concepts)
 add_subdirectory(SceneManager)
+add_subdirectory(Strategies)

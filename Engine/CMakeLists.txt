@@ -93,6 +93,19 @@ add_library(SchedulerEngine SHARED
 		
 		SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.h
         SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.cpp
+        
+        Strategies/StrategiesManager.h
+		Strategies/StrategiesManager.cpp
+		
+		Strategies/Strategy.h
+		Strategies/Strategy.cpp
+		
+		Strategies/VRPSolver.h
+		Strategies/TSPSolver.h
+		
+		Strategies/VRPSolvers/Transparent/TransparentVRPSolver.h
+		Strategies/VRPSolvers/Transparent/TransparentVRPSolver.cpp
+		
         )
 		
 include(GenerateExportHeader)
