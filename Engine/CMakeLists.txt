@@ -109,6 +109,9 @@ add_library(SchedulerEngine SHARED
 		Strategies/VRPSolvers/Utilitary/Chain/ChainVRPSolver.h
 		Strategies/VRPSolvers/Utilitary/Chain/ChainVRPSolver.cpp
 		
+        Strategies/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h
+		Strategies/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.cpp
+        
         )
 		
 include(GenerateExportHeader)

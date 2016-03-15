@@ -7,3 +7,8 @@ add_executable(UFTest_ChainVRPSolver UFTest_ChainVRPSolver.cpp)
 add_test(NAME UFTest_ChainVRPSolver COMMAND $<TARGET_FILE:UFTest_ChainVRPSolver>)
 target_link_libraries(UFTest_ChainVRPSolver SchedulerEngine)
 set_target_properties(UFTest_ChainVRPSolver PROPERTIES FOLDER "Tests")
+
+add_executable(UFTest_TSPOnlyVRPSolver UFTest_TSPOnlyVRPSolver.cpp)
+add_test(NAME UFTest_TSPOnlyVRPSolver COMMAND $<TARGET_FILE:UFTest_TSPOnlyVRPSolver>)
+target_link_libraries(UFTest_TSPOnlyVRPSolver SchedulerEngine)
+set_target_properties(UFTest_TSPOnlyVRPSolver PROPERTIES FOLDER "Tests")
