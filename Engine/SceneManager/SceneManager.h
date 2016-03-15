@@ -4,11 +4,11 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "Attribute.h"
-#include "ConceptFactory.h"
+#include "SceneObjectsFactory.h"
 
-#include "Factory.h"
+#include <Engine/Utils/Factory.h>
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -26,10 +26,10 @@ namespace Scheduler
 	class RoutingService;
 	class LoggingService;
 
-    class SCHEDULERENGINE_EXPORT SceneManager
+    class SCENEMANAGER_EXPORT SceneManager
     {
     public:
-		SceneManager(RoutingService *routing_service);
+		SceneManager(RoutingService *routing_service, MemoryManager* memory_manager);
         ~SceneManager();
 
 		/// Creates an empty scene
@@ -42,15 +42,15 @@ namespace Scheduler
         const Attribute*createAttribute(const char *name);
 
     private:
-        ConceptFactory<Scene> scenes_factory;
-        ConceptFactory<Operation> operations_factory;
-        ConceptFactory<Order> orders_factory;
-        ConceptFactory<Vehicle> vehicles_factory;
-        ConceptFactory<Performer> performers_factory;
-        ConceptFactory<Schedule> schedules_factory;
-        ConceptFactory<Attribute> attributes_factory;
-		ConceptFactory<Run> runs_factory;
-		ConceptFactory<Stop> stops_factory;
+		SceneObjectsFactory<Scene> scenes_factory;
+		SceneObjectsFactory<Operation> operations_factory;
+		SceneObjectsFactory<Order> orders_factory;
+		SceneObjectsFactory<Vehicle> vehicles_factory;
+		SceneObjectsFactory<Performer> performers_factory;
+		SceneObjectsFactory<Schedule> schedules_factory;
+		SceneObjectsFactory<Attribute> attributes_factory;
+		SceneObjectsFactory<Run> runs_factory;
+		SceneObjectsFactory<Stop> stops_factory;
 
 		Factory<ScheduleActualizationAlgorithm> schedule_actualization_algorithms_factory;
 		Factory<RunVehicleBinder> run_vehicle_selectors_factory;

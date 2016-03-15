@@ -2,9 +2,9 @@
 #include "Run.h"
 #include "Stop.h"
 #include "Vehicle.h"
-#include <Engine/PluginAPI/Services/RoutingService.h>
-#include <Engine/SceneManager/Views/RunStopsView.h>
-#include "ScheduleActualization/ScheduleActualizer.h"
+#include <Engine/Core/Services/RoutingService.h>
+#include "Views/RunStopsView.h"
+#include "ScheduleActualizer.h"
 
 #include <iostream>
 
@@ -157,7 +157,7 @@ namespace Scheduler {
         end_stop->removeOperation(operation);
     }
 
-    void Run::setStopsFactory(ConceptFactory<Stop> *factory) {
+    void Run::setStopsFactory(SceneObjectsFactory<Stop> *factory) {
         this->stops_factory = factory;
 
         start_stop = stops_factory->createObject(start_location, this);

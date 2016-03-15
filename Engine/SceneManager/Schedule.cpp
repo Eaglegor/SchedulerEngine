@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "Schedule.h"
 #include "Run.h"
-#include "RunVehicleBinding/RunVehicleBinder.h"
+#include "Extensions/RunVehicleBinder.h"
 
 namespace Scheduler {
 
@@ -46,7 +46,7 @@ namespace Scheduler {
 		return createRun(from, to, runs.size());
 	}
 
-	void Schedule::setRunsFactory(ConceptFactory<Run> *factory) {
+	void Schedule::setRunsFactory(SceneObjectsFactory<Run> *factory) {
 		this->runs_factory = factory;
 	}
 
@@ -142,7 +142,7 @@ namespace Scheduler {
 		return shift_end_location_specified;
 	}
 
-	void Schedule::setStopsFactory(ConceptFactory<Stop> *factory)
+	void Schedule::setStopsFactory(SceneObjectsFactory<Stop> *factory)
 	{
 		this->stops_factory = factory;
 	}

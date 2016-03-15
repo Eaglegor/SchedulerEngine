@@ -1,0 +1,12 @@
+add_library(FirstTimeWindowSelector SHARED
+	
+	FirstTimeWindowSelector.h
+	FirstTimeWindowSelector.cpp
+)
+
+set_target_properties(FirstTimeWindowSelector PROPERTIES FOLDER "Engine/Algorithms/TimeWindowSelectors")
+
+target_link_libraries(FirstTimeWindowSelector SceneManager)
+
+include(GenerateExportHeader)
+generate_export_header(FirstTimeWindowSelector EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/FirstTimeWindowSelector_export.h)

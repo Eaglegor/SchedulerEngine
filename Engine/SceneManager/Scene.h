@@ -2,14 +2,14 @@
 
 #include <assert.h>
 #include <cstddef>
-#include <Utils/Collections/ImmutableVector.h>
-#include <Engine/SceneManager/ScheduleActualization/ScheduleActualizationAlgorithm.h>
-#include <Engine/SceneManager/RunVehicleBinding/RunVehicleBinder.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include <Engine/SceneManager/Extensions/ScheduleActualizationAlgorithm.h>
+#include <Engine/SceneManager/Extensions/RunVehicleBinder.h>
 
-#include "ConceptFactory.h"
-#include "Factory.h"
+#include "SceneObjectsFactory.h"
+#include <Engine/Utils/Factory.h>
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -28,7 +28,7 @@ namespace Scheduler
 	class ScheduleActualizersFactory;
 	class RunVehicleBinder;
 
-    class SCHEDULERENGINE_EXPORT Scene
+    class SCENEMANAGER_EXPORT Scene
     {
     public:
         Scene(size_t id);
@@ -75,13 +75,13 @@ namespace Scheduler
 		}
 
 		// == framework internal ====================================
-        void setOperationsfactory(ConceptFactory<Operation> *factory);
-        void setOrdersFactory(ConceptFactory<Order> *factory);
-        void setPerformersFactory(ConceptFactory<Performer> *factory);
-        void setVehiclesFactory(ConceptFactory<Vehicle> *factory);
-        void setSchedulesFactory(ConceptFactory<Schedule> *factory);
-		void setRunsFactory(ConceptFactory<Run> *factory);
-		void setStopsFactory(ConceptFactory<Stop> *factory);
+        void setOperationsfactory(SceneObjectsFactory<Operation> *factory);
+        void setOrdersFactory(SceneObjectsFactory<Order> *factory);
+        void setPerformersFactory(SceneObjectsFactory<Performer> *factory);
+        void setVehiclesFactory(SceneObjectsFactory<Vehicle> *factory);
+        void setSchedulesFactory(SceneObjectsFactory<Schedule> *factory);
+		void setRunsFactory(SceneObjectsFactory<Run> *factory);
+		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
 
 		void setRoutingService(RoutingService *routing_service);
 
@@ -99,14 +99,14 @@ namespace Scheduler
 		std::vector<Performer*> performers;
 		std::vector<Vehicle*> vehicles;
 
-        ConceptFactory<Operation> *operations_factory;
-        ConceptFactory<Order> *orders_factory;
-        ConceptFactory<Performer> *performers_factory;
-        ConceptFactory<Vehicle> *vehicles_factory;
-        ConceptFactory<Schedule> *schedules_factory;
+		SceneObjectsFactory<Operation> *operations_factory;
+		SceneObjectsFactory<Order> *orders_factory;
+		SceneObjectsFactory<Performer> *performers_factory;
+		SceneObjectsFactory<Vehicle> *vehicles_factory;
+		SceneObjectsFactory<Schedule> *schedules_factory;
 
-		ConceptFactory<Run> *runs_factory;
-		ConceptFactory<Stop> *stops_factory;
+		SceneObjectsFactory<Run> *runs_factory;
+		SceneObjectsFactory<Stop> *stops_factory;
 
 		Factory<ScheduleActualizationAlgorithm> *schedule_actualization_algorithms_factory;
 		Factory<RunVehicleBinder> *run_vehicle_binders_factory;

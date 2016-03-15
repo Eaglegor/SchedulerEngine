@@ -3,7 +3,18 @@
 
 namespace Scheduler
 {
-	SceneManager::SceneManager(RoutingService* routing_service) :
+	SceneManager::SceneManager(RoutingService* routing_service, MemoryManager* memory_manager) :
+			scenes_factory(memory_manager),
+			operations_factory(memory_manager),
+			orders_factory(memory_manager),
+			vehicles_factory(memory_manager),
+			performers_factory(memory_manager),
+			schedules_factory(memory_manager),
+			attributes_factory(memory_manager),
+			runs_factory(memory_manager),
+			stops_factory(memory_manager),
+			schedule_actualization_algorithms_factory(memory_manager),
+			run_vehicle_selectors_factory(memory_manager),
 			routing_service(routing_service)
 	{
 	}

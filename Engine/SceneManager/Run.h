@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Engine/Concepts/Basic/Location.h>
-#include <Utils/Collections/ImmutableVector.h>
-#include "ConceptFactory.h"
+#include <Engine/Concepts/Location.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include "SceneObjectsFactory.h"
 #include "Operation.h"
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -28,7 +28,7 @@ namespace Scheduler
 		- work operations: are allocated between the first and last stop - there is only one work operations for a single work stop
 		- end operations: are allocated to the last stop (at end location) - there can be multiple end operations for the last stop
 	*/
-	class SCHEDULERENGINE_EXPORT Run
+	class SCENEMANAGER_EXPORT Run
 	{
 	public:
 		Run(size_t id, const Location& start_location, const Location& end_location, Schedule* schedule);
@@ -66,7 +66,7 @@ namespace Scheduler
 		void unallocateEndOperation(const Operation *operation);
 
 		// == framework internal ====================================
-		void setStopsFactory(ConceptFactory<Stop> *factory);
+		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
 		void setRoutingService(RoutingService *routing_service);
 
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
@@ -83,7 +83,7 @@ namespace Scheduler
 		std::vector<Stop*> work_stops;
 		Stop* end_stop;
 
-		ConceptFactory<Stop> *stops_factory;
+		SceneObjectsFactory<Stop> *stops_factory;
 		RoutingService *routing_service;
 
 		ScheduleActualizer* schedule_actualizer;
