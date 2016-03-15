@@ -1,12 +1,10 @@
 #include "PerformerAssignedVehicleBinder.h"
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Schedule.h>
-#include "PerformerAssignedVehicleBinderSettings.h"
 
 namespace Scheduler
 {
-    PerformerAssignedVehicleBinder::PerformerAssignedVehicleBinder(Scene *scene, const PerformerAssignedVehicleBinderSettings &settings):
-    bindings(settings.assignments)
+    PerformerAssignedVehicleBinder::PerformerAssignedVehicleBinder(Scene *scene)
     {
     }
 
