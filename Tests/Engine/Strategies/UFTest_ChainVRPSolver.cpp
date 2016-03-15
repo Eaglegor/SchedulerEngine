@@ -17,6 +17,7 @@
 #include <Engine/Strategies/StrategiesManager.h>
 #include <Engine/Strategies/Strategy.h>
 #include <Engine/Strategies/VRPSolvers/Utilitary/Transparent/TransparentVRPSolver.h>
+#include <Engine/Strategies/VRPSolvers/Utilitary/Chain/ChainVRPSolver.h>
 
 TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][vrp_solvers]")
 {
@@ -30,8 +31,14 @@ TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][vrp_solvers]")
 
 	Strategy* strategy = strategies_manager.createStrategy();
 
-	TransparentVRPSolver* solver = strategy->createVRPSolver<TransparentVRPSolver>();
+	TransparentVRPSolver* solver1 = strategy->createVRPSolver<TransparentVRPSolver>();
+	TransparentVRPSolver* solver2 = strategy->createVRPSolver<TransparentVRPSolver>();
 
-	solver->optimize(scene);
+	ChainVRPSolver* chain_solver = strategy->createVRPSolver<ChainVRPSolver>();
+	
+	chain_solver->appendSolver(solver1);
+	chain_solver->appendSolver(solver2);
+
+	chain_solver->optimize(scene);
 
 }

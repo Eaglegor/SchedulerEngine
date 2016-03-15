@@ -103,8 +103,11 @@ add_library(SchedulerEngine SHARED
 		Strategies/VRPSolver.h
 		Strategies/TSPSolver.h
 		
-		Strategies/VRPSolvers/Transparent/TransparentVRPSolver.h
-		Strategies/VRPSolvers/Transparent/TransparentVRPSolver.cpp
+		Strategies/VRPSolvers/Utilitary/Transparent/TransparentVRPSolver.h
+		Strategies/VRPSolvers/Utilitary/Transparent/TransparentVRPSolver.cpp
+		
+		Strategies/VRPSolvers/Utilitary/Chain/ChainVRPSolver.h
+		Strategies/VRPSolvers/Utilitary/Chain/ChainVRPSolver.cpp
 		
         )
 		

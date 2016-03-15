@@ -2,3 +2,8 @@ add_executable(UFTest_TransparentVRPSolver UFTest_TransparentVRPSolver.cpp)
 add_test(NAME UFTest_TransparentVRPSolver COMMAND $<TARGET_FILE:UFTest_TransparentVRPSolver>)
 target_link_libraries(UFTest_TransparentVRPSolver SchedulerEngine)
 set_target_properties(UFTest_TransparentVRPSolver PROPERTIES FOLDER "Tests")
+
+add_executable(UFTest_ChainVRPSolver UFTest_ChainVRPSolver.cpp)
+add_test(NAME UFTest_ChainVRPSolver COMMAND $<TARGET_FILE:UFTest_ChainVRPSolver>)
+target_link_libraries(UFTest_ChainVRPSolver SchedulerEngine)
+set_target_properties(UFTest_ChainVRPSolver PROPERTIES FOLDER "Tests")
