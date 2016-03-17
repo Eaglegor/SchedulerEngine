@@ -94,7 +94,7 @@ namespace Scheduler
 		{
 			assert(factory);
 
-			T* object = factory->createObject<T>(std::forward<Args>(args)...);
+			T* object = factory->template createObject<T>(std::forward<Args>(args)...);
 
 			if (object) container.emplace(object);
 
