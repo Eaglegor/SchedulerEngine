@@ -1,6 +1,10 @@
 add_library(JSONStrategyLoader SHARED
 		JSONStrategyLoader.h
 		JSONStrategyLoader.cpp
+		
+		Loaders/VRPSolvers/VRPSolverLoader.h
+		
+		Loaders/TSPSolvers/TSPSolverLoader.h
 )
 
 target_link_libraries(JSONStrategyLoader Engine)
