@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine/StrategiesManager/TSPSolver.h>
+#include <cstddef>
 #include <SimpleTwoOptTSPSolver_export.h>
 
 namespace Scheduler
