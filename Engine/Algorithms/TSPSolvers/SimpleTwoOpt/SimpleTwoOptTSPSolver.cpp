@@ -2,11 +2,11 @@
 
 namespace Scheduler
 {
-	void SimpleTwoOptTSPSolver::optimize(Schedule* schedule)
+	void SimpleTwoOptTSPSolver::optimize(Schedule* schedule) const
 	{
 	}
 
-	void SimpleTwoOptTSPSolver::optimize(Schedule* schedule, size_t index)
+	void SimpleTwoOptTSPSolver::optimize(Schedule* schedule, size_t index) const
 	{
 	}
 }

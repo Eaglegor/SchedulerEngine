@@ -9,6 +9,10 @@ namespace Scheduler
 	class RunCostFunction
 	{
 	public:
+		virtual ~RunCostFunction()
+		{
+		}
+
 		virtual Cost calculateCost(const Run* run) = 0;
 	};
 }

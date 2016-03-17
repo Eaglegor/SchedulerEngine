@@ -24,6 +24,9 @@ target_link_libraries(Engine
     ChainVRPSolver
     TSPOnlyVRPSolver
     
+	SimpleTwoOptTSPSolver
+	
+	TotalDistanceCostFunctions
     )
 
 set_target_properties(Engine PROPERTIES FOLDER "Engine")

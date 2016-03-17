@@ -17,6 +17,15 @@ namespace Scheduler
 		}
 	};
 
+	template<>
+	struct PtreeDeserializer<boost::property_tree::ptree>
+	{
+		boost::property_tree::ptree operator()(const boost::property_tree::ptree &tree)
+		{
+			return tree;
+		}
+	};
+
 	template<typename U>
 	struct PtreeDeserializer<boost::optional<U>>
 	{

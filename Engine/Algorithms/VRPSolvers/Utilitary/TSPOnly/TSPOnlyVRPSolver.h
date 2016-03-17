@@ -11,7 +11,7 @@ namespace Scheduler
 	{
 	public:
 		TSPOnlyVRPSolver(TSPSolver* tsp_solver);
-		virtual void optimize(Scene* scene) override;
+		virtual void optimize(Scene* scene) const override;
 
 	private:
 		TSPSolver* tsp_solver;

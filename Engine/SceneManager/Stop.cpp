@@ -78,7 +78,7 @@ namespace Scheduler
 		return location;
 	}
 
-	const Route &Stop::getNextRoute()
+	const Route &Stop::getNextRoute() const
 	{
 		return next_route;
 	}

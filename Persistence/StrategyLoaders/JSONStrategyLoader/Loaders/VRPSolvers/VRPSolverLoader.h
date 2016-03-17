@@ -4,13 +4,15 @@
 
 namespace Scheduler
 {
+	class Strategy;
 	class VRPSolver;
+	class LoaderImpl;
 
 	class VRPSolverLoader
 	{
 	public:
 		virtual ~VRPSolverLoader() {}
 
-		VRPSolver* load(const boost::property_tree::ptree &settings);
+		virtual VRPSolver* load(const boost::property_tree::ptree &settings, LoaderImpl* loader_instance) = 0;
 	};
 }

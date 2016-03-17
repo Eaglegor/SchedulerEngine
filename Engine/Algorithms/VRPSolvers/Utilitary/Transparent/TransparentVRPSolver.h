@@ -8,6 +8,6 @@ namespace Scheduler
 	class TRANSPARENTVRPSOLVER_EXPORT TransparentVRPSolver : public VRPSolver
 	{
 	public:
-		virtual void optimize(Scene* scene) override;
+		virtual void optimize(Scene* scene) const override;
 	};
 }

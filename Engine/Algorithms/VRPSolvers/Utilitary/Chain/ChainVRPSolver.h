@@ -9,7 +9,7 @@ namespace Scheduler
 	class CHAINVRPSOLVER_EXPORT ChainVRPSolver : public VRPSolver
 	{
 	public:
-		virtual void optimize(Scene* scene) override;
+		virtual void optimize(Scene* scene) const override;
 
 		void appendSolver(VRPSolver* solver);
 

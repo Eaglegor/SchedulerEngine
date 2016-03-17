@@ -9,6 +9,10 @@ namespace Scheduler
 	class ScheduleCostFunction
 	{
 	public:
+		virtual ~ScheduleCostFunction()
+		{
+		}
+
 		virtual Cost calculateCost(const Schedule* schedule) = 0;
 	};
 }

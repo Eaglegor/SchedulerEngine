@@ -20,6 +20,8 @@
 #include <Engine/Core/Engine.h>
 #include <Engine/Core/EngineContext.h>
 
+#include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
+
 TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][vrp_solvers]")
 {
     using namespace Scheduler;
@@ -38,14 +40,7 @@ TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][vrp_solvers]")
 
 	Strategy* strategy = strategies_manager->createStrategy();
 
-	class TestTSPSolver : public TSPSolver
-	{
-	public:
-		virtual void optimize(Schedule* schedule){}
-		virtual void optimize(Schedule* schedule, size_t index){}
-	};
-
-	TSPSolver* tsp_solver = strategy->createTSPSolver<TestTSPSolver>();
+	TSPSolver* tsp_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
 
 	TSPOnlyVRPSolver* solver = strategy->createVRPSolver<TSPOnlyVRPSolver>(tsp_solver);
 

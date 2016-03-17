@@ -11,7 +11,7 @@ namespace Scheduler
 	public:
 		virtual ~TSPSolver(){}
 
-		virtual void optimize(Schedule* schedule) = 0;
-		virtual void optimize(Schedule* schedule, size_t run_index) = 0;
+		virtual void optimize(Schedule* schedule) const = 0;
+		virtual void optimize(Schedule* schedule, size_t run_index) const = 0;
 	};
 }

@@ -2,29 +2,23 @@
 
 #include <istream>
 #include <string>
-#include <unordered_map>
-#include <memory>
 
-#include "Loaders/VRPSolvers/VRPSolverLoader.h"
-#include "Loaders/TSPSolvers/TSPSolverLoader.h"
+#include <JSONStrategyLoader_export.h>
 
 namespace Scheduler
 {
 	class StrategiesManager;
 	class Strategy;
 
-	class JSONStrategyLoader
+	class JSONSTRATEGYLOADER_EXPORT JSONStrategyLoader
 	{
 	public:
 		JSONStrategyLoader(StrategiesManager* strategies_manager);
 
-		Strategy* loadStrategy(std::istream &stream);
-		Strategy* loadStrategy(const std::string& filename);
+		Strategy* loadStrategy(std::istream &stream) const;
+		Strategy* loadStrategy(const std::string& filename) const;
 
 	private:
 		StrategiesManager* strategies_manager;
-
-		std::unordered_map<std::string, std::shared_ptr<VRPSolverLoader>> vrp_solver_loaders;
-		std::unordered_map<std::string, std::shared_ptr<TSPSolverLoader>> tsp_solver_loaders;
 	};
 }
