@@ -2,23 +2,25 @@
 
 #include <catch.hpp>
 
-#include <Plugins/RoutingServices/CrowFlyRoutingService/CrowFlyRoutingService.h>
+#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Operation.h>
-#include <Engine/Concepts/Basic/Capacity.h>
+#include <Engine/Concepts/Capacity.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/Concepts/Basic/RoutingProfile.h>
-#include <Tests/Utils/Concepts/MakeLocation.h>
-#include <Utils/Units/DurationUnits.h>
-#include <Tests/Utils/Concepts/MakeTimeWindow.h>
-#include <Utils/Collections/Algorithms.h>
+#include <Engine/Concepts/RoutingProfile.h>
+#include <Tests/Utils/MakeLocation.h>
+#include <Engine/Utils/Units/DurationUnits.h>
+#include <Tests/Utils/MakeTimeWindow.h>
+#include <Engine/Utils/Collections/Algorithms.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
-#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.h>
-#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/StopDuration/StopDurationActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>
+#include <Engine/Core/Engine.h>
+#include <Engine/Core/EngineContext.h>
 
 bool checkRoute(Scheduler::Stop* from, Scheduler::Stop* to, Scheduler::RoutingService* routing_service, Scheduler::Vehicle* vehicle)
 {
@@ -30,9 +32,13 @@ TEST_CASE("SceneManager", "[integration][scene_manager]") {
 
     CrowFlyRoutingService routing_service;
 
-    SceneManager scene_manager(&routing_service);
+	EngineContext context;
+	context.routing_service = &routing_service;
+	Engine engine(context);
 
-    Scene *scene = scene_manager.createScene();
+    SceneManager* scene_manager = engine.getSceneManager();
+
+    Scene *scene = scene_manager->createScene();
 
     Location depot = make_location(0, 4);
     Location shift_start = make_location(3, 5);
@@ -78,10 +84,10 @@ TEST_CASE("SceneManager", "[integration][scene_manager]") {
         REQUIRE(free_operation->getLocation() == make_location(10, 45));
     }
 
-    const Attribute *attr1 = scene_manager.createAttribute("attr1");
-    const Attribute *attr2 = scene_manager.createAttribute("attr2");
-    const Attribute *skill1 = scene_manager.createAttribute("skill1");
-    const Attribute *skill2 = scene_manager.createAttribute("skill2");
+    const Attribute *attr1 = scene_manager->createAttribute("attr1");
+    const Attribute *attr2 = scene_manager->createAttribute("attr2");
+    const Attribute *skill1 = scene_manager->createAttribute("skill1");
+    const Attribute *skill2 = scene_manager->createAttribute("skill2");
 
     Vehicle *vehicle = scene->createVehicle();
 
@@ -464,5 +470,5 @@ TEST_CASE("SceneManager", "[integration][scene_manager]") {
 		REQUIRE(run1->getWorkStops()[0] == work_stop1);
 	}
 
-    scene_manager.destroyScene(scene);
+    scene_manager->destroyScene(scene);
 }

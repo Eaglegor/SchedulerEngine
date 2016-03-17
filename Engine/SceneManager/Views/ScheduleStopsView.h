@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <vector>
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -14,7 +14,7 @@ namespace Scheduler
 		This is a linear vector representation of schedule's stops.
 		All stops of all runs are represented by this view as a single linear structure.
 	*/
-	class SCHEDULERENGINE_EXPORT ScheduleStopsView
+	class SCENEMANAGER_EXPORT ScheduleStopsView
 	{
 	public:
 		ScheduleStopsView(Schedule* schedule);

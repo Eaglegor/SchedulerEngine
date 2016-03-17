@@ -16,11 +16,11 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-#include <Engine/Concepts/Basic/Location.h>
-#include <Utils/Units/DurationUnits.h>
+#include <Engine/Concepts/Location.h>
+#include <Engine/Utils/Units/DurationUnits.h>
 
-#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.h>
-#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/StopDuration/StopDurationActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>
 
 #include <locale>
 

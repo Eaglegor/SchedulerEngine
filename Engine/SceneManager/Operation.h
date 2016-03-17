@@ -1,19 +1,19 @@
 #pragma once
 
 #include <string>
-#include <Engine/Concepts/Basic/Location.h>
-#include <Engine/Concepts/Basic/Duration.h>
-#include <Engine/Concepts/Basic/TimeWindow.h>
-#include <Utils/Collections/ImmutableVector.h>
-#include <Engine/Concepts/Basic/Capacity.h>
+#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Duration.h>
+#include <Engine/Concepts/TimeWindow.h>
+#include <Engine/Concepts/Capacity.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
 #include "Order.h"
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
 	/// Class representing single operation which needs to be done to complete the order
-    class SCHEDULERENGINE_EXPORT Operation
+    class SCENEMANAGER_EXPORT Operation
     {
     public:
         Operation(size_t id);

@@ -1,0 +1,12 @@
+add_library(StopArrivalTimeActualizationAlgorithm SHARED
+	
+	StopArrivalTimeActualizationAlgorithm.h
+	StopArrivalTimeActualizationAlgorithm.cpp
+)
+
+set_target_properties(StopArrivalTimeActualizationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/ScheduleActualization")
+
+target_link_libraries(StopArrivalTimeActualizationAlgorithm SceneManager FirstTimeWindowSelector)
+
+include(GenerateExportHeader)
+generate_export_header(StopArrivalTimeActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/StopArrivalTimeActualizationAlgorithm_export.h)

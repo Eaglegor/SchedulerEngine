@@ -2,12 +2,12 @@
 
 #include <string>
 
-#include <Utils/Collections/ImmutableVector.h>
-#include <Utils/Collections/ImmutableUnorderedSet.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 
-#include "ConceptFactory.h"
+#include "SceneObjectsFactory.h"
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -27,7 +27,7 @@ namespace Scheduler
 
 		The total load of all operations must be zero (representing that no goods are leaved in a vehicle after the order is finished and that no goods appear magically in the vehicle).
 	*/
-    class SCHEDULERENGINE_EXPORT Order
+    class SCENEMANAGER_EXPORT Order
     {
     public:
 		Order(size_t id);
@@ -55,7 +55,7 @@ namespace Scheduler
 		void setPerformerSkillsRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes);
 
 		// == framework internal ====================================
-		void setOperationsFactory(ConceptFactory<Operation> *factory);
+		void setOperationsFactory(SceneObjectsFactory<Operation> *factory);
 
     private:
         size_t id;
@@ -68,6 +68,6 @@ namespace Scheduler
 		std::unordered_set<const Attribute*> vehicle_requirements;
 		std::unordered_set<const Attribute*> performer_skills_requirements;
 
-		ConceptFactory<Operation> *operations_factory;
+		SceneObjectsFactory<Operation> *operations_factory;
     };
 }

@@ -2,25 +2,27 @@
 
 #include <catch.hpp>
 
-#include <Plugins/RoutingServices/CrowFlyRoutingService/CrowFlyRoutingService.h>
+#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Operation.h>
-#include <Engine/Concepts/Basic/Capacity.h>
+#include <Engine/Concepts/Capacity.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/Concepts/Basic/RoutingProfile.h>
-#include <Tests/Utils/Concepts/MakeLocation.h>
-#include <Utils/Units/DurationUnits.h>
-#include <Tests/Utils/Concepts/MakeTimeWindow.h>
-#include <Utils/Collections/Algorithms.h>
+#include <Engine/Concepts/RoutingProfile.h>
+#include <Tests/Utils/MakeLocation.h>
+#include <Engine/Utils/Units/DurationUnits.h>
+#include <Tests/Utils/MakeTimeWindow.h>
+#include <Engine/Utils/Collections/Algorithms.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
-#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopDurationActualizationAlgorithm.h>
-#include <Engine/SceneManager/ScheduleActualization/Algorithms/StopArrivalTimeActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/StopDuration/StopDurationActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>
 
-#include <Tests/ConceptStreamOperators.h>
+#include <Tests/Utils/ConceptStreamOperators.h>
+#include <Engine/Core/EngineContext.h>
+#include <Engine/Core/Engine.h>
 
 TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integration][schedule_actualizers]")
 {
@@ -28,7 +30,10 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
 
     CrowFlyRoutingService routing_service;
 
-    SceneManager sm(&routing_service);
+	EngineContext context;
+	context.routing_service = &routing_service;
+	Engine engine(context);
+    SceneManager* sm = engine.getSceneManager();
 
     Location start_location = make_location(0, 0);
     Location end_location = make_location(0, 0.5);
@@ -38,7 +43,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
     Location loc3 = make_location(0, 0.3);
     Location loc4 = make_location(0, 0.4);
 
-    Scene* s = sm.createScene();
+    Scene* s = sm->createScene();
 
 
     Performer* performer = s->createPerformer();
@@ -105,7 +110,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
         REQUIRE(s6->getDuration() == dur);
     }
 
-    sm.destroyScene(s);
+    sm->destroyScene(s);
 }
 
 TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integration][schedule_actualizers][!mayfail]") // Temporary may fail (different crowfly routing service results on different platforms)
@@ -114,7 +119,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     CrowFlyRoutingService routing_service;
 
-    SceneManager sm(&routing_service);
+	EngineContext context;
+	context.routing_service = &routing_service;
+	Engine engine(context);
+	SceneManager* sm = engine.getSceneManager();
 
     Location start_location = make_location(0, 0);
     Location end_location = make_location(0, 0.5);
@@ -124,7 +132,7 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
     Location loc3 = make_location(0, 0.3);
     Location loc4 = make_location(0, 0.4);
 
-    Scene* s = sm.createScene();
+    Scene* s = sm->createScene();
 
     Duration dur = Units::minutes(10);
 
@@ -289,5 +297,5 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
     REQUIRE(s5->getAllocationTime() == estimated_allocation_5);
     REQUIRE(s6->getAllocationTime() == estimated_allocation_6);
 
-    sm.destroyScene(s);
+    sm->destroyScene(s);
 }

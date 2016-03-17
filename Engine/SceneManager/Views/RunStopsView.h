@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <vector>
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -13,7 +13,7 @@ namespace Scheduler
 	/** 
 		This is a linear vector representation of run's stops including start and end stops which are processed differently from the work stops.
 	*/
-	class SCHEDULERENGINE_EXPORT RunStopsView
+	class SCENEMANAGER_EXPORT RunStopsView
 	{
 	public:
 		RunStopsView(Run* run);

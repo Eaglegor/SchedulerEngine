@@ -65,7 +65,7 @@ namespace Scheduler {
         this->performer_skills_requirements = attributes;
     }
 
-    void Order::setOperationsFactory(ConceptFactory<Operation> *factory) {
+    void Order::setOperationsFactory(SceneObjectsFactory<Operation> *factory) {
         this->operations_factory = factory;
     }
 

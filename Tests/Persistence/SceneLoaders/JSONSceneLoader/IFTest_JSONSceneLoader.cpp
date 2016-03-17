@@ -4,7 +4,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <fstream>
-#include <Plugins/RoutingServices/CrowFlyRoutingService/CrowFlyRoutingService.h>
+#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Operation.h>
@@ -14,9 +14,11 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
-#include <Utils/Units/DurationUnits.h>
-#include <Utils/Collections/Algorithms.h>
-#include <Tests/ConceptStreamOperators.h>
+#include <Engine/Utils/Units/DurationUnits.h>
+#include <Engine/Utils/Collections/Algorithms.h>
+#include <Tests/Utils/ConceptStreamOperators.h>
+#include <Engine/Core/Engine.h>
+#include <Engine/Core/EngineContext.h>
 
 TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit][functional][persistence]")
 {
@@ -24,13 +26,19 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit]
 	using namespace Scheduler;
 
 	CrowFlyRoutingService rs;
-	SceneManager sm(&rs);
+
+	EngineContext context;
+	context.routing_service = &rs;
+
+	Engine engine(context);
+
+	SceneManager* sm = engine.getSceneManager();
 
 	std::ifstream ifile;
 	ifile.open("TestData/IFTest_JSONSceneLoader/TestScene1.json");
 	REQUIRE(ifile.is_open());
 
-	JSONSceneLoader loader(&sm);
+	JSONSceneLoader loader(sm);
 	Scene* scene = loader.loadScene(ifile);
 
 	REQUIRE(scene);
@@ -64,8 +72,8 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit]
 		Order* Order1 = scene->getOrders()[0];
 		REQUIRE(strcmp(Order1->getName(), "Order1") == 0);
 		REQUIRE(Order1->getVehicleRequirements().size() == 2);
-		REQUIRE(std::contains_key(Order1->getVehicleRequirements(), sm.createAttribute("Attr1")));
-		REQUIRE(std::contains_key(Order1->getVehicleRequirements(), sm.createAttribute("Attr2")));
+		REQUIRE(std::contains_key(Order1->getVehicleRequirements(), sm->createAttribute("Attr1")));
+		REQUIRE(std::contains_key(Order1->getVehicleRequirements(), sm->createAttribute("Attr2")));
 		REQUIRE(Order1->getPerformerSkillsRequirements().empty());
 		REQUIRE(Order1->getStartOperation() != nullptr);
 		{
@@ -149,7 +157,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit]
 		Performer* Driver1 = scene->getPerformers()[0];
 		REQUIRE(strcmp(Driver1->getName(), "Driver1") == 0);
 		REQUIRE(Driver1->getSkills().size() == 1);
-		REQUIRE(std::contains_key(Driver1->getSkills(), sm.createAttribute("Driving")));
+		REQUIRE(std::contains_key(Driver1->getSkills(), sm->createAttribute("Driving")));
 		REQUIRE(Driver1->getDurationUnitCost() == Cost(0));
 		REQUIRE(Driver1->getActivationCost() == Cost(0));
 		REQUIRE(Driver1->getAvailabilityWindows().size() == 1);
@@ -164,8 +172,8 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit]
 		Vehicle* Vehicle1 = scene->getVehicles()[0];
 		REQUIRE(strcmp(Vehicle1->getName(), "Vehicle1") == 0);
 		REQUIRE(Vehicle1->getAttributes().size() == 2);
-		REQUIRE(std::contains_key(Vehicle1->getAttributes(), sm.createAttribute("Attr1")));
-		REQUIRE(std::contains_key(Vehicle1->getAttributes(), sm.createAttribute("Attr2")));
+		REQUIRE(std::contains_key(Vehicle1->getAttributes(), sm->createAttribute("Attr1")));
+		REQUIRE(std::contains_key(Vehicle1->getAttributes(), sm->createAttribute("Attr2")));
 		REQUIRE(Vehicle1->getDurationUnitCost() == Cost(0));
 		REQUIRE(Vehicle1->getDistanceUnitCost() == Cost(1));
 		REQUIRE(Vehicle1->getActivationCost() == Cost(0));

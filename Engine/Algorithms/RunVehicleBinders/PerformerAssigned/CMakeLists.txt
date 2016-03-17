@@ -1,0 +1,12 @@
+add_library(PerformerAssignedVehicleBinder SHARED
+	
+	PerformerAssignedVehicleBinder.h
+	PerformerAssignedVehicleBinder.cpp
+)
+
+set_target_properties(PerformerAssignedVehicleBinder PROPERTIES FOLDER "Engine/Algorithms/RunVehicleBinders")
+
+target_link_libraries(PerformerAssignedVehicleBinder SceneManager)
+
+include(GenerateExportHeader)
+generate_export_header(PerformerAssignedVehicleBinder EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/PerformerAssignedVehicleBinder_export.h)

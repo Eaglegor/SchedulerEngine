@@ -2,14 +2,14 @@
 
 #include <cstddef>
 #include <string>
-#include <Engine/Concepts/Basic/TimeWindow.h>
-#include <Engine/Concepts/Basic/Cost.h>
+#include <Engine/Concepts/TimeWindow.h>
+#include <Engine/Concepts/Cost.h>
 
-#include <Utils/Collections/ImmutableVector.h>
-#include <Utils/Collections/ImmutableUnorderedSet.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 #include "Attribute.h"
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -20,7 +20,7 @@ namespace Scheduler
 		- cost per duration unit: performer's worktime cost
 		- activation cost: fixed price paid when performer starts his workday (or not paid if the performer is not used to complete orders).
 	*/
-    class SCHEDULERENGINE_EXPORT Performer
+    class SCENEMANAGER_EXPORT Performer
     {
     public:
 		Performer(size_t id);

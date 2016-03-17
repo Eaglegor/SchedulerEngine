@@ -1,0 +1,8 @@
+add_library(CrowFlyRoutingService SHARED CrowFlyRoutingService.h CrowFlyRoutingService.cpp)
+
+target_link_libraries(CrowFlyRoutingService Engine)
+
+set_target_properties(CrowFlyRoutingService PROPERTIES FOLDER "Services/Routing")
+
+include(GenerateExportHeader)
+generate_export_header(CrowFlyRoutingService EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/CrowFlyRoutingService_export.h)

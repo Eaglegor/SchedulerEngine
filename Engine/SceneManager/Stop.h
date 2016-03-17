@@ -1,11 +1,11 @@
 #pragma once
 
 #include <cstddef>
-#include <Utils/Collections/ImmutableUnorderedSet.h>
+#include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 #include "Operation.h"
-#include <Engine/Concepts/Basic/Route.h>
+#include <Engine/Concepts/Route.h>
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -15,7 +15,7 @@ namespace Scheduler
 	/**
 		Class representing a single stop to perform some operation (e.g. delivering order or working at a customer site).
 	*/
-	class SCHEDULERENGINE_EXPORT Stop
+	class SCENEMANAGER_EXPORT Stop
 	{
 	public:
 		Stop(size_t id, const Location &location, Run *run);

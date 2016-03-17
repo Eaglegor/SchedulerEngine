@@ -48,23 +48,23 @@ namespace Scheduler {
 		return schedules;
 	}
 
-    void Scene::setOperationsfactory(ConceptFactory<Operation> *factory) {
+    void Scene::setOperationsfactory(SceneObjectsFactory<Operation> *factory) {
         this->operations_factory = factory;
     }
 
-    void Scene::setOrdersFactory(ConceptFactory<Order> *factory) {
+    void Scene::setOrdersFactory(SceneObjectsFactory<Order> *factory) {
         this->orders_factory = factory;
     }
 
-    void Scene::setPerformersFactory(ConceptFactory<Performer> *factory) {
+    void Scene::setPerformersFactory(SceneObjectsFactory<Performer> *factory) {
         this->performers_factory = factory;
     }
 
-    void Scene::setVehiclesFactory(ConceptFactory<Vehicle> *factory) {
+    void Scene::setVehiclesFactory(SceneObjectsFactory<Vehicle> *factory) {
         this->vehicles_factory = factory;
     }
 
-    void Scene::setSchedulesFactory(ConceptFactory<Schedule> *factory) {
+    void Scene::setSchedulesFactory(SceneObjectsFactory<Schedule> *factory) {
         this->schedules_factory = factory;
     }
 
@@ -184,12 +184,12 @@ namespace Scheduler {
 		this->routing_service = routing_service;
 	}
 
-	void Scene::setRunsFactory(ConceptFactory<Run> *factory)
+	void Scene::setRunsFactory(SceneObjectsFactory<Run> *factory)
 	{
 		this->runs_factory = factory;
 	}
 
-	void Scene::setStopsFactory(ConceptFactory<Stop> *factory)
+	void Scene::setStopsFactory(SceneObjectsFactory<Stop> *factory)
 	{
 		this->stops_factory = factory;
 	}

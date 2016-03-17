@@ -1,15 +1,15 @@
 #pragma once
 
 #include <string>
-#include <Engine/Concepts/Basic/RoutingProfile.h>
-#include <Engine/Concepts/Basic/TimeWindow.h>
-#include <Engine/Concepts/Basic/Cost.h>
-#include <Utils/Collections/ImmutableVector.h>
-#include <Engine/Concepts/Basic/Capacity.h>
-#include <Utils/Collections/ImmutableUnorderedSet.h>
+#include <Engine/Concepts/RoutingProfile.h>
+#include <Engine/Concepts/TimeWindow.h>
+#include <Engine/Concepts/Cost.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include <Engine/Concepts/Capacity.h>
+#include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 #include "Attribute.h"
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -23,7 +23,7 @@ namespace Scheduler
 		 - cost per distance unit (e.g. based on fuel price)
 		 - activation cost
 	*/
-    class SCHEDULERENGINE_EXPORT Vehicle
+    class SCENEMANAGER_EXPORT Vehicle
     {
     public:
 		Vehicle(size_t id);

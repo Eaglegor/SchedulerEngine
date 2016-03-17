@@ -1,13 +1,13 @@
 #pragma once
 
 #include <string>
-#include <Engine/Concepts/Basic/Location.h>
+#include <Engine/Concepts/Location.h>
 #include "Performer.h"
-#include <Utils/Collections/ImmutableVector.h>
-#include <Engine/SceneManager/ScheduleActualization/ScheduleActualizer.h>
-#include "ConceptFactory.h"
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include "ScheduleActualizer.h"
+#include "SceneObjectsFactory.h"
 
-#include <SchedulerEngine_export.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -20,7 +20,7 @@ namespace Scheduler
 	/**
 		Class representing single performer's work shift.
 	*/
-    class SCHEDULERENGINE_EXPORT Schedule
+    class SCENEMANAGER_EXPORT Schedule
     {
     public:
         Schedule(size_t id, const Performer *performer);
@@ -63,8 +63,8 @@ namespace Scheduler
 		void setShift(const TimeWindow &shift);
 
 		// == framework internal ====================================
-		void setRunsFactory(ConceptFactory<Run> *factory);
-		void setStopsFactory(ConceptFactory<Stop> *factory);
+		void setRunsFactory(SceneObjectsFactory<Run> *factory);
+		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
 		void setRoutingService(RoutingService *routing_service);
 
 		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
@@ -77,8 +77,8 @@ namespace Scheduler
 
 		std::vector<Run*> runs;
 
-		ConceptFactory<Run> *runs_factory;
-		ConceptFactory<Stop> *stops_factory;
+		SceneObjectsFactory<Run> *runs_factory;
+		SceneObjectsFactory<Stop> *stops_factory;
 
 		bool shift_start_location_specified;
 		Location shift_start_location;
