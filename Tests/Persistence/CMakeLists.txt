@@ -1,1 +1,2 @@
 add_subdirectory(SceneLoaders)
+add_subdirectory(StrategyLoaders)

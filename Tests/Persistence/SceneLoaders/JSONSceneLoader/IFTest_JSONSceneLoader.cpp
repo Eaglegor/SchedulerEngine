@@ -20,7 +20,7 @@
 #include <Engine/Core/Engine.h>
 #include <Engine/Core/EngineContext.h>
 
-TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit][functional][persistence]")
+TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functional][persistence]")
 {
 	boost::property_tree::ptree props;
 	using namespace Scheduler;

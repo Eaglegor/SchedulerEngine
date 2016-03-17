@@ -1,0 +1,33 @@
+{
+  "root_vrp_solver" : {
+    "type" : "Chain",
+    "settings" : {
+        "solvers" : [
+            {
+                "type" : "Transparent",
+                "settings" : {}
+            },
+            {
+                "type" : "Chain",
+                "settings" : {
+                    "solvers" : [
+                        {
+                            "type" : "Transparent",
+                            "settings" : {}
+                        },
+                        {
+                            "type" : "TSPOnly",
+                            "settings" : {
+                                "tsp_solver" : {
+                                    "type" : "SimpleTwoOpt",
+                                    "settings" : {}
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+  }
+}
