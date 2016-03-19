@@ -30,4 +30,25 @@ namespace Scheduler
 	private:
 		std::vector<Stop*> stops;
 	};
+
+	/**
+	This is a linear vector representation of run's stops including start and end stops which are processed differently from the work stops.
+	*/
+	class SCENEMANAGER_EXPORT ConstRunStopsView
+	{
+	public:
+		ConstRunStopsView(const Run* run);
+
+		std::vector<const Stop*>::iterator begin();
+		std::vector<const Stop*>::iterator end();
+
+		std::vector<const Stop*>::const_iterator begin() const;
+		std::vector<const Stop*>::const_iterator end() const;
+
+		size_t size() const;
+		bool empty() const;
+
+	private:
+		std::vector<const Stop*> stops;
+	};
 }

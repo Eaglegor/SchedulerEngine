@@ -17,8 +17,8 @@
 #include <Engine/StrategiesManager/StrategiesManager.h>
 #include <Engine/StrategiesManager/Strategy.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/Transparent/TransparentVRPSolver.h>
-#include <Engine/Core/EngineContext.h>
-#include <Engine/Core/Engine.h>
+#include <Engine/Engine/EngineContext.h>
+#include <Engine/Engine/Engine.h>
 
 TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][vrp_solvers]")
 {

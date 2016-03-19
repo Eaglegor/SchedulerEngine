@@ -19,8 +19,8 @@
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/Algorithms/ScheduleActualization/StopDuration/StopDurationActualizationAlgorithm.h>
 #include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>
-#include <Engine/Core/Engine.h>
-#include <Engine/Core/EngineContext.h>
+#include <Engine/Engine/Engine.h>
+#include <Engine/Engine/EngineContext.h>
 
 bool checkRoute(Scheduler::Stop* from, Scheduler::Stop* to, Scheduler::RoutingService* routing_service, Scheduler::Vehicle* vehicle)
 {

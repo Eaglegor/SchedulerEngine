@@ -28,7 +28,10 @@ namespace Scheduler
 
         virtual void onRunRemoved() override;
 
-        virtual void actualize();
+        virtual void actualize() override;
+
+	    static constexpr const char* staticGetName() { return "StopArrivalTime"; }
+		virtual const char* getName() const override { return staticGetName(); };
 
     private:
         bool dirty_flag;

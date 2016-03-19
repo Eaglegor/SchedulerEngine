@@ -11,7 +11,7 @@ namespace Scheduler
 		assert(tsp_solver);
 	}
 
-	void TSPOnlyVRPSolver::optimize(Scene* scene)
+	void TSPOnlyVRPSolver::optimize(Scene* scene) const
 	{
 		assert(tsp_solver);
 		for(Schedule* schedule : scene->getSchedules())

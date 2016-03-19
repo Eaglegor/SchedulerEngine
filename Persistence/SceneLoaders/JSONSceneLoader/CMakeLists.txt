@@ -16,8 +16,6 @@ add_library(JSONSceneLoader SHARED
 		Model/ScheduleShiftDesc.h
 		Model/RunDesc.h
 		Model/StopDesc.h
-
-		Model/PtreeDeserializer.h
 )
 
 FIND_PACKAGE(Boost COMPONENTS REQUIRED date_time)

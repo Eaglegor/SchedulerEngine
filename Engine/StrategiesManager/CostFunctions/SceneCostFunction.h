@@ -9,6 +9,12 @@ namespace Scheduler
     class SceneCostFunction
     {
         public:
-			virtual Cost calculateCost(const Scene* scene) = 0;
+	    virtual ~SceneCostFunction()
+	    {
+	    }
+
+	    virtual Cost calculateCost(const Scene* scene) = 0;
+
+		virtual const char* getName() const = 0;
 	};
 }

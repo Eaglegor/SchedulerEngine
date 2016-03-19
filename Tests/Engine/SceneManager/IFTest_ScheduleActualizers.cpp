@@ -21,8 +21,8 @@
 #include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>
 
 #include <Tests/Utils/ConceptStreamOperators.h>
-#include <Engine/Core/EngineContext.h>
-#include <Engine/Core/Engine.h>
+#include <Engine/Engine/EngineContext.h>
+#include <Engine/Engine/Engine.h>
 
 TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integration][schedule_actualizers]")
 {

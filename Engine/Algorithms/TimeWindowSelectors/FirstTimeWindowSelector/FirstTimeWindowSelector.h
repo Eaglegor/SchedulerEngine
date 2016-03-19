@@ -11,5 +11,8 @@ namespace Scheduler
 	{
 	public:
 		virtual TimeWindow selectTimeWindow(Stop *stop) override;
+
+		static constexpr const char* staticGetName() { return "First"; }
+		virtual const char* getName() const override { return staticGetName(); };
 	};
 }

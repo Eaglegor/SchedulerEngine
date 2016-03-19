@@ -9,6 +9,8 @@ namespace Scheduler
 	public:
 		virtual ~VRPSolver(){}
 
-		virtual void optimize(Scene* scene) = 0;
+		virtual void optimize(Scene* scene) const = 0;
+
+		virtual const char* getName() const = 0;
 	};
 }

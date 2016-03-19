@@ -38,7 +38,7 @@ namespace Scheduler
 		const Duration& getDuration() const;
 		void setDuration(const Duration &duration);
 
-		const Route& getNextRoute();
+		const Route& getNextRoute() const;
 		void setNextRoute(const Route &route);
 
 		const Run* getRun() const;

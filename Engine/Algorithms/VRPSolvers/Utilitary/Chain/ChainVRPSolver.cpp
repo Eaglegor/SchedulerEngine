@@ -2,7 +2,7 @@
 
 namespace Scheduler
 {
-	void ChainVRPSolver::optimize(Scene* scene)
+	void ChainVRPSolver::optimize(Scene* scene) const
 	{
 		for(VRPSolver* solver : solvers_chain)
 		{
