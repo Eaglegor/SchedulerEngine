@@ -10,6 +10,7 @@ add_library(Engine SHARED
 
 target_link_libraries(Engine 
     SceneManager 
+	SceneEditor
     StrategiesManager
     MemoryManager
     
