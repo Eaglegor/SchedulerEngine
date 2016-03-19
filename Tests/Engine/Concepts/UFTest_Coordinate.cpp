@@ -1,6 +1,5 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
-
+#include <sch_test>
+#include <sch_test_utils>
 #include <Engine/Concepts/Coordinate.h>
 
 TEST_CASE("Concepts - Basic - Coordinate", "[unit][functional][concepts]")

@@ -1,24 +1,9 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
+#include <sch_test_all>
+
 #include <Persistence/SceneLoaders/JSONSceneLoader/JSONSceneLoader.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <fstream>
-#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
-#include <Engine/SceneManager/SceneManager.h>
-#include <Engine/SceneManager/Scene.h>
-#include <Engine/SceneManager/Operation.h>
-#include <Engine/SceneManager/Order.h>
-#include <Engine/SceneManager/Performer.h>
-#include <Engine/SceneManager/Vehicle.h>
-#include <Engine/SceneManager/Schedule.h>
-#include <Engine/SceneManager/Run.h>
-#include <Engine/SceneManager/Stop.h>
-#include <Engine/Utils/Units/DurationUnits.h>
-#include <Engine/Utils/Collections/Algorithms.h>
-#include <Tests/Utils/ConceptStreamOperators.h>
-#include <Engine/Engine/Engine.h>
-#include <Engine/Engine/EngineContext.h>
 
 TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functional][persistence]")
 {

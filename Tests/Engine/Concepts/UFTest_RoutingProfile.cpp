@@ -1,13 +1,12 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
-
+#include <sch_test>
+#include <sch_units>
+#include <sch_test_utils>
 #include <Engine/Concepts/RoutingProfile.h>
-#include <Engine/Utils/Units/SpeedUnits.h>
-
-using namespace Scheduler;
 
 TEST_CASE("Concepts - Basic - RoutingProfile", "[unit][functional][concepts]")
 {
+	using namespace Scheduler;
+
 	SECTION("Default constructor")
 	{
 		RoutingProfile r;

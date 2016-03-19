@@ -1,0 +1,4 @@
+#pragma once
+
+#include <Engine/StrategiesManager/StrategiesManager.h>
+#include <Engine/StrategiesManager/Strategy.h>

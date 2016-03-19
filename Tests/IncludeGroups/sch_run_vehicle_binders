@@ -1,0 +1,3 @@
+#pragma once
+
+#include <Engine/Algorithms/RunVehicleBinders/PerformerAssigned/PerformerAssignedVehicleBinder.h>

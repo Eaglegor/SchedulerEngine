@@ -1,13 +1,11 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
-
+#include <sch_test>
+#include <sch_test_utils>
 #include <Engine/Concepts/Route.h>
-#include <Tests/Utils/MakeLocation.h>
-
-using namespace Scheduler;
 
 TEST_CASE("Concepts - Basic - Route", "[unit][functional][concepts]")
 {
+	using namespace Scheduler;
+
 	SECTION("Default constructor")
 	{
 		Route r;
