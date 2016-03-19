@@ -2,6 +2,7 @@
 
 #include "../Action.h"
 
+#include <cstddef>
 #include <SceneEditor_export.h>
 
 namespace Scheduler
