@@ -51,6 +51,7 @@ enable_testing()
 
 include_directories(${CPP_SCHEDULER_SOURCE_DIR})
 include_directories(${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/)
+include_directories(${CPP_SCHEDULER_SOURCE_DIR}/Tests/IncludeGroups)
 
 set(EXECUTABLE_OUTPUT_PATH ${CPP_SCHEDULER_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CPP_SCHEDULER_BINARY_DIR}/lib)

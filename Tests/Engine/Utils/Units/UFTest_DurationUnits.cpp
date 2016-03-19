@@ -1,7 +1,4 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
-
-#include <Engine/Utils/Units/DurationUnits.h>
+#include <sch_test_all>
 
 TEST_CASE("Concepts - Basic - DurationUnits", "[unit][functional][concepts]")
 {

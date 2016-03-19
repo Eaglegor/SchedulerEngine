@@ -1,8 +1,6 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
-
+#include <sch_test>
+#include <sch_test_utils>
 #include <Engine/Concepts/TimeWindow.h>
-#include <Tests/Utils/MakeTimeWindow.h>
 
 TEST_CASE("Concepts - Basic - TimeWindow", "[unit][functional][concepts]")
 {

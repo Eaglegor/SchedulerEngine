@@ -1,0 +1,17 @@
+#pragma once
+
+#include <sch_concepts>
+#include <sch_core>
+#include <sch_cost_functions>
+#include <sch_crowfly_routing>
+#include <sch_run_vehicle_binders>
+#include <sch_scene_management>
+#include <sch_schedule_actualization_algorithms>
+#include <sch_strategies>
+#include <sch_test>
+#include <sch_test_utils>
+#include <sch_tsp_solvers>
+#include <sch_units>
+#include <sch_utils>
+#include <sch_vrp_solvers>
+#include <sch_test_defines>

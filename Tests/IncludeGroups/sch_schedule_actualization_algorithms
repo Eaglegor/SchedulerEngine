@@ -1,0 +1,4 @@
+#pragma once
+
+#include <Engine/Algorithms/ScheduleActualization/StopDuration/StopDurationActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>

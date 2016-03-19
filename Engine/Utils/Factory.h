@@ -2,6 +2,7 @@
 
 #include <type_traits>
 #include <utility>
+#include <cstddef>
 
 #include <Engine/MemoryManager/MemoryManager.h>
 
@@ -31,4 +32,5 @@ namespace Scheduler
 	private:
 		MemoryManager* memory_manager;
     };
+
 }

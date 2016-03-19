@@ -1,0 +1,152 @@
+{
+  "settings": {
+    "load_dimensions": 1,
+    "default_time_format": "%H:%M",
+    "default_duration_format": "%H:%M"
+  },
+  "locations": [
+    {
+      "name": "DC_Location",
+      "latitude": 0.0,
+      "longitude": 0.0
+    }
+  ],
+  "orders": [],
+  "free_operations": [
+    {
+      "name": "Operation1",
+      "location": "DC_Location",
+      "load": [0],
+      "time_windows": [
+        {
+          "start_time": "0:00",
+          "end_time": "23:59"
+        }
+      ],
+      "duration": "00:10"
+    },
+    {
+      "name": "Operation2",
+      "location": "DC_Location",
+      "load": [0],
+      "time_windows": [
+        {
+          "start_time": "0:00",
+          "end_time": "23:59"
+        }
+      ],
+      "duration": "00:10"
+    },
+    {
+      "name": "Operation3",
+      "location": "DC_Location",
+      "load": [0],
+      "time_windows": [
+        {
+          "start_time": "0:00",
+          "end_time": "23:59"
+        }
+      ],
+      "duration": "00:10"
+    },
+    {
+      "name": "Operation4",
+      "location": "DC_Location",
+      "load": [0],
+      "time_windows": [
+        {
+          "start_time": "0:00",
+          "end_time": "23:59"
+        }
+      ],
+      "duration": "00:10"
+    },
+    {
+      "name": "Operation5",
+      "location": "DC_Location",
+      "load": [0],
+      "time_windows": [
+        {
+          "start_time": "0:00",
+          "end_time": "23:59"
+        }
+      ],
+      "duration": "00:10"
+    }
+    
+  ],
+  "fleet": {
+    "performers": [
+      {
+        "name": "Driver1",
+        "availability_windows": [
+          {
+            "start_time": "08:00",
+            "end_time": "18:00"
+          }
+        ],
+        "skills": []
+      }
+    ],
+    "vehicles": [
+      {
+        "name": "Vehicle1",
+        "capacity": [3],
+        "availability_windows": [
+          {
+            "start_time": "08:00",
+            "end_time": "18:00"
+          }
+        ],
+        "attributes": [],
+        "routing_profile": {
+          "vehicle_type": "Truck",
+          "average_speed": 60
+        }
+      }
+    ]
+  },
+  "schedules": [
+    {
+      "performer": "Driver1",
+      "shift": {
+        "time_window": {
+          "start_time": "08:00",
+          "end_time": "18:00"
+        },
+        "depot_location": "DC_Location"
+      },
+      "runs": [
+        {
+          "vehicle": "Vehicle1",
+          "start_location": "DC_Location",
+          "end_location": "DC_Location",
+		  "start_operations" : [], 
+          "work_operations": [
+            {
+              "operation": "Operation1",
+              "allocation_time": {"start_time": "00:00", "end_time": "00:00"}
+            },
+            {
+              "operation": "Operation2",
+              "allocation_time": {"start_time": "00:00", "end_time": "00:00"}
+            },
+			{
+              "operation": "Operation3",
+              "allocation_time": {"start_time": "00:00", "end_time": "00:00"}
+            },
+            {
+              "operation": "Operation4",
+              "allocation_time": {"start_time": "00:00", "end_time": "00:00"}
+            },
+            {
+              "operation": "Operation5",
+              "allocation_time": {"start_time": "00:00", "end_time": "00:00"}
+            }
+          ],
+		  "end_operations" : []
+        }
+      ]
+    }
+  ]
+}

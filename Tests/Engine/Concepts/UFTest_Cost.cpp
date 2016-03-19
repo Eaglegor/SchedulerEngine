@@ -1,9 +1,6 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
-
+#include <sch_test>
+#include <sch_test_utils>
 #include <Engine/Concepts/Cost.h>
-
-#include <iostream>
 
 TEST_CASE("Concepts - Basic - Cost", "[unit][functional][concepts]")
 {

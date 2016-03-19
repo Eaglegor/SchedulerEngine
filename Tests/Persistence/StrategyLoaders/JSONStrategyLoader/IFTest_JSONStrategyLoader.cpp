@@ -1,15 +1,9 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
+#include <sch_test_all>
+
 #include <Persistence/StrategyLoaders/JSONStrategyLoader/JSONStrategyLoader.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <fstream>
-#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
-#include <Engine/StrategiesManager/StrategiesManager.h>
-#include <Engine/Engine/Engine.h>
-#include <Engine/Engine/EngineContext.h>
-
-#include <Engine/StrategiesManager/Strategy.h>
 
 TEST_CASE("Persistence - StrategyLoaders - JSONStrategyLoader", "[integration][functional][persistence]")
 {

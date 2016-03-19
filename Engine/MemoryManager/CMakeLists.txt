@@ -1,6 +1,6 @@
 add_library(MemoryManager SHARED
-    MemoryManager.h
-    MemoryManager.cpp
+    MemoryManager.h MemoryManager.cpp
+	Allocator.h
 )
 
 set_target_properties(MemoryManager PROPERTIES FOLDER "Engine")

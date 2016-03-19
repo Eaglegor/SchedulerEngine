@@ -1,7 +1,4 @@
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
-
-#include <Engine/Utils/Units/SpeedUnits.h>
+#include <sch_test_all>
 
 TEST_CASE("Concepts - Basic - SpeedUnits", "[unit][functional][concepts]")
 {
