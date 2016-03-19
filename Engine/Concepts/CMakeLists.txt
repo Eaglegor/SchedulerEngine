@@ -39,5 +39,7 @@ add_library(Concepts SHARED
 
 set_target_properties(Concepts PROPERTIES FOLDER "Engine")
 
+cotire(Concepts)
+
 include(GenerateExportHeader)
 generate_export_header(Concepts EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/Concepts_export.h)

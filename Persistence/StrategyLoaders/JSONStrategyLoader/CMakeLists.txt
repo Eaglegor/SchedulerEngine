@@ -24,5 +24,7 @@ target_link_libraries(JSONStrategyLoader Engine)
 
 set_target_properties(JSONStrategyLoader PROPERTIES FOLDER "Persistence/StrategyLoaders")
 
+cotire(JSONStrategyLoader)
+
 include(GenerateExportHeader)
 generate_export_header(JSONStrategyLoader EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/JSONStrategyLoader_export.h)

@@ -50,5 +50,7 @@ set_target_properties(SceneManager PROPERTIES FOLDER "Engine")
 
 target_link_libraries(SceneManager Concepts MemoryManager)
 
+cotire(SceneManager)
+
 include(GenerateExportHeader)
 generate_export_header(SceneManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SceneManager_export.h)

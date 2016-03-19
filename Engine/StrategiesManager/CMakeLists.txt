@@ -17,5 +17,7 @@ set_target_properties(StrategiesManager PROPERTIES FOLDER "Engine")
 
 target_link_libraries(StrategiesManager Concepts MemoryManager)
 
+cotire(StrategiesManager)
+
 include(GenerateExportHeader)
 generate_export_header(StrategiesManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/StrategiesManager_export.h)

@@ -1,6 +1,7 @@
 [requires]
 Boost/1.60.0@lasote/stable
 catch/1.3.0@TyRoXx/stable
+cotire/1.7.6@smspillaz/cotire
 
 [generators]
 cmake

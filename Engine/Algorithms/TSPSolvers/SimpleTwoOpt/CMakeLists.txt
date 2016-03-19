@@ -6,5 +6,7 @@ add_library(SimpleTwoOptTSPSolver SHARED
 
 set_target_properties(SimpleTwoOptTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/SimpleTwoOpt")
 
+cotire(SimpleTwoOptTSPSolver)
+
 include(GenerateExportHeader)
 generate_export_header(SimpleTwoOptTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SimpleTwoOptTSPSolver_export.h)

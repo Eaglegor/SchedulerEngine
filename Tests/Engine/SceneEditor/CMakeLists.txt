@@ -3,3 +3,4 @@ add_test(NAME IFTest_SceneEditor COMMAND $<TARGET_FILE:IFTest_SceneEditor> WORKI
 target_link_libraries(IFTest_SceneEditor Engine CrowFlyRoutingService JSONSceneLoader)
 set_target_properties(IFTest_SceneEditor PROPERTIES FOLDER "Tests/Engine/SceneEditor")
 add_custom_command(TARGET IFTest_SceneEditor POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/TestScene.json ${EXECUTABLE_OUTPUT_PATH}/TestData/IFTest_SceneEditor/TestScene.json)
+cotire(IFTest_SceneEditor)

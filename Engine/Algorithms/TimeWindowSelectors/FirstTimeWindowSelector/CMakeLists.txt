@@ -8,5 +8,7 @@ set_target_properties(FirstTimeWindowSelector PROPERTIES FOLDER "Engine/Algorith
 
 target_link_libraries(FirstTimeWindowSelector SceneManager)
 
+cotire(FirstTimeWindowSelector)
+
 include(GenerateExportHeader)
 generate_export_header(FirstTimeWindowSelector EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/FirstTimeWindowSelector_export.h)

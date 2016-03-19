@@ -8,5 +8,7 @@ set_target_properties(StopArrivalTimeActualizationAlgorithm PROPERTIES FOLDER "E
 
 target_link_libraries(StopArrivalTimeActualizationAlgorithm SceneManager FirstTimeWindowSelector)
 
+cotire(StopArrivalTimeActualizationAlgorithm)
+
 include(GenerateExportHeader)
 generate_export_header(StopArrivalTimeActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/StopArrivalTimeActualizationAlgorithm_export.h)
