@@ -11,4 +11,9 @@ namespace Scheduler
 		TotalDistanceScheduleCostFunction* schedule_cost_function = loader_instance->getStrategy()->createScheduleCostFunction<TotalDistanceScheduleCostFunction>();
 		return schedule_cost_function;
 	}
+
+	const char* TotalDistanceScheduleCostFunctionLoader::getName() const
+	{
+		return TotalDistanceScheduleCostFunction::staticGetName();
+	}
 }

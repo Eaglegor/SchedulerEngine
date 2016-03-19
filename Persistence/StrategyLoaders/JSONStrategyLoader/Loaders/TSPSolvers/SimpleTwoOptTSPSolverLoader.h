@@ -8,5 +8,7 @@ namespace Scheduler
 	{
 	public:
 		virtual TSPSolver* load(const boost::property_tree::ptree& settings, LoaderImpl* loader_instance) override;
+
+		const char* getName() const override;
 	};
 }

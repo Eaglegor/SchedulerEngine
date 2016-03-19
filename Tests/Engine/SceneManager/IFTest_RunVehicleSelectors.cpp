@@ -21,8 +21,8 @@
 #include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>
 
 #include <Engine/Algorithms/RunVehicleBinders/PerformerAssigned/PerformerAssignedVehicleBinder.h>
-#include <Engine/Core/Engine.h>
-#include <Engine/Core/EngineContext.h>
+#include <Engine/Engine/Engine.h>
+#include <Engine/Engine/EngineContext.h>
 
 TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][scene_manager]")
 {

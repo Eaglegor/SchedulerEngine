@@ -30,6 +30,8 @@ namespace Scheduler
 
         virtual void actualize() = 0;
 
+		virtual const char* getName() const = 0;
+
     protected:
         Schedule* schedule;
     };

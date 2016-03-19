@@ -11,4 +11,9 @@ namespace Scheduler
 		TotalDistanceSceneCostFunction* scene_cost_function = loader_instance->getStrategy()->createSceneCostFunction<TotalDistanceSceneCostFunction>();
 		return scene_cost_function;
 	}
+
+	const char* TotalDistanceSceneCostFunctionLoader::getName() const
+	{
+		return TotalDistanceSceneCostFunction::staticGetName();
+	}
 }

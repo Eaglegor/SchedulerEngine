@@ -38,4 +38,9 @@ namespace Scheduler
 
 		return chain_solver;
 	}
+
+	const char* ChainVRPSolverLoader::getName() const
+	{
+		return ChainVRPSolver::staticGetName();
+	}
 }

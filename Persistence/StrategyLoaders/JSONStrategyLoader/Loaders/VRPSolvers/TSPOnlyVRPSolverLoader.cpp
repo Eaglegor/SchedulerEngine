@@ -33,4 +33,9 @@ namespace Scheduler
 
 		return tsp_only_vrp_solver;
 	}
+
+	const char* TSPOnlyVRPSolverLoader::getName() const
+	{
+		return TSPOnlyVRPSolver::staticGetName();
+	}
 }

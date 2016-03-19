@@ -11,4 +11,9 @@ namespace Scheduler
 		TransparentVRPSolver* transparent_vrp_solver = loader_instance->getStrategy()->createVRPSolver<TransparentVRPSolver>();
 		return transparent_vrp_solver;
 	}
+
+	const char* TransparentVRPSolverLoader::getName() const
+	{
+		return TransparentVRPSolver::staticGetName();
+	}
 }

@@ -20,7 +20,12 @@
                             "settings" : {
                                 "tsp_solver" : {
                                     "type" : "SimpleTwoOpt",
-                                    "settings" : {}
+                                    "settings" : {
+                                        "schedule_cost_function" : {
+                                            "type" : "TotalDistance",
+                                            "settings" : {}
+                                        }
+                                    }
                                 }
                             }
                         }

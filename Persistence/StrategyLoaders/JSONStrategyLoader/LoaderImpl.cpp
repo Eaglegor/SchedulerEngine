@@ -17,17 +17,17 @@ namespace Scheduler
 	LoaderImpl::LoaderImpl(Strategy* strategy):
 		strategy(strategy)
 	{
-		vrp_solver_loaders.emplace("Chain", std::make_shared<ChainVRPSolverLoader>());
-		vrp_solver_loaders.emplace("Transparent", std::make_shared<TransparentVRPSolverLoader>());
-		vrp_solver_loaders.emplace("TSPOnly", std::make_shared<TSPOnlyVRPSolverLoader>());
+		registerVRPSolverLoader<ChainVRPSolverLoader>();
+		registerVRPSolverLoader<TransparentVRPSolverLoader>();
+		registerVRPSolverLoader<TSPOnlyVRPSolverLoader>();
 
-		tsp_solver_loaders.emplace("SimpleTwoOpt", std::make_shared<SimpleTwoOptTSPSolverLoader>());
+		registerTSPSolverLoader<SimpleTwoOptTSPSolverLoader>();
 
-		run_cost_function_loaders.emplace("TotalRunDistance", std::make_shared<TotalDistanceRunCostFunctionLoader>());
+		registerRunCostFunctionLoader<TotalDistanceRunCostFunctionLoader>();
 
-		schedule_cost_function_loaders.emplace("TotalScheduleDistance", std::make_shared<TotalDistanceScheduleCostFunctionLoader>());
+		registerScheduleCostFunctionLoader<TotalDistanceScheduleCostFunctionLoader>();
 
-		scene_cost_function_loaders.emplace("TotalSceneDistance", std::make_shared<TotalDistanceSceneCostFunctionLoader>());
+		registerSceneCostFunctionLoader<TotalDistanceSceneCostFunctionLoader>();
 	}
 
 	VRPSolver* LoaderImpl::loadVRPSolver(const boost::property_tree::ptree& props)

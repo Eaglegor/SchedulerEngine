@@ -1,4 +1,4 @@
-add_subdirectory(Core)
+add_subdirectory(Engine)
 add_subdirectory(SceneManager)
 add_subdirectory(StrategiesManager)
 add_subdirectory(Algorithms)

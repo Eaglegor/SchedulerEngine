@@ -10,5 +10,8 @@ namespace Scheduler
 	{
 	public:
 		virtual Cost calculateCost(const Scene* scene) override;
+
+		static constexpr const char* staticGetName() { return "TotalDistance"; }
+		virtual const char* getName() const override { return staticGetName(); };
 	};
 }

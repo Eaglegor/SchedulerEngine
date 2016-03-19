@@ -13,6 +13,9 @@ namespace Scheduler
 
 		void appendSolver(VRPSolver* solver);
 
+		static constexpr const char* staticGetName() { return "Chain"; }
+		virtual const char* getName() const override { return staticGetName(); };
+
 	private:
 		std::list<VRPSolver*> solvers_chain;
 	};

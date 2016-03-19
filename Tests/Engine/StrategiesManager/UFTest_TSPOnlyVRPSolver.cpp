@@ -17,8 +17,8 @@
 #include <Engine/StrategiesManager/StrategiesManager.h>
 #include <Engine/StrategiesManager/Strategy.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
-#include <Engine/Core/Engine.h>
-#include <Engine/Core/EngineContext.h>
+#include <Engine/Engine/Engine.h>
+#include <Engine/Engine/EngineContext.h>
 
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
 

@@ -6,8 +6,8 @@
 #include <fstream>
 #include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
 #include <Engine/StrategiesManager/StrategiesManager.h>
-#include <Engine/Core/Engine.h>
-#include <Engine/Core/EngineContext.h>
+#include <Engine/Engine/Engine.h>
+#include <Engine/Engine/EngineContext.h>
 
 #include <Engine/StrategiesManager/Strategy.h>
 

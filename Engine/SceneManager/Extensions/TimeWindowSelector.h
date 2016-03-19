@@ -12,5 +12,7 @@ namespace Scheduler
 	public:
 		virtual ~TimeWindowSelector(){}
 		virtual TimeWindow selectTimeWindow(Stop* stop) = 0;
+
+		virtual const char* getName() const = 0;
 	};
 }
