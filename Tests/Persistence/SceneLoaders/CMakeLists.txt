@@ -1,1 +1,2 @@
 add_subdirectory(JSONSceneLoader)
+add_subdirectory(TspLibSceneLoader)
