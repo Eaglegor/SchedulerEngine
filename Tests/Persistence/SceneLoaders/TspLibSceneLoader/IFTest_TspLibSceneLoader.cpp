@@ -16,8 +16,22 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 
 	SceneManager* sm = engine.getSceneManager();
 
+	uint32_t optimum;
+
 	TspLibSceneLoader loader(sm);
-	Scene* scene = loader.loadScene("TestData/IFTest_TspLibSceneLoader/br17.xml", &routing_service);
+
+	Scene* scene = nullptr;
+
+	SECTION("XML")
+	{
+		scene = loader.loadScene("TestData/IFTest_TspLibSceneLoader/br17.xml", &routing_service, TspLibSceneLoader::Format::XML, optimum);
+	}
+
+	SECTION("Binary")
+	{
+		scene = loader.loadScene("TestData/IFTest_TspLibSceneLoader/br17.bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimum);
+	}
+	
 
 	REQUIRE(scene);
 	REQUIRE(scene->getVehicles().size() == 1);

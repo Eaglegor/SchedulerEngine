@@ -25,12 +25,18 @@ namespace Scheduler
 	{
 	}
 
-	Scene* TspLibSceneLoader::loadScene(std::istream& stream, TspLibRoutingService* routing_service)
+	Scene* TspLibSceneLoader::loadScene(std::istream& stream, TspLibRoutingService* routing_service, Format format, uint32_t &out_known_optimum)
 	{
-		using boost::property_tree::ptree;
-		using boost::property_tree::read_xml;
+		size_t nodes_count;
 
-		ptree tree;
+		switch(format)
+		{
+		case Format::BINARY:
+			loadBinaryMatrix(stream, nodes_count, routing_service, out_known_optimum);
+			break;
+		case Format::XML:
+			loadXmlMatrix(stream, nodes_count, routing_service, out_known_optimum);
+		}
 
 		Scene* scene = scene_manager->createScene();
 
@@ -44,36 +50,77 @@ namespace Scheduler
 
 		Run *run = schedule->createRun(Location(), Location()); // Creating run (0,0) -> (0,0)
 
+		for (size_t i = 1; i < nodes_count; ++i)
+		{
+			Operation* operation = scene->createFreeOperation();
+			operation->setName((std::string("Operation") + std::to_string(i)).c_str());
+			operation->setDuration(Duration(0));
+			operation->setLocation(Location(Coordinate(i), Coordinate(0))); // Index is encoded in the latitude. The longitude will be unused.
+			run->allocateWorkOperation(operation);
+		}
+
+		return scene;
+	}
+
+	Scene* TspLibSceneLoader::loadScene(const std::string& filename, TspLibRoutingService* routing_service, Format format, uint32_t &out_known_optimum)
+	{
+		std::ifstream file;
+		file.open(filename.c_str(), format == Format::BINARY ? std::ios_base::in | std::ios_base::binary : std::ios_base::in);
+		assert(file.is_open());
+		Scene* scene = loadScene(file, routing_service, format, out_known_optimum);
+		file.close();
+		return scene;
+	}
+
+	void TspLibSceneLoader::loadBinaryMatrix(std::istream& stream, size_t &out_count, TspLibRoutingService* routing_service, uint32_t &out_known_optimum)
+	{
+		uint32_t count;
+		uint32_t optimum;
+		uint32_t ignoredDigits;
+
+		stream.read(reinterpret_cast<char*>(&count), sizeof(uint32_t));
+		stream.read(reinterpret_cast<char*>(&optimum), sizeof(uint32_t));
+		stream.read(reinterpret_cast<char*>(&ignoredDigits), sizeof(uint32_t));
+
+		routing_service->init(count);
+
+		uint32_t buffer;
+		for (size_t i = 0; i < count; ++i)
+		{
+			for (size_t j = 0; j < count; ++j)
+			{
+				stream.read(reinterpret_cast<char*>(&buffer), sizeof(uint32_t));
+				float distance = static_cast<float>(buffer) / pow(10, ignoredDigits);
+				routing_service->insertRoute(i, j, distance);
+			}
+		}
+
+		out_known_optimum = optimum;
+		out_count = count;
+	}
+
+	void TspLibSceneLoader::loadXmlMatrix(std::istream& stream, size_t &out_count, TspLibRoutingService* routing_service, uint32_t &out_known_optimum)
+	{
+		using boost::property_tree::ptree;
+		using boost::property_tree::read_xml;
+
+		out_known_optimum = 0;
+
+		ptree tree;
 		read_xml(stream, tree);
 
 		ptree root = tree.get_child("travellingSalesmanProblemInstance");
-
-		std::string name = root.get<std::string>("name");
-		std::string source = root.get<std::string>("source");
-		std::string description = root.get<std::string>("description");
-		
 		const ptree& graph = root.get_child("graph");
+
 		size_t from_index = 0;
 		routing_service->init(graph.size());
 
-		std::vector<Operation*> operations;
+		out_count = graph.size();
 
 		bool is_first_stop = true;
-		for(const auto &viter : graph)
+		for (const auto &viter : graph)
 		{
-			if(is_first_stop)
-			{
-				is_first_stop = false;
-			}
-			else
-			{
-				Operation* operation = scene->createFreeOperation();
-				operation->setName((std::string("Operation") + std::to_string(from_index)).c_str());
-				operation->setDuration(Duration(0));
-				operation->setLocation(Location(Coordinate(from_index), Coordinate(0))); // Index is encoded in the latitude. The longitude will be unused.
-				operations.push_back(operation);
-			}
-			for(const auto &eiter : viter.second)
+			for (const auto &eiter : viter.second)
 			{
 				float distance = eiter.second.get_child("<xmlattr>").get<float>("cost");
 				size_t to_index = eiter.second.get_value<size_t>();
@@ -81,22 +128,5 @@ namespace Scheduler
 			}
 			++from_index;
 		}
-
-		for(Operation* operation : operations)
-		{
-			run->allocateWorkOperation(operation);
-		}
-
-		return scene;
-	}
-
-	Scene* TspLibSceneLoader::loadScene(const std::string& filename, TspLibRoutingService* routing_service)
-	{
-		std::ifstream file;
-		file.open(filename.c_str());
-		assert(file.is_open());
-		Scene* scene = loadScene(file, routing_service);
-		file.close();
-		return scene;
 	}
 }

@@ -1,5 +1,6 @@
 add_executable(IFTest_TspLibSceneLoader IFTest_TspLibSceneLoader.cpp)
 add_custom_command(TARGET IFTest_TspLibSceneLoader POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/br17.xml ${EXECUTABLE_OUTPUT_PATH}/TestData/IFTest_TspLibSceneLoader/br17.xml)
+add_custom_command(TARGET IFTest_TspLibSceneLoader POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/br17.bin ${EXECUTABLE_OUTPUT_PATH}/TestData/IFTest_TspLibSceneLoader/br17.bin)
 add_test(NAME IFTest_TspLibSceneLoader COMMAND $<TARGET_FILE:IFTest_TspLibSceneLoader> WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 set_target_properties(IFTest_TspLibSceneLoader PROPERTIES FOLDER "Tests/SceneLoaders/TspLibSceneLoader")
 target_link_libraries(IFTest_TspLibSceneLoader SceneManager)
