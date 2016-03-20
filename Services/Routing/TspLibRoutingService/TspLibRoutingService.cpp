@@ -5,6 +5,8 @@
 #include <Engine/Concepts/SpeedDurationDistanceOperations.h>
 #include <Engine/Math/FloatEpsilon.h>
 
+#include <cstring>
+
 namespace Scheduler
 {
 	TspLibRoutingService::TspLibRoutingService():
