@@ -56,6 +56,8 @@ include_directories(${CPP_SCHEDULER_SOURCE_DIR}/Tests/IncludeGroups)
 set(EXECUTABLE_OUTPUT_PATH ${CPP_SCHEDULER_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CPP_SCHEDULER_BINARY_DIR}/lib)
 
+include(cmake/cotire/cotire)
+
 add_subdirectory(Engine)
 add_subdirectory(Tests)
 add_subdirectory(Services)

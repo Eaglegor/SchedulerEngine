@@ -8,5 +8,7 @@ set_target_properties(StopDurationActualizationAlgorithm PROPERTIES FOLDER "Engi
 
 target_link_libraries(StopDurationActualizationAlgorithm SceneManager)
 
+cotire(StopDurationActualizationAlgorithm)
+
 include(GenerateExportHeader)
 generate_export_header(StopDurationActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/StopDurationActualizationAlgorithm_export.h)

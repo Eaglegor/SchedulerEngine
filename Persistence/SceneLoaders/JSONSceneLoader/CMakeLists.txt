@@ -36,5 +36,7 @@ endif()
 
 set_target_properties(JSONSceneLoader PROPERTIES FOLDER "Persistence/SceneLoaders")
 
+cotire(JSONSceneLoader)
+
 include(GenerateExportHeader)
 generate_export_header(JSONSceneLoader EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/JSONSceneLoader_export.h)

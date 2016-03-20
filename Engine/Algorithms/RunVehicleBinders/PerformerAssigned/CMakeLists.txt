@@ -8,5 +8,7 @@ set_target_properties(PerformerAssignedVehicleBinder PROPERTIES FOLDER "Engine/A
 
 target_link_libraries(PerformerAssignedVehicleBinder SceneManager)
 
+cotire(PerformerAssignedVehicleBinder)
+
 include(GenerateExportHeader)
 generate_export_header(PerformerAssignedVehicleBinder EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/PerformerAssignedVehicleBinder_export.h)
