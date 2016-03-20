@@ -1,1 +1,2 @@
 add_subdirectory(CrowFlyRoutingService)
+add_subdirectory(TspLibRoutingService)
