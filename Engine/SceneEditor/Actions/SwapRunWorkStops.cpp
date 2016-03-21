@@ -17,6 +17,14 @@ namespace Scheduler
 
 	}
 
+	SwapRunWorkStops::SwapRunWorkStops(Run* r, size_t a_index, size_t b_index):
+		schedule(r->getSchedule()),
+		ir(determine_run_index(r)),
+		ia(a_index),
+		ib(b_index)
+	{
+	}
+
 	void SwapRunWorkStops::perform()
 	{
 		if (ia == ib) return;

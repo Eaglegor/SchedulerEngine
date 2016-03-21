@@ -4,6 +4,7 @@
 #include <cstring>
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
+#include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
 
 void checkOrder(Scheduler::Run* run, std::vector<size_t> expected_order)
 {
@@ -150,4 +151,47 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 	}
 
 
+}
+
+TEST_CASE("Reverse action works", "[integration][functional][scene_editor]")
+{
+	using namespace Scheduler;
+
+	CREATE_ENGINE(engine);
+
+	JSONSceneLoader loader(engine.getSceneManager());
+
+	Scene* scene = loader.loadScene("TestData/IFTest_SceneEditor/TestScene.json");
+
+	Run* run = scene->getSchedules()[0]->getRuns()[0];
+
+	const auto& work_stops = run->getWorkStops();
+
+	checkOrder(run, { 1, 2, 3, 4, 5 });
+
+	SceneEditor editor;
+
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 1, 3);
+
+	checkOrder(run, { 1, 4, 3, 2, 5 });
+
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 0, 4);
+
+	checkOrder(run, { 5, 2, 3, 4, 1 });
+
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 2, 4);
+
+	checkOrder(run, { 5, 2, 1, 4, 3 });
+
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 0, 1);
+
+	checkOrder(run, { 2, 5, 1, 4, 3 });
+
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 1, 1);
+
+	checkOrder(run, { 2, 5, 1, 4, 3 });
+
+	editor.rollbackToLastCheckpoint();
+
+	checkOrder(run, { 1, 2, 3, 4, 5 });
 }
