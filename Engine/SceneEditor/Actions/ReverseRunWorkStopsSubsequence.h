@@ -7,15 +7,15 @@
 
 namespace Scheduler
 {
-	class Schedule;
-	class Run;
 	class Stop;
+	class Run;
+	class Schedule;
 
-	class SCENEEDITOR_EXPORT SwapRunWorkStops : public Action
+	class SCENEEDITOR_EXPORT ReverseWorkStopsSubsequence : public Action
 	{
 	public:
-		SwapRunWorkStops(Run* r, Stop* a, Stop* b);
-		SwapRunWorkStops(Run* r, size_t a_index, size_t b_index);
+		ReverseWorkStopsSubsequence(Run *r, Stop* start_stop, Stop* end_stop);
+		ReverseWorkStopsSubsequence(Run *r, size_t start_index, size_t end_index);
 
 		virtual void perform() override;
 		virtual void rollback() override;
@@ -25,8 +25,10 @@ namespace Scheduler
 		static size_t determine_run_index(Run* run);
 
 		Schedule* schedule;
-		size_t ir;
-		size_t ia;
-		size_t ib;
+
+		size_t run_index;
+		size_t start_index;
+		size_t end_index;
+
 	};
 }

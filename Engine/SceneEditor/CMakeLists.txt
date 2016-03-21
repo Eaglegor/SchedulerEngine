@@ -5,6 +5,7 @@ add_library(SceneEditor SHARED
     Checkpoint.h Checkpoint.cpp
     
     Actions/SwapRunWorkStops.h Actions/SwapRunWorkStops.cpp
+    Actions/ReverseRunWorkStopsSubsequence.h Actions/ReverseRunWorkStopsSubsequence.cpp
     
 )
 
