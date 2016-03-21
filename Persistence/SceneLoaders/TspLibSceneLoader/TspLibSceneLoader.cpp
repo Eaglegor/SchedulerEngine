@@ -49,6 +49,7 @@ namespace Scheduler
 		Schedule* schedule = scene->createSchedule(performer);
 
 		Run *run = schedule->createRun(Location(), Location()); // Creating run (0,0) -> (0,0)
+		run->setVehicle(vehicle);
 
 		for (size_t i = 1; i < nodes_count; ++i)
 		{
