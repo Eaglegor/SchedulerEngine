@@ -3,7 +3,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
-#include "SwapRunWorkStops.h"
+#include <assert.h>
 
 namespace Scheduler
 {

@@ -2,7 +2,6 @@ add_executable(UFTest_JSONSceneLoader UFTest_JSONSceneLoader.cpp)
 add_custom_command(TARGET UFTest_JSONSceneLoader POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/TestScene1.json ${EXECUTABLE_OUTPUT_PATH}/TestData/UFTest_JSONSceneLoader/TestScene1.json)
 add_test(NAME UFTest_JSONSceneLoader COMMAND $<TARGET_FILE:UFTest_JSONSceneLoader> WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 set_target_properties(UFTest_JSONSceneLoader PROPERTIES FOLDER "Tests/SceneLoaders/JSONSceneLoader")
-cotire(UFTest_JSONSceneLoader)
 
 add_executable(IFTest_JSONSceneLoader IFTest_JSONSceneLoader.cpp)
 add_custom_command(TARGET IFTest_JSONSceneLoader POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/TestScene1.json ${EXECUTABLE_OUTPUT_PATH}/TestData/IFTest_JSONSceneLoader/TestScene1.json)
@@ -11,4 +10,3 @@ set_target_properties(IFTest_JSONSceneLoader PROPERTIES FOLDER "Tests/SceneLoade
 target_link_libraries(IFTest_JSONSceneLoader SceneManager)
 target_link_libraries(IFTest_JSONSceneLoader JSONSceneLoader)
 target_link_libraries(IFTest_JSONSceneLoader CrowFlyRoutingService)
-cotire(IFTest_JSONSceneLoader)
