@@ -1,4 +1,3 @@
 add_executable(UFTest_Collections_Algorithms UFTest_Collections_Algorithms.cpp)
 add_test(NAME UFTest_Collections_Algorithms COMMAND $<TARGET_FILE:UFTest_Collections_Algorithms>)
 set_target_properties(UFTest_Collections_Algorithms PROPERTIES FOLDER "Tests/Engine/Utils/Collections")
-cotire(UFTest_Collections_Algorithms)

@@ -5,4 +5,3 @@ set_target_properties(IFTest_JSONStrategyLoader PROPERTIES FOLDER "Tests/Strateg
 target_link_libraries(IFTest_JSONStrategyLoader StrategiesManager)
 target_link_libraries(IFTest_JSONStrategyLoader JSONStrategyLoader)
 target_link_libraries(IFTest_JSONStrategyLoader CrowFlyRoutingService)
-cotire(IFTest_JSONStrategyLoader)

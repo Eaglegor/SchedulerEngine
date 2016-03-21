@@ -6,4 +6,3 @@ set_target_properties(IFTest_TspLibSceneLoader PROPERTIES FOLDER "Tests/SceneLoa
 target_link_libraries(IFTest_TspLibSceneLoader SceneManager)
 target_link_libraries(IFTest_TspLibSceneLoader TspLibSceneLoader)
 target_link_libraries(IFTest_TspLibSceneLoader TspLibRoutingService)
-cotire(IFTest_TspLibSceneLoader)

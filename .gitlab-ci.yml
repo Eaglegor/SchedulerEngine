@@ -6,7 +6,7 @@ building:
     script:
         - mkdir build
         - cd build
-        - cmake ../
+        - cmake -DCPP_SCHEDULER_TESTS=TRUE ../
         - make
         - make test
         
