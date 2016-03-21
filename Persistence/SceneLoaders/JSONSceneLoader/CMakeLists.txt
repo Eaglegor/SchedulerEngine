@@ -25,7 +25,11 @@ ENDIF()
 
 target_link_libraries(JSONSceneLoader Engine)
 
-get_filename_component(DLL ${Boost_DATE_TIME_LIBRARY_DEBUG} NAME)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    get_filename_component(DLL ${Boost_DATE_TIME_LIBRARY_DEBUG} NAME)
+else()
+    get_filename_component(DLL ${Boost_DATE_TIME_LIBRARY_RELEASE} NAME)
+endif()
 
 string(REGEX MATCH "^(.*)\\.[^.]*$" temp ${DLL})
 set(BOOST_STRIPPED_LIBRARY_NAME ${CMAKE_MATCH_1})

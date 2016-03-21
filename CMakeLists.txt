@@ -7,6 +7,8 @@ else()
 	add_definitions( "/wd4251 /wd4275" )
 endif()
 
+set(CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY CACHE PATH "Path to the benchmark data directory")
+
 set(__CONAN_ARGS "install")
 
 set(__CONAN_ARGS "${__CONAN_ARGS} --build=missing")
@@ -62,3 +64,4 @@ add_subdirectory(Engine)
 add_subdirectory(Tests)
 add_subdirectory(Services)
 add_subdirectory(Persistence)
+add_subdirectory(Tools)
