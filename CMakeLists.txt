@@ -17,6 +17,11 @@ set(CPP_SCHEDULER_SERVICES TRUE CACHE BOOL "If enabled, services like routing wi
 set(CPP_SCHEDULER_TOOLS TRUE CACHE BOOL "If enabled, utilitary tools will be built")
 set(CPP_SCHEDULER_TESTS FALSE CACHE BOOL "If enabled, tests will be built")
 
+if(NOT CPP_SCHEDULER_BUILD_ENABLE_CONAN)
+	set(CPP_SCHEDULER_DEPENDENCY_CATCH_ROOT_DIRECTORY CACHE PATH "Path to the catch unit test framework root directory")
+	set(CPP_SCHEDULER_DEPENDENCY_COTIRE_ROOT_DIRECTORY CACHE PATH "Path to the cotire cmake module root directory")
+endif()
+
 set(__CONAN_ARGS "install")
 
 set(__CONAN_ARGS "${__CONAN_ARGS} --build=missing")
@@ -75,6 +80,10 @@ if(CPP_SCHEDULER_TESTS)
     enable_testing()
 endif()
 
+if(NOT CPP_SCHEDULER_BUILD_ENABLE_CONAN)
+	include_directories(${CPP_SCHEDULER_DEPENDENCY_CATCH_ROOT_DIRECTORY})
+endif()
+
 include_directories(${CPP_SCHEDULER_SOURCE_DIR})
 include_directories(${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/)
 include_directories(${CPP_SCHEDULER_SOURCE_DIR}/Tests/IncludeGroups)
@@ -83,7 +92,11 @@ set(EXECUTABLE_OUTPUT_PATH ${CPP_SCHEDULER_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CPP_SCHEDULER_BINARY_DIR}/lib)
 
 if(CPP_SCHEDULER_BUILD_ENABLE_COTIRE)
-    include(cmake/cotire/cotire)
+	if(CPP_SCHEDULER_BUILD_ENABLE_CONAN)
+		include(cmake/cotire/cotire)
+	else()
+		include(${DEPENDENCY_COTIRE_ROOT_DIRECTORY}/Cotire.cmake)
+	endif()
 else()
     macro(cotire)
     endmacro()
