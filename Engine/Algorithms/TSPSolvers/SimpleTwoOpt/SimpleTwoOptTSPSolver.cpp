@@ -39,7 +39,7 @@ namespace Scheduler
                     editor.performAction<SwapRunWorkStops>(run_ptr, *stop_it1, *stop_it2);
                     editor.performAction<ReverseWorkStopsSubsequence>(run_ptr, *stop_it1, *stop_it2);
                     Cost cost = schedule_cost_function->calculateCost(schedule);
-                    if (cost > best_cost) {
+                    if (cost < best_cost) {
                         best_cost = cost;
                         changed = true;
                     } else {
