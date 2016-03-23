@@ -18,7 +18,7 @@ namespace Scheduler
 
         const auto &runs = schedule->getRuns();
         for (auto run_it = runs.begin(); run_it != runs.end(); ++run_it) {
-            optimize(schedule, std::distance(run_it, runs.end()));
+            optimize(schedule, std::distance(run_it, runs.end() - 1));
         }
 	}
 
