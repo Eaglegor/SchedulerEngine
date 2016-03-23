@@ -16,7 +16,7 @@ namespace Scheduler
 		if (!schedule_cost_function) return; // We don't have a metric to optimize - so we can't
 
         const auto &runs = schedule->getRuns();
-        for (auto run_it = runs.end(); run_it != runs.end(); ++run_it) {
+        for (auto run_it = runs.begin(); run_it != runs.end(); ++run_it) {
             optimize(schedule, std::distance(runs.end(), run_it));
         }
 	}
