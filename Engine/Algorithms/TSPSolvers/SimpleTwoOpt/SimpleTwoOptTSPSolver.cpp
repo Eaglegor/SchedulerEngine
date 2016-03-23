@@ -3,6 +3,7 @@
 #include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
 #include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
 #include <Engine/SceneManager/Run.h>
+#include <Engine/SceneEditor/SceneEditor.h>
 
 namespace Scheduler
 {
@@ -31,17 +32,14 @@ namespace Scheduler
         Cost best_cost = schedule_cost_function->calculateCost(run_ptr->getSchedule());
         for (auto stop_it1 = stops.begin(); stop_it1 != stops.end() - 1; ++stop_it1) {
             for (auto stop_it2 = stop_it1 + 1; stop_it2 != stops.end(); ++stop_it2) {
-                SwapRunWorkStops swapAction(run_ptr, *stop_it1, *stop_it2);
-                ReverseWorkStopsSubsequence reverseAction(run_ptr, *stop_it1, *stop_it2);
-
-                swapAction.perform();
-                reverseAction.perform();
+                SceneEditor editor;
+                editor.performAction<SwapRunWorkStops>(run_ptr, *stop_it1, *stop_it2);
+                editor.performAction<ReverseWorkStopsSubsequence>(run_ptr, *stop_it1, *stop_it2);
                 Cost cost = schedule_cost_function->calculateCost(schedule);
                 if (cost > best_cost) {
                     best_cost = cost;
                 } else {
-                    reverseAction.rollback();
-                    swapAction.rollback();
+                    editor.rollbackAll();
                 }
 
             }
