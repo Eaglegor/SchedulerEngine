@@ -65,6 +65,9 @@ namespace Scheduler
 		void unallocateWorkOperationAt(size_t index);
 		void unallocateEndOperation(const Operation *operation);
 
+		Stop* replaceWorkOperation(const Operation *old_operation, const Operation *new_operation, size_t hint = 0);
+		Stop* replaceWorkOperationAt(size_t index, const Operation* new_operation);
+
 		// == framework internal ====================================
 		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
 		void setRoutingService(RoutingService *routing_service);
@@ -72,6 +75,8 @@ namespace Scheduler
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
 
 	private:
+		Stop* createStop(const Operation* operation);
+
 		size_t id;
 		Schedule* schedule;
 		const Vehicle* vehicle;

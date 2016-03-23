@@ -73,6 +73,11 @@ namespace Scheduler
         dirty_flag = true;
     }
 
+	void StopArrivalTimeActualizationAlgorithm::onStopReplaced(const Run * run, const Stop * new_stop, size_t index)
+	{
+		dirty_flag = true;
+	}
+
     void StopArrivalTimeActualizationAlgorithm::onStopRemoved(const Run *run) {
         dirty_flag = true;
     }
