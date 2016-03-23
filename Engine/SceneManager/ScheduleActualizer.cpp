@@ -28,6 +28,10 @@ namespace Scheduler
         for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithm->onStopRemoved(run);
     }
 
+	void ScheduleActualizer::onStopReplaced(const Run * run, const Stop * new_stop, size_t index)
+	{
+	}
+
     void ScheduleActualizer::onRunVehicleChanged(const Run *run, const Vehicle *vehicle) {
         for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithm->onRunVehicleChanged(run, vehicle);
     }
