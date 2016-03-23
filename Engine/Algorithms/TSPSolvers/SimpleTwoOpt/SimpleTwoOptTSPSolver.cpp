@@ -30,18 +30,23 @@ namespace Scheduler
         const auto run_ptr = runs.at(run_index);
         const auto &stops = run_ptr->getWorkStops();
         Cost best_cost = schedule_cost_function->calculateCost(run_ptr->getSchedule());
-        for (auto stop_it1 = stops.begin(); stop_it1 != stops.end() - 1; ++stop_it1) {
-            for (auto stop_it2 = stop_it1 + 1; stop_it2 != stops.end(); ++stop_it2) {
-                SceneEditor editor;
-                editor.performAction<SwapRunWorkStops>(run_ptr, *stop_it1, *stop_it2);
-                editor.performAction<ReverseWorkStopsSubsequence>(run_ptr, *(stop_it1 + 1), *(stop_it2 - 1));
-                Cost cost = schedule_cost_function->calculateCost(schedule);
-                if (cost > best_cost) {
-                    best_cost = cost;
-                } else {
-                    editor.rollbackAll();
-                }
+        bool changed = true;
+        while (changed) {
+            changed = false;
+            for (auto stop_it1 = stops.begin(); stop_it1 != stops.end() - 1; ++stop_it1) {
+                for (auto stop_it2 = stop_it1 + 1; stop_it2 != stops.end(); ++stop_it2) {
+                    SceneEditor editor;
+                    editor.performAction<SwapRunWorkStops>(run_ptr, *stop_it1, *stop_it2);
+                    editor.performAction<ReverseWorkStopsSubsequence>(run_ptr, *(stop_it1 + 1), *(stop_it2 - 1));
+                    Cost cost = schedule_cost_function->calculateCost(schedule);
+                    if (cost > best_cost) {
+                        best_cost = cost;
+                        changed = true;
+                    } else {
+                        editor.rollbackAll();
+                    }
 
+                }
             }
         }
 	}
