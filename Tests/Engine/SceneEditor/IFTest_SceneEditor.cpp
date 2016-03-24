@@ -5,12 +5,13 @@
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
 #include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
+#include <Engine/SceneManager/WorkStop.h>
 
 void checkOrder(Scheduler::Run* run, std::vector<size_t> expected_order)
 {
 	for (int i = 0; i < run->getWorkStops().size(); ++i)
 	{
-		REQUIRE(std::string("Operation") + std::to_string(expected_order[i]) == STOP_FIRST_OPERATION(run->getWorkStops()[i])->getName());
+		REQUIRE(std::string("Operation") + std::to_string(expected_order[i]) == run->getWorkStops()[i]->getOperation()->getName());
 	}
 }
 

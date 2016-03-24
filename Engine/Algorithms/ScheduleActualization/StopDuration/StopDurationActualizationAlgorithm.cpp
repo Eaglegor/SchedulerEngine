@@ -3,6 +3,11 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/SceneManager/Views/ScheduleStopsView.h>
 #include <Engine/Concepts/Duration.h>
+#include <Engine/SceneManager/StopVisitor.h>
+#include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/RunBoundaryStop.h>
+
+#include <assert.h>
 
 namespace Scheduler
 {
@@ -59,6 +64,32 @@ namespace Scheduler
 		// Doesn't affect duration
 	}
 
+	class TotalOperationDurationGetter : public StopVisitor
+	{
+	public:
+		TotalOperationDurationGetter(Duration &out_duration):out_duration(out_duration){}
+
+		virtual void dispatch(WorkStop * work_stop) override
+		{
+			assert(work_stop->getOperation());
+
+			out_duration = work_stop->getOperation()->getDuration();
+		}
+
+		virtual void dispatch(RunBoundaryStop * run_boundary_stop) override
+		{
+			Duration total_duration;
+			for (const Operation* operation : run_boundary_stop->getOperations())
+			{
+				total_duration += operation->getDuration();
+			}
+			out_duration = total_duration;
+		}
+
+	private:
+		Duration &out_duration;
+	};
+
 	void StopDurationActualizationAlgorithm::actualize()
 	{
 		if(!dirty_flag) return;
@@ -67,14 +98,10 @@ namespace Scheduler
 
 		for(Stop* stop : stops)
 		{
-			Duration total_duration;
-
-			for(const Operation* operation : stop->getOperations())
-			{
-				total_duration += operation->getDuration();
-			}
-
-			stop->setDuration(total_duration);
+			Duration operations_duration;
+			TotalOperationDurationGetter duration_getter(operations_duration);
+			stop->acceptVisitor(&duration_getter);
+			stop->setDuration(operations_duration);
 		}
 
 		dirty_flag = false;
