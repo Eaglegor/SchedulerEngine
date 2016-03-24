@@ -1,14 +1,24 @@
 #pragma once
 
 #include <cstddef>
+#include "MallocMemoryStore.h"
 #include <MemoryManager_export.h>
 
 namespace Scheduler
 {
+	class MemoryStore;
+	class PoolMemoryStore;
+
 	class MEMORYMANAGER_EXPORT MemoryManager
 	{
 	public:
-		void* allocate(size_t size);
-		void deallocate(void* ptr);
+		MallocMemoryStore* createMallocMemoryStore();
+		PoolMemoryStore* createPoolMemoryStore(size_t chunk_size, size_t initial_capacity);
+		
+		void destroyMemoryStore(MallocMemoryStore* memory_store);
+		void destroyMemoryStore(PoolMemoryStore* memory_store);
+
+	private:
+		MallocMemoryStore internal_malloc_memory_store;
 	};
 }

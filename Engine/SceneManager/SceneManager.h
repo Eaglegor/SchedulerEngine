@@ -20,11 +20,12 @@ namespace Scheduler
     class Schedule;
 	class Run;
 	class Stop;
-    class ScheduleActualizationAlgorithm;
-	class RunVehicleBinder;
 
 	class RoutingService;
 	class LoggingService;
+
+	class ScheduleActualizationAlgorithm;
+	class RunVehicleBinder;
 
     class SCENEMANAGER_EXPORT SceneManager
     {
