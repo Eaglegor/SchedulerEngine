@@ -19,10 +19,6 @@ namespace Scheduler
 
 	const RunStopsView::iterator & RunStopsView::end() const
 	{
-		if (end_iterator.index() < run->getWorkStops().size() + 2)
-		{
-			end_iterator = iterator(run, run->getWorkStops().size() + 2);
-		}
 		return end_iterator;
 	}
 
@@ -143,10 +139,6 @@ namespace Scheduler
 
 	const ConstRunStopsView::iterator & ConstRunStopsView::end() const
 	{
-		if (end_iterator.index() < run->getWorkStops().size() + 2)
-		{
-			end_iterator = iterator(run, run->getWorkStops().size() + 2);
-		}
 		return end_iterator;
 	}
 
