@@ -2,7 +2,7 @@
 
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
-#include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/WorkStop.h>
 #include <assert.h>
 
 namespace Scheduler
@@ -34,22 +34,11 @@ namespace Scheduler
 
 		while(ia < ib)
 		{
-			const Operation* oa = *(r->getWorkStops()[ia]->getOperations().begin());
-			const Operation* ob = *(r->getWorkStops()[ib]->getOperations().begin());
+			const Operation* oa = r->getWorkStops()[ia]->getOperation();
+			const Operation* ob = r->getWorkStops()[ib]->getOperation();
 
-			r->unallocateWorkOperationAt(std::max(ia, ib));
-			r->unallocateWorkOperationAt(std::min(ia, ib));
-
-			if (ia > ib)
-			{
-				r->allocateWorkOperation(oa, ib);
-				r->allocateWorkOperation(ob, ia);
-			}
-			else
-			{
-				r->allocateWorkOperation(ob, ia);
-				r->allocateWorkOperation(oa, ib);
-			}
+			r->replaceWorkOperationAt(ia, ob);
+			r->replaceWorkOperationAt(ib, oa);
 
 			++ia;
 			--ib;

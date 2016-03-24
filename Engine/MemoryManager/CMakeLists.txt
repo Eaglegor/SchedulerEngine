@@ -1,6 +1,10 @@
 add_library(MemoryManager SHARED
     MemoryManager.h MemoryManager.cpp
-	Allocator.h
+	MemoryStore.h
+    MallocAllocator.h
+    MallocMemoryStore.h MallocMemoryStore.cpp
+    PoolMemoryStore.h PoolMemoryStore.cpp
+    ObjectSizes.h
 )
 
 set_target_properties(MemoryManager PROPERTIES FOLDER "Engine")

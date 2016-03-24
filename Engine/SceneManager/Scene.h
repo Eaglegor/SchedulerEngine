@@ -20,7 +20,7 @@ namespace Scheduler
     class Attribute;
     class Schedule;
 	class Run;
-	class Stop;
+	class WorkStop;
 	class LoggingService;
 
 	class RoutingService;
@@ -81,7 +81,7 @@ namespace Scheduler
         void setVehiclesFactory(SceneObjectsFactory<Vehicle> *factory);
         void setSchedulesFactory(SceneObjectsFactory<Schedule> *factory);
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
-		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
+		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 
 		void setRoutingService(RoutingService *routing_service);
 
@@ -106,7 +106,7 @@ namespace Scheduler
 		SceneObjectsFactory<Schedule> *schedules_factory;
 
 		SceneObjectsFactory<Run> *runs_factory;
-		SceneObjectsFactory<Stop> *stops_factory;
+		SceneObjectsFactory<WorkStop> *stops_factory;
 
 		Factory<ScheduleActualizationAlgorithm> *schedule_actualization_algorithms_factory;
 		Factory<RunVehicleBinder> *run_vehicle_binders_factory;

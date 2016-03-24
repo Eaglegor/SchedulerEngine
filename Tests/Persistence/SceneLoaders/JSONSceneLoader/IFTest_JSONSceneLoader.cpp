@@ -190,20 +190,20 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(run1->getStartStop()->getOperations().empty());
 			REQUIRE(run1->getWorkStops().size() == 3);
 			{
-				Stop* stop1 = run1->getWorkStops()[0];
-				REQUIRE((*stop1->getOperations().begin()) == scene->getOrders()[0]->getWorkOperations()[0]);
+				WorkStop* stop1 = run1->getWorkStops()[0];
+				REQUIRE(stop1->getOperation() == scene->getOrders()[0]->getWorkOperations()[0]);
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop1->getAllocationTime().getStartTime() - Units::hours_minutes(8, 0) == TimePoint(0));
 				//REQUIRE(stop1->getAllocationTime().getEndTime() - Units::hours_minutes(8, 3) == TimePoint(0));
 
-				Stop* stop2 = run1->getWorkStops()[1];
-				REQUIRE((*stop2->getOperations().begin()) == scene->getOrders()[1]->getWorkOperations()[0]);
+				WorkStop* stop2 = run1->getWorkStops()[1];
+				REQUIRE(stop2->getOperation() == scene->getOrders()[1]->getWorkOperations()[0]);
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop2->getAllocationTime().getStartTime() - Units::hours_minutes(9, 0) == TimePoint(0));
 				//REQUIRE(stop2->getAllocationTime().getEndTime() - Units::hours_minutes(9, 10) == TimePoint(0));
 
-				Stop* stop3 = run1->getWorkStops()[2];
-				REQUIRE((*stop3->getOperations().begin()) == scene->getOrders()[1]->getWorkOperations()[1]);
+				WorkStop* stop3 = run1->getWorkStops()[2];
+				REQUIRE(stop3->getOperation() == scene->getOrders()[1]->getWorkOperations()[1]);
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop3->getAllocationTime().getStartTime() - Units::hours_minutes(10, 0) == TimePoint(0));
 				//REQUIRE(stop3->getAllocationTime().getEndTime() - Units::hours_minutes(11, 10) == TimePoint(0));

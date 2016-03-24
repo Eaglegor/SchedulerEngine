@@ -32,6 +32,7 @@ namespace Scheduler
 
         void onStopAdded(const Run* run, const Stop* stop, size_t index);
         void onStopRemoved(const Run* run);
+		void onStopReplaced(const Run* run, const Stop* new_stop, size_t index);
         void onRunVehicleChanged(const Run* run, const Vehicle* vehicle);
 
         void onRunAdded(const Run* run, size_t index);

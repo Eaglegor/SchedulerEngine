@@ -7,52 +7,141 @@
 namespace Scheduler
 {
 
-	ScheduleStopsView::ScheduleStopsView(Schedule *schedule)
+	ScheduleStopsView::ScheduleStopsView(Schedule *schedule):
+	schedule(schedule),
+	begin_iterator(*this),
+	end_iterator(*this, size())
 	{
-		for(Run* r : schedule->getRuns())
-		{
-			RunStopsView run_stops_view(r);
-			std::copy(run_stops_view.begin(), run_stops_view.end(), std::back_inserter(stops));
-		}
 	}
 
 	const Stop *ScheduleStopsView::operator[](size_t index) const
 	{
-		return stops[index];
+		size_t index_left = index;
+		for (Run* run : schedule->getRuns())
+		{
+			RunStopsView view(run);
+			if (view.size() >= index_left)
+			{
+				return view[index_left];
+			}
+			else index_left -= view.size();
+		}
+		return nullptr;
 	}
 
 	Stop *ScheduleStopsView::operator[](size_t index)
 	{
-		return stops[index];
+		size_t index_left = index;
+		for (Run* run : schedule->getRuns())
+		{
+			RunStopsView view(run);
+			if (view.size() >= index_left)
+			{
+				return view[index_left];
+			}
+			else index_left -= view.size();
+		}
+		return nullptr;
 	}
 
-	std::vector<Stop *>::iterator ScheduleStopsView::begin()
+	const ScheduleStopsView::iterator & ScheduleStopsView::begin()
 	{
-		return stops.begin();
+		return begin_iterator;
 	}
 
-	std::vector<Stop *>::iterator ScheduleStopsView::end()
+	const ScheduleStopsView::iterator & ScheduleStopsView::end()
 	{
-		return stops.end();
-	}
-
-	std::vector<Stop *>::const_iterator ScheduleStopsView::begin() const
-	{
-		return stops.begin();
-	}
-
-	std::vector<Stop *>::const_iterator ScheduleStopsView::end() const
-	{
-		return stops.end();
+		return end_iterator;
 	}
 
 	size_t ScheduleStopsView::size() const
 	{
-		return stops.size();
+		size_t sum_size = 0;
+		for (Run* run : schedule->getRuns())
+		{
+			sum_size += RunStopsView(run).size();
+		}
+		return sum_size;
 	}
 
 	bool ScheduleStopsView::empty() const
 	{
-		return stops.empty();
+		return schedule->getRuns().empty();
 	}
+
+
+	ScheduleStopsView::iterator::iterator(ScheduleStopsView& view) :
+		schedule_view(view),
+		current_index(0)
+	{
+	
+	}
+
+	ScheduleStopsView::iterator::iterator(ScheduleStopsView& view, size_t current_index):
+		schedule_view(view),
+		current_index(current_index)
+	{
+
+	}
+
+	ScheduleStopsView::iterator::iterator(const ScheduleStopsView::iterator& rhs) :
+		schedule_view(rhs.schedule_view),
+		current_index(rhs.current_index)
+	{
+	
+	}
+
+	ScheduleStopsView::iterator& ScheduleStopsView::iterator::operator = (const ScheduleStopsView::iterator& rhs)
+	{
+		this->schedule_view = rhs.schedule_view;
+		this->current_index = rhs.current_index;
+		return *this;
+	}
+
+	ScheduleStopsView::iterator& ScheduleStopsView::iterator::operator++()
+	{
+		++this->current_index;
+		return *this;
+	}
+
+	ScheduleStopsView::iterator& ScheduleStopsView::iterator::operator--() 
+	{
+		--this->current_index;
+		return *this;
+	}
+
+	ScheduleStopsView::iterator ScheduleStopsView::iterator::operator++(int)
+	{
+		iterator iter(*this);
+		++this->current_index;
+		return iter;
+	}
+
+	ScheduleStopsView::iterator ScheduleStopsView::iterator::operator--(int) 
+	{
+		iterator iter(*this);
+		--this->current_index;
+		return iter;
+	}
+
+	bool ScheduleStopsView::iterator::operator==(const iterator & iter) const
+	{
+		return &iter.schedule_view == &this->schedule_view && iter.current_index == this->current_index;
+	}
+
+	bool ScheduleStopsView::iterator::operator!=(const iterator & iter) const
+	{
+		return !(*this == iter);
+	}
+	
+	Stop* ScheduleStopsView::iterator::operator*() 
+	{
+		return schedule_view[current_index];
+	}
+
+	size_t ScheduleStopsView::iterator::index() const 
+	{
+		return current_index;
+	}
+
 }

@@ -4,6 +4,7 @@
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "SceneObjectsFactory.h"
 #include "Operation.h"
+#include "RunBoundaryStop.h"
 
 #include <SceneManager_export.h>
 
@@ -11,7 +12,7 @@ namespace Scheduler
 {
 	class Schedule;
 	class Vehicle;
-	class Stop;
+	class WorkStop;
 	class RoutingService;
 	class RoutingProfile;
 	class ScheduleActualizer;
@@ -43,35 +44,38 @@ namespace Scheduler
 
 		void setVehicle(const Vehicle *vehicle);
 
-		const Stop* getStartStop() const;
-		Stop* getStartStop();
+		const RunBoundaryStop* getStartStop() const;
+		RunBoundaryStop* getStartStop();
 
-		const ImmutableVector<Stop*>& getWorkStops() const;
-		ImmutableVector<Stop*>& getWorkStops();
+		const ImmutableVector<WorkStop*>& getWorkStops() const;
+		ImmutableVector<WorkStop*>& getWorkStops();
 
-		const Stop* getEndStop() const;
-		Stop* getEndStop();
+		const RunBoundaryStop* getEndStop() const;
+		RunBoundaryStop* getEndStop();
 
 		const Location& getStartLocation() const;
 		const Location& getEndLocation() const;
 
-		Stop* allocateStartOperation(const Operation *operation);
-		Stop* allocateWorkOperation(const Operation *operation, size_t index);
-		Stop* allocateWorkOperation(const Operation *operation);
-		Stop* allocateEndOperation(const Operation *operation);
+		RunBoundaryStop* allocateStartOperation(const Operation *operation);
+		WorkStop* allocateWorkOperation(const Operation *operation, size_t index);
+		WorkStop* allocateWorkOperation(const Operation *operation);
+		RunBoundaryStop* allocateEndOperation(const Operation *operation);
 
 		void unallocateStartOperation(const Operation *operation);
 		void unallocateWorkOperation(const Operation *operation, size_t hint = 0);
 		void unallocateWorkOperationAt(size_t index);
 		void unallocateEndOperation(const Operation *operation);
 
-		// == framework internal ====================================
-		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
-		void setRoutingService(RoutingService *routing_service);
+		Stop* replaceWorkOperation(const Operation *old_operation, const Operation *new_operation, size_t hint = 0);
+		Stop* replaceWorkOperationAt(size_t index, const Operation* new_operation);
 
+		// == framework internal ====================================
+		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
 
 	private:
+		WorkStop* createWorkStop(const Operation* operation);
+
 		size_t id;
 		Schedule* schedule;
 		const Vehicle* vehicle;
@@ -79,18 +83,19 @@ namespace Scheduler
 		Location start_location;
 		Location end_location;
 
-		Stop* start_stop;
-		std::vector<Stop*> work_stops;
-		Stop* end_stop;
+		RunBoundaryStop start_stop;
+		std::vector<WorkStop*> work_stops;
+		RunBoundaryStop end_stop;
 
-		SceneObjectsFactory<Stop> *stops_factory;
-		RoutingService *routing_service;
+		SceneObjectsFactory<WorkStop> *stops_factory;
 
 		ScheduleActualizer* schedule_actualizer;
 
+		
+		
+
 	private:
-		void recalculateRoute(Stop *from, Stop *to);
-		void recalculateRoutes();
-		void recalculateWorkStopRoutes(size_t index);
+		void invalidateRoutes();
+		void invalidateWorkStopRoutes(size_t index);
 	};
 }

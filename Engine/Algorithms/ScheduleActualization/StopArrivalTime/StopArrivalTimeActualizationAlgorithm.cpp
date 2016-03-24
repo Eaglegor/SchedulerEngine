@@ -3,6 +3,7 @@
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/Algorithms/TimeWindowSelectors/FirstTimeWindowSelector/FirstTimeWindowSelector.h>
+#include <algorithm>
 
 namespace Scheduler
 {
@@ -72,6 +73,11 @@ namespace Scheduler
     void StopArrivalTimeActualizationAlgorithm::onStopAdded(const Run *run, const Stop *stop, size_t index) {
         dirty_flag = true;
     }
+
+	void StopArrivalTimeActualizationAlgorithm::onStopReplaced(const Run * run, const Stop * new_stop, size_t index)
+	{
+		dirty_flag = true;
+	}
 
     void StopArrivalTimeActualizationAlgorithm::onStopRemoved(const Run *run) {
         dirty_flag = true;

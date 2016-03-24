@@ -12,6 +12,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/WorkStop.h>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>

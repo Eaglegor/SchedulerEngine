@@ -1,75 +1,242 @@
 #include "RunStopsView.h"
 #include <Engine/SceneManager/Run.h>
-
+#include <Engine/SceneManager/WorkStop.h>
 
 namespace Scheduler
 {
-	RunStopsView::RunStopsView(Run *run) {
-		stops.push_back(run->getStartStop());
-		for(Stop* stop: run->getWorkStops())
-		{
-			stops.push_back(stop);
-		}
-		stops.push_back(run->getEndStop());
+
+	RunStopsView::RunStopsView(Run * run) :
+		run(run),
+		begin_iterator(run, 0),
+		end_iterator(run, run->getWorkStops().size() + 2)
+	{
 	}
 
-	std::vector<Stop *>::iterator RunStopsView::begin() {
-		return stops.begin();
+	const RunStopsView::iterator & RunStopsView::begin() const
+	{
+		return begin_iterator;
 	}
 
-	std::vector<Stop *>::iterator RunStopsView::end() {
-		return stops.end();
+	const RunStopsView::iterator & RunStopsView::end() const
+	{
+		return end_iterator;
 	}
 
-	std::vector<Stop *>::const_iterator RunStopsView::begin() const {
-		return stops.begin();
+	size_t RunStopsView::size() const
+	{
+		return run->getWorkStops().size() + 2;
 	}
 
-	std::vector<Stop *>::const_iterator RunStopsView::end() const {
-		return stops.end();
+	bool RunStopsView::empty() const
+	{
+		return false;
 	}
 
-	size_t RunStopsView::size() const {
-		return stops.size();
+	Stop * RunStopsView::operator[](size_t index)
+	{
+		return *(begin() + index);
 	}
 
-	bool RunStopsView::empty() const {
-		return stops.empty();
+	RunStopsView::iterator::iterator(Run * run) :
+		run(run),
+		current_index(0)
+	{
+	}
+
+	RunStopsView::iterator::iterator(Run * run, size_t current_index) :
+		run(run),
+		current_index(current_index)
+	{
+	}
+
+	RunStopsView::iterator::iterator(const iterator & rhs) :
+		run(rhs.run),
+		current_index(rhs.current_index)
+	{
+	}
+
+	Stop * RunStopsView::iterator::operator*()
+	{
+		if (current_index == 0) return run->getStartStop();
+		if (current_index > run->getWorkStops().size()) return run->getEndStop();
+		return run->getWorkStops()[current_index - 1];
+	}
+
+	RunStopsView::iterator & RunStopsView::iterator::operator=(const iterator & rhs)
+	{
+		this->run = rhs.run;
+		this->current_index = rhs.current_index;
+		return *this;
+	}
+
+	RunStopsView::iterator & RunStopsView::iterator::operator--()
+	{
+		--this->current_index;
+		return *this;
+	}
+
+	RunStopsView::iterator & RunStopsView::iterator::operator++()
+	{
+		++this->current_index;
+		return *this;
+	}
+
+	RunStopsView::iterator RunStopsView::iterator::operator--(int)
+	{
+		iterator iter(*this);
+		--this->current_index;
+		return iter;
+	}
+
+	RunStopsView::iterator RunStopsView::iterator::operator++(int)
+	{
+		iterator iter(*this);
+		++this->current_index;
+		return iter;
+	}
+
+	RunStopsView::iterator RunStopsView::iterator::operator+(size_t offset) const
+	{
+		return iterator(run, current_index + offset);
+	}
+
+	RunStopsView::iterator RunStopsView::iterator::operator-(size_t offset) const
+	{
+		return iterator(run, current_index - offset);
+	}
+
+	bool RunStopsView::iterator::operator==(const iterator & rhs)
+	{
+		return this->run == rhs.run && this->current_index == rhs.current_index;
+	}
+
+	bool RunStopsView::iterator::operator!=(const iterator & rhs)
+	{
+		return !(*this == rhs);
+	}
+
+	size_t RunStopsView::iterator::index() const
+	{
+		return current_index;
 	}
 
 
 
 
-	ConstRunStopsView::ConstRunStopsView(const Run *run) {
-		stops.push_back(run->getStartStop());
-		for (Stop* stop : run->getWorkStops())
-		{
-			stops.push_back(stop);
-		}
-		stops.push_back(run->getEndStop());
+
+
+	ConstRunStopsView::ConstRunStopsView(const Run * run) :
+		run(run),
+		begin_iterator(run, 0),
+		end_iterator(run, run->getWorkStops().size() + 2)
+	{
 	}
 
-	std::vector<const Stop *>::iterator ConstRunStopsView::begin() {
-		return stops.begin();
+	const ConstRunStopsView::iterator & ConstRunStopsView::begin() const
+	{
+		return begin_iterator;
 	}
 
-	std::vector<const Stop *>::iterator ConstRunStopsView::end() {
-		return stops.end();
+	const ConstRunStopsView::iterator & ConstRunStopsView::end() const
+	{
+		return end_iterator;
 	}
 
-	std::vector<const Stop *>::const_iterator ConstRunStopsView::begin() const {
-		return stops.begin();
+	size_t ConstRunStopsView::size() const
+	{
+		return run->getWorkStops().size() + 2;
 	}
 
-	std::vector<const Stop *>::const_iterator ConstRunStopsView::end() const {
-		return stops.end();
+	bool ConstRunStopsView::empty() const
+	{
+		return false;
 	}
 
-	size_t ConstRunStopsView::size() const {
-		return stops.size();
+	const Stop * ConstRunStopsView::operator[](size_t index)
+	{
+		return *(begin() + index);
 	}
 
-	bool ConstRunStopsView::empty() const {
-		return stops.empty();
+	ConstRunStopsView::iterator::iterator(const Run * run) :
+		run(run),
+		current_index(0)
+	{
+	}
+
+	ConstRunStopsView::iterator::iterator(const Run * run, size_t current_index) :
+		run(run),
+		current_index(current_index)
+	{
+	}
+
+	ConstRunStopsView::iterator::iterator(const iterator & rhs) :
+		run(rhs.run),
+		current_index(rhs.current_index)
+	{
+	}
+
+	const Stop * ConstRunStopsView::iterator::operator*()
+	{
+		if (current_index == 0) return run->getStartStop();
+		if (current_index > run->getWorkStops().size()) return run->getEndStop();
+		return run->getWorkStops()[current_index - 1];
+	}
+
+	ConstRunStopsView::iterator & ConstRunStopsView::iterator::operator=(const iterator & rhs)
+	{
+		this->run = rhs.run;
+		this->current_index = rhs.current_index;
+		return *this;
+	}
+
+	ConstRunStopsView::iterator & ConstRunStopsView::iterator::operator--()
+	{
+		--this->current_index;
+		return *this;
+	}
+
+	ConstRunStopsView::iterator & ConstRunStopsView::iterator::operator++()
+	{
+		++this->current_index;
+		return *this;
+	}
+
+	ConstRunStopsView::iterator ConstRunStopsView::iterator::operator--(int)
+	{
+		iterator iter(*this);
+		--this->current_index;
+		return iter;
+	}
+
+	ConstRunStopsView::iterator ConstRunStopsView::iterator::operator++(int)
+	{
+		iterator iter(*this);
+		++this->current_index;
+		return iter;
+	}
+
+	ConstRunStopsView::iterator ConstRunStopsView::iterator::operator+(size_t offset) const
+	{
+		return iterator(run, current_index + offset);
+	}
+
+	ConstRunStopsView::iterator ConstRunStopsView::iterator::operator-(size_t offset) const
+	{
+		return iterator(run, current_index - offset);
+	}
+
+	bool ConstRunStopsView::iterator::operator==(const iterator & rhs)
+	{
+		return this->run == rhs.run && this->current_index == rhs.current_index;
+	}
+
+	bool ConstRunStopsView::iterator::operator!=(const iterator & rhs)
+	{
+		return !(*this == rhs);
+	}
+
+	size_t ConstRunStopsView::iterator::index() const
+	{
+		return current_index;
 	}
 }
