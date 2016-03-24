@@ -12,7 +12,10 @@ namespace Scheduler
 		for(Run* r : schedule->getRuns())
 		{
 			RunStopsView run_stops_view(r);
-			std::copy(run_stops_view.begin(), run_stops_view.end(), std::back_inserter(stops));
+			for (Stop* stop : run_stops_view)
+			{
+				stops.push_back(stop);
+			}
 		}
 	}
 
