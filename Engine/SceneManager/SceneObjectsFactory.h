@@ -9,15 +9,15 @@ namespace Scheduler
     class SceneObjectsFactory
     {
     public:
-		SceneObjectsFactory(MemoryManager* memory_manager): 
+		SceneObjectsFactory(MemoryManager* memory_manager, size_t initial_capacity = 100): 
 			counter(0),
-			backend_factory(memory_manager)
+			backend_factory(memory_manager, sizeof(T), initial_capacity)
 		{}
 
         template<typename... Args>
         T* createObject(Args&&... args)
         {
-			return backend_factory.createObject<T>(counter++, std::forward<Args>(args)...);
+			return backend_factory.template createObject<T>(counter++, std::forward<Args>(args)...);
         }
 
         void destroyObject(T *object)

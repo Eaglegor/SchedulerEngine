@@ -2,16 +2,17 @@
 #include <Engine/Utils/Collections/Algorithms.h>
 #include <assert.h>
 #include "Strategy.h"
+#include <Engine/MemoryManager/ObjectSizes.h>
 
 namespace Scheduler
 {
 	StrategiesManager::StrategiesManager(MemoryManager* memory_manager):
-		vrp_solvers_factory(memory_manager),
-		tsp_solvers_factory(memory_manager),
-		run_cost_functions_factory(memory_manager),
-		schedule_cost_functions_factory(memory_manager),
-		scene_cost_functions_factory(memory_manager),
-		strategies_factory(memory_manager)
+		vrp_solvers_factory(memory_manager, Pool::MEDIUM_OBJECT, 10),
+		tsp_solvers_factory(memory_manager, Pool::MEDIUM_OBJECT, 10),
+		run_cost_functions_factory(memory_manager, Pool::SMALL_OBJECT, 5),
+		schedule_cost_functions_factory(memory_manager, Pool::SMALL_OBJECT, 5),
+		scene_cost_functions_factory(memory_manager, Pool::SMALL_OBJECT, 5),
+		strategies_factory(memory_manager, Pool::HUGE_OBJECT, 5)
 	{
 	}
 
