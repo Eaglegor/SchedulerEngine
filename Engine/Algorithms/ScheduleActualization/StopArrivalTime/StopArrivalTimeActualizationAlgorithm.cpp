@@ -3,6 +3,7 @@
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/Algorithms/TimeWindowSelectors/FirstTimeWindowSelector/FirstTimeWindowSelector.h>
+#include <algorithm>
 
 namespace Scheduler
 {

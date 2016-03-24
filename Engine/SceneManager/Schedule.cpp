@@ -136,7 +136,7 @@ namespace Scheduler {
 		return shift_end_location_specified;
 	}
 
-	void Schedule::setStopsFactory(SceneObjectsFactory<Stop> *factory)
+	void Schedule::setStopsFactory(SceneObjectsFactory<WorkStop> *factory)
 	{
 		this->stops_factory = factory;
 	}

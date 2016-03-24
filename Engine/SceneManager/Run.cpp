@@ -5,6 +5,7 @@
 #include <Engine/Engine/Services/RoutingService.h>
 #include "Views/RunStopsView.h"
 #include "ScheduleActualizer.h"
+#include "WorkStop.h"
 
 #include <iostream>
 
@@ -16,8 +17,8 @@ namespace Scheduler {
             end_location(end_location),
             schedule(schedule),
             stops_factory(nullptr),
-            start_stop(nullptr),
-            end_stop(nullptr),
+            start_stop(start_location, this),
+            end_stop(end_location, this),
             vehicle(nullptr),
             schedule_actualizer(nullptr)
     {
@@ -39,28 +40,28 @@ namespace Scheduler {
         return vehicle;
     }
 
-    const Stop *Run::getStartStop() const {
-        return start_stop;
+    const RunBoundaryStop *Run::getStartStop() const {
+        return &start_stop;
     }
 
-    Stop *Run::getStartStop() {
-        return start_stop;
+    RunBoundaryStop *Run::getStartStop() {
+        return &start_stop;
     }
 
-    const ImmutableVector<Stop*>& Run::getWorkStops() const {
+    const ImmutableVector<WorkStop*>& Run::getWorkStops() const {
         return work_stops;
     }
 
-    ImmutableVector<Stop *>& Run::getWorkStops() {
+    ImmutableVector<WorkStop *>& Run::getWorkStops() {
         return work_stops;
     }
 
-    const Stop *Run::getEndStop() const {
-        return end_stop;
+    const RunBoundaryStop *Run::getEndStop() const {
+        return &end_stop;
     }
 
-    Stop *Run::getEndStop() {
-        return end_stop;
+	RunBoundaryStop *Run::getEndStop() {
+        return &end_stop;
     }
 
     const Location &Run::getStartLocation() const {
@@ -71,21 +72,21 @@ namespace Scheduler {
         return end_location;
     }
 
-    Stop *Run::allocateStartOperation(const Operation *operation) {
-        start_stop->addOperation(operation);
-        return start_stop;
+    RunBoundaryStop *Run::allocateStartOperation(const Operation *operation) {
+        start_stop.addOperation(operation);
+        return &start_stop;
     }
 
-    Stop *Run::allocateWorkOperation(const Operation *operation) {
+    WorkStop *Run::allocateWorkOperation(const Operation *operation) {
         return allocateWorkOperation(operation, work_stops.size());
     }
 
-    Stop *Run::allocateWorkOperation(const Operation *operation, size_t index) {
+    WorkStop *Run::allocateWorkOperation(const Operation *operation, size_t index) {
         assert(stops_factory);
         assert(index >= 0 && index <= work_stops.size());
         if (!stops_factory) return nullptr;
 
-		Stop *stop = createStop(operation);
+		WorkStop *stop = createWorkStop(operation);
 
         work_stops.insert(work_stops.begin() + index, stop);
 
@@ -96,25 +97,24 @@ namespace Scheduler {
         return stop;
     }
 
-    Stop *Run::allocateEndOperation(const Operation *operation) {
-        end_stop->addOperation(operation);
-        return end_stop;
+    RunBoundaryStop *Run::allocateEndOperation(const Operation *operation) {
+        end_stop.addOperation(operation);
+        return &end_stop;
     }
 
     void Run::unallocateStartOperation(const Operation *operation) {
-        assert(start_stop);
-        start_stop->removeOperation(operation);
+        start_stop.removeOperation(operation);
     }
 
     void Run::unallocateWorkOperation(const Operation *operation, size_t hint) {
         for (size_t i = hint; i < work_stops.size(); ++i) {
-            if (work_stops[i]->containsOperation(operation)) {
+            if (work_stops[i]->getOperation() == operation) {
 				unallocateWorkOperationAt(i);
                 return;
             }
         }
         for (size_t i = 0; i < hint; ++i) {
-            if (work_stops[i]->containsOperation(operation)) {
+            if (work_stops[i]->getOperation() == operation) {
 				unallocateWorkOperationAt(i);
 				return;
             }
@@ -127,32 +127,30 @@ namespace Scheduler {
         stops_factory->destroyObject(work_stops[index]);
         work_stops.erase(work_stops.begin() + index);
 
-        if(work_stops.empty()) start_stop->invalidateRoute();
+        if(work_stops.empty()) start_stop.invalidateRoute();
         else invalidateWorkStopRoutes(index > 0 ? index - 1 : 0);
 
         schedule_actualizer->onStopRemoved(this);
     }
 
     void Run::unallocateEndOperation(const Operation *operation) {
-        assert(end_stop);
-
-        end_stop->removeOperation(operation);
+        end_stop.removeOperation(operation);
     }
 
 	Stop * Run::replaceWorkOperation(const Operation * old_operation, const Operation * new_operation, size_t hint)
 	{
 		for (size_t i = hint; i < work_stops.size(); ++i)
 		{
-			Stop* stop = work_stops[i];
-			if (*stop->getOperations().begin() == old_operation)
+			WorkStop* stop = work_stops[i];
+			if (stop->getOperation() == old_operation)
 			{
 				return replaceWorkOperationAt(i, new_operation);
 			}
 		}
 		for (size_t i = 0; i < hint; ++i)
 		{
-			Stop* stop = work_stops[i];
-			if (*stop->getOperations().begin() == old_operation)
+			WorkStop* stop = work_stops[i];
+			if (stop->getOperation() == old_operation)
 			{
 				return replaceWorkOperationAt(i, new_operation);
 			}
@@ -168,7 +166,7 @@ namespace Scheduler {
 
 		stops_factory->destroyObject(work_stops[index]);
 
-		Stop* stop = createStop(new_operation);
+		WorkStop* stop = createWorkStop(new_operation);
 
 		work_stops[index] = stop;
 
@@ -179,16 +177,8 @@ namespace Scheduler {
 		return stop;
 	}
 
-    void Run::setStopsFactory(SceneObjectsFactory<Stop> *factory) {
+    void Run::setStopsFactory(SceneObjectsFactory<WorkStop> *factory) {
         this->stops_factory = factory;
-
-        start_stop = stops_factory->createObject(start_location, this);
-        end_stop = stops_factory->createObject(end_location, this);
-
-		if(schedule_actualizer) start_stop->setScheduleActualizer(schedule_actualizer);
-		if(schedule_actualizer) end_stop->setScheduleActualizer(schedule_actualizer);
-
-		start_stop->invalidateRoute();
     }
 
     void Run::setVehicle(const Vehicle *vehicle) {
@@ -226,7 +216,7 @@ namespace Scheduler {
         if (index > 0) {
 			work_stops[index - 1]->invalidateRoute();
         } else {
-			start_stop->invalidateRoute();
+			start_stop.invalidateRoute();
         }
 
         if (index < work_stops.size() - 1) {
@@ -239,7 +229,7 @@ namespace Scheduler {
     Run::~Run() {
         assert(stops_factory);
 
-        for(Stop* stop : RunStopsView(this))
+        for(WorkStop* stop : work_stops)
         {
             stops_factory->destroyObject(stop);
         }
@@ -250,15 +240,15 @@ namespace Scheduler {
 
         this->schedule_actualizer = actualizer;
 
-		if(start_stop) start_stop->setScheduleActualizer(actualizer);
-		if(end_stop) end_stop->setScheduleActualizer(actualizer);
+		start_stop.setScheduleActualizer(actualizer);
+		end_stop.setScheduleActualizer(actualizer);
     }
 
-	Stop* Run::createStop(const Operation * operation)
+	WorkStop* Run::createWorkStop(const Operation * operation)
 	{
-		Stop *stop = stops_factory->createObject(operation->getLocation(), this);
+		WorkStop *stop = stops_factory->createObject(operation->getLocation(), this);
 		stop->setScheduleActualizer(schedule_actualizer);
-		stop->addOperation(operation);
+		stop->setOperation(operation);
 		return stop;
 	}
 }

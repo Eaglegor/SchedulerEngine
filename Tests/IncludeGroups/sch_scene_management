@@ -7,6 +7,8 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/RunBoundaryStop.h>
 #include <Engine/SceneManager/Order.h>
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/SceneManager/Vehicle.h>

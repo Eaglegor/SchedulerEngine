@@ -1,7 +1,7 @@
 #include "SwapRunWorkStops.h"
 
 #include <Engine/SceneManager/Run.h>
-#include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <algorithm>
 #include <assert.h>
@@ -31,8 +31,8 @@ namespace Scheduler
 
 		Run* r = schedule->getRuns()[ir];
 
-		const Operation* oa = *(r->getWorkStops()[ia]->getOperations().begin());
-		const Operation* ob = *(r->getWorkStops()[ib]->getOperations().begin());
+		const Operation* oa = r->getWorkStops()[ia]->getOperation();
+		const Operation* ob = r->getWorkStops()[ib]->getOperation();
 
 		r->replaceWorkOperationAt(ia, ob);
 		r->replaceWorkOperationAt(ib, oa);

@@ -12,7 +12,7 @@
 namespace Scheduler
 {
 	class Run;
-	class Stop;
+	class WorkStop;
 	class RoutingService;
 	class LoggingService;
 	class RunVehicleBinder;
@@ -64,7 +64,7 @@ namespace Scheduler
 
 		// == framework internal ====================================
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
-		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
+		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 
 		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
 
@@ -77,7 +77,7 @@ namespace Scheduler
 		std::vector<Run*> runs;
 
 		SceneObjectsFactory<Run> *runs_factory;
-		SceneObjectsFactory<Stop> *stops_factory;
+		SceneObjectsFactory<WorkStop> *stops_factory;
 
 		bool shift_start_location_specified;
 		Location shift_start_location;

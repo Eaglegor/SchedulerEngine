@@ -30,6 +30,11 @@ add_library(SceneManager SHARED
 	Stop.h
 	Stop.cpp
 	
+	StopVisitor.h
+	
+	RunBoundaryStop.h RunBoundaryStop.cpp
+	WorkStop.h WorkStop.cpp
+	
 	Vehicle.h
 	Vehicle.cpp
 	

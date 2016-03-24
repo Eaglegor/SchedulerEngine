@@ -47,6 +47,6 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 	REQUIRE(scene->getSchedules()[0]->getRuns()[0]->getWorkStops().size() == 16);
 	for (size_t i = 0; i < 16; ++i)
 	{
-		REQUIRE(STOP_FIRST_OPERATION(scene->getSchedules()[0]->getRuns()[0]->getWorkStops()[i]) == scene->getFreeOperations()[i]);
+		REQUIRE(scene->getSchedules()[0]->getRuns()[0]->getWorkStops()[i]->getOperation() == scene->getFreeOperations()[i]);
 	}
 }
