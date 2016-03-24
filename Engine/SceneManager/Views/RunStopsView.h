@@ -18,19 +18,46 @@ namespace Scheduler
 	public:
 		RunStopsView(Run* run);
 
-		std::vector<Stop*>::iterator begin();
-		std::vector<Stop*>::iterator end();
+		class iterator
+		{
+		public:
+			explicit iterator(Run* run);
+			explicit iterator(Run* run, size_t current_index);
+			iterator(const iterator& rhs);
 
-		std::vector<Stop*>::const_iterator begin() const;
-		std::vector<Stop*>::const_iterator end() const;
+			Stop* operator*();
+			iterator& operator=(const iterator& rhs);
+			iterator& operator--();
+			iterator& operator++();
+			iterator operator--(int);
+			iterator operator++(int);
+			iterator operator+(size_t offset) const;
+			iterator operator-(size_t offset) const;
+			bool operator==(const iterator &rhs);
+			bool operator!=(const iterator &rhs);
+
+			size_t index() const;
+
+		private:
+			Run* run;
+			size_t current_index;
+		};
+
+		const iterator& begin() const;
+		const iterator& end() const;
 
 		Stop* operator[](size_t index);
 
 		size_t size() const;
 		bool empty() const;
 
+		Stop* operator[](size_t index);
+
 	private:
-		std::vector<Stop*> stops;
+		Run* run;
+
+		iterator begin_iterator;
+		mutable iterator end_iterator;
 	};
 
 	/**
