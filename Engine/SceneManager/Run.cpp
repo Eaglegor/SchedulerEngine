@@ -19,7 +19,6 @@ namespace Scheduler {
             start_stop(nullptr),
             end_stop(nullptr),
             vehicle(nullptr),
-            routing_service(nullptr),
             schedule_actualizer(nullptr)
     {
     }
@@ -92,7 +91,7 @@ namespace Scheduler {
 
         schedule_actualizer->onStopAdded(this, stop, index);
 
-        recalculateWorkStopRoutes(index);
+        invalidateWorkStopRoutes(index);
 
         return stop;
     }
@@ -128,8 +127,8 @@ namespace Scheduler {
         stops_factory->destroyObject(work_stops[index]);
         work_stops.erase(work_stops.begin() + index);
 
-        if(work_stops.empty()) recalculateRoute(start_stop, end_stop);
-        else recalculateWorkStopRoutes(index > 0 ? index - 1 : 0);
+        if(work_stops.empty()) start_stop->invalidateRoute();
+        else invalidateWorkStopRoutes(index > 0 ? index - 1 : 0);
 
         schedule_actualizer->onStopRemoved(this);
     }
@@ -175,7 +174,7 @@ namespace Scheduler {
 
 		schedule_actualizer->onStopReplaced(this, stop, index);
 
-		recalculateWorkStopRoutes(index);
+		invalidateWorkStopRoutes(index);
 
 		return stop;
 	}
@@ -189,14 +188,14 @@ namespace Scheduler {
 		if(schedule_actualizer) start_stop->setScheduleActualizer(schedule_actualizer);
 		if(schedule_actualizer) end_stop->setScheduleActualizer(schedule_actualizer);
 
-        recalculateRoute(start_stop, end_stop);
+		start_stop->invalidateRoute();
     }
 
     void Run::setVehicle(const Vehicle *vehicle) {
         if (vehicle &&
             (this->vehicle == nullptr || vehicle->getRoutingProfile() != this->vehicle->getRoutingProfile())) {
             this->vehicle = vehicle;
-            recalculateRoutes();
+            invalidateRoutes();
         }
         else {
             this->vehicle = vehicle;
@@ -204,11 +203,7 @@ namespace Scheduler {
         schedule_actualizer->onRunVehicleChanged(this, vehicle);
     }
 
-    void Run::setRoutingService(RoutingService *routing_service) {
-        this->routing_service = routing_service;
-    }
-
-    void Run::recalculateRoutes() {
+    void Run::invalidateRoutes() {
         if (vehicle == nullptr) return;
 
         RunStopsView all_stops(this);
@@ -219,34 +214,25 @@ namespace Scheduler {
         auto s2 = all_stops.begin() + 1;
 
         while (s2 != all_stops.end()) {
-            recalculateRoute(*s1, *s2);
+            (*s1)->invalidateRoute();
             ++s1;
             ++s2;
         }
     }
 
-    void Run::recalculateRoute(Stop *from, Stop *to) {
-        assert(routing_service != nullptr);
-
-        if (vehicle == nullptr) return;
-
-        from->setNextRoute(
-                routing_service->calculateRoute(from->getLocation(), to->getLocation(), vehicle->getRoutingProfile()));
-    }
-
-    void Run::recalculateWorkStopRoutes(size_t index) {
+    void Run::invalidateWorkStopRoutes(size_t index) {
         assert(index >= 0 && index < work_stops.size());
 
         if (index > 0) {
-            recalculateRoute(work_stops[index - 1], work_stops[index]);
+			work_stops[index - 1]->invalidateRoute();
         } else {
-            recalculateRoute(start_stop, work_stops[index]);
+			start_stop->invalidateRoute();
         }
 
         if (index < work_stops.size() - 1) {
-            recalculateRoute(work_stops[index], work_stops[index + 1]);
+			work_stops[index]->invalidateRoute();
         } else {
-            recalculateRoute(work_stops[index], end_stop);
+			work_stops[index]->invalidateRoute();
         }
     }
 
@@ -268,7 +254,7 @@ namespace Scheduler {
 		if(end_stop) end_stop->setScheduleActualizer(actualizer);
     }
 
-	Stop * Run::createStop(const Operation * operation)
+	Stop* Run::createStop(const Operation * operation)
 	{
 		Stop *stop = stops_factory->createObject(operation->getLocation(), this);
 		stop->setScheduleActualizer(schedule_actualizer);

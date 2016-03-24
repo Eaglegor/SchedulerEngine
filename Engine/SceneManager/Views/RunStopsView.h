@@ -24,6 +24,8 @@ namespace Scheduler
 		std::vector<Stop*>::const_iterator begin() const;
 		std::vector<Stop*>::const_iterator end() const;
 
+		Stop* operator[](size_t index);
+
 		size_t size() const;
 		bool empty() const;
 
