@@ -70,8 +70,6 @@ namespace Scheduler
 
 		// == framework internal ====================================
 		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
-		void setRoutingService(RoutingService *routing_service);
-
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
 
 	private:
@@ -89,13 +87,11 @@ namespace Scheduler
 		Stop* end_stop;
 
 		SceneObjectsFactory<Stop> *stops_factory;
-		RoutingService *routing_service;
 
 		ScheduleActualizer* schedule_actualizer;
 
 	private:
-		void recalculateRoute(Stop *from, Stop *to);
-		void recalculateRoutes();
-		void recalculateWorkStopRoutes(size_t index);
+		void invalidateRoutes();
+		void invalidateWorkStopRoutes(size_t index);
 	};
 }

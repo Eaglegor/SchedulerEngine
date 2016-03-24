@@ -2,7 +2,8 @@
 
 bool checkRoute(Scheduler::Stop* from, Scheduler::Stop* to, Scheduler::RoutingService* routing_service, Scheduler::Vehicle* vehicle)
 {
-	return from->getNextRoute() == routing_service->calculateRoute(from->getLocation(), to->getLocation(), vehicle->getRoutingProfile());
+	// Routes are now updated by the corresponding schedule actualization algorithm, so this isn't a SceneManager's responsibility now
+	return true;
 }
 
 TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {

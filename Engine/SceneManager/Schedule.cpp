@@ -10,7 +10,6 @@ namespace Scheduler {
             id(id),
             performer(performer),
 			runs_factory(nullptr),
-			routing_service(nullptr),
 			shift_start_location_specified(false),
 			shift_end_location_specified(false),
 			schedule_actualizer(this),
@@ -58,7 +57,6 @@ namespace Scheduler {
 
 		Run* r = runs_factory->createObject(from, to, this);
 
-		r->setRoutingService(routing_service);
 		r->setStopsFactory(stops_factory);
 		r->setScheduleActualizer(&schedule_actualizer);
 
@@ -88,10 +86,6 @@ namespace Scheduler {
 		runs_factory->destroyObject(r);
 
 		schedule_actualizer.onRunRemoved();
-	}
-
-	void Schedule::setRoutingService(RoutingService *routing_service) {
-		this->routing_service = routing_service;
 	}
 
 	Schedule::~Schedule() {

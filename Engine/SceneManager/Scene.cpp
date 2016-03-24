@@ -96,7 +96,6 @@ namespace Scheduler {
         Schedule* schedule = schedules_factory->createObject(performer);
 		schedule->setRunsFactory(runs_factory);
 		schedule->setStopsFactory(stops_factory);
-		schedule->setRoutingService(routing_service);
         schedule->setRunVehicleBinder(run_vehicle_binder);
 
         ScheduleActualizer* actualizer = schedule->getScheduleActualizer();

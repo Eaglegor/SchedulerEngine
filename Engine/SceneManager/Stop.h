@@ -11,6 +11,7 @@ namespace Scheduler
 {
 	class Run;
 	class ScheduleActualizer;
+	class RouteActualizer;
 
 	/**
 		Class representing a single stop to perform some operation (e.g. delivering order or working at a customer site).
@@ -46,8 +47,13 @@ namespace Scheduler
 
 		const Location& getLocation() const;
 
+		void getPosition() const;
+
 		// == framework internal ====================================
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
+
+		void invalidateRoute();
+		bool hasActualRoute() const;
 
 	private:
 		size_t id;
@@ -60,5 +66,7 @@ namespace Scheduler
 		Run* run;
 
 		ScheduleActualizer* schedule_actualizer;
+
+		bool has_actual_route;
 	};
 }
