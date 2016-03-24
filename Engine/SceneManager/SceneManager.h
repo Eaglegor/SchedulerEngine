@@ -19,7 +19,7 @@ namespace Scheduler
     class Performer;
     class Schedule;
 	class Run;
-	class Stop;
+	class WorkStop;
 
 	class RoutingService;
 	class LoggingService;
@@ -51,7 +51,7 @@ namespace Scheduler
 		SceneObjectsFactory<Schedule> schedules_factory;
 		SceneObjectsFactory<Attribute> attributes_factory;
 		SceneObjectsFactory<Run> runs_factory;
-		SceneObjectsFactory<Stop> stops_factory;
+		SceneObjectsFactory<WorkStop> stops_factory;
 
 		Factory<ScheduleActualizationAlgorithm> schedule_actualization_algorithms_factory;
 		Factory<RunVehicleBinder> run_vehicle_selectors_factory;

@@ -188,7 +188,7 @@ namespace Scheduler {
 		this->runs_factory = factory;
 	}
 
-	void Scene::setStopsFactory(SceneObjectsFactory<Stop> *factory)
+	void Scene::setStopsFactory(SceneObjectsFactory<WorkStop> *factory)
 	{
 		this->stops_factory = factory;
 	}

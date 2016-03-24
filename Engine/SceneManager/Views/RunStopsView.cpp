@@ -1,6 +1,6 @@
 #include "RunStopsView.h"
 #include <Engine/SceneManager/Run.h>
-
+#include <Engine/SceneManager/WorkStop.h>
 
 namespace Scheduler
 {

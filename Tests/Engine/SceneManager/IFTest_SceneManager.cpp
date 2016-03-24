@@ -353,7 +353,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
         REQUIRE(schedule->getRuns()[2] == run2);
     }
 
-    Stop* free_operation_stop = run1->allocateWorkOperation(free_operation, 0);
+    WorkStop* free_operation_stop = run1->allocateWorkOperation(free_operation, 0);
     REQUIRE(free_operation_stop != nullptr);
 
     INFO("[Run] Checking if stop is created in default state")
@@ -361,12 +361,11 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
         REQUIRE(free_operation_stop->getLocation() == free_operation->getLocation());
         REQUIRE(free_operation_stop->getAllocationTime() == TimeWindow());
         REQUIRE(free_operation_stop->getDuration() == Duration());
-        REQUIRE(free_operation_stop->getOperations().size() == 1);
-		REQUIRE(std::contains_key(free_operation_stop->getOperations(), free_operation));
+        REQUIRE(free_operation_stop->getOperation() == free_operation);
         REQUIRE(free_operation_stop->getRun() == run1);
     }
 
-	Stop* work_stop1 = run1->allocateWorkOperation(order1_work_operation2, 1);
+	WorkStop* work_stop1 = run1->allocateWorkOperation(order1_work_operation2, 1);
 	REQUIRE(work_stop1 != nullptr);
 
 	INFO("[Run] Checking if stop is created in default state")
@@ -374,12 +373,11 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(work_stop1->getLocation() == order1_work_operation2->getLocation());
 		REQUIRE(work_stop1->getAllocationTime() == TimeWindow());
 		REQUIRE(work_stop1->getDuration() == Duration());
-		REQUIRE(work_stop1->getOperations().size() == 1);
-		REQUIRE(std::contains_key(work_stop1->getOperations(), order1_work_operation2));
+		REQUIRE(work_stop1->getOperation() == order1_work_operation2);
 		REQUIRE(work_stop1->getRun() == run1);
 	}
 
-	Stop* work_stop0 = run1->allocateWorkOperation(order1_work_operation1, 0);
+	WorkStop* work_stop0 = run1->allocateWorkOperation(order1_work_operation1, 0);
 	REQUIRE(work_stop0 != nullptr);
 
 	INFO("[Run] Checking if stop is created in default state")
@@ -387,8 +385,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(work_stop0->getLocation() == order1_work_operation1->getLocation());
 		REQUIRE(work_stop0->getAllocationTime() == TimeWindow());
 		REQUIRE(work_stop0->getDuration() == Duration());
-		REQUIRE(work_stop0->getOperations().size() == 1);
-		REQUIRE(std::contains_key(work_stop0->getOperations(), order1_work_operation1));
+		REQUIRE(work_stop0->getOperation() == order1_work_operation1);
 		REQUIRE(work_stop0->getRun() == run1);
 	}
 
@@ -406,7 +403,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(run1->getEndStop()->getOperations().empty());
 	}
 
-	Stop* start_stop = run1->allocateStartOperation(order1_start_operation);
+	RunBoundaryStop* start_stop = run1->allocateStartOperation(order1_start_operation);
 	REQUIRE(start_stop != nullptr);
 
 	INFO("[Run] Checking if start operation allocated")
@@ -416,7 +413,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(std::contains_key(start_stop->getOperations(), order1_start_operation));
 	}
 
-	Stop* end_stop = run1->allocateEndOperation(order1_end_operation);
+	RunBoundaryStop* end_stop = run1->allocateEndOperation(order1_end_operation);
 	REQUIRE(end_stop != nullptr);
 
 	INFO("[Run] Checking if end operation allocated")

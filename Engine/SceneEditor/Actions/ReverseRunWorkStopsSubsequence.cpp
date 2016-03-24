@@ -2,7 +2,7 @@
 
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
-#include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/WorkStop.h>
 #include <assert.h>
 
 namespace Scheduler
@@ -34,8 +34,8 @@ namespace Scheduler
 
 		while(ia < ib)
 		{
-			const Operation* oa = *(r->getWorkStops()[ia]->getOperations().begin());
-			const Operation* ob = *(r->getWorkStops()[ib]->getOperations().begin());
+			const Operation* oa = r->getWorkStops()[ia]->getOperation();
+			const Operation* ob = r->getWorkStops()[ib]->getOperation();
 
 			r->replaceWorkOperationAt(ia, ob);
 			r->replaceWorkOperationAt(ib, oa);

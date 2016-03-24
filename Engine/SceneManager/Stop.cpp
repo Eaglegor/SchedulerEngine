@@ -6,38 +6,12 @@
 namespace Scheduler
 {
 
-	Stop::Stop(size_t id, const Location& location, Run* run):
-	id(id),
+	Stop::Stop(const Location& location, Run* run):
 	location(location),
 	run(run),
 	schedule_actualizer(nullptr),
 	has_actual_route(false)
 	{
-	}
-
-	size_t Stop::getId() const {
-		return id;
-	}
-
-	const ImmutableUnorderedSet<const Operation *>& Stop::getOperations() const {
-		return operations;
-	}
-
-	void Stop::addOperation(const Operation *operation) {
-		assert(operation->getLocation() == location);
-		operations.insert(operation);
-
-		schedule_actualizer->onOperationAdded(this, operation);
-	}
-
-	void Stop::removeOperation(const Operation *operation) {
-		operations.erase(operation);
-
-		schedule_actualizer->onOperationRemoved(this);
-	}
-
-	bool Stop::containsOperation(const Operation *operation) const {
-		return std::contains_key(operations, operation);
 	}
 
 	const TimeWindow &Stop::getAllocationTime() const {
@@ -47,7 +21,6 @@ namespace Scheduler
 	}
 
 	void Stop::setAllocationTime(const TimeWindow &time) {
-		//assert(time.getEndTime() - time.getStartTime() == duration);
 		this->allocation_time = time;
 	}
 
