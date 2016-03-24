@@ -22,16 +22,42 @@ namespace Scheduler
 		const Stop* operator[](size_t index) const;
 		Stop* operator[](size_t index);
 
-		std::vector<Stop*>::iterator begin();
-		std::vector<Stop*>::iterator end();
+		class SCENEMANAGER_EXPORT iterator
+		{
+		public:
+			iterator(ScheduleStopsView& view);
+			iterator(ScheduleStopsView& view, size_t current_index);
+			iterator(const iterator& rhs);
 
-		std::vector<Stop*>::const_iterator begin() const;
-		std::vector<Stop*>::const_iterator end() const;
+			iterator& operator=(const iterator& rhs);
+			iterator& operator++();
+			iterator& operator--();
+			iterator operator++(int);
+			iterator operator--(int);
+
+			bool operator==(const iterator& iter) const;
+			bool operator!=(const iterator& iter) const;
+
+			Stop* operator*();
+
+			size_t index() const;
+
+		private:
+			ScheduleStopsView& schedule_view;
+			size_t current_index;
+		};
+
+		const iterator& begin();
+		const iterator& end();
 
 		size_t size() const;
 		bool empty() const;
+		
 
 	private:
-		std::vector<Stop*> stops;
+		Schedule* schedule;
+
+		iterator begin_iterator;
+		mutable iterator end_iterator;
 	};
 }
