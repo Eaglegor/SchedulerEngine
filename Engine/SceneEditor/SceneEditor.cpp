@@ -48,7 +48,7 @@ namespace Scheduler
 
 	size_t SceneEditor::checkpoint()
 	{
-		checkpoints.emplace_back(std::allocate_shared<Checkpoint>(Allocator<Checkpoint>(&memory_manager), &memory_manager));
+		checkpoints.emplace_back(std::allocate_shared<Checkpoint>(MallocAllocator<Checkpoint>(&memory_manager), &memory_manager));
 		return checkpoints.size() - 1;
 	}
 }
