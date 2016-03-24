@@ -65,7 +65,6 @@ namespace Scheduler
 		// == framework internal ====================================
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
 		void setStopsFactory(SceneObjectsFactory<Stop> *factory);
-		void setRoutingService(RoutingService *routing_service);
 
 		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
 
@@ -90,7 +89,6 @@ namespace Scheduler
 
 		TimeWindow shift;
 
-		RoutingService* routing_service;
 		ScheduleActualizer schedule_actualizer;
 
 		RunVehicleBinder* run_vehicle_binder;

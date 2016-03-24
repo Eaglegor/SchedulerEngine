@@ -29,6 +29,11 @@ namespace Scheduler
 		return stops.end();
 	}
 
+	Stop* RunStopsView::operator[](size_t index)
+	{
+		return stops[index];
+	}
+
 	size_t RunStopsView::size() const {
 		return stops.size();
 	}

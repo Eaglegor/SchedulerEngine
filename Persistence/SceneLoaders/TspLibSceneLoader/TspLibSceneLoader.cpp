@@ -16,6 +16,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
+#include <Engine/Algorithms/ScheduleActualization/Routes/RoutesActualizationAlgorithm.h>
 
 namespace Scheduler
 {
@@ -47,6 +48,8 @@ namespace Scheduler
 		performer->setName("Performer");
 
 		Schedule* schedule = scene->createSchedule(performer);
+
+		schedule->getScheduleActualizer()->createAlgorithm<RoutesActualizationAlgorithm>(routing_service);
 
 		Run *run = schedule->createRun(Location(), Location()); // Creating run (0,0) -> (0,0)
 		run->setVehicle(vehicle);
