@@ -7,7 +7,7 @@
 
 namespace Scheduler
 {
-	ReverseWorkStopsSubsequence::ReverseWorkStopsSubsequence(Run* r, Stop* start_stop, Stop* end_stop):
+	ReverseWorkStopsSubsequence::ReverseWorkStopsSubsequence(Run* r, WorkStop* start_stop, WorkStop* end_stop):
 		schedule(r->getSchedule()),
 		run_index(determine_run_index(r)),
 		start_index(determine_stop_index(start_stop)),
@@ -64,7 +64,7 @@ namespace Scheduler
 		return -1;
 	}
 
-	size_t ReverseWorkStopsSubsequence::determine_stop_index(Stop* stop)
+	size_t ReverseWorkStopsSubsequence::determine_stop_index(WorkStop* stop)
 	{
 		Run* run = stop->getRun();
 		for (size_t i = 0; i < run->getWorkStops().size(); ++i)
