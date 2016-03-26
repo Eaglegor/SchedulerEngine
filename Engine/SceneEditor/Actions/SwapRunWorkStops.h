@@ -9,19 +9,19 @@ namespace Scheduler
 {
 	class Schedule;
 	class Run;
-	class Stop;
+	class WorkStop;
 
 	class SCENEEDITOR_EXPORT SwapRunWorkStops : public Action
 	{
 	public:
-		SwapRunWorkStops(Run* r, Stop* a, Stop* b);
+		SwapRunWorkStops(Run* r, WorkStop* a, WorkStop* b);
 		SwapRunWorkStops(Run* r, size_t a_index, size_t b_index);
 
 		virtual void perform() override;
 		virtual void rollback() override;
 
 	private:
-		static size_t determine_stop_index(Stop* stop);
+		static size_t determine_stop_index(WorkStop* stop);
 		static size_t determine_run_index(Run* run);
 
 		Schedule* schedule;
