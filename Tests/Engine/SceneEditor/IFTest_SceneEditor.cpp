@@ -172,23 +172,23 @@ TEST_CASE("Reverse action works", "[integration][functional][scene_editor]")
 
 	SceneEditor editor;
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 1, 3);
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 1, 4);
 
 	checkOrder(run, { 1, 4, 3, 2, 5 });
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 0, 4);
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 0, 5);
 
 	checkOrder(run, { 5, 2, 3, 4, 1 });
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 2, 4);
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 2, 5);
 
 	checkOrder(run, { 5, 2, 1, 4, 3 });
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 0, 1);
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 0, 2);
 
 	checkOrder(run, { 2, 5, 1, 4, 3 });
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 1, 1);
+	editor.performAction<ReverseWorkStopsSubsequence>(run, 1, 2);
 
 	checkOrder(run, { 2, 5, 1, 4, 3 });
 
