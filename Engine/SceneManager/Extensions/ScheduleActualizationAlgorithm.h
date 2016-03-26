@@ -22,6 +22,7 @@ namespace Scheduler
         virtual void onStopNextRouteChanged(const Stop* stop){}
 
         virtual void onStopAdded(const Run* run, const Stop* stop, size_t index){}
+		virtual void onStopReplaced(const Run* run, const Stop* new_stop, size_t index) {}
         virtual void onStopRemoved(const Run* run){}
         virtual void onRunVehicleChanged(const Run* run, const Vehicle* vehicle){}
 

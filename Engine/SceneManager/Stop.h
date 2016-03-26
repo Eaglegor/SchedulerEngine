@@ -1,9 +1,8 @@
 #pragma once
 
 #include <cstddef>
-#include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
-#include "Operation.h"
 #include <Engine/Concepts/Route.h>
+#include <Engine/Concepts/TimeWindow.h>
 
 #include <SceneManager_export.h>
 
@@ -11,6 +10,10 @@ namespace Scheduler
 {
 	class Run;
 	class ScheduleActualizer;
+	class RouteActualizer;
+	class Operation;
+
+	class StopVisitor;
 
 	/**
 		Class representing a single stop to perform some operation (e.g. delivering order or working at a customer site).
@@ -18,16 +21,8 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT Stop
 	{
 	public:
-		Stop(size_t id, const Location &location, Run *run);
-
-		size_t getId() const;
-
-		const ImmutableUnorderedSet<const Operation*> & getOperations() const;
-
-		void addOperation(const Operation *operation);
-		void removeOperation(const Operation *operation);
-
-		bool containsOperation(const Operation *operation) const;
+		Stop(const Location &location, Run *run);
+		virtual ~Stop() {}
 
 		void setStartTime(const TimePoint& time);
 		void setEndTime(const TimePoint& time);
@@ -49,16 +44,21 @@ namespace Scheduler
 		// == framework internal ====================================
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
 
-	private:
-		size_t id;
+		void invalidateRoute();
+		bool hasActualRoute() const;
 
+		virtual void acceptVisitor(StopVisitor* visitor) = 0;
+
+	protected:
+		ScheduleActualizer* schedule_actualizer;
+
+	private:
 		TimeWindow allocation_time;
-		std::unordered_set<const Operation*> operations;
 		Duration duration;
 		Route next_route;
 		Location location;
 		Run* run;
 
-		ScheduleActualizer* schedule_actualizer;
+		bool has_actual_route;
 	};
 }

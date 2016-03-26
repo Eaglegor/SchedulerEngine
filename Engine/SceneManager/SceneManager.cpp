@@ -1,10 +1,23 @@
 #include "SceneManager.h"
+
 #include "Scene.h"
+#include "Operation.h"
+#include "Order.h"
+#include "Vehicle.h"
+#include "Performer.h"
+#include "Schedule.h"
+#include "Run.h"
+#include "WorkStop.h"
+
+#include "Extensions/ScheduleActualizationAlgorithm.h"
+#include "Extensions/RunVehicleBinder.h"
+
+#include <Engine/MemoryManager/ObjectSizes.h>
 
 namespace Scheduler
 {
 	SceneManager::SceneManager(RoutingService* routing_service, MemoryManager* memory_manager) :
-			scenes_factory(memory_manager),
+			scenes_factory(memory_manager, 5),
 			operations_factory(memory_manager),
 			orders_factory(memory_manager),
 			vehicles_factory(memory_manager),
@@ -13,8 +26,8 @@ namespace Scheduler
 			attributes_factory(memory_manager),
 			runs_factory(memory_manager),
 			stops_factory(memory_manager),
-			schedule_actualization_algorithms_factory(memory_manager),
-			run_vehicle_selectors_factory(memory_manager),
+			schedule_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 100),
+			run_vehicle_selectors_factory(memory_manager, Pool::MEDIUM_OBJECT, 100),
 			routing_service(routing_service)
 	{
 	}

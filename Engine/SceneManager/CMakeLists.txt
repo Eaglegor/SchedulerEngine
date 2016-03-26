@@ -26,9 +26,14 @@ add_library(SceneManager SHARED
 	
 	ScheduleActualizer.h
 	ScheduleActualizer.cpp
-	
+    
 	Stop.h
 	Stop.cpp
+	
+	StopVisitor.h
+	
+	RunBoundaryStop.h RunBoundaryStop.cpp
+	WorkStop.h WorkStop.cpp
 	
 	Vehicle.h
 	Vehicle.cpp
@@ -44,6 +49,7 @@ add_library(SceneManager SHARED
 	Extensions/TimeWindowSelector.h
 	Extensions/RunVehicleBinder.h
 	Extensions/ScheduleActualizationAlgorithm.h
+    
 )
 
 set_target_properties(SceneManager PROPERTIES FOLDER "Engine")

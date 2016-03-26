@@ -2,15 +2,17 @@
 
 #include <Engine/SceneManager/Extensions/ScheduleActualizationAlgorithm.h>
 
-#include <StopDurationActualizationAlgorithm_export.h>
+#include <RoutesActualizationAlgorithm_export.h>
 
 namespace Scheduler
 {
+	class RoutingService;
+
 	/// Updates stops durations based on the operations scheduled to be performed at the stop
-	class STOPDURATIONACTUALIZATIONALGORITHM_EXPORT StopDurationActualizationAlgorithm : public ScheduleActualizationAlgorithm
+	class ROUTESACTUALIZATIONALGORITHM_EXPORT RoutesActualizationAlgorithm : public ScheduleActualizationAlgorithm
 	{
 	public:
-		StopDurationActualizationAlgorithm(Schedule* schedule);
+		RoutesActualizationAlgorithm(Schedule* schedule, RoutingService* routing_service);
 
 		virtual void onOperationAdded(const Stop *stop, const Operation *operation) override;
 
@@ -32,10 +34,11 @@ namespace Scheduler
 
 		virtual void actualize() override;
 
-		static constexpr const char* staticGetName() { return "StopDuration"; }
+		static constexpr const char* staticGetName() { return "Routes"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:
 		bool dirty_flag;
+		RoutingService* routing_service;
 	};
 }
