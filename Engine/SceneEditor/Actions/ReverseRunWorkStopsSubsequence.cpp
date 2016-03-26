@@ -30,7 +30,7 @@ namespace Scheduler
 		Run* r = schedule->getRuns()[run_index];
 
 		int ia = start_index;
-		int ib = end_index;
+		int ib = end_index - 1;
 
 		while(ia < ib)
 		{

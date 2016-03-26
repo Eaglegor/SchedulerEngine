@@ -35,7 +35,7 @@ namespace Scheduler
                 for (auto stop_it2 = stop_it1 + 1; stop_it2 != stops.end(); ++stop_it2) {
                     SceneEditor editor;
                     editor.performAction<SwapRunWorkStops>(run, *stop_it1, *stop_it2);
-                    editor.performAction<ReverseWorkStopsSubsequence>(run, *(stop_it1 + 1), *(stop_it2 - 1));
+                    editor.performAction<ReverseWorkStopsSubsequence>(run, *(stop_it1 + 1), *(stop_it2));
                     Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
                     if (cost < best_cost) {
                         best_cost = cost;
