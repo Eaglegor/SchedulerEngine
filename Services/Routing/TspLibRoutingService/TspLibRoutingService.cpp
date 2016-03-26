@@ -39,11 +39,6 @@ namespace Scheduler
 
 		float distance = routes[from_index * nodes_count + to_index];
 
-		if(distance < FLOAT_EPSILON)
-		{
-			distance = 100500.0f; // Constant large enough to indicate that the route is not feasible
-		}
-
 		Route r;
 		r.setDistance(Distance(distance));
 		r.setDuration(Distance(distance) / Speed(Distance(60)));
