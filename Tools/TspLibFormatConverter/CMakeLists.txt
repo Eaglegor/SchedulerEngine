@@ -1,5 +1,11 @@
 add_executable(TspLibFormatConverter TspLibFormatConverter)
 
+find_package(LibXml2)
+
+if(LIBXML2_FOUND)
+    target_link_libraries(TspLibFormatConverter ${LIBXML2_LIBRARIES})
+endif()
+
 find_package(Boost REQUIRED COMPONENTS program_options)
 if(Boost_FOUND)
     target_link_libraries(TspLibFormatConverter ${Boost_LIBRARIES})
