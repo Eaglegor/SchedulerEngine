@@ -2,7 +2,6 @@
 
 #include <Engine/StrategiesManager/TSPSolver.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
-#include <cstddef>
 #include <SimpleTwoOptTSPSolver_export.h>
 
 namespace Scheduler
@@ -13,7 +12,7 @@ namespace Scheduler
 		SimpleTwoOptTSPSolver();
 
 		virtual void optimize(Schedule* schedule) const override;
-		virtual void optimize(Schedule* schedule, size_t run_index) const override;
+		virtual void optimize(Run* schedule) const override;
 
 		void setScheduleCostFunction(ScheduleCostFunction* cost_function);
 
