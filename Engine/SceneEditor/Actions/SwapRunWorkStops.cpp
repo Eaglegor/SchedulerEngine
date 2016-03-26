@@ -8,7 +8,7 @@
 
 namespace Scheduler
 {
-	SwapRunWorkStops::SwapRunWorkStops(Run* r, Stop* a, Stop* b):
+	SwapRunWorkStops::SwapRunWorkStops(Run* r, WorkStop* a, WorkStop* b):
 		schedule(r->getSchedule()),
 		ir(determine_run_index(r)),
 		ia(determine_stop_index(a)),
@@ -43,7 +43,7 @@ namespace Scheduler
 		perform();
 	}
 
-	size_t SwapRunWorkStops::determine_stop_index(Stop* stop)
+	size_t SwapRunWorkStops::determine_stop_index(WorkStop* stop)
 	{
 		Run* run = stop->getRun();
 		for (size_t i = 0; i < run->getWorkStops().size(); ++i)
