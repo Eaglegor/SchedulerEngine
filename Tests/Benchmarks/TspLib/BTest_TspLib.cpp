@@ -162,14 +162,24 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 
 	float acceptable_optimum_deviation = 0;
 
-	SECTION("SimpleTwoOpt")
+    SECTION("SimpleTwoOpt")
 	{
-		std::cout << "############# Testing 2opt solver ####################" << std::endl;
+        std::cout << "############# Testing Simple 2opt solver ####################" << std::endl;
 		SimpleTwoOptTSPSolver *tsp_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
 		tsp_solver->setScheduleCostFunction(cost_function);
 		solver = tsp_solver;
 		acceptable_optimum_deviation = 0.5;
-	}
+    }
+
+    SECTION("SATwoOpt")
+    {
+        std::cout << "############# Testing SA 2opt solver ####################" << std::endl;
+        SATwoOptTSPSolver *tsp_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+        tsp_solver->setScheduleCostFunction(cost_function);
+        tsp_solver->setAcceptanceFunction(new BasicAcceptanceFunction());
+        solver = tsp_solver;
+        acceptable_optimum_deviation = 0.5;
+    }
 
 	float max_deviation = 0;
 
@@ -184,8 +194,8 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 		long milliseconds = 0;
 
 		for (size_t i = 0; i < 10; ++i)
-		{
-			Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + dataset + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
+        {
+            Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + dataset + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
 
 			std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 			solver->optimize(scene->getSchedules()[0]);
