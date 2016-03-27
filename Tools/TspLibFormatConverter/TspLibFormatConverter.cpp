@@ -149,7 +149,7 @@ std::unordered_map<std::string, uint32_t> optimal_costs
 	{ "ftv150", 2611 },
 	{ "ftv160", 2683 },
 	{ "ftv170", 2755 },
-	{ "kro124", 36230 },
+	{ "kro124p", 36230 },
 	{ "p43", 5620 },
 	{ "rbg323", 1326 },
 	{ "rbg358", 1163 },
@@ -268,6 +268,21 @@ void characters(void* user_data, const xmlChar* ch, int len)
 	delete[] buf;
 }
 
+void onError(void *user_data, const char* msg, ...)
+{
+	std::cout << msg << std::endl;
+}
+
+void onStartDocument(void* user_data)
+{
+	std::cout << "Started document" << std::endl;
+};
+
+void onEndDocument(void* user_data)
+{
+	std::cout << "Started document" << std::endl;
+};
+
 xmlSAXHandler xml_handler
 {
 	NULL, /* internalSubset */
@@ -282,8 +297,8 @@ xmlSAXHandler xml_handler
 	NULL, /* elementDecl */
 	NULL, /* unparsedEntityDecl */
 	NULL, /* setDocumentLocator */
-	NULL, /* startDocument */
-	NULL, /* endDocument */
+	onStartDocument, /* startDocument */
+	onEndDocument, /* endDocument */
 	startElement, /* startElement */
 	endElement, /* endElement */
 	NULL, /* reference */
@@ -291,9 +306,9 @@ xmlSAXHandler xml_handler
 	NULL, /* ignorableWhitespace */
 	NULL, /* processingInstruction */
 	NULL, /* comment */
-	NULL, /* xmlParserWarning */
-	NULL, /* xmlParserError */
-	NULL, /* xmlParserError */
+	onError, /* xmlParserWarning */
+	onError, /* xmlParserError */
+	onError, /* xmlParserError */
 	NULL, /* getParameterEntity */
 	NULL, /* cdataBlock; */
 	NULL,  /* externalSubset; */
@@ -373,7 +388,14 @@ int main(int ac, const char** av)
 
 	ParserState state;
 
-	xmlSAXUserParseFile(&xml_handler, &state, input_filename.c_str());
+	int status = xmlSAXUserParseFile(&xml_handler, &state, input_filename.c_str());
+
+	if (status != 0)
+	{
+		std::cout << "Coudln't read xml file" << std::endl;
+		std::cout << "Error code: " << status << std::endl;
+		return -1;
+	}
 
 	uint32_t count = state.current_vertex + 1;
 
