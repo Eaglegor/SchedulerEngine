@@ -2,6 +2,7 @@
 
 #include <Services/Routing/TspLibRoutingService/TspLibRoutingService.h>
 #include <Persistence/SceneLoaders/TspLibSceneLoader/TspLibSceneLoader.h>
+#include <chrono>
 
 #include <cmath>
 
@@ -163,6 +164,7 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 
 	SECTION("SimpleTwoOpt")
 	{
+		std::cout << "############# Testing 2opt solver ####################" << std::endl;
 		SimpleTwoOptTSPSolver *tsp_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
 		tsp_solver->setScheduleCostFunction(cost_function);
 		solver = tsp_solver;
@@ -173,23 +175,36 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 
 	for (const std::string& dataset : datasets)
 	{
+		Cost cost;
 		uint32_t optimal_value;
-
-		Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + dataset + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
-
-		solver->optimize(scene->getSchedules()[0]);
-
-		Cost cost = cost_function->calculateCost(scene->getSchedules()[0]);
-
-		float deviation = std::fabs(cost.getValue() - optimal_value) / static_cast<float>(optimal_value);
-
-		if (deviation > max_deviation) max_deviation = deviation;
 
 		std::cout << std::endl;
 		std::cout << "#### Dataset: " << dataset << " ####" << std::endl;
-		std::cout << "# Cost: " << cost.getValue() << std::endl;
+	
+		long milliseconds = 0;
+
+		for (size_t i = 0; i < 10; ++i)
+		{
+			Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + dataset + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
+
+			std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+			solver->optimize(scene->getSchedules()[0]);
+			std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+
+			std::chrono::milliseconds local_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+			long count = local_duration.count();
+			milliseconds += count;
+
+			cost = cost_function->calculateCost(scene->getSchedules()[0]);
+		}
+
+		float deviation = std::fabs(cost.getValue() - optimal_value) / static_cast<float>(optimal_value);
+		if (deviation > max_deviation) max_deviation = deviation;
+
 		std::cout << "# Known optimal cost: " << optimal_value << std::endl;
-		std::cout << "# Deviation: " << deviation * 100 << " % " << (deviation > acceptable_optimum_deviation ? "(Unoptimal!!!)" : "") << std::endl;
+		std::cout << "# Average time (10 runs): " << milliseconds / 10 << " ms" << std::endl;
+		std::cout << "# Cost: " << cost.getValue() << std::endl;
+		std::cout << "# Deviation from optimal cost: " << deviation * 100 << " % " << (deviation > acceptable_optimum_deviation ? "(Unoptimal!!!)" : "") << std::endl;
 		std::cout << "#### End of dataset ####" << std::endl;
 		std::cout << std::endl;
 	}
