@@ -13,7 +13,7 @@ namespace Scheduler
 	public:
 		TspLibRoutingService();
 		~TspLibRoutingService();
-
+		
 		void init(size_t nodes_count);
 
 		virtual Route calculateRoute(const Location& from, const Location& to, const RoutingProfile& routing_profile) override;

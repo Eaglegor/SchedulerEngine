@@ -5,8 +5,10 @@
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/parsers.hpp>
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
 
 #include <cstdint>
 #include <cstring>
@@ -147,13 +149,169 @@ std::unordered_map<std::string, uint32_t> optimal_costs
 	{ "ftv150", 2611 },
 	{ "ftv160", 2683 },
 	{ "ftv170", 2755 },
-	{ "kro124", 36230 },
+	{ "kro124p", 36230 },
 	{ "p43", 5620 },
 	{ "rbg323", 1326 },
 	{ "rbg358", 1163 },
 	{ "rbg403", 2465 },
 	{ "rbg443", 2720 },
 	{ "ry48p", 14422 },
+};
+
+struct ParserState
+{
+public:
+	enum class State
+	{
+		PARSING_ROOT,
+		PARSING_VALUES,
+		PARSING_GRAPH,
+		PARSING_VERTEX,
+		PARSING_EDGE,
+		PARSING_DIGITS
+	};
+
+	State state = State::PARSING_ROOT;
+
+	std::unordered_map<size_t, std::unordered_map<size_t, uint32_t> > distances;
+	uint32_t digits;
+	uint32_t current_distance;
+	size_t current_vertex = -1;
+};
+
+void startElement(void* user_data, const xmlChar* name, const xmlChar **attrs)
+{
+	ParserState* state = static_cast<ParserState*>(user_data);
+
+	if(strcmp(reinterpret_cast<const char*>(name), "travellingSalesmanProblemInstance") == 0)
+	{
+		state->state = ParserState::State::PARSING_VALUES;
+	}
+	else if (strcmp(reinterpret_cast<const char*>(name), "ignoredDigits") == 0)
+	{
+		state->state = ParserState::State::PARSING_DIGITS;
+	}
+	else if (strcmp(reinterpret_cast<const char*>(name), "graph") == 0)
+	{
+		state->state = ParserState::State::PARSING_GRAPH;
+	}
+	else if (strcmp(reinterpret_cast<const char*>(name), "vertex") == 0)
+	{
+		state->state = ParserState::State::PARSING_VERTEX;
+		++state->current_vertex;
+	}
+	else if (strcmp(reinterpret_cast<const char*>(name), "edge") == 0)
+	{
+		state->state = ParserState::State::PARSING_EDGE;
+	}
+
+	if(state->state == ParserState::State::PARSING_EDGE)
+	{
+		const xmlChar* cost = attrs[1];
+		float fcost = boost::lexical_cast<float>(cost);
+		uint32_t icost = static_cast<uint32_t>(fcost * pow(10, state->digits));
+		state->current_distance = icost;
+	}
+}
+
+void endElement(void* user_data, const xmlChar* name)
+{
+	ParserState* state = static_cast<ParserState*>(user_data);
+
+	if (strcmp(reinterpret_cast<const char*>(name), "edge") == 0)
+	{
+		state->state = ParserState::State::PARSING_VERTEX;
+	}
+	else if (strcmp(reinterpret_cast<const char*>(name), "vertex") == 0)
+	{
+		state->state = ParserState::State::PARSING_GRAPH;
+	}
+	else if (strcmp(reinterpret_cast<const char*>(name), "graph") == 0)
+	{
+		state->state = ParserState::State::PARSING_VALUES;
+	}
+	else if (strcmp(reinterpret_cast<const char*>(name), "ignoredDigits") == 0)
+	{
+		state->state = ParserState::State::PARSING_VALUES;
+	}
+	else if (strcmp(reinterpret_cast<const char*>(name), "travellingSalesmanProblemInstance") == 0)
+	{
+		state->state = ParserState::State::PARSING_ROOT;
+	}
+}
+
+void characters(void* user_data, const xmlChar* ch, int len)
+{
+	ParserState* state = static_cast<ParserState*>(user_data);
+	
+	unsigned char* buf = new unsigned char[len + 1];
+
+	memcpy(buf, ch, len);
+	buf[len] = 0;
+
+	if (state->state == ParserState::State::PARSING_EDGE)
+	{
+		auto viter = state->distances.find(state->current_vertex);
+		if(viter == state->distances.end())
+		{
+			viter = state->distances.emplace(state->current_vertex, std::unordered_map<size_t, uint32_t>()).first;
+		}
+
+		size_t edge_id = boost::lexical_cast<size_t>(buf);
+		viter->second.emplace(edge_id, state->current_distance);
+	}
+	else if (state->state == ParserState::State::PARSING_DIGITS)
+	{
+		state->digits = boost::lexical_cast<size_t>(buf);
+	}
+
+	delete[] buf;
+}
+
+void onError(void *user_data, const char* msg, ...)
+{
+	std::cout << msg << std::endl;
+}
+
+void onStartDocument(void* user_data)
+{
+	std::cout << "Started document" << std::endl;
+};
+
+void onEndDocument(void* user_data)
+{
+	std::cout << "Started document" << std::endl;
+};
+
+xmlSAXHandler xml_handler
+{
+	NULL, /* internalSubset */
+	NULL, /* isStandalone */
+	NULL, /* hasInternalSubset */
+	NULL, /* hasExternalSubset */
+	NULL, /* resolveEntity */
+	NULL, /* getEntity */
+	NULL, /* entityDecl */
+	NULL, /* notationDecl */
+	NULL, /* attributeDecl */
+	NULL, /* elementDecl */
+	NULL, /* unparsedEntityDecl */
+	NULL, /* setDocumentLocator */
+	onStartDocument, /* startDocument */
+	onEndDocument, /* endDocument */
+	startElement, /* startElement */
+	endElement, /* endElement */
+	NULL, /* reference */
+	characters, /* characters */
+	NULL, /* ignorableWhitespace */
+	NULL, /* processingInstruction */
+	NULL, /* comment */
+	onError, /* xmlParserWarning */
+	onError, /* xmlParserError */
+	onError, /* xmlParserError */
+	NULL, /* getParameterEntity */
+	NULL, /* cdataBlock; */
+	NULL,  /* externalSubset; */
 };
 
 int main(int ac, const char** av)
@@ -225,54 +383,39 @@ int main(int ac, const char** av)
 		}
 	}
 
-	std::ifstream infile;
-	infile.open(input_filename);
-
 	std::ofstream outfile;
 	outfile.open(output_filename, std::ios_base::binary);
 
-	using boost::property_tree::ptree;
-	using boost::property_tree::read_xml;
+	ParserState state;
 
-	ptree tree;
+	int status = xmlSAXUserParseFile(&xml_handler, &state, input_filename.c_str());
 
-	std::cout << "Parsing xml file" << std::endl;
+	if (status != 0)
+	{
+		std::cout << "Coudln't read xml file" << std::endl;
+		std::cout << "Error code: " << status << std::endl;
+		return -1;
+	}
 
-	read_xml(infile, tree);
+	uint32_t count = state.current_vertex + 1;
 
-	ptree root = tree.get_child("travellingSalesmanProblemInstance");
-
-	std::string name = root.get<std::string>("name");
-	std::string source = root.get<std::string>("source");
-	std::string description = root.get<std::string>("description");
-	uint32_t ignoredDigits = root.get<uint32_t>("ignoredDigits");
-
-	const ptree& graph = root.get_child("graph");
-
-	uint32_t count = graph.size();
 	outfile.write(reinterpret_cast<const char*>(&count), sizeof(uint32_t));
 	outfile.write(reinterpret_cast<const char*>(&optimum), sizeof(uint32_t));
-	outfile.write(reinterpret_cast<const char*>(&ignoredDigits), sizeof(uint32_t));
+	outfile.write(reinterpret_cast<const char*>(&state.digits), sizeof(uint32_t));
 
 	uint32_t *distances = new uint32_t[count * count];
-	memset(distances, 0, sizeof(uint32_t) * count * count);
+	memset(distances, 100500, sizeof(uint32_t) * count * count);
 
 	std::cout << "Graph nodes: " << count << std::endl;
 
-	std::cout << "Parsing matrix" << std::endl;
+	std::cout << "Filling matrix" << std::endl;
 
-	size_t from_index = 0;
-	for (const auto &viter : graph)
+	for(auto viter : state.distances)
 	{
-		if (from_index % 10 == 0) std::cout << from_index << "/" << count << std::endl;
-		for (const auto &eiter : viter.second)
+		for(auto eiter : viter.second)
 		{
-			float distance = eiter.second.get_child("<xmlattr>").get<float>("cost");
-			size_t to_index = eiter.second.get_value<size_t>();
-			uint32_t normalized_distance = static_cast<uint32_t>(distance * pow(10, ignoredDigits));
-			distances[from_index * count + to_index] = normalized_distance;
+			distances[viter.first * count + eiter.first] = eiter.second;
 		}
-		++from_index;
 	}
 
 	std::cout << "Writing matrix" << std::endl;
@@ -281,7 +424,6 @@ int main(int ac, const char** av)
 
 	outfile.write(reinterpret_cast<const char*>(&count), sizeof(uint32_t));
 
-	infile.close();
 	outfile.close();
 
 	return 0;
