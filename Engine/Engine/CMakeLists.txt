@@ -27,6 +27,7 @@ target_link_libraries(Engine
     TSPOnlyVRPSolver
     
 	SimpleTwoOptTSPSolver
+	SATwoOptTSPSolver
 	
 	TotalDistanceCostFunctions
     )
