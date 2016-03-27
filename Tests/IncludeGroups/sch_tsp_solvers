@@ -1,3 +1,5 @@
 #pragma once
 
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/SATwoOpt/SATwoOptTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/SATwoOpt/BasicAcceptanceFunction.h>
