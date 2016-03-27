@@ -176,7 +176,7 @@ void runTspLibTest(const std::vector<std::string> &datasets)
         std::cout << "############# Testing SA 2opt solver ####################" << std::endl;
         SATwoOptTSPSolver *tsp_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
         tsp_solver->setScheduleCostFunction(cost_function);
-        tsp_solver->setAcceptanceFunction(new BasicAcceptanceFunction());
+        tsp_solver->setAcceptanceFunction(new BasicAcceptanceFunction(50.f, 0.1f, 0.25f));
         solver = tsp_solver;
         acceptable_optimum_deviation = 0.5;
     }
