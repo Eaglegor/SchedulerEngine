@@ -41,7 +41,7 @@ namespace Scheduler
                     editor.performAction<SwapRunWorkStops>(run, *stop_it1, *stop_it2);
                     editor.performAction<ReverseWorkStopsSubsequence>(run, *(stop_it1 + 1), *(stop_it2));
                     Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
-                    if (cost < best_cost || acceptance_function->calculateAcceptance(cost - best_cost, counter)) {
+                    if (cost < best_cost || acceptance_function->isAccepting(cost - best_cost, counter)) {
                         best_cost = cost;
                         changed = true;
                     } else {

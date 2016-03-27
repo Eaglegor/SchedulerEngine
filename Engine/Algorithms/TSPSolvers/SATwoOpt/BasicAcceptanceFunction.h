@@ -1,14 +1,15 @@
 #pragma once
 #include "AcceptanceFunction.h"
+#include <SATwoOptTSPSolver_export.h>
 
 namespace Scheduler
 {
-    class BasicAcceptanceFunction : public AcceptanceFunction
+    class SATWOOPTTSPSOLVER_EXPORT BasicAcceptanceFunction : public AcceptanceFunction
     {
     public:
         BasicAcceptanceFunction();
         BasicAcceptanceFunction(float initial_temperature, float minimum_temperature, float linear_temperature_change);
-        virtual bool calculateAcceptance(const Cost& delta, unsigned long long iterationNumber) const override;
+        virtual bool isAccepting(const Cost& delta, unsigned long long iterationNumber) const override;
         static constexpr const char* staticGetName() { return "Basic"; }
         virtual const char* getName() const override
         {

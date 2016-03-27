@@ -4,14 +4,14 @@
 namespace Scheduler
 {
     BasicAcceptanceFunction::BasicAcceptanceFunction() :
-        initial_temperature(100.f), minimum_temperature(1.f), linear_temperature_change(1.f)
+        initial_temperature(2000.f), minimum_temperature(1.f), linear_temperature_change(20.f)
     {}
 
     BasicAcceptanceFunction::BasicAcceptanceFunction(float aInitialTemperature, float aMinimumTemperature, float aLinearTemperatureChange) :
         initial_temperature(aInitialTemperature), minimum_temperature(aMinimumTemperature), linear_temperature_change(aLinearTemperatureChange)
     {}
 
-    bool BasicAcceptanceFunction::calculateAcceptance(const Cost &delta, unsigned long long iterationNumber) const
+    bool BasicAcceptanceFunction::isAccepting(const Cost &delta, unsigned long long iterationNumber) const
     {
         const float temperature_value = calculateTemperature(iterationNumber);
         if (temperature_value <= minimum_temperature) {

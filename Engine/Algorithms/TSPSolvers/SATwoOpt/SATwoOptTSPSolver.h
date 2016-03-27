@@ -2,12 +2,12 @@
 
 #include <Engine/StrategiesManager/TSPSolver.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
-#include <SimpleTwoOptTSPSolver_export.h>
+#include <SATwoOptTSPSolver_export.h>
 #include "AcceptanceFunction.h"
 
 namespace Scheduler
 {
-    class SIMPLETWOOPTTSPSOLVER_EXPORT SATwoOptTSPSolver : public TSPSolver
+    class SATWOOPTTSPSOLVER_EXPORT SATwoOptTSPSolver : public TSPSolver
 	{
 	public:
         SATwoOptTSPSolver();

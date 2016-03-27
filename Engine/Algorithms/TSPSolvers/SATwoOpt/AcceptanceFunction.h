@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include <Engine/Concepts/Cost.h>
 
 namespace Scheduler
@@ -13,7 +11,7 @@ namespace Scheduler
         {
         }
 
-        virtual bool calculateAcceptance(const Cost& delta, unsigned long long iterationNumber) const = 0;
+        virtual bool isAccepting(const Cost& delta, unsigned long long iterationNumber) const = 0;
 
         virtual const char* getName() const = 0;
     };
