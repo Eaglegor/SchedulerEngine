@@ -162,6 +162,15 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 
 	float acceptable_optimum_deviation = 0;
 
+    SECTION("Greedy")
+    {
+        std::cout << "############# Testing Greedy solver ####################" << std::endl;
+        GreedyTSPSolver *tsp_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+        tsp_solver->setRoutingService(&routing_service);
+        solver = tsp_solver;
+        acceptable_optimum_deviation = 0.5;
+    }
+
     SECTION("SimpleTwoOpt")
 	{
         std::cout << "############# Testing Simple 2opt solver ####################" << std::endl;
