@@ -10,10 +10,9 @@ namespace Scheduler
 
     void ChainTSPSolver::optimize(Schedule* schedule) const
 	{
-        for(Run* run : schedule->getRuns())
-		{
-			optimize(run);
-		}
+        for (auto solver : this->tsp_solvers) {
+            solver->optimize(schedule);
+        }
 	}
 
 	void ChainTSPSolver::optimize(Run* run) const
