@@ -1,13 +1,11 @@
 #include "GreedyTSPSolver.h"
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
-#include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/Concepts/Route.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneEditor/SceneEditor.h>
-#include <iostream>
 
 namespace Scheduler
 {
