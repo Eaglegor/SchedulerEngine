@@ -1,13 +1,11 @@
 #include "GreedyTSPSolver.h"
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
-#include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/Concepts/Route.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneEditor/SceneEditor.h>
-#include <iostream>
 
 namespace Scheduler
 {
@@ -34,16 +32,19 @@ namespace Scheduler
         const RoutingProfile &routing_profile = run->getVehicle()->getRoutingProfile();
         auto location = run->getStartStop()->getLocation();
         SceneEditor scene_editor;
-        for (size_t idx = 0; idx < stops.size() - 1; ++idx) {
-            const auto nearestElement = std::min_element(stops.begin() + idx,
-                                                         stops.end(),
-                                                         [&] (WorkStop* lhs, WorkStop* rhs) {
-                    const auto lhs_distance = routing_service->calculateRoute(location, lhs->getLocation(), routing_profile).getDistance();
-                    const auto rhs_distance = routing_service->calculateRoute(location, rhs->getLocation(), routing_profile).getDistance();
-                    return lhs_distance < rhs_distance;
-            });
-            location = (*nearestElement)->getLocation();
-            scene_editor.performAction<SwapRunWorkStops>(run, idx, nearestElement - stops.begin());
+        for (size_t i = 0; i < stops.size() - 1; ++i) {
+            size_t nearest_element_idx = i;
+            auto min_distance = routing_service->calculateRoute(location, stops[nearest_element_idx]->getLocation(), routing_profile).getDistance();
+            for (size_t j = i + 1; j < stops.size(); ++j) {
+                const auto distance = routing_service->calculateRoute(location, stops[j]->getLocation(), routing_profile).getDistance();
+                if (distance < min_distance) {
+                    min_distance = distance;
+                    nearest_element_idx = j;
+                }
+            }
+
+            location = stops[nearest_element_idx]->getLocation();
+            scene_editor.performAction<SwapRunWorkStops>(run, i, nearest_element_idx);
         }
 	}
 
