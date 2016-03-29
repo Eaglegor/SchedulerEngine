@@ -22,6 +22,7 @@ namespace Scheduler {
             vehicle(nullptr),
             schedule_actualizer(nullptr)
     {
+		start_stop.setNextStop(&end_stop);
     }
 
     size_t Run::getId() {
@@ -88,6 +89,19 @@ namespace Scheduler {
 
 		WorkStop *stop = createWorkStop(operation);
 
+		Stop* prev_stop = nullptr;
+		Stop* next_stop = nullptr;
+
+		if(index == 0) prev_stop = &start_stop;
+		else prev_stop = work_stops[index - 1];
+		if(index == work_stops.size()) next_stop = &end_stop;
+		else next_stop = work_stops[index];
+
+		prev_stop->setNextStop(stop);
+		stop->setPrevStop(prev_stop);
+		stop->setNextStop(next_stop);
+		next_stop->setPrevStop(stop);
+
         work_stops.insert(work_stops.begin() + index, stop);
 
         schedule_actualizer->onStopAdded(this, stop, index);
@@ -124,13 +138,21 @@ namespace Scheduler {
     void Run::unallocateWorkOperationAt(size_t index) {
         assert(stops_factory);
         assert(index >=0 && index < work_stops.size());
+
+		Stop* old_stop = work_stops[index];
+		Stop* prev_stop = old_stop->getPrevStop();
+		Stop* next_stop = old_stop->getNextStop();
+
+		prev_stop->setNextStop(next_stop);
+		next_stop->setPrevStop(prev_stop);
+
         stops_factory->destroyObject(work_stops[index]);
         work_stops.erase(work_stops.begin() + index);
 
         if(work_stops.empty()) start_stop.invalidateRoute();
         else invalidateWorkStopRoutes(index > 0 ? index - 1 : 0);
 
-        schedule_actualizer->onStopRemoved(this);
+        schedule_actualizer->onStopRemoved(this, index);
     }
 
     void Run::unallocateEndOperation(const Operation *operation) {
@@ -164,10 +186,19 @@ namespace Scheduler {
 		
 		if (!stops_factory) return nullptr;
 
-		stops_factory->destroyObject(work_stops[index]);
-
 		WorkStop* stop = createWorkStop(new_operation);
 
+		assert(stop);
+
+		Stop* old_stop = work_stops[index];
+		Stop* prev_stop = old_stop->getPrevStop();
+		Stop* next_stop = old_stop->getNextStop();
+		prev_stop->setNextStop(stop);
+		stop->setPrevStop(prev_stop);
+		stop->setNextStop(next_stop);
+		next_stop->setPrevStop(stop);
+
+		stops_factory->destroyObject(work_stops[index]);
 		work_stops[index] = stop;
 
 		schedule_actualizer->onStopReplaced(this, stop, index);

@@ -41,11 +41,17 @@ namespace Scheduler
 
 		const Location& getLocation() const;
 
+		Stop* getNextStop() const;
+		Stop* getPrevStop() const;
+
 		// == framework internal ====================================
 		void setScheduleActualizer(ScheduleActualizer* actualizer);
 
 		void invalidateRoute();
 		bool hasActualRoute() const;
+
+		void setNextStop(Stop* stop);
+		void setPrevStop(Stop* stop);
 
 		virtual void acceptVisitor(StopVisitor* visitor) = 0;
 
@@ -58,6 +64,9 @@ namespace Scheduler
 		Route next_route;
 		Location location;
 		Run* run;
+
+		Stop* nextStop;
+		Stop* prevStop;
 
 		bool has_actual_route;
 	};

@@ -1,7 +1,7 @@
 #include "TotalDistanceRunCostFunction.h"
 
 #include <Engine/SceneManager/Run.h>
-#include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Views/RunStopsView.h>
 
 namespace Scheduler
@@ -9,8 +9,8 @@ namespace Scheduler
 	Cost TotalDistanceRunCostFunction::calculateCost(const Run* run)
 	{
 		Distance total_distance(0);
-
-		for(const Stop* stop : ConstRunStopsView(run))
+		
+		for (const Stop* stop = run->getStartStop(); stop != run->getEndStop(); stop = stop->getNextStop())
 		{
 			total_distance += stop->getNextRoute().getDistance();
 		}

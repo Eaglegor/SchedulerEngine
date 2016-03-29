@@ -10,6 +10,8 @@ namespace Scheduler
 	location(location),
 	run(run),
 	schedule_actualizer(nullptr),
+	nextStop(nullptr),
+	prevStop(nullptr),
 	has_actual_route(false)
 	{
 	}
@@ -52,6 +54,16 @@ namespace Scheduler
 		return location;
 	}
 
+	Stop* Stop::getNextStop() const
+	{
+		return nextStop;
+	}
+
+	Stop* Stop::getPrevStop() const
+	{
+		return prevStop;
+	}
+
 	const Route &Stop::getNextRoute() const
 	{
 		schedule_actualizer->actualize();
@@ -73,6 +85,16 @@ namespace Scheduler
 	bool Stop::hasActualRoute() const
 	{
 		return has_actual_route;
+	}
+
+	void Stop::setNextStop(Stop* stop)
+	{
+		this->nextStop = stop;
+	}
+
+	void Stop::setPrevStop(Stop* stop)
+	{
+		this->prevStop = stop;
 	}
 
 	void Stop::setStartTime(const TimePoint &time)
