@@ -1,6 +1,8 @@
 #include "StopDurationActualizationAlgorithm.h"
 #include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Operation.h>
+#include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Views/ScheduleStopsView.h>
 #include <Engine/Concepts/Duration.h>
 #include <Engine/SceneManager/StopVisitor.h>
@@ -44,7 +46,7 @@ namespace Scheduler
 		dirty_flag = true;
 	}
 
-	void StopDurationActualizationAlgorithm::onStopRemoved(const Run *run)
+	void StopDurationActualizationAlgorithm::onStopRemoved(const Run *run, size_t index)
 	{
 		dirty_flag = true;
 	}
@@ -94,9 +96,13 @@ namespace Scheduler
 	{
 		if(!dirty_flag) return;
 
-		ScheduleStopsView stops(schedule);
-
-		for(Stop* stop : stops)
+		if (schedule->getRuns().empty())
+		{
+			dirty_flag = false;
+			return;
+		}
+		
+		for (Stop* stop = (*schedule->getRuns().begin())->getStartStop(); stop != nullptr; stop = stop->getNextStop())
 		{
 			Duration operations_duration;
 			TotalOperationDurationGetter duration_getter(operations_duration);
