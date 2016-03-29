@@ -1,9 +1,8 @@
 #include "SimpleTwoOptTSPSolver.h"
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
-#include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneEditor/SceneEditor.h>
+#include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
 
 namespace Scheduler
 {
@@ -31,11 +30,10 @@ namespace Scheduler
         bool changed = true;
         while (changed) {
             changed = false;
-            for (auto stop_it1 = stops.begin(); stop_it1 != stops.end() - 1; ++stop_it1) {
-                for (auto stop_it2 = stop_it1 + 1; stop_it2 != stops.end(); ++stop_it2) {
+            for (size_t i = 0; i < stops.size() - 1; ++i) {
+                for (size_t j = i + 1; j < stops.size(); ++j) {
                     SceneEditor editor;
-                    editor.performAction<SwapRunWorkStops>(run, *stop_it1, *stop_it2);
-                    editor.performAction<ReverseWorkStopsSubsequence>(run, *(stop_it1 + 1), *(stop_it2));
+                    editor.performAction<ReverseWorkStopsSubsequence>(run, i, j + 1);
                     Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
                     if (cost < best_cost) {
                         best_cost = cost;
