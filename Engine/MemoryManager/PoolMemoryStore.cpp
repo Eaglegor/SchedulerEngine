@@ -32,6 +32,8 @@ namespace Scheduler
 			return nullptr;
 		}
 
+		if (memory_size > chunk_size) return nullptr;
+
 		if(capacity_left == 1)
 		{
 			size_t new_block_capacity = calculateNewBlockCapacity();
