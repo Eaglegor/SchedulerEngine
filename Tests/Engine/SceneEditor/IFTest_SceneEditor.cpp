@@ -144,7 +144,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 
-		editor.clearHistory();
+		editor.commit();
 
 		editor.rollbackToLastCheckpoint();
 
