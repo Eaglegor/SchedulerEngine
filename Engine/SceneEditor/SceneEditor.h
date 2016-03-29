@@ -22,7 +22,7 @@ namespace Scheduler
 		void rollbackAll();
 		void rollbackToCheckpoint(size_t checkpoint_id);
 		void rollbackToLastCheckpoint();
-		void clearHistory();
+		void commit();
 
 		template<typename ActionType, typename... Args>
 		void performAction(Args&& ...args)
