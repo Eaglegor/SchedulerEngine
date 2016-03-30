@@ -8,3 +8,4 @@
 #include <Engine/Algorithms/TSPSolvers/SATwoOpt/PowerTemperatureFunction.h>
 #include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Chain/ChainTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/CherepanovExperimental/CherepanovExperimentalTSPSolver.h>
