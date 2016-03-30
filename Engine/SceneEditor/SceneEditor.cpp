@@ -9,7 +9,6 @@ namespace Scheduler
 
 	SceneEditor::~SceneEditor()
 	{
-		clearHistory();
 	}
 
 	void SceneEditor::rollbackAll()
@@ -32,7 +31,7 @@ namespace Scheduler
 		checkpoints.back()->rollback();
 	}
 
-	void SceneEditor::clearHistory()
+	void SceneEditor::commit()
 	{
 		while(checkpoints.size() > 1)
 		{

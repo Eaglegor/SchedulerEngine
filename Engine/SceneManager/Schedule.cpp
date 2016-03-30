@@ -52,15 +52,40 @@ namespace Scheduler {
 	Run *Schedule::createRun(const Location &from, const Location &to, size_t index) {
 		assert(runs_factory);
 		assert(index >= 0 && index <= runs.size());
-		if(!runs_factory) return nullptr;
-		if(!(index >= 0 && index <= runs.size())) return nullptr;
+		if (!runs_factory) return nullptr;
+		if (!(index >= 0 && index <= runs.size())) return nullptr;
 
 		Run* r = runs_factory->createObject(from, to, this);
 
 		r->setStopsFactory(stops_factory);
 		r->setScheduleActualizer(&schedule_actualizer);
 
-		if(run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
+		if (run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
+
+
+		Stop* prev_stop = nullptr;
+		Stop* next_stop = nullptr;
+
+		if (index > 0)
+		{
+			prev_stop = runs[index - 1]->getEndStop();
+		}
+		if (index < runs.size())
+		{
+			next_stop = runs[index]->getStartStop();
+		}
+
+		if (prev_stop)
+		{
+			prev_stop->setNextStop(r->getStartStop());
+			r->getStartStop()->setPrevStop(prev_stop);
+		}
+
+		if (next_stop)
+		{
+			r->getEndStop()->setNextStop(next_stop);
+			next_stop->setPrevStop(r->getEndStop());
+		}
 
 		runs.insert(runs.begin() + index, r);
 
@@ -72,15 +97,19 @@ namespace Scheduler {
 	void Schedule::destroyRun(Run *run, size_t hint) {
 		auto iter = std::find(runs.begin(), runs.end(), run);
 		if(iter == runs.end()) return;
-		runs.erase(iter);
-		assert(runs_factory);
-		runs_factory->destroyObject(run);
 
-		schedule_actualizer.onRunRemoved();
+		destroyRun(std::distance(runs.begin(), iter));
 	}
 
 	void Schedule::destroyRun(size_t index) {
 		Run* r = runs[index];
+
+		Stop* prev_stop = r->getStartStop()->getPrevStop();
+		Stop* next_stop = r->getEndStop()->getNextStop();
+
+		if (prev_stop) prev_stop->setNextStop(next_stop);
+		if (next_stop) next_stop->setPrevStop(prev_stop);
+
 		runs.erase(runs.begin() + index);
 		assert(runs_factory);
 		runs_factory->destroyObject(r);

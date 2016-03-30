@@ -24,8 +24,8 @@ namespace Scheduler
         for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithm->onStopAdded(run, stop, index);
     }
 
-    void ScheduleActualizer::onStopRemoved(const Run *run) {
-        for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithm->onStopRemoved(run);
+    void ScheduleActualizer::onStopRemoved(const Run *run, size_t index) {
+        for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithm->onStopRemoved(run, index);
     }
 
 	void ScheduleActualizer::onStopReplaced(const Run * run, const Stop * new_stop, size_t index)

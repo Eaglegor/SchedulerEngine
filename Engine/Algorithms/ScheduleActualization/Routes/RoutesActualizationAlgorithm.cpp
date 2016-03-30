@@ -5,7 +5,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Run.h>
-#include <Engine/SceneManager/Views/RunStopsView.h>
+#include <Engine/SceneManager/WorkStop.h>
 #include <Engine/Engine/Services/RoutingService.h>
 
 namespace Scheduler
@@ -43,7 +43,7 @@ namespace Scheduler
 		dirty_flag = true;
 	}
 
-	void RoutesActualizationAlgorithm::onStopRemoved(const Run *run)
+	void RoutesActualizationAlgorithm::onStopRemoved(const Run *run, size_t index)
 	{
 		dirty_flag = true;
 	}
@@ -69,21 +69,11 @@ namespace Scheduler
 
 		for(Run *r : schedule->getRuns())
 		{
-			RunStopsView stops(r);
+			if (r->getVehicle() == nullptr) continue;
 
-			for (int i = 0; i < stops.size() - 1; ++i)
+			for (Stop* stop = r->getStartStop(); stop != r->getEndStop(); stop = stop->getNextStop())
 			{
-				if(!stops[i]->hasActualRoute())
-				{
-					if(r->getVehicle() == nullptr)
-					{
-						stops[i]->setNextRoute(Route());
-					}
-					else
-					{
-						stops[i]->setNextRoute(routing_service->calculateRoute(stops[i]->getLocation(), stops[i+1]->getLocation(), r->getVehicle()->getRoutingProfile()));
-					}
-				}
+				if (!stop->hasActualRoute()) stop->setNextRoute(routing_service->calculateRoute(stop->getLocation(), stop->getNextStop()->getLocation(), r->getVehicle()->getRoutingProfile()));
 			}
 		}
 		

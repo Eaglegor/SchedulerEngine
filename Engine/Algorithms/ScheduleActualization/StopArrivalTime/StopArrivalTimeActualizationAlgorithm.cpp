@@ -2,6 +2,7 @@
 #include <Engine/SceneManager/Views/ScheduleStopsView.h>
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/Schedule.h>
+#include <Engine/SceneManager/Run.h>
 #include <Engine/Algorithms/TimeWindowSelectors/FirstTimeWindowSelector/FirstTimeWindowSelector.h>
 #include <algorithm>
 
@@ -17,24 +18,30 @@ namespace Scheduler
     void StopArrivalTimeActualizationAlgorithm::actualize() {
         if(!dirty_flag) return;
 
-		ScheduleStopsView stops(schedule);
+		//ScheduleStopsView stops(schedule);
+		if (schedule->getRuns().empty())
+		{
+			dirty_flag = false;
+			return;
+		}
 
-		if(stops.empty()) return;
+		Stop* first_stop = (*schedule->getRuns().begin())->getStartStop();
 
 		FirstTimeWindowSelector time_window_selector;
 
 		// First stop start time is a max from schedule's shift start and operation's time window (if any)
-		TimeWindow first_time_window = time_window_selector.selectTimeWindow(stops[0]);
-		stops[0]->setStartTime(std::max(schedule->getShift().getStartTime(), first_time_window.getStartTime()));
+		TimeWindow first_time_window = time_window_selector.selectTimeWindow(first_stop);
+		first_stop->setStartTime(std::max(schedule->getShift().getStartTime(), first_time_window.getStartTime()));
 
 		// We need to minimize the total run time, this budget allows us to start run later than from the shift start
 		// Budget = how much waiting time inside runs we can compensate by starting work later
-		Duration forward_shift_budget = first_time_window.getEndTime() - stops[0]->getAllocationTime().getEndTime();
+		Duration forward_shift_budget = first_time_window.getEndTime() - first_stop->getAllocationTime().getEndTime();
 
-		for(size_t i = 0; i < stops.size() - 1; ++i)
+
+		for (Stop* stop = first_stop; stop != (*schedule->getRuns().rbegin())->getEndStop(); stop = stop->getNextStop())
 		{
-			Stop* current_stop = stops[i];
-			Stop* next_stop = stops[i + 1];
+			Stop* current_stop = stop;
+			Stop* next_stop = stop->getNextStop();
 			TimeWindow next_time_window = time_window_selector.selectTimeWindow(next_stop);
 			TimePoint next_route_end = current_stop->getAllocationTime().getEndTime() + current_stop->getNextRoute().getDuration();
 
@@ -45,9 +52,9 @@ namespace Scheduler
 				if(forward_shift_budget > Duration(0))
 				{
 					Duration shift = std::min(forward_shift_budget, waiting_time);
-					for(size_t j = 0; j <= i; ++j)
+					for (Stop* s = first_stop; s != next_stop; s = s->getNextStop())
 					{
-						stops[j]->setStartTime(stops[j]->getAllocationTime().getStartTime() + shift);
+						s->setStartTime(s->getAllocationTime().getStartTime() + shift);
 					}
 					forward_shift_budget -= shift;
 					next_route_end += shift;
@@ -79,7 +86,7 @@ namespace Scheduler
 		dirty_flag = true;
 	}
 
-    void StopArrivalTimeActualizationAlgorithm::onStopRemoved(const Run *run) {
+    void StopArrivalTimeActualizationAlgorithm::onStopRemoved(const Run *run, size_t index) {
         dirty_flag = true;
     }
 

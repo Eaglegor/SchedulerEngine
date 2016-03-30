@@ -180,12 +180,49 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 		acceptable_optimum_deviation = 0.5;
     }
 
+    SECTION("Greedy + SimpleTwoOpt")
+    {
+        std::cout << "############# Testing Chain: Greedy + Simple 2opt solver ####################" << std::endl;
+        ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+
+        GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+        greedy_solver->setRoutingService(&routing_service);
+
+        SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+        two_opt_solver->setScheduleCostFunction(cost_function);
+
+        tsp_solver->addTSPSolver(greedy_solver);
+        tsp_solver->addTSPSolver(two_opt_solver);
+
+        solver = tsp_solver;
+        acceptable_optimum_deviation = 0.5;
+    }
+
     SECTION("SATwoOpt")
     {
         std::cout << "############# Testing SA 2opt solver ####################" << std::endl;
         SATwoOptTSPSolver *tsp_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
         tsp_solver->setScheduleCostFunction(cost_function);
         tsp_solver->setAcceptanceFunction(new BasicAcceptanceFunction(50.f, 0.1f, 0.25f));
+        solver = tsp_solver;
+        acceptable_optimum_deviation = 0.5;
+    }
+
+    SECTION("Greedy + SATwoOpt")
+    {
+        std::cout << "############# Testing SA 2opt solver ####################" << std::endl;
+        ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+
+        GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+        greedy_solver->setRoutingService(&routing_service);
+
+        SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+        sa_solver->setScheduleCostFunction(cost_function);
+        sa_solver->setAcceptanceFunction(new BasicAcceptanceFunction(50.f, 0.1f, 0.25f));
+
+        tsp_solver->addTSPSolver(greedy_solver);
+        tsp_solver->addTSPSolver(sa_solver);
+
         solver = tsp_solver;
         acceptable_optimum_deviation = 0.5;
     }
