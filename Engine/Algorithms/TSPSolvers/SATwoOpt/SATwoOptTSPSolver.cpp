@@ -30,6 +30,9 @@ namespace Scheduler
         if (!acceptance_function) return;
 
         const auto &stops = run->getWorkStops();
+		if (stops.empty()) return;
+
+		auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
         Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
         bool changed = true;
         unsigned long long counter = 0;
@@ -38,8 +41,7 @@ namespace Scheduler
             for (auto stop_it1 = stops.begin(); stop_it1 != stops.end() - 1; ++stop_it1) {
                 for (auto stop_it2 = stop_it1 + 1; stop_it2 != stops.end(); ++stop_it2) {
                     SceneEditor editor;
-                    editor.performAction<SwapRunWorkStops>(run, *stop_it1, *stop_it2);
-                    editor.performAction<ReverseWorkStopsSubsequence>(run, *(stop_it1 + 1), *(stop_it2));
+                    editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stop_it1, stop_it2 + 1);
                     Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
                     if (cost < best_cost || acceptance_function->isAccepting(cost - best_cost, counter)) {
                         best_cost = cost;
@@ -47,7 +49,6 @@ namespace Scheduler
                     } else {
                         editor.rollbackAll();
                     }
-
                 }
             }
             ++counter;

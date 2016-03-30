@@ -6,6 +6,7 @@
 #include <Engine/Concepts/Route.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneEditor/SceneEditor.h>
+#include <algorithm>
 
 namespace Scheduler
 {
@@ -28,23 +29,27 @@ namespace Scheduler
 	{
         if (!routing_service) return; // We don't have a metric to optimize - so we can't
 
-        auto &stops = run->getWorkStops();
+		auto &stops = run->getWorkStops();
+		if (stops.empty()) return;
+
+		auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
         const RoutingProfile &routing_profile = run->getVehicle()->getRoutingProfile();
         auto location = run->getStartStop()->getLocation();
         SceneEditor scene_editor;
-        for (size_t i = 0; i < stops.size() - 1; ++i) {
-            size_t nearest_element_idx = i;
-            auto min_distance = routing_service->calculateRoute(location, stops[nearest_element_idx]->getLocation(), routing_profile).getDistance();
-            for (size_t j = i + 1; j < stops.size(); ++j) {
-                const auto distance = routing_service->calculateRoute(location, stops[j]->getLocation(), routing_profile).getDistance();
+        for (auto stop_i = stops.begin(); stop_i != stops.end() - 1; ++stop_i) {
+            auto nearest_element_iter = stop_i;
+            auto min_distance = routing_service->calculateRoute(location, (*nearest_element_iter)->getLocation(), routing_profile).getDistance();
+            for (auto stop_j = stop_i + 1; stop_j != stops.end(); ++stop_j) {
+                const auto distance = routing_service->calculateRoute(location, (*stop_j)->getLocation(), routing_profile).getDistance();
                 if (distance < min_distance) {
                     min_distance = distance;
-                    nearest_element_idx = j;
+					nearest_element_iter = stop_j;
                 }
             }
 
-            location = stops[nearest_element_idx]->getLocation();
-            scene_editor.performAction<SwapRunWorkStops>(run, i, nearest_element_idx);
+            location = (*nearest_element_iter)->getLocation();
+            scene_editor.performAction<SwapRunWorkStops>(run_iter, stop_i, nearest_element_iter);
+			scene_editor.commit();
         }
 	}
 

@@ -3,24 +3,23 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/WorkStop.h>
+#include "ActionsImpl.h"
 #include <assert.h>
 
 namespace Scheduler
 {
-	ReverseWorkStopsSubsequence::ReverseWorkStopsSubsequence(Run* r, WorkStop* start_stop, WorkStop* end_stop):
-		schedule(r->getSchedule()),
-		run_index(determine_run_index(r)),
-		start_index(determine_stop_index(start_stop)),
-		end_index(determine_stop_index(end_stop))
+	ReverseWorkStopsSubsequence::ReverseWorkStopsSubsequence(RunIterator run_iterator, WorkStopIterator start_stop, WorkStopIterator end_stop) :
+		schedule((*run_iterator)->getSchedule()),
+		run_index(std::distance<ImmutableVector<Run*>::const_iterator>(schedule->getRuns().begin(), run_iterator)),
+		start_index(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), start_stop)),
+		end_index(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), end_stop))
 	{
-	}
-
-	ReverseWorkStopsSubsequence::ReverseWorkStopsSubsequence(Run* r, size_t start_index, size_t end_index):
-		schedule(r->getSchedule()),
-		run_index(determine_run_index(r)),
-		start_index(start_index),
-		end_index(end_index)
-	{
+		assert(run_index >= 0);
+		assert(run_index < schedule->getRuns().size());
+		assert(start_index >= 0);
+		assert(start_index < (*run_iterator)->getWorkStops().size());
+		assert(end_index > start_index);
+		assert(end_index <= (*run_iterator)->getWorkStops().size());
 	}
 
 	void ReverseWorkStopsSubsequence::perform()
@@ -34,11 +33,7 @@ namespace Scheduler
 
 		while(ia < ib)
 		{
-			const Operation* oa = r->getWorkStops()[ia]->getOperation();
-			const Operation* ob = r->getWorkStops()[ib]->getOperation();
-
-			r->replaceWorkOperationAt(ia, ob);
-			r->replaceWorkOperationAt(ib, oa);
+			ActionsImpl::swapRunWorkStops(r, ia, ib);
 
 			++ia;
 			--ib;
@@ -49,31 +44,5 @@ namespace Scheduler
 	void ReverseWorkStopsSubsequence::rollback()
 	{
 		perform();
-	}
-
-	size_t ReverseWorkStopsSubsequence::determine_run_index(Run* run)
-	{
-		Schedule* schedule = run->getSchedule();
-		for (size_t i = 0; i < schedule->getRuns().size(); ++i)
-		{
-			if (schedule->getRuns()[i] == run) return i;
-		}
-
-		// We are not allowed to go there
-		assert(false);
-		return -1;
-	}
-
-	size_t ReverseWorkStopsSubsequence::determine_stop_index(WorkStop* stop)
-	{
-		Run* run = stop->getRun();
-		for (size_t i = 0; i < run->getWorkStops().size(); ++i)
-		{
-			if (run->getWorkStops()[i] == stop) return i;
-		}
-
-		// We are not allowed to go there
-		assert(false);
-		return -1;
 	}
 }
