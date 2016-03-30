@@ -4,6 +4,7 @@
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
 #include <SATwoOptTSPSolver_export.h>
 #include "AcceptanceFunction.h"
+#include "TemperatureFunction.h"
 
 namespace Scheduler
 {
@@ -17,6 +18,7 @@ namespace Scheduler
 
 		void setScheduleCostFunction(ScheduleCostFunction* cost_function);
         void setAcceptanceFunction(AcceptanceFunction* acceptance_function);
+        void setTemperatureFunction(TemperatureFunction* temperature_function);
 
         static constexpr const char* staticGetName() { return "SATwoOpt"; }
 		virtual const char* getName() const override { return staticGetName(); };
@@ -24,5 +26,6 @@ namespace Scheduler
 	private:
 		ScheduleCostFunction* schedule_cost_function;
         AcceptanceFunction* acceptance_function;
+        TemperatureFunction* temperature_function;
 	};
 }
