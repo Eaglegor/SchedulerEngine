@@ -1,0 +1,20 @@
+add_custom_target(IncludeGroups SOURCES
+sch_concepts
+sch_core
+sch_cost_functions
+sch_crowfly_routing
+sch_run_vehicle_binders
+sch_scene_management
+sch_schedule_actualization_algorithms
+sch_strategies
+sch_test
+sch_test_all
+sch_test_defines
+sch_test_utils
+sch_tsp_solvers
+sch_units
+sch_utils
+sch_vrp_solvers
+)
+
+set_target_properties(TestUtils PROPERTIES FOLDER "Tests/Utils")
