@@ -1,10 +1,11 @@
 #pragma once
 
 #include "TemperatureFunction.h"
+#include <SATwoOptTSPSolver_export.h>
 
 namespace Scheduler
 {
-    class LinearTemperatureFunction : public TemperatureFunction
+    class SATWOOPTTSPSOLVER_EXPORT LinearTemperatureFunction : public TemperatureFunction
     {
     public:
         LinearTemperatureFunction ();
