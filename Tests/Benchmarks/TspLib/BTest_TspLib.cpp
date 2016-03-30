@@ -227,6 +227,38 @@ void runTspLibTest(const std::vector<std::string> &datasets)
         acceptable_optimum_deviation = 0.5;
     }
 
+	SECTION("CherepanovExperimental")
+	{
+		std::cout << "############# Testing CherepanovExperimental solver ####################" << std::endl;
+		CherepanovExperimentalTSPSolver *tsp_solver = strategy->createTSPSolver<CherepanovExperimentalTSPSolver>();
+		tsp_solver->setScheduleCostFunction(cost_function);
+
+		solver = tsp_solver;
+		acceptable_optimum_deviation = 0.5;
+	}
+	
+	SECTION("Greedy + SimpleTwoOpt + CherepanovExperimental")
+	{
+		std::cout << "############# Testing Chain: Greedy + Simple 2opt + CherepanovExperimental solver ####################" << std::endl;
+		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+
+		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+		greedy_solver->setRoutingService(&routing_service);
+
+		CherepanovExperimentalTSPSolver *ch_solver = strategy->createTSPSolver<CherepanovExperimentalTSPSolver>();
+		ch_solver->setScheduleCostFunction(cost_function);
+
+		SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+		two_opt_solver->setScheduleCostFunction(cost_function);
+
+		tsp_solver->addTSPSolver(greedy_solver);
+		tsp_solver->addTSPSolver(two_opt_solver);
+		tsp_solver->addTSPSolver(ch_solver);
+
+		solver = tsp_solver;
+		acceptable_optimum_deviation = 0.5;
+	}
+
 	float max_deviation = 0;
 
 	for (const std::string& dataset : datasets)
