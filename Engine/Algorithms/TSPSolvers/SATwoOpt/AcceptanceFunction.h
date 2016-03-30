@@ -7,11 +7,12 @@ namespace Scheduler
     class AcceptanceFunction
     {
     public:
+
         virtual ~AcceptanceFunction()
         {
         }
 
-        virtual bool isAccepting(const Cost& delta, unsigned long long iterationNumber) const = 0;
+        virtual bool isAccepting(const Cost& delta, float temperature) const = 0;
 
         virtual const char* getName() const = 0;
     };

@@ -171,18 +171,9 @@ void runTspLibTest(const std::vector<std::string> &datasets)
         acceptable_optimum_deviation = 0.5;
     }
 
-    SECTION("SimpleTwoOpt")
-	{
-        std::cout << "############# Testing Simple 2opt solver ####################" << std::endl;
-		SimpleTwoOptTSPSolver *tsp_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
-		tsp_solver->setScheduleCostFunction(cost_function);
-		solver = tsp_solver;
-		acceptable_optimum_deviation = 0.5;
-    }
-
-    SECTION("Greedy + SimpleTwoOpt")
+    SECTION("Greedy + TwoOpt")
     {
-        std::cout << "############# Testing Chain: Greedy + Simple 2opt solver ####################" << std::endl;
+        std::cout << "############# Testing Chain: Greedy + TwoOpt ####################" << std::endl;
         ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
 
         GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
@@ -198,30 +189,23 @@ void runTspLibTest(const std::vector<std::string> &datasets)
         acceptable_optimum_deviation = 0.5;
     }
 
-    SECTION("SATwoOpt")
+    SECTION("SA + TwoOpt")
     {
-        std::cout << "############# Testing SA 2opt solver ####################" << std::endl;
-        SATwoOptTSPSolver *tsp_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
-        tsp_solver->setScheduleCostFunction(cost_function);
-        tsp_solver->setAcceptanceFunction(new BasicAcceptanceFunction(50.f, 0.1f, 0.25f));
-        solver = tsp_solver;
-        acceptable_optimum_deviation = 0.5;
-    }
-
-    SECTION("Greedy + SATwoOpt")
-    {
-        std::cout << "############# Testing SA 2opt solver ####################" << std::endl;
+        std::cout << "############# Testing Chain: SA + TwoOpt ####################" << std::endl;
         ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
-
-        GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-        greedy_solver->setRoutingService(&routing_service);
 
         SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
-        sa_solver->setAcceptanceFunction(new BasicAcceptanceFunction(50.f, 0.1f, 0.25f));
+        sa_solver->setAcceptanceFunction(new BasicAcceptanceFunction());
+        //sa_solver->setAcceptanceFunction(new FastAcceptanceFunction());
+        sa_solver->setTemperatureFunction(new LinearTemperatureFunction(100.f, 0.1f, 0.05f));
+        //sa_solver->setTemperatureFunction(new PowerTemperatureFunction(100.f, 0.1f, 0.99f));
 
-        tsp_solver->addTSPSolver(greedy_solver);
+        SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+        two_opt_solver->setScheduleCostFunction(cost_function);
+
         tsp_solver->addTSPSolver(sa_solver);
+        tsp_solver->addTSPSolver(two_opt_solver);
 
         solver = tsp_solver;
         acceptable_optimum_deviation = 0.5;

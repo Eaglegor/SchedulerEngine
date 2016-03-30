@@ -3,25 +3,16 @@
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Schedule.h>
-#include <algorithm>
+#include "ActionsImpl.h"
 #include <assert.h>
 
 namespace Scheduler
 {
-	SwapRunWorkStops::SwapRunWorkStops(Run* r, WorkStop* a, WorkStop* b):
-		schedule(r->getSchedule()),
-		ir(determine_run_index(r)),
-		ia(determine_stop_index(a)),
-		ib(determine_stop_index(b))
-	{
-
-	}
-
-	SwapRunWorkStops::SwapRunWorkStops(Run* r, size_t a_index, size_t b_index):
-		schedule(r->getSchedule()),
-		ir(determine_run_index(r)),
-		ia(a_index),
-		ib(b_index)
+	SwapRunWorkStops::SwapRunWorkStops(RunIterator run_iterator, WorkStopIterator start_stop, WorkStopIterator end_stop):
+		schedule((*run_iterator)->getSchedule()),
+		ir(std::distance<ImmutableVector<Run*>::const_iterator>(schedule->getRuns().begin(), run_iterator)),
+		ia(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), start_stop)),
+		ib(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), end_stop))
 	{
 	}
 
@@ -31,42 +22,11 @@ namespace Scheduler
 
 		Run* r = schedule->getRuns()[ir];
 
-		const Operation* oa = r->getWorkStops()[ia]->getOperation();
-		const Operation* ob = r->getWorkStops()[ib]->getOperation();
-
-		r->replaceWorkOperationAt(ia, ob);
-		r->replaceWorkOperationAt(ib, oa);
+		ActionsImpl::swapRunWorkStops(r, ia, ib);
 	}
 
 	void SwapRunWorkStops::rollback()
 	{
 		perform();
 	}
-
-	size_t SwapRunWorkStops::determine_stop_index(WorkStop* stop)
-	{
-		Run* run = stop->getRun();
-		for (size_t i = 0; i < run->getWorkStops().size(); ++i)
-		{
-			if (run->getWorkStops()[i] == stop) return i;
-		}
-
-		// We are not allowed to go there
-		assert(false);
-		return -1;
-	}
-
-	size_t SwapRunWorkStops::determine_run_index(Run* run)
-	{
-		Schedule* schedule = run->getSchedule();
-		for (size_t i = 0; i < schedule->getRuns().size(); ++i)
-		{
-			if (schedule->getRuns()[i] == run) return i;
-		}
-
-		// We are not allowed to go there
-		assert(false);
-		return -1;
-	}
-
 }

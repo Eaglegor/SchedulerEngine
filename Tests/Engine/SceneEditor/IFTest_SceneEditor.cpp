@@ -33,32 +33,34 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SceneEditor editor;
 
+	auto run_iter = scene->getSchedules()[0]->getRuns().begin();
+
 	SECTION("Direct action")
 	{
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[1], run->getWorkStops()[3]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 1, run->getWorkStops().begin() + 3);
 
 		checkOrder(run, {1, 4, 3, 2, 5});
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[4], run->getWorkStops()[0]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 4, run->getWorkStops().begin() + 0);
 
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[0], run->getWorkStops()[2]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 0, run->getWorkStops().begin() + 2);
 
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 	}
 
 	SECTION("Single checkpoint rollback all")
 	{
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[1], run->getWorkStops()[3]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 1, run->getWorkStops().begin() + 3);
 
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[4], run->getWorkStops()[0]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 4, run->getWorkStops().begin() + 0);
 
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[0], run->getWorkStops()[2]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 0, run->getWorkStops().begin() + 2);
 
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 
@@ -69,19 +71,19 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SECTION("Rollback to last checkpoint")
 	{
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[1], run->getWorkStops()[3]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 1, run->getWorkStops().begin() + 3);
 
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
 		editor.checkpoint();
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[4], run->getWorkStops()[0]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 4, run->getWorkStops().begin() + 0);
 
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.checkpoint();
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[0], run->getWorkStops()[2]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 0, run->getWorkStops().begin() + 2);
 
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 
@@ -96,19 +98,19 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SECTION("Rollback to specific checkpoint")
 	{
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[1], run->getWorkStops()[3]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 1, run->getWorkStops().begin() + 3);
 
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
 		editor.checkpoint(); // 1
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[4], run->getWorkStops()[0]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 4, run->getWorkStops().begin() + 0);
 
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.checkpoint(); // 2
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[0], run->getWorkStops()[2]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 0, run->getWorkStops().begin() + 2);
 
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 
@@ -128,19 +130,19 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SECTION("Clear history")
 	{
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[1], run->getWorkStops()[3]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 1, run->getWorkStops().begin() + 3);
 
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
 		editor.checkpoint(); // 1
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[4], run->getWorkStops()[0]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 4, run->getWorkStops().begin() + 0);
 
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.checkpoint(); // 2
 
-		editor.performAction<SwapRunWorkStops>(run, run->getWorkStops()[0], run->getWorkStops()[2]);
+		editor.performAction<SwapRunWorkStops>(run_iter, run->getWorkStops().begin() + 0, run->getWorkStops().begin() + 2);
 
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 
@@ -172,23 +174,25 @@ TEST_CASE("Reverse action works", "[integration][functional][scene_editor]")
 
 	SceneEditor editor;
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 1, 4);
+	auto run_iter = scene->getSchedules()[0]->getRuns().begin();
+
+	editor.performAction<ReverseWorkStopsSubsequence>(run_iter, run->getWorkStops().begin() + 1, run->getWorkStops().begin() + 4);
 
 	checkOrder(run, { 1, 4, 3, 2, 5 });
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 0, 5);
+	editor.performAction<ReverseWorkStopsSubsequence>(run_iter, run->getWorkStops().begin() + 0, run->getWorkStops().begin() + 5);
 
 	checkOrder(run, { 5, 2, 3, 4, 1 });
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 2, 5);
+	editor.performAction<ReverseWorkStopsSubsequence>(run_iter, run->getWorkStops().begin() + 2, run->getWorkStops().begin() + 5);
 
 	checkOrder(run, { 5, 2, 1, 4, 3 });
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 0, 2);
+	editor.performAction<ReverseWorkStopsSubsequence>(run_iter, run->getWorkStops().begin() + 0, run->getWorkStops().begin() + 2);
 
 	checkOrder(run, { 2, 5, 1, 4, 3 });
 
-	editor.performAction<ReverseWorkStopsSubsequence>(run, 1, 2);
+	editor.performAction<ReverseWorkStopsSubsequence>(run_iter, run->getWorkStops().begin() + 1, run->getWorkStops().begin() + 2);
 
 	checkOrder(run, { 2, 5, 1, 4, 3 });
 

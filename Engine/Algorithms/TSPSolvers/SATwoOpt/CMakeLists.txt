@@ -5,6 +5,13 @@ add_library(SATwoOptTSPSolver SHARED
 	AcceptanceFunction.h
 	BasicAcceptanceFunction.h
 	BasicAcceptanceFunction.cpp
+	FastAcceptanceFunction.h
+	FastAcceptanceFunction.cpp
+	TemperatureFunction.h
+	LinearTemperatureFunction.h
+	LinearTemperatureFunction.cpp
+	PowerTemperatureFunction.h
+	PowerTemperatureFunction.cpp
 )
 
 set_target_properties(SATwoOptTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/SATwoOpt")
