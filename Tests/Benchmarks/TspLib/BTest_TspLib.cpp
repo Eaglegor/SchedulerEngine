@@ -162,7 +162,7 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 
 	float acceptable_optimum_deviation = 0;
 
-    SECTION("Greedy")
+    /*SECTION("Greedy")
     {
         std::cout << "############# Testing Greedy solver ####################" << std::endl;
         GreedyTSPSolver *tsp_solver = strategy->createTSPSolver<GreedyTSPSolver>();
@@ -187,7 +187,7 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 
         solver = tsp_solver;
         acceptable_optimum_deviation = 0.5;
-    }
+    }*/
 
     SECTION("SA + TwoOpt")
     {
@@ -196,10 +196,10 @@ void runTspLibTest(const std::vector<std::string> &datasets)
 
         SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
-        sa_solver->setAcceptanceFunction(new BasicAcceptanceFunction());
-        //sa_solver->setAcceptanceFunction(new FastAcceptanceFunction());
-        sa_solver->setTemperatureFunction(new LinearTemperatureFunction(100.f, 0.1f, 0.05f));
-        //sa_solver->setTemperatureFunction(new PowerTemperatureFunction(100.f, 0.1f, 0.99f));
+        //sa_solver->setTemperatureScheduler(new LinearTemperatureScheduler(60.f, 1.f, 0.001f));
+        //sa_solver->setTemperatureScheduler(new HyperbolaTemperatureScheduler(60000.f, 1.f));
+        //sa_solver->setTemperatureScheduler(new PowerTemperatureScheduler(1000.f, 1.f, 0.9999f));
+        sa_solver->setTemperatureScheduler(new LogarithmTemperatureScheduler(50.f, 5.f));
 
         SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
         two_opt_solver->setScheduleCostFunction(cost_function);
