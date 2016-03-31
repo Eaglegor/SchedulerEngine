@@ -1,0 +1,10 @@
+add_library(EuclideanRoutingService SHARED EuclideanRoutingService.h EuclideanRoutingService.cpp)
+
+target_link_libraries(EuclideanRoutingService Engine)
+
+set_target_properties(EuclideanRoutingService PROPERTIES FOLDER "Services/Routing")
+
+cotire(EuclideanRoutingService)
+
+include(GenerateExportHeader)
+generate_export_header(EuclideanRoutingService EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/EuclideanRoutingService_export.h)
