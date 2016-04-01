@@ -16,6 +16,9 @@ namespace Scheduler
 		Schedule* operator->();
 		const Schedule* operator->() const;
 
+		Schedule* get();
+		const Schedule* get() const;
+		
 	private:
 		Schedule* schedule;
 		SceneObjectsFactory<Schedule> *schedules_factory;

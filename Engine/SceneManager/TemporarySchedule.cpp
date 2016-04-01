@@ -23,4 +23,14 @@ namespace Scheduler
 	{
 		return schedule;
 	}
+	
+	Schedule* TemporarySchedule::get()
+	{
+		return schedule;
+	}
+	
+	const Schedule* TemporarySchedule::get() const
+	{
+		return schedule;
+	}
 }
