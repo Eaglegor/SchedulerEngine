@@ -2,16 +2,15 @@ add_library(SATwoOptTSPSolver SHARED
 	
 	SATwoOptTSPSolver.h
 	SATwoOptTSPSolver.cpp
-	AcceptanceFunction.h
-	BasicAcceptanceFunction.h
-	BasicAcceptanceFunction.cpp
-	FastAcceptanceFunction.h
-	FastAcceptanceFunction.cpp
-	TemperatureFunction.h
-	LinearTemperatureFunction.h
-	LinearTemperatureFunction.cpp
-	PowerTemperatureFunction.h
-	PowerTemperatureFunction.cpp
+	TemperatureScheduler.h
+	LinearTemperatureScheduler.h
+	LinearTemperatureScheduler.cpp
+	PowerTemperatureScheduler.h
+	PowerTemperatureScheduler.cpp
+	HyperbolaTemperatureScheduler.h
+	HyperbolaTemperatureScheduler.cpp
+	LogarithmTemperatureScheduler.h
+	LogarithmTemperatureScheduler.cpp
 )
 
 set_target_properties(SATwoOptTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/SATwoOpt")
