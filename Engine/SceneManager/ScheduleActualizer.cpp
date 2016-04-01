@@ -12,6 +12,16 @@ namespace Scheduler
     {
     }
 
+	ScheduleActualizer::ScheduleActualizer(Schedule * schedule, const ScheduleActualizer & rhs):
+		schedule(schedule),
+		algorithms_factory(rhs.algorithms_factory)
+	{
+		for (ScheduleActualizationAlgorithm* algorithm : rhs.algorithms)
+		{
+			algorithms.push_back(algorithm->clone(schedule, algorithms_factory));
+		}
+	}
+
     void ScheduleActualizer::onOperationAdded(const Stop *stop, const Operation *operation) {
         for(ScheduleActualizationAlgorithm* algorithm : algorithms) algorithm->onOperationAdded(stop, operation);
     }

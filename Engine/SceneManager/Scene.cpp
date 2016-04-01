@@ -106,6 +106,13 @@ namespace Scheduler {
         return schedule;
     }
 
+	TemporarySchedule Scene::createTemporaryScheduleCopy(Schedule * schedule)
+	{
+		Schedule* new_schedule = schedules_factory->createObject(schedule);
+
+		return TemporarySchedule(new_schedule, schedules_factory);
+	}
+
     Scene::~Scene() {
         assert(run_vehicle_binders_factory);
         if(run_vehicle_binder) run_vehicle_binders_factory->destroyObject(run_vehicle_binder);

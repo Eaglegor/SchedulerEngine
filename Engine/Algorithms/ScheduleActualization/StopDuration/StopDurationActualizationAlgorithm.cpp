@@ -112,4 +112,8 @@ namespace Scheduler
 
 		dirty_flag = false;
 	}
+	ScheduleActualizationAlgorithm * StopDurationActualizationAlgorithm::clone(Schedule* schedule, Factory<ScheduleActualizationAlgorithm>* factory)
+	{
+		return factory->createObject<StopDurationActualizationAlgorithm>(schedule);
+	}
 }

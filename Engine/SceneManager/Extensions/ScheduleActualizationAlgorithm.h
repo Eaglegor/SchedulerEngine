@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <Engine/Utils/Factory.h>
 
 namespace Scheduler
 {
@@ -32,6 +33,8 @@ namespace Scheduler
         virtual void actualize() = 0;
 
 		virtual const char* getName() const = 0;
+
+		virtual ScheduleActualizationAlgorithm* clone(Schedule* schedule, Factory<ScheduleActualizationAlgorithm> *factory) = 0;
 
     protected:
         Schedule* schedule;

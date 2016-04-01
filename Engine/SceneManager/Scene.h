@@ -5,6 +5,7 @@
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include <Engine/SceneManager/Extensions/ScheduleActualizationAlgorithm.h>
 #include <Engine/SceneManager/Extensions/RunVehicleBinder.h>
+#include "TemporarySchedule.h"
 
 #include "SceneObjectsFactory.h"
 #include <Engine/Utils/Factory.h>
@@ -56,6 +57,7 @@ namespace Scheduler
         Operation* createFreeOperation();
         Order* createOrder();
         Schedule* createSchedule(const Performer *performer);
+		TemporarySchedule createTemporaryScheduleCopy(Schedule* schedule);
 		Performer* createPerformer();
 		Vehicle* createVehicle();
 
