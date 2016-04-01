@@ -243,6 +243,14 @@ void runTspLibTest(const std::vector<std::string> &datasets, Scheduler::Benchmar
 	}
 
 	size_t index = 1;
+
+	Scheduler::BenchmarkResult total_cost;
+	total_cost.dataset_name = "Summary";
+	total_cost.algorithm_name = result.algorithm_name;
+	total_cost.cost = 0;
+	total_cost.optimal_cost = 0;
+	total_cost.average_time = 0;
+
 	for (const std::string& dataset : datasets)
 	{
 		Cost cost;
@@ -272,13 +280,17 @@ void runTspLibTest(const std::vector<std::string> &datasets, Scheduler::Benchmar
 		result.optimal_cost = optimal_value;
 		result.average_time = nanoseconds / 10000000.0f;
 		
-		
+		total_cost.cost += result.cost;
+		total_cost.optimal_cost += result.optimal_cost;
+		total_cost.average_time += result.average_time;
 
 		float deviation = std::fabs(cost.getValue() - optimal_value) / static_cast<float>(optimal_value);
 		if (deviation > max_deviation) max_deviation = deviation;
 
 		publisher.addResult(result);
 	}
+
+	publisher.addResult(total_cost);
 }
 
 int main(int argc, char **argv)
