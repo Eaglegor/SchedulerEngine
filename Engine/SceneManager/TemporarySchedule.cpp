@@ -1,36 +1,12 @@
 #include "TemporarySchedule.h"
-#include "Schedule.h"
+
+#include <Engine/SceneManager/Schedule.h>
 
 namespace Scheduler
 {
-	TemporarySchedule::TemporarySchedule(Schedule * schedule, SceneObjectsFactory<Schedule>* schedules_factory):
-		schedule(schedule),
-		schedules_factory(schedules_factory)
+	void TemporaryScheduleDeleter::operator()(Schedule* schedule) const
 	{
-	}
-
-	TemporarySchedule::~TemporarySchedule()
-	{
-		schedules_factory->destroyObject(schedule);
-	}
-
-	Schedule* TemporarySchedule::operator->()
-	{
-		return schedule;
-	}
-
-	const Schedule* TemporarySchedule::operator->() const
-	{
-		return schedule;
-	}
-	
-	Schedule* TemporarySchedule::get()
-	{
-		return schedule;
-	}
-	
-	const Schedule* TemporarySchedule::get() const
-	{
-		return schedule;
+		assert(scene_objects_factory);
+		scene_objects_factory->destroyObject(schedule);
 	}
 }

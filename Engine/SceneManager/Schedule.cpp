@@ -11,6 +11,7 @@ namespace Scheduler {
     Schedule::Schedule(size_t id, const Performer* performer) :
             id(id),
             performer(performer),
+			scene(nullptr),
 			runs_factory(nullptr),
 			stops_factory(nullptr),
 			shift_start_location_specified(false),
@@ -25,6 +26,7 @@ namespace Scheduler {
 		name(rhs->name),
 		schedule_actualizer(this, rhs->schedule_actualizer),
 		performer(rhs->performer),
+		scene(nullptr),
 		runs_factory(rhs->runs_factory),
 		stops_factory(rhs->stops_factory),
 		shift_start_location_specified(rhs->shift_start_location_specified),
@@ -210,6 +212,21 @@ namespace Scheduler {
 		}
 
 		runs.clear();
+	}
+
+	Scene* Schedule::getScene()
+	{
+		return scene;
+	}
+
+	const Scene* Schedule::getScene() const
+	{
+		return scene;
+	}
+
+	void Schedule::setScene(Scene* scene)
+	{
+		this->scene = scene;
 	}
 
 	void Schedule::setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder) {

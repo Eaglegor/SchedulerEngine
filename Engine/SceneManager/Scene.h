@@ -57,7 +57,7 @@ namespace Scheduler
         Operation* createFreeOperation();
         Order* createOrder();
         Schedule* createSchedule(const Performer *performer);
-		TemporarySchedule createTemporaryScheduleCopy(Schedule* schedule);
+		TemporarySchedule createTemporaryScheduleCopy(Schedule* schedule) const;
 		Performer* createPerformer();
 		Vehicle* createVehicle();
 

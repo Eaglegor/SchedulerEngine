@@ -94,6 +94,7 @@ namespace Scheduler {
         if(!schedules_factory) return nullptr;
 
         Schedule* schedule = schedules_factory->createObject(performer);
+		schedule->setScene(this);
 		schedule->setRunsFactory(runs_factory);
 		schedule->setStopsFactory(stops_factory);
         schedule->setRunVehicleBinder(run_vehicle_binder);
@@ -106,11 +107,11 @@ namespace Scheduler {
         return schedule;
     }
 
-	TemporarySchedule Scene::createTemporaryScheduleCopy(Schedule * schedule)
+	TemporarySchedule Scene::createTemporaryScheduleCopy(Schedule * schedule) const
 	{
 		Schedule* new_schedule = schedules_factory->createObject(schedule);
 
-		return TemporarySchedule(new_schedule, schedules_factory);
+		return std::move(TemporarySchedule(new_schedule, TemporaryScheduleDeleter(schedules_factory)));
 	}
 
     Scene::~Scene() {

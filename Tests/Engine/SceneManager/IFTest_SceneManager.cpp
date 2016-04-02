@@ -141,6 +141,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     Schedule *schedule = scene->createSchedule(performer);
 
     REQUIRE(schedule != nullptr);
+	REQUIRE(schedule->getScene() == scene);
 
     INFO("[Scene] Checking if schedule is created in default state") {
         REQUIRE(strcmp(schedule->getName(), "") == 0);
@@ -460,6 +461,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(temporary_schedule->getShift() == schedule->getShift());
 		REQUIRE(temporary_schedule->getShiftStartLocation() == schedule->getShiftStartLocation());
 		REQUIRE(temporary_schedule->getShiftEndLocation() == schedule->getShiftEndLocation());
+		REQUIRE(temporary_schedule->getScene() == nullptr);
 
 		REQUIRE(temporary_schedule->getRuns().size() == schedule->getRuns().size());
 		
