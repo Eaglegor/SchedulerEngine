@@ -40,9 +40,9 @@ namespace Scheduler
 
         void setOrder(const Order *order);
 
-		const Capacity& getLoad() const;
+		const Capacity& getDemand() const;
 
-		void setLoad(const Capacity &load);
+		void setDemand(const Capacity &demand);
 
 	private:
         size_t id;
@@ -53,6 +53,6 @@ namespace Scheduler
         Duration duration;
 
         const Order* order;
-		Capacity load;
+		Capacity demand;
     };
 }

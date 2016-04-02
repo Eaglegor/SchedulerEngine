@@ -14,8 +14,8 @@ namespace Scheduler
 	public:
 		TaillardSceneLoader(SceneManager* scene_manager, RoutingService* rs);
 
-		Scene* loadScene(std::istream& stream, uint32_t &out_known_optimum);
-		Scene* loadScene(const std::string &filename, uint32_t &out_known_optimum);
+		Scene* loadScene(std::istream& stream);
+		Scene* loadScene(const std::string &filename);
 
 	private:
 		RoutingService* rs;

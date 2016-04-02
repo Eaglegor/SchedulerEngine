@@ -41,7 +41,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Scene] Checking if operation is created in default state") {
         REQUIRE(strcmp(free_operation->getName(), "") == 0);
         REQUIRE(free_operation->getDuration() == Duration(0));
-        REQUIRE(free_operation->getLoad() == Capacity(0, 0, 0, 0));
+        REQUIRE(free_operation->getDemand() == Capacity(0, 0, 0, 0));
         REQUIRE(free_operation->getOrder() == nullptr);
         REQUIRE(free_operation->getTimeWindows().empty());
         REQUIRE(free_operation->getLocation() == Location());
@@ -50,13 +50,13 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     free_operation->setName("Operation1");
     free_operation->setDuration(Units::minutes(10));
     free_operation->setLocation(make_location(10, 45));
-    free_operation->setLoad(Capacity(1, 3, 4, 5));
+    free_operation->setDemand(Capacity(1, 3, 4, 5));
     free_operation->setTimeWindows({make_time_window(0, 45)});
 
     INFO("[Operation] Checking if operation state is changed correctly") {
         REQUIRE(strcmp(free_operation->getName(), "Operation1") == 0);
         REQUIRE(free_operation->getDuration() == Units::minutes(10));
-        REQUIRE(free_operation->getLoad() == Capacity(1, 3, 4, 5));
+        REQUIRE(free_operation->getDemand() == Capacity(1, 3, 4, 5));
         REQUIRE(free_operation->getOrder() == nullptr);
         REQUIRE(free_operation->getTimeWindows().size() == 1);
         REQUIRE(free_operation->getTimeWindows()[0] == make_time_window(0, 45));
@@ -223,7 +223,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Order] Checking if start operation is created in default state") {
         REQUIRE(strcmp(order1_start_operation->getName(), "") == 0);
         REQUIRE(order1_start_operation->getDuration() == Duration(0));
-        REQUIRE(order1_start_operation->getLoad() == Capacity(0, 0, 0, 0));
+        REQUIRE(order1_start_operation->getDemand() == Capacity(0, 0, 0, 0));
         REQUIRE(order1_start_operation->getOrder() == order);
         REQUIRE(order1_start_operation->getTimeWindows().empty());
         REQUIRE(order1_start_operation->getLocation() == Location());
@@ -232,7 +232,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     order1_start_operation->setName("Order1.StartOperation");
     order1_start_operation->setDuration(Units::minutes(10));
     order1_start_operation->setLocation(shift_start);
-    order1_start_operation->setLoad(Capacity(1, 3, 4, 5));
+    order1_start_operation->setDemand(Capacity(1, 3, 4, 5));
     order1_start_operation->setTimeWindows({make_time_window(0, 45)});
 
     Operation *order1_end_operation = order->createEndOperation();
@@ -242,7 +242,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Order] Checking if end operation is created in default state") {
         REQUIRE(strcmp(order1_end_operation->getName(), "") == 0);
         REQUIRE(order1_end_operation->getDuration() == Duration(0));
-        REQUIRE(order1_end_operation->getLoad() == Capacity(0, 0, 0, 0));
+        REQUIRE(order1_end_operation->getDemand() == Capacity(0, 0, 0, 0));
         REQUIRE(order1_end_operation->getOrder() == order);
         REQUIRE(order1_end_operation->getTimeWindows().empty());
         REQUIRE(order1_end_operation->getLocation() == Location());
@@ -251,7 +251,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     order1_end_operation->setName("Order1.EndOperation");
     order1_end_operation->setDuration(Units::minutes(10));
     order1_end_operation->setLocation(depot);
-    order1_end_operation->setLoad(Capacity(1, 3, 4, 5));
+    order1_end_operation->setDemand(Capacity(1, 3, 4, 5));
     order1_end_operation->setTimeWindows({make_time_window(0, 45)});
 
     Operation *order1_work_operation1 = order->createWorkOperation();
@@ -262,7 +262,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Order] Checking if work operation 1 is created in default state") {
         REQUIRE(strcmp(order1_work_operation1->getName(), "") == 0);
         REQUIRE(order1_work_operation1->getDuration() == Duration(0));
-        REQUIRE(order1_work_operation1->getLoad() == Capacity(0, 0, 0, 0));
+        REQUIRE(order1_work_operation1->getDemand() == Capacity(0, 0, 0, 0));
         REQUIRE(order1_work_operation1->getOrder() == order);
         REQUIRE(order1_work_operation1->getTimeWindows().empty());
         REQUIRE(order1_work_operation1->getLocation() == Location());
@@ -271,7 +271,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     order1_work_operation1->setName("Order1.WorkOperation1");
     order1_work_operation1->setDuration(Units::minutes(10));
     order1_work_operation1->setLocation(make_location(23, 45));
-    order1_work_operation1->setLoad(Capacity(1, 3, 4, 5));
+    order1_work_operation1->setDemand(Capacity(1, 3, 4, 5));
     order1_work_operation1->setTimeWindows({make_time_window(0, 45)});
 
     Operation *order1_work_operation2 = order->createWorkOperation();
@@ -283,7 +283,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Order] Checking if work operation 2 is created in default state") {
         REQUIRE(strcmp(order1_work_operation2->getName(), "") == 0);
         REQUIRE(order1_work_operation2->getDuration() == Duration(0));
-        REQUIRE(order1_work_operation2->getLoad() == Capacity(0, 0, 0, 0));
+        REQUIRE(order1_work_operation2->getDemand() == Capacity(0, 0, 0, 0));
         REQUIRE(order1_work_operation2->getOrder() == order);
         REQUIRE(order1_work_operation2->getTimeWindows().empty());
         REQUIRE(order1_work_operation2->getLocation() == Location());
@@ -292,7 +292,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     order1_work_operation2->setName("Order1.WorkOperation1");
     order1_work_operation2->setDuration(Units::minutes(10));
     order1_work_operation2->setLocation(make_location(25, 35));
-    order1_work_operation2->setLoad(Capacity(1, 3, 4, 5));
+    order1_work_operation2->setDemand(Capacity(1, 3, 4, 5));
     order1_work_operation2->setTimeWindows({make_time_window(0, 45)});
 
     Run* run1 = schedule->createRun(shift_start, depot);
