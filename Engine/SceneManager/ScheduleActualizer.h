@@ -24,6 +24,7 @@ namespace Scheduler
     {
     public:
         ScheduleActualizer(Schedule* schedule);
+		ScheduleActualizer(Schedule* schedule, const ScheduleActualizer &rhs);
         ~ScheduleActualizer();
 
         void onOperationAdded(const Stop* stop, const Operation* operation);
@@ -41,12 +42,12 @@ namespace Scheduler
         void actualize();
 
         template<typename T, typename... Args>
-        bool createAlgorithm(Args&&...args)
+        T* createAlgorithm(Args&&...args)
         {
-            ScheduleActualizationAlgorithm* algorithm = algorithms_factory->createObject<T>(schedule, std::forward<Args>(args)...);
-            if(!algorithm) return false;
+            T* algorithm = algorithms_factory->createObject<T>(schedule, std::forward<Args>(args)...);
+            if(!algorithm) return nullptr;
             algorithms.push_back(algorithm);
-            return true;
+            return algorithm;
         };
 
 		// == framework internal ====================================

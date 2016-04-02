@@ -69,6 +69,11 @@ namespace Scheduler
 		dirty_flag = false;
     }
 
+	ScheduleActualizationAlgorithm * StopArrivalTimeActualizationAlgorithm::clone(Schedule* schedule, Factory<ScheduleActualizationAlgorithm>* factory)
+	{
+		return factory->createObject<StopArrivalTimeActualizationAlgorithm>(schedule);
+	}
+
     void StopArrivalTimeActualizationAlgorithm::onOperationAdded(const Stop *stop, const Operation *operation) {
         dirty_flag = true;
     }

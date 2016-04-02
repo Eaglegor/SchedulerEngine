@@ -24,6 +24,11 @@ add_library(SceneManager SHARED
 	Schedule.h
 	Schedule.cpp
 	
+	ScheduleStateUtils.h
+	ScheduleStateUtils.cpp
+
+	TemporarySchedule.h TemporarySchedule.cpp
+	
 	ScheduleActualizer.h
 	ScheduleActualizer.cpp
     

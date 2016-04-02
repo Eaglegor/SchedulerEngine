@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 namespace Scheduler
 {
@@ -8,8 +9,7 @@ namespace Scheduler
     {
         std::string dataset_name;
         std::string algorithm_name;
-        float cost;
-        float optimal_cost;
-        double average_time;
+        
+		std::unordered_map<std::string, std::string> kpi;
 	};
 }

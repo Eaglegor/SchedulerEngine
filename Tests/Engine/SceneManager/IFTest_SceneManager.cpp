@@ -141,6 +141,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     Schedule *schedule = scene->createSchedule(performer);
 
     REQUIRE(schedule != nullptr);
+	REQUIRE(schedule->getScene() == scene);
 
     INFO("[Scene] Checking if schedule is created in default state") {
         REQUIRE(strcmp(schedule->getName(), "") == 0);
@@ -444,6 +445,60 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(run1->getEndStop()->getOperations().empty());
 		REQUIRE(run1->getWorkStops().size() == 1);
 		REQUIRE(run1->getWorkStops()[0] == work_stop1);
+	}
+
+	INFO("Checking schedule temporary copy")
+	{
+		Schedule* schedule = scene->getSchedules()[0];
+
+		TemporarySchedule temporary_schedule = scene->createTemporaryScheduleCopy(schedule);
+
+		REQUIRE(strcmp(temporary_schedule->getName(), schedule->getName()) == 0);
+		temporary_schedule->setName("AnotherName");
+		REQUIRE(strcmp(temporary_schedule->getName(), schedule->getName()) != 0);
+		REQUIRE(temporary_schedule->getPerformer() == schedule->getPerformer());
+		REQUIRE(temporary_schedule->getDepotLocation() == schedule->getDepotLocation());
+		REQUIRE(temporary_schedule->getShift() == schedule->getShift());
+		REQUIRE(temporary_schedule->getShiftStartLocation() == schedule->getShiftStartLocation());
+		REQUIRE(temporary_schedule->getShiftEndLocation() == schedule->getShiftEndLocation());
+		REQUIRE(temporary_schedule->getScene() == nullptr);
+
+		REQUIRE(temporary_schedule->getRuns().size() == schedule->getRuns().size());
+		
+		for (size_t i = 0; i < temporary_schedule->getRuns().size(); ++i)
+		{
+			Run *orig = schedule->getRuns()[i];
+			Run *temp = temporary_schedule->getRuns()[i];
+
+			REQUIRE(orig->getStartLocation() == temp->getStartLocation());
+			REQUIRE(orig->getEndLocation() == temp->getEndLocation());
+			REQUIRE(orig->getVehicle() == temp->getVehicle());
+
+			REQUIRE(orig->getWorkStops().size() == temp->getWorkStops().size());
+
+			REQUIRE(orig->getStartStop()->getOperations() == temp->getStartStop()->getOperations());
+			REQUIRE(orig->getStartStop()->getLocation() == temp->getStartStop()->getLocation());
+			REQUIRE(orig->getStartStop()->getDuration() == temp->getStartStop()->getDuration());
+			REQUIRE(orig->getStartStop()->getAllocationTime() == temp->getStartStop()->getAllocationTime());
+
+			REQUIRE(orig->getEndStop()->getOperations() == temp->getEndStop()->getOperations());
+			REQUIRE(orig->getEndStop()->getLocation() == temp->getEndStop()->getLocation());
+			REQUIRE(orig->getEndStop()->getDuration() == temp->getEndStop()->getDuration());
+			REQUIRE(orig->getEndStop()->getAllocationTime() == temp->getEndStop()->getAllocationTime());
+
+			for (size_t j = 0; j < orig->getWorkStops().size(); ++j)
+			{
+				WorkStop *sorig = orig->getWorkStops()[j];
+				WorkStop *stemp = temp->getWorkStops()[j];
+
+				REQUIRE(sorig->getAllocationTime() == stemp->getAllocationTime());
+				REQUIRE(sorig->getDuration() == stemp->getDuration());
+				REQUIRE(sorig->getLocation() == stemp->getLocation());
+				REQUIRE(sorig->getNextRoute() == stemp->getNextRoute());
+				REQUIRE(sorig->getOperation() == stemp->getOperation());
+			}
+		}
+		
 	}
 
     scene_manager->destroyScene(scene);

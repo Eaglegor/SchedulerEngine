@@ -153,117 +153,72 @@ std::vector<std::string> huge_datasets
 	"Huge/vm1748"
 };
 
-enum TspSolverType
+const char* COST_KPI_NAME = "Cost";
+const char* AVERAGE_TIME_KPI_NAME = "Average time (ms)";
+
+using namespace Scheduler;
+
+class TspLibTestInstance
 {
-	GREEDY,
-	TWO_OPT,
-	GREEDY_AND_TWO_OPT,
-	SA,
-	GREEDY_AND_SA,
-	SA_AND_TWO_OPT
-};
+public:
+	virtual ~TspLibTestInstance(){}
 
-void runTspLibTest(const std::vector<std::string> &datasets, Scheduler::BenchmarkPublisher& publisher, TspSolverType solver_type)
-{
-	using namespace Scheduler;
-
-	TspLibRoutingService routing_service;
-	EngineContext engine_context;
-	engine_context.routing_service = &routing_service;
-	Engine engine(engine_context);
-
-	TspLibSceneLoader scene_loader(engine.getSceneManager());
-
-	Strategy* strategy = engine.getStrategiesManager()->createStrategy();
-
-	TotalDistanceScheduleCostFunction* cost_function = strategy->createScheduleCostFunction<TotalDistanceScheduleCostFunction>();
-
-	float acceptable_optimum_deviation = 0;
-
-	Scheduler::BenchmarkResult result;
-	
-	float max_deviation = 0;
-
-	Scheduler::TSPSolver* solver;
-
-	switch(solver_type)
+	TspLibTestInstance(const std::vector<std::string> &datasets, BenchmarkPublisher& publisher):
+		publisher(publisher),
+		datasets(datasets)
 	{
-		case GREEDY:
-		{
-			std::cout << "############# Testing Greedy solver ####################" << std::endl;
-			GreedyTSPSolver *tsp_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-			tsp_solver->setRoutingService(&routing_service);
-			solver = tsp_solver;
-			acceptable_optimum_deviation = 0.5;
-			result.algorithm_name = "Greedy";
-			break;
-		}
-		case GREEDY_AND_TWO_OPT:
-		{
-			std::cout << "############# Testing Chain: Greedy + TwoOpt ####################" << std::endl;
-			ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+		EngineContext engine_context;
+		engine_context.routing_service = &routing_service;
+		engine.reset(new Engine(engine_context));
 
-			GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-			greedy_solver->setRoutingService(&routing_service);
-
-			SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
-			two_opt_solver->setScheduleCostFunction(cost_function);
-
-			tsp_solver->addTSPSolver(greedy_solver);
-			tsp_solver->addTSPSolver(two_opt_solver);
-
-			solver = tsp_solver;
-			acceptable_optimum_deviation = 0.5;
-			result.algorithm_name = "Chain: Greedy + TwoOpt";
-			break;
-		}
-		case SA_AND_TWO_OPT:
-		{
-			std::cout << "############# Testing Chain: SA + TwoOpt ####################" << std::endl;
-			ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
-
-			SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
-			sa_solver->setScheduleCostFunction(cost_function);
-			sa_solver->setAcceptanceFunction(new BasicAcceptanceFunction());
-			//sa_solver->setAcceptanceFunction(new FastAcceptanceFunction());
-			sa_solver->setTemperatureFunction(new LinearTemperatureFunction(100.f, 0.1f, 0.05f));
-			//sa_solver->setTemperatureFunction(new PowerTemperatureFunction(100.f, 0.1f, 0.99f));
-
-			SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
-			two_opt_solver->setScheduleCostFunction(cost_function);
-
-			tsp_solver->addTSPSolver(sa_solver);
-			tsp_solver->addTSPSolver(two_opt_solver);
-
-			solver = tsp_solver;
-			acceptable_optimum_deviation = 0.5;
-			result.algorithm_name = "Chain: SA + TwoOpt";
-			break;
-		}
+		strategy = engine->getStrategiesManager()->createStrategy();
+		cost_function = strategy->createScheduleCostFunction<TotalDistanceScheduleCostFunction>();
 	}
 
-	size_t index = 1;
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) = 0;
+	virtual const char* getAlgorithmName() = 0;
 
-	Scheduler::BenchmarkResult total_cost;
-	total_cost.dataset_name = "Summary";
-	total_cost.algorithm_name = result.algorithm_name;
-	total_cost.cost = 0;
-	total_cost.optimal_cost = 0;
-	total_cost.average_time = 0;
-
-	for (const std::string& dataset : datasets)
+	void run()
 	{
+		std::cout << "############# Testing solver: "  << getAlgorithmName() << " ####################" << std::endl;
+
+		total_cost = 0;
+		total_time = 0;
+		for (size_t i = 0; i < datasets.size(); ++i)
+		{
+			runDataset(i);
+		}
+
+		BenchmarkResult result;
+		result.algorithm_name = getAlgorithmName();
+		result.dataset_name = "Summary";
+		result.kpi.emplace(COST_KPI_NAME, std::to_string(total_cost));
+		result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(total_time));
+		publisher.addResult(result);
+	}
+
+protected:
+
+	virtual void runDataset(size_t id)
+	{
+		TspLibSceneLoader scene_loader(engine->getSceneManager());
+
+		Scheduler::BenchmarkResult result;
+		result.algorithm_name = getAlgorithmName();
+
+		TSPSolver* solver = createTSPSolver(strategy);
+
 		Cost cost;
 		uint32_t optimal_value;
 
-		std::cout << "Running " << index ++ << "/" << datasets.size() << ": " << dataset << std::endl;
-		result.dataset_name = dataset;
-	
+		std::cout << "Running " << id + 1 << "/" << datasets.size() << ": " << datasets[id] << " ";
+		result.dataset_name = datasets[id];
+
 		long long nanoseconds = 0;
 
 		for (size_t i = 0; i < 10; ++i)
-        {
-            Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + dataset + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
+		{
+			Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
 
 			std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
 			solver->optimize(scene->getSchedules()[0]);
@@ -274,41 +229,187 @@ void runTspLibTest(const std::vector<std::string> &datasets, Scheduler::Benchmar
 			nanoseconds += count;
 
 			cost = cost_function->calculateCost(scene->getSchedules()[0]);
+
+			std::cout << "#";
 		}
 
-		result.cost = cost.getValue();
-		result.optimal_cost = optimal_value;
-		result.average_time = nanoseconds / 10000000.0f;
-		
-		total_cost.cost += result.cost;
-		total_cost.optimal_cost += result.optimal_cost;
-		total_cost.average_time += result.average_time;
+		std::cout << std::endl;
 
 		float deviation = std::fabs(cost.getValue() - optimal_value) / static_cast<float>(optimal_value);
-		if (deviation > max_deviation) max_deviation = deviation;
+
+		result.kpi.emplace(COST_KPI_NAME, std::to_string(cost.getValue()) + " (" + std::to_string(deviation * 100) + "%) ");
+		result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(nanoseconds / 10000000.0f));
+
+		total_cost += cost.getValue();
+		total_time += nanoseconds / 10000000.0f;
 
 		publisher.addResult(result);
 	}
 
-	publisher.addResult(total_cost);
-}
+	float total_cost;
+	float total_time;
+
+	Scheduler::TspLibRoutingService routing_service;
+	Scheduler::BenchmarkPublisher& publisher;
+	std::unique_ptr<Scheduler::Engine> engine;
+	Scheduler::Strategy* strategy;
+	const std::vector<std::string>& datasets;
+	ScheduleCostFunction* cost_function;
+	
+};
+
+class Optimal_TspLibInstance : public TspLibTestInstance
+{
+public:
+	Optimal_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+		: TspLibTestInstance(datasets, publisher)
+	{
+	}
+
+	virtual void runDataset(size_t id) override
+	{
+		TspLibSceneLoader scene_loader(engine->getSceneManager());
+
+		Scheduler::BenchmarkResult result;
+		result.algorithm_name = getAlgorithmName();
+
+		uint32_t optimal_value;
+
+		result.dataset_name = datasets[id];
+
+		Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
+
+		result.kpi.emplace(COST_KPI_NAME, std::to_string(optimal_value));
+
+		total_cost += optimal_value;
+
+		publisher.addResult(result);
+	}
+
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	{
+		return nullptr;
+	}
+
+	virtual const char* getAlgorithmName() override
+	{
+		return "!Optimal";
+	}
+};
+
+class Greedy_TspLibInstance : public TspLibTestInstance
+{
+public:
+	Greedy_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+		: TspLibTestInstance(datasets, publisher)
+	{
+	}
+
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	{
+		GreedyTSPSolver *tsp_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+		tsp_solver->setRoutingService(&routing_service);
+		return tsp_solver;
+	}
+
+	virtual const char* getAlgorithmName() override
+	{
+		return "Greedy";
+	}
+};
+
+class Greedy_2Opt_TspLibInstance : public TspLibTestInstance
+{
+public:
+	Greedy_2Opt_TspLibInstance (const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+		: TspLibTestInstance(datasets, publisher)
+	{
+	}
+
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	{
+		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+		greedy_solver->setRoutingService(&routing_service);
+
+		SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+		two_opt_solver->setScheduleCostFunction(cost_function);
+
+		tsp_solver->addTSPSolver(greedy_solver);
+		tsp_solver->addTSPSolver(two_opt_solver);
+		return tsp_solver;
+	}
+
+	virtual const char* getAlgorithmName() override
+	{
+		return "Greedy >> 2-Opt";
+	}
+};
+
+class SA_2Opt_TspLibInstance : public TspLibTestInstance
+{
+public:
+	SA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+		: TspLibTestInstance(datasets, publisher)
+	{
+	}
+
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	{
+		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+
+		SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+		sa_solver->setScheduleCostFunction(cost_function);
+		//sa_solver->setAcceptanceFunction(new BasicAcceptanceFunction());
+		//sa_solver->setAcceptanceFunction(new FastAcceptanceFunction());
+		//sa_solver->setTemperatureFunction(new LinearTemperatureFunction(100.f, 0.1f, 0.05f));
+		//sa_solver->setTemperatureFunction(new PowerTemperatureFunction(100.f, 0.1f, 0.99f));
+
+		SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+		two_opt_solver->setScheduleCostFunction(cost_function);
+
+		tsp_solver->addTSPSolver(sa_solver);
+		tsp_solver->addTSPSolver(two_opt_solver);
+		return tsp_solver;
+	}
+
+	virtual const char* getAlgorithmName() override
+	{
+		return "SA >> 2-Opt";
+	}
+};
 
 int main(int argc, char **argv)
 {
-	if(argc > 1)
+	std::unique_ptr<Scheduler::BenchmarkPublisher> publisher;
+	if (argc > 1)
 	{
-		Scheduler::MarkdownBenchmarkPublisher publisher(argv[1]);
-		runTspLibTest(light_datasets, publisher, GREEDY);
-		runTspLibTest(light_datasets, publisher, GREEDY_AND_TWO_OPT);
-		runTspLibTest(light_datasets, publisher, SA_AND_TWO_OPT);
-		publisher.publish();
+		publisher.reset(new MarkdownBenchmarkPublisher(argv[1]));
 	}
 	else
 	{
-		Scheduler::StdoutBenchmarkPublisher publisher;
-		runTspLibTest(light_datasets, publisher, GREEDY);
-		runTspLibTest(light_datasets, publisher, GREEDY_AND_TWO_OPT);
-		runTspLibTest(light_datasets, publisher, SA_AND_TWO_OPT);
-		publisher.publish();
+		publisher.reset(new StdoutBenchmarkPublisher());
 	}
+	
+	{
+		Optimal_TspLibInstance test(light_datasets, *publisher);
+		test.run();
+	}
+
+	{
+		Greedy_TspLibInstance test(light_datasets, *publisher);
+		test.run();
+	}
+
+	{
+		Greedy_2Opt_TspLibInstance test(light_datasets, *publisher);
+		test.run();
+	}
+
+	{
+		SA_2Opt_TspLibInstance test(light_datasets, *publisher);
+		test.run();
+	}
+
+	publisher->publish();
 }

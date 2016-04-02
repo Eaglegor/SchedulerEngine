@@ -1,25 +1,28 @@
 #pragma once
 
-#include "TemperatureFunction.h"
+#include "TemperatureScheduler.h"
 #include <SATwoOptTSPSolver_export.h>
 
 namespace Scheduler
 {
-    class SATWOOPTTSPSOLVER_EXPORT LinearTemperatureFunction : public TemperatureFunction
+    class SATWOOPTTSPSOLVER_EXPORT PowerTemperatureScheduler : public TemperatureScheduler
     {
     public:
-        LinearTemperatureFunction ();
-        LinearTemperatureFunction (float initial_value, float minumum_value, float change_speed);
+        PowerTemperatureScheduler ();
+        PowerTemperatureScheduler (float initial_value, float minumum_value, float change_speed);
 
         virtual float getTemperature() const override;
+        virtual float getInitialTemperature() const override;
+        virtual float getMinimalTemperature() const override;
         virtual bool isFinish() const override;
 
         virtual void changeTemperature() override;
         virtual void reset() override;
 
+        static constexpr const char* staticGetName() { return "Power"; }
         virtual const char* getName() const override
         {
-            return "Linear";
+            return staticGetName();
         }
     private:
         float initial_value;
