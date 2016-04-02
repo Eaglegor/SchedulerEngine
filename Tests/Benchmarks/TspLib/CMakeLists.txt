@@ -10,4 +10,4 @@ endif()
 
 target_link_libraries(BTest_TspLib Engine TspLibRoutingService TspLibSceneLoader)
 set_target_properties(BTest_TspLib PROPERTIES FOLDER "Tests/Benchmark/TspLib")
-add_definitions(-DTSPLIB_BENCHMARK_DATA_ROOT="${CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY}/Data/TspLib")
+add_definitions(-DTSPLIB_BENCHMARK_DATA_ROOT="${CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY}/Data/TSP/TspLib")

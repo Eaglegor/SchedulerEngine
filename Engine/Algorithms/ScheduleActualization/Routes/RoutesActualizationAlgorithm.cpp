@@ -79,4 +79,8 @@ namespace Scheduler
 		
 		dirty_flag = false;
 	}
+	ScheduleActualizationAlgorithm * RoutesActualizationAlgorithm::clone(Schedule* schedule, Factory<ScheduleActualizationAlgorithm>* factory)
+	{
+		return factory->createObject<RoutesActualizationAlgorithm>(schedule, routing_service);
+	}
 }

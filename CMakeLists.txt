@@ -7,7 +7,7 @@ else()
 	add_definitions( "/wd4251 /wd4275" )
 endif()
 
-set(CPP_SCHEDULER_BUILD_ENABLE_CONAN TRUE CACHE BOOL "If enabled, precompiled headers and unity builds will be enabled (provided by Cotire)")
+set(CPP_SCHEDULER_BUILD_ENABLE_CONAN TRUE CACHE BOOL "If enabled, conan will be responsible for updating dependencies")
 set(CPP_SCHEDULER_BUILD_ENABLE_COTIRE FALSE CACHE BOOL "If enabled, precompiled headers and unity builds will be enabled (provided by Cotire)")
 set(CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY CACHE PATH "Path to the benchmark data directory")
 
@@ -20,6 +20,25 @@ set(CPP_SCHEDULER_TESTS FALSE CACHE BOOL "If enabled, tests will be built")
 if(NOT CPP_SCHEDULER_BUILD_ENABLE_CONAN)
 	set(CPP_SCHEDULER_DEPENDENCY_CATCH_ROOT_DIRECTORY CACHE PATH "Path to the catch unit test framework root directory")
 	set(CPP_SCHEDULER_DEPENDENCY_COTIRE_ROOT_DIRECTORY CACHE PATH "Path to the cotire cmake module root directory")
+endif()
+
+if(CPP_SCHEDULER_BUILD_ENABLE_CONAN)
+    set(CPP_SCHEDULER_FORCE_DEPENDENCIES_UPDATE FALSE CACHE BOOL "If enabled, dependencies will be forced to be updated on every cmake run. Otherwise, they will be only updated when the conan file has changed.")
+
+    file(TIMESTAMP "${CPP_SCHEDULER_SOURCE_DIR}/conanfile.txt" LAST_CONAN_UPDATE)
+
+    set(CONAN_UPDATE_NEEDED FALSE)
+
+    if(CPP_SCHEDULER_FORCE_DEPENDENCIES_UPDATE)
+        message(STATUS "Conan update is forced")
+        set(CONAN_UPDATE_NEEDED TRUE)
+    endif()
+    if(NOT CPP_SCHEDULER_LAST_CONAN_FILE_UPDATE STREQUAL LAST_CONAN_UPDATE)
+        message(STATUS "Conanfile has changed. Dependencies update is scheduled")
+        set(CONAN_UPDATE_NEEDED TRUE)
+    endif()
+
+    set(CPP_SCHEDULER_LAST_CONAN_FILE_UPDATE ${LAST_CONAN_UPDATE} CACHE INTERNAL "")
 endif()
 
 set(__CONAN_ARGS "install")
@@ -63,11 +82,13 @@ else()
 	set(__CONAN_ARGS "${__CONAN_ARGS} -s arch=x86")
 endif()
 
-message(STATUS "Updating dependencies")
 separate_arguments(TESTVAR WINDOWS_COMMAND "${__CONAN_ARGS}")
 
 if(CPP_SCHEDULER_BUILD_ENABLE_CONAN)
-    execute_process(COMMAND conan ${TESTVAR} WORKING_DIRECTORY ${CPP_SCHEDULER_SOURCE_DIR})
+    if(CONAN_UPDATE_NEEDED)
+        message(STATUS "Updating dependencies")
+        execute_process(COMMAND conan ${TESTVAR} WORKING_DIRECTORY ${CPP_SCHEDULER_SOURCE_DIR})
+    endif()
     
     include(conanbuildinfo.cmake)
 
