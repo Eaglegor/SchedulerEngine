@@ -193,7 +193,7 @@ public:
 		result.algorithm_name = getAlgorithmName();
 		result.dataset_name = "Summary";
 		result.kpi.emplace(COST_KPI_NAME, std::to_string(total_cost));
-		result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(total_time));
+		if(total_time > FLOAT_EPSILON) result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(total_time));
 		publisher.addResult(result);
 	}
 
