@@ -99,7 +99,7 @@ namespace Scheduler
 			load.setValue(i, operation_desc.load[i]);
 		}
 
-		out_operation->setLoad(load);
+		out_operation->setDemand(load);
 
 		out_operation->setTimeWindows(createTimeWindows(operation_desc.time_windows, settings));
 

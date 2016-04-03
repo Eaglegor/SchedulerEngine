@@ -44,7 +44,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 		REQUIRE(FreeOperation1->getLocation() == FreeOperation1_Location);
 		REQUIRE(FreeOperation1->getDuration() == Units::minutes(10));
 		REQUIRE(FreeOperation1->getOrder() == nullptr);
-		REQUIRE(FreeOperation1->getLoad() == Capacity(0, 0, 0, 0));
+		REQUIRE(FreeOperation1->getDemand() == Capacity(0, 0, 0, 0));
 		REQUIRE(FreeOperation1->getTimeWindows().size() == 1);
 		REQUIRE(FreeOperation1->getTimeWindows()[0].getStartTime() - Units::hours_minutes(12, 0) == TimePoint(0));
 		REQUIRE(FreeOperation1->getTimeWindows()[0].getEndTime() - Units::hours_minutes(18, 0) == TimePoint(0));
@@ -67,7 +67,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(Order1_start->getLocation() == DC_Location);
 			REQUIRE(Order1_start->getDuration() == Units::minutes(3));
 			REQUIRE(Order1_start->getOrder() == Order1);
-			REQUIRE(Order1_start->getLoad() == Capacity(1, 0, 0, 0));
+			REQUIRE(Order1_start->getDemand() == Capacity(1, 0, 0, 0));
 			REQUIRE(Order1_start->getTimeWindows().size() == 1);
 			REQUIRE(Order1_start->getTimeWindows()[0].getStartTime() - Units::hours_minutes(04, 0) == TimePoint(0));
 			REQUIRE(Order1_start->getTimeWindows()[0].getEndTime() - Units::hours_minutes(18, 0) == TimePoint(0));
@@ -79,7 +79,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(Order1_work0->getLocation() == Order1_Location);
 			REQUIRE(Order1_work0->getDuration() == Units::minutes(10));
 			REQUIRE(Order1_work0->getOrder() == Order1);
-			REQUIRE(Order1_work0->getLoad() == Capacity(-1, 0, 0, 0));
+			REQUIRE(Order1_work0->getDemand() == Capacity(-1, 0, 0, 0));
 			REQUIRE(Order1_work0->getTimeWindows().size() == 1);
 			REQUIRE(Order1_work0->getTimeWindows()[0].getStartTime() - Units::hours_minutes(10, 0) == TimePoint(0));
 			REQUIRE(Order1_work0->getTimeWindows()[0].getEndTime() - Units::hours_minutes(10, 30) == TimePoint(0));
@@ -98,7 +98,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(Order2_work0->getLocation() == Order2_Pickup);
 			REQUIRE(Order2_work0->getDuration() == Units::minutes(10));
 			REQUIRE(Order2_work0->getOrder() == Order2);
-			REQUIRE(Order2_work0->getLoad() == Capacity(2, 0, 0, 0));
+			REQUIRE(Order2_work0->getDemand() == Capacity(2, 0, 0, 0));
 			REQUIRE(Order2_work0->getTimeWindows().size() == 1);
 			REQUIRE(Order2_work0->getTimeWindows()[0].getStartTime() - Units::hours_minutes(10, 0) == TimePoint(0));
 			REQUIRE(Order2_work0->getTimeWindows()[0].getEndTime() - Units::hours_minutes(12, 0) == TimePoint(0));
@@ -108,7 +108,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(Order2_work1->getLocation() == Order2_Drop);
 			REQUIRE(Order2_work1->getDuration() == Units::minutes(10));
 			REQUIRE(Order2_work1->getOrder() == Order2);
-			REQUIRE(Order2_work1->getLoad() == Capacity(-2, 0, 0, 0));
+			REQUIRE(Order2_work1->getDemand() == Capacity(-2, 0, 0, 0));
 			REQUIRE(Order2_work1->getTimeWindows().size() == 1);
 			REQUIRE(Order2_work1->getTimeWindows()[0].getStartTime() - Units::hours_minutes(12, 0) == TimePoint(0));
 			REQUIRE(Order2_work1->getTimeWindows()[0].getEndTime() - Units::hours_minutes(15, 0) == TimePoint(0));
@@ -127,7 +127,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(Order3_work0->getLocation() == Order3_Location);
 			REQUIRE(Order3_work0->getDuration() == Units::minutes(10));
 			REQUIRE(Order3_work0->getOrder() == Order3);
-			REQUIRE(Order3_work0->getLoad() == Capacity(0, 0, 0, 0));
+			REQUIRE(Order3_work0->getDemand() == Capacity(0, 0, 0, 0));
 			REQUIRE(Order3_work0->getTimeWindows().size() == 1);
 			REQUIRE(Order3_work0->getTimeWindows()[0].getStartTime() - Units::hours_minutes(12, 0) == TimePoint(0));
 			REQUIRE(Order3_work0->getTimeWindows()[0].getEndTime() - Units::hours_minutes(16, 0) == TimePoint(0));

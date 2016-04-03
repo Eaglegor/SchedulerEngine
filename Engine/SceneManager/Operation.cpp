@@ -53,11 +53,11 @@ namespace Scheduler
         this->order = order;
     }
 
-	void Operation::setLoad(const Capacity &load) {
-		this->load = load;
+	void Operation::setDemand(const Capacity &demand) {
+		this->demand = demand;
 	}
 
-	const Capacity &Operation::getLoad() const {
-		return load;
+	const Capacity &Operation::getDemand() const {
+		return demand;
 	}
 }

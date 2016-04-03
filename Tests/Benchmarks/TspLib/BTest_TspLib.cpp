@@ -191,7 +191,7 @@ public:
 
 		BenchmarkResult result;
 		result.algorithm_name = getAlgorithmName();
-		result.dataset_name = "Summary";
+		result.dataset_name = "{Summary}";
 		result.kpi.emplace(COST_KPI_NAME, std::to_string(total_cost));
 		if(total_time > FLOAT_EPSILON) result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(total_time));
 		publisher.addResult(result);
@@ -235,7 +235,7 @@ protected:
 
 		std::cout << std::endl;
 
-		float deviation = std::fabs(cost.getValue() - optimal_value) / static_cast<float>(optimal_value);
+		float deviation = (cost.getValue() - optimal_value) / static_cast<float>(optimal_value);
 
 		result.kpi.emplace(COST_KPI_NAME, std::to_string(cost.getValue()) + " (" + std::to_string(deviation * 100) + "%) ");
 		result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(nanoseconds / 10000000.0f));
@@ -293,7 +293,7 @@ public:
 
 	virtual const char* getAlgorithmName() override
 	{
-		return "!Optimal";
+		return "**Optimal**";
 	}
 };
 
