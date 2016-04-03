@@ -498,6 +498,11 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 				REQUIRE(sorig->getOperation() == stemp->getOperation());
 			}
 		}
+
+		Schedule* temp_schedule = temporary_schedule.get();
+		TemporarySchedule alternative_pointer;
+		alternative_pointer = std::move(temporary_schedule);
+		REQUIRE(alternative_pointer.get() == temp_schedule);
 		
 	}
 

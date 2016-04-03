@@ -11,6 +11,7 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT TemporaryScheduleDeleter
 	{
 	public:
+		TemporaryScheduleDeleter():scene_objects_factory(nullptr){}
 		TemporaryScheduleDeleter(SceneObjectsFactory<Schedule>* factory):scene_objects_factory(factory){}
 
 		void operator()(Schedule* schedule) const;
