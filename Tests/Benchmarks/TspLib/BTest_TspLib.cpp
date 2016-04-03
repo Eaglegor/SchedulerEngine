@@ -349,34 +349,122 @@ public:
 class SA_2Opt_TspLibInstance : public TspLibTestInstance
 {
 public:
-	SA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
-		: TspLibTestInstance(datasets, publisher)
-	{
-	}
+    SA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+    }
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
-	{
-		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
 
-		SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
-		sa_solver->setScheduleCostFunction(cost_function);
-		//sa_solver->setAcceptanceFunction(new BasicAcceptanceFunction());
-		//sa_solver->setAcceptanceFunction(new FastAcceptanceFunction());
-		//sa_solver->setTemperatureFunction(new LinearTemperatureFunction(100.f, 0.1f, 0.05f));
-		//sa_solver->setTemperatureFunction(new PowerTemperatureFunction(100.f, 0.1f, 0.99f));
+        //temperature_scheduler.reset(new LinearTemperatureScheduler(60.f, 1.f, 0.001f));
+        //temperature_scheduler.reset(new PowerTemperatureScheduler(1000.f, 1.f, 0.9999f));
+        //temperature_scheduler.reset(new LogarithmTemperatureScheduler(50.f, 5.f));
+        temperature_scheduler.reset(new HyperbolaTemperatureScheduler(60000.f, 1.f));
 
-		SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
-		two_opt_solver->setScheduleCostFunction(cost_function);
+        SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+        sa_solver->setScheduleCostFunction(cost_function);
+        sa_solver->setTemperatureScheduler(temperature_scheduler.get());
 
-		tsp_solver->addTSPSolver(sa_solver);
-		tsp_solver->addTSPSolver(two_opt_solver);
-		return tsp_solver;
-	}
+        SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+        two_opt_solver->setScheduleCostFunction(cost_function);
 
-	virtual const char* getAlgorithmName() override
-	{
-		return "SA >> 2-Opt";
-	}
+        tsp_solver->addTSPSolver(sa_solver);
+        tsp_solver->addTSPSolver(two_opt_solver);
+        return tsp_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "SA >> 2-Opt";
+    }
+private:
+    std::unique_ptr<TemperatureScheduler> temperature_scheduler;
+};
+
+class FourSA_2Opt_TspLibInstance : public TspLibTestInstance
+{
+public:
+    FourSA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+        temperature_schedulers.emplace_back(new LinearTemperatureScheduler(60.f, 1.f, 0.001f));
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 1.f, 0.9999f));
+        temperature_schedulers.emplace_back(new LogarithmTemperatureScheduler(50.f, 5.f));
+        temperature_schedulers.emplace_back(new HyperbolaTemperatureScheduler(60000.f, 1.f));
+    }
+
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        TheBestTSPSolver *tsp_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+        tsp_solver->setScheduleCostFunction(cost_function);
+
+        {
+            ChainTSPSolver *chain = strategy->createTSPSolver<ChainTSPSolver>();
+            SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+            sa_solver->setScheduleCostFunction(cost_function);
+            sa_solver->setTemperatureScheduler(temperature_schedulers.at(0).get());
+
+            SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+            two_opt_solver->setScheduleCostFunction(cost_function);
+
+            chain->addTSPSolver(sa_solver);
+            chain->addTSPSolver(two_opt_solver);
+            tsp_solver->addTSPSolver(chain);
+        }
+
+        {
+            ChainTSPSolver *chain = strategy->createTSPSolver<ChainTSPSolver>();
+            SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+            sa_solver->setScheduleCostFunction(cost_function);
+            sa_solver->setTemperatureScheduler(temperature_schedulers.at(1).get());
+
+            SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+            two_opt_solver->setScheduleCostFunction(cost_function);
+
+            chain->addTSPSolver(sa_solver);
+            chain->addTSPSolver(two_opt_solver);
+            tsp_solver->addTSPSolver(chain);
+        }
+
+        {
+            ChainTSPSolver *chain = strategy->createTSPSolver<ChainTSPSolver>();
+            SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+            sa_solver->setScheduleCostFunction(cost_function);
+            sa_solver->setTemperatureScheduler(temperature_schedulers.at(2).get());
+
+            SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+            two_opt_solver->setScheduleCostFunction(cost_function);
+
+            chain->addTSPSolver(sa_solver);
+            chain->addTSPSolver(two_opt_solver);
+            tsp_solver->addTSPSolver(chain);
+        }
+
+        {
+            ChainTSPSolver *chain = strategy->createTSPSolver<ChainTSPSolver>();
+            SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+            sa_solver->setScheduleCostFunction(cost_function);
+            sa_solver->setTemperatureScheduler(temperature_schedulers.at(3).get());
+
+            SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+            two_opt_solver->setScheduleCostFunction(cost_function);
+
+            chain->addTSPSolver(sa_solver);
+            chain->addTSPSolver(two_opt_solver);
+            tsp_solver->addTSPSolver(chain);
+        }
+
+        return tsp_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "Four (SA >> 2-Opt)";
+    }
+private:
+    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
 };
 
 int main(int argc, char **argv)
@@ -391,7 +479,7 @@ int main(int argc, char **argv)
 		publisher.reset(new StdoutBenchmarkPublisher());
 	}
 	
-	{
+    /*{
 		Optimal_TspLibInstance test(light_datasets, *publisher);
 		test.run();
 	}
@@ -409,7 +497,12 @@ int main(int argc, char **argv)
 	{
 		SA_2Opt_TspLibInstance test(light_datasets, *publisher);
 		test.run();
-	}
+    }*/
+
+    {
+        FourSA_2Opt_TspLibInstance test(light_datasets, *publisher);
+        test.run();
+    }
 
 	publisher->publish();
 }
