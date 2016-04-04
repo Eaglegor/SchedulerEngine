@@ -21,7 +21,7 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT Stop
 	{
 	public:
-		Stop(const Location &location, Run *run);
+		Stop(Run *run);
 		virtual ~Stop() {}
 
 		void setStartTime(const TimePoint& time);
@@ -39,7 +39,7 @@ namespace Scheduler
 		const Run* getRun() const;
 		Run* getRun();
 
-		const Location& getLocation() const;
+		virtual const Location& getLocation() const = 0;
 
 		Stop* getNextStop() const;
 		Stop* getPrevStop() const;
@@ -62,7 +62,6 @@ namespace Scheduler
 		TimeWindow allocation_time;
 		Duration duration;
 		Route next_route;
-		Location location;
 		Run* run;
 
 		Stop* nextStop;
