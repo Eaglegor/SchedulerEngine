@@ -11,6 +11,7 @@
 
 namespace Scheduler
 {
+	class Scene;
 	class Run;
 	class WorkStop;
 	class RoutingService;
@@ -24,6 +25,7 @@ namespace Scheduler
     {
     public:
         Schedule(size_t id, const Performer *performer);
+		Schedule(size_t id, const Schedule *schedule);
 		~Schedule();
 
         size_t getId() const;
@@ -62,7 +64,13 @@ namespace Scheduler
 		const TimeWindow& getShift() const;
 		void setShift(const TimeWindow &shift);
 
+		void clear();
+
+		const Scene* getScene() const;
+		Scene* getScene();
+
 		// == framework internal ====================================
+		void setScene(Scene* scene);
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 
@@ -75,6 +83,8 @@ namespace Scheduler
         const Performer* performer;
 
 		std::vector<Run*> runs;
+
+		Scene* scene;
 
 		SceneObjectsFactory<Run> *runs_factory;
 		SceneObjectsFactory<WorkStop> *stops_factory;

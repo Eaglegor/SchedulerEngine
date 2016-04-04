@@ -2,10 +2,10 @@
 
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SATwoOpt/SATwoOptTSPSolver.h>
-#include <Engine/Algorithms/TSPSolvers/SATwoOpt/BasicAcceptanceFunction.h>
-#include <Engine/Algorithms/TSPSolvers/SATwoOpt/FastAcceptanceFunction.h>
-#include <Engine/Algorithms/TSPSolvers/SATwoOpt/LinearTemperatureFunction.h>
-#include <Engine/Algorithms/TSPSolvers/SATwoOpt/PowerTemperatureFunction.h>
+#include <Engine/Algorithms/TSPSolvers/SATwoOpt/LinearTemperatureScheduler.h>
+#include <Engine/Algorithms/TSPSolvers/SATwoOpt/PowerTemperatureScheduler.h>
+#include <Engine/Algorithms/TSPSolvers/SATwoOpt/HyperbolaTemperatureScheduler.h>
+#include <Engine/Algorithms/TSPSolvers/SATwoOpt/LogarithmTemperatureScheduler.h>
 #include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Chain/ChainTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/CherepanovExperimental/CherepanovExperimentalTSPSolver.h>

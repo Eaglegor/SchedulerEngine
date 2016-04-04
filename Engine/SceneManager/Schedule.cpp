@@ -3,19 +3,42 @@
 #include "Schedule.h"
 #include "Run.h"
 #include "Extensions/RunVehicleBinder.h"
+#include "ScheduleStateUtils.h"
+#include "ScheduleActualizer.h"
 
 namespace Scheduler {
 
     Schedule::Schedule(size_t id, const Performer* performer) :
             id(id),
             performer(performer),
+			scene(nullptr),
 			runs_factory(nullptr),
+			stops_factory(nullptr),
 			shift_start_location_specified(false),
 			shift_end_location_specified(false),
 			schedule_actualizer(this),
 			run_vehicle_binder(nullptr)
 	{
     }
+
+	Schedule::Schedule(size_t id, const Schedule* rhs):
+		id(id),
+		name(rhs->name),
+		schedule_actualizer(this, rhs->schedule_actualizer),
+		performer(rhs->performer),
+		scene(nullptr),
+		runs_factory(rhs->runs_factory),
+		stops_factory(rhs->stops_factory),
+		shift_start_location_specified(rhs->shift_start_location_specified),
+		shift_end_location_specified(rhs->shift_end_location_specified),
+		run_vehicle_binder(rhs->run_vehicle_binder),
+		depot_location(rhs->depot_location),
+		shift_start_location(rhs->shift_start_location),
+		shift_end_location(rhs->shift_end_location),
+		shift(rhs->shift)
+	{
+		ScheduleStateUtils::copyState(rhs, this);
+	}
 
     size_t Schedule::getId() const {
         return id;
@@ -118,12 +141,7 @@ namespace Scheduler {
 	}
 
 	Schedule::~Schedule() {
-		assert(runs_factory);
-
-		for(Run* r : runs)
-		{
-			runs_factory->destroyObject(r);
-		}
+		clear();
 	}
 
 	const Location& Schedule::getShiftStartLocation() const {
@@ -182,6 +200,33 @@ namespace Scheduler {
 	void Schedule::setShift(const TimeWindow &shift)
 	{
 		this->shift = shift;
+	}
+
+	void Schedule::clear()
+	{
+		assert(runs_factory);
+
+		for (Run* r : runs)
+		{
+			runs_factory->destroyObject(r);
+		}
+
+		runs.clear();
+	}
+
+	Scene* Schedule::getScene()
+	{
+		return scene;
+	}
+
+	const Scene* Schedule::getScene() const
+	{
+		return scene;
+	}
+
+	void Schedule::setScene(Scene* scene)
+	{
+		this->scene = scene;
 	}
 
 	void Schedule::setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder) {

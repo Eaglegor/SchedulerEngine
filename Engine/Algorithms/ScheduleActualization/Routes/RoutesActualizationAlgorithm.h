@@ -34,6 +34,8 @@ namespace Scheduler
 
 		virtual void actualize() override;
 
+		virtual ScheduleActualizationAlgorithm* clone(Schedule* schedule, Factory<ScheduleActualizationAlgorithm> *factory);
+
 		static constexpr const char* staticGetName() { return "Routes"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
