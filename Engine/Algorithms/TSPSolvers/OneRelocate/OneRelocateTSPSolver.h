@@ -2,21 +2,21 @@
 
 #include <Engine/StrategiesManager/TSPSolver.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
-#include <CherepanovExperimentalTSPSolver_export.h>
+#include <OneRelocateTSPSolver_export.h>
 
 namespace Scheduler
 {
-    class CHEREPANOVEXPERIMENTALTSPSOLVER_EXPORT CherepanovExperimentalTSPSolver : public TSPSolver
+    class ONERELOCATETSPSOLVER_EXPORT OneRelocateTSPSolver : public TSPSolver
 	{
 	public:
-		CherepanovExperimentalTSPSolver();
+		OneRelocateTSPSolver();
 
 		virtual void optimize(Schedule* schedule) const override;
 		virtual void optimize(Run* schedule) const override;
 
 		void setScheduleCostFunction(ScheduleCostFunction* cost_function);
 
-        static constexpr const char* staticGetName() { return "CherepanovExperimental"; }
+        static constexpr const char* staticGetName() { return "OneRelocate"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:

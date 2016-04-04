@@ -379,6 +379,62 @@ public:
 	}
 };
 
+class OneRelocate_TspLibInstance : public TspLibTestInstance
+{
+public:
+	OneRelocate_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+		: TspLibTestInstance(datasets, publisher)
+	{
+	}
+
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	{
+		OneRelocateTSPSolver *tsp_solver = strategy->createTSPSolver<OneRelocateTSPSolver>();
+		tsp_solver->setScheduleCostFunction(cost_function);
+		
+		return tsp_solver;
+	}
+
+	virtual const char* getAlgorithmName() override
+	{
+		return "1-Relocate";
+	}
+};
+
+class Greedy_TwoOpt_OneRelocate_TspLibInstance : public TspLibTestInstance
+{
+public:
+	Greedy_TwoOpt_OneRelocate_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+		: TspLibTestInstance(datasets, publisher)
+	{
+	}
+
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	{
+		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+
+		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+		greedy_solver->setRoutingService(&routing_service);
+
+		OneRelocateTSPSolver *onerel_solver = strategy->createTSPSolver<OneRelocateTSPSolver>();
+		onerel_solver->setScheduleCostFunction(cost_function);
+
+		SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+		two_opt_solver->setScheduleCostFunction(cost_function);
+
+		tsp_solver->addTSPSolver(greedy_solver);
+		tsp_solver->addTSPSolver(two_opt_solver);
+		tsp_solver->addTSPSolver(onerel_solver);
+		
+		return tsp_solver;
+	}
+
+	virtual const char* getAlgorithmName() override
+	{
+		return "Greedy >> 2-Opt >> 1-Relocate";
+	}
+};
+
 int main(int argc, char **argv)
 {
 	std::unique_ptr<Scheduler::BenchmarkPublisher> publisher;
@@ -411,5 +467,15 @@ int main(int argc, char **argv)
 		test.run();
 	}
 
+	{
+		OneRelocate_TspLibInstance test(light_datasets, *publisher);
+		test.run();
+	}
+	
+	{
+		Greedy_TwoOpt_OneRelocate_TspLibInstance test(light_datasets, *publisher);
+		test.run();
+	}
+	
 	publisher->publish();
 }

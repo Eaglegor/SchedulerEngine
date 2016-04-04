@@ -1,4 +1,4 @@
-#include "CherepanovExperimentalTSPSolver.h"
+#include "OneRelocateTSPSolver.h"
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneEditor/Actions/MoveRunWorkStop.h>
 #include <Engine/SceneManager/Run.h>
@@ -10,12 +10,12 @@
 
 namespace Scheduler
 {
-	CherepanovExperimentalTSPSolver::CherepanovExperimentalTSPSolver():
+	OneRelocateTSPSolver::OneRelocateTSPSolver():
 		schedule_cost_function(nullptr)
 	{
 	}
 
-    void CherepanovExperimentalTSPSolver::optimize(Schedule* schedule) const
+    void OneRelocateTSPSolver::optimize(Schedule* schedule) const
 	{
 		if (!schedule_cost_function) return; // We don't have a metric to optimize - so we can't
 
@@ -25,7 +25,7 @@ namespace Scheduler
 		}
 	}
 
-	void CherepanovExperimentalTSPSolver::optimize(Run* run) const
+	void OneRelocateTSPSolver::optimize(Run* run) const
 	{
 		if (!schedule_cost_function) return; // We don't have a metric to optimize - so we can't
 
@@ -52,7 +52,7 @@ namespace Scheduler
 		}
 	}
 
-    void CherepanovExperimentalTSPSolver::setScheduleCostFunction(ScheduleCostFunction* cost_function)
+    void OneRelocateTSPSolver::setScheduleCostFunction(ScheduleCostFunction* cost_function)
 	{
 		this->schedule_cost_function = cost_function;
 	}
