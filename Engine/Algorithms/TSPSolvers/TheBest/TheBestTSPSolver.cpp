@@ -1,4 +1,10 @@
 #include "TheBestTSPSolver.h"
+#include <thread>
+#include <mutex>
+#include <map>
+//#include <boost/asio/io_service.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/thread/thread.hpp>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Scene.h>
@@ -6,24 +12,23 @@
 #include <Engine/SceneManager/ScheduleStateUtils.h>
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
-#include <iostream>
 
 namespace Scheduler
 {
-    TheBestTSPSolver::TheBestTSPSolver()
+    TheBestTSPSolver::TheBestTSPSolver() : number_of_threads(1)
 	{
 	}
 
     void TheBestTSPSolver::optimize(Schedule* schedule) const
 	{
         if (!schedule_cost_function) return;
-        sequentialOptimize(schedule);
+        concurrentOptimize(schedule);
 	}
 
 	void TheBestTSPSolver::optimize(Run* run) const
 	{
         if (!schedule_cost_function) return;
-        sequentialOptimize(run);
+        concurrentOptimize(run);
 	}
 
     void TheBestTSPSolver::addTSPSolver(TSPSolver* aTSPSolver)
@@ -36,20 +41,23 @@ namespace Scheduler
         schedule_cost_function = cost_function;
     }
 
+    void TheBestTSPSolver::setNumberOfThreads(unsigned number_of_threads)
+    {
+        this->number_of_threads = number_of_threads;
+    }
+
     void TheBestTSPSolver::sequentialOptimize(Schedule* schedule) const
     {
         TemporarySchedule best_schedule;
         Cost best_cost;
         size_t idx = 0;
         for (auto solver : this->tsp_solvers) {
-
             TemporarySchedule temporary_schedule = schedule->getScene()->createTemporaryScheduleCopy(schedule);
             solver->optimize(temporary_schedule.get());
             const Cost cost = schedule_cost_function->calculateCost(temporary_schedule.get());
             if (cost < best_cost || !best_schedule) {
                 best_cost = cost;
                 best_schedule = std::move(temporary_schedule);
-                std::cout << "select new schedule at " << idx << " for cost " << best_cost.getValue() << std::endl;
             }
             ++idx;
         }
@@ -80,11 +88,86 @@ namespace Scheduler
 
     void TheBestTSPSolver::concurrentOptimize(Schedule* schedule) const
     {
-        ;
+        std::vector<TemporarySchedule> schedules;
+
+        for (size_t idx = 0; idx < tsp_solvers.size(); ++idx) {
+            schedules.emplace_back(schedule->getScene()->createTemporaryScheduleCopy(schedule));
+        }
+
+        std::vector<std::thread> workers;
+        for (size_t idx = 0; idx < this->tsp_solvers.size(); ++idx) {
+            TSPSolver* solver = this->tsp_solvers.at(idx);
+            Schedule* schedule = schedules.at(idx).get();
+            workers.push_back(std::thread([solver, schedule]{
+                solver->optimize(schedule);
+            }));
+        }
+
+        for (auto& worker : workers) {
+            worker.join();
+        }
+
+        Cost best_cost;
+        auto best_cost_it = schedules.end();
+        for (auto it = schedules.begin(); it != schedules.end(); ++it) {
+            const Cost cost = schedule_cost_function->calculateCost((*it).get());
+            if (cost < best_cost || best_cost_it == schedules.end()) {
+                best_cost = cost;
+                best_cost_it = it;
+            }
+        }
+
+        ScheduleStateUtils::copyState((*best_cost_it).get(), schedule);
     }
 
-    void TheBestTSPSolver::concurrentOptimize(Run* schedule) const
+    void TheBestTSPSolver::concurrentOptimize(Run* run) const
     {
         ;
     }
+
+    void TheBestTSPSolver::boostOptimize(Schedule *schedule) const
+    {
+        /*boost::asio::io_service ioService;
+        boost::thread_group threadpool;
+        boost::asio::io_service::work work(ioService);
+
+        for (size_t idx = 0; idx < number_of_threads; ++idx) {
+            threadpool.create_thread(
+                boost::bind(&boost::asio::io_service::run, &ioService)
+            );
+        }
+
+        std::vector<TemporarySchedule> schedules;
+
+        for (size_t idx = 0; idx < tsp_solvers.size(); ++idx) {
+            schedules.emplace_back(schedule->getScene()->createTemporaryScheduleCopy(schedule));
+        }
+
+        for (size_t idx = 0; idx < this->tsp_solvers.size(); ++idx) {
+            TSPSolver* solver = this->tsp_solvers.at(idx);
+            Schedule* schedule = schedules.at(idx).get();
+            ioService.post([solver, schedule] {
+                solver->optimize(schedule);
+            });
+        }
+
+        ioService.stop();
+
+        threadpool.join_all();
+
+        Cost best_cost;
+        auto best_cost_it = schedules.end();
+        for (auto it = schedules.begin(); it != schedules.end(); ++it) {
+            const Cost cost = schedule_cost_function->calculateCost((*it).get());
+            if (cost < best_cost || best_cost_it == schedules.end()) {
+                best_cost = cost;
+                best_cost_it = it;
+            }
+        }
+
+        ScheduleStateUtils::copyState((*best_cost_it).get(), schedule);*/
+    }
+
+    void TheBestTSPSolver::boostOptimize(Run *schedule) const
+    {}
 }
