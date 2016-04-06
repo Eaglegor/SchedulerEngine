@@ -10,12 +10,14 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT WorkStop : public Stop
 	{
 	public:
-		WorkStop(size_t id, const Location& location, Run* run);
+		WorkStop(size_t id, Run* run);
 
 		size_t getId();
 
 		const Operation* getOperation() const;
 		void setOperation(const Operation* operation);
+
+		virtual const Location& getLocation() const override;
 
 		void acceptVisitor(StopVisitor* visitor) override;
 

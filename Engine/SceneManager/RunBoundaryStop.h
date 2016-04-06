@@ -17,11 +17,14 @@ namespace Scheduler
 
 		bool containsOperation(const Operation* operation) const;
 
+		virtual const Location& getLocation() const override;
+
 		ImmutableUnorderedSet<const Operation*> getOperations() const;
 
 		void acceptVisitor(StopVisitor* visitor) override;
 
 	private:
+		Location location;
 		std::unordered_set<const Operation*> operations;
 	};
 }
