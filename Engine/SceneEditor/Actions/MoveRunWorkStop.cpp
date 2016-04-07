@@ -33,7 +33,7 @@ namespace Scheduler
 
 		const Operation* ofrom = r->getWorkStops()[ifrom]->getOperation();
 
-		size_t di = ifrom < ito ? 1 : -1;
+        int di = ifrom < ito ? 1 : -1;
 
 		for (size_t i = ifrom; i != ito; i += di)
 		{

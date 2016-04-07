@@ -211,12 +211,13 @@ protected:
 		Cost cost;
 		uint32_t optimal_value;
 
-		std::cout << "Running " << id + 1 << "/" << datasets.size() << ": " << datasets[id] << " ";
+        std::cout << "Running " << id + 1 << "/" << datasets.size() << ": " << datasets[id] << " " << std::flush;
 		result.dataset_name = datasets[id];
 
 		long long nanoseconds = 0;
+        const size_t number_of_iterations = 10;
 
-		for (size_t i = 0; i < 10; ++i)
+        for (size_t i = 0; i < number_of_iterations; ++i)
 		{
 			Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
 
@@ -230,7 +231,7 @@ protected:
 
 			cost = cost_function->calculateCost(scene->getSchedules()[0]);
 
-			std::cout << "#";
+            std::cout << "#" << std::flush;
 		}
 
 		std::cout << std::endl;
@@ -238,10 +239,10 @@ protected:
 		float deviation = (cost.getValue() - optimal_value) / static_cast<float>(optimal_value);
 
 		result.kpi.emplace(COST_KPI_NAME, std::to_string(cost.getValue()) + " (" + std::to_string(deviation * 100) + "%) ");
-		result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(nanoseconds / 10000000.0f));
+        result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(nanoseconds / (number_of_iterations * 1000000.0f)));
 
 		total_cost += cost.getValue();
-		total_time += nanoseconds / 10000000.0f;
+        total_time += nanoseconds / (number_of_iterations * 1000000.0f);
 
 		publisher.addResult(result);
 	}
@@ -349,34 +350,70 @@ public:
 class SA_2Opt_TspLibInstance : public TspLibTestInstance
 {
 public:
-	SA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
-		: TspLibTestInstance(datasets, publisher)
-	{
-	}
+    SA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+    }
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
-	{
-		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        temperature_scheduler.reset(new PowerTemperatureScheduler(1000.f, 1.f, 0.999862f));
 
-		SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
-		sa_solver->setScheduleCostFunction(cost_function);
-		//sa_solver->setAcceptanceFunction(new BasicAcceptanceFunction());
-		//sa_solver->setAcceptanceFunction(new FastAcceptanceFunction());
-		//sa_solver->setTemperatureFunction(new LinearTemperatureFunction(100.f, 0.1f, 0.05f));
-		//sa_solver->setTemperatureFunction(new PowerTemperatureFunction(100.f, 0.1f, 0.99f));
+        SATwoOptTSPSolver* sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+        sa_solver->setScheduleCostFunction(cost_function);
+        sa_solver->setTemperatureScheduler(temperature_scheduler.get());
 
-		SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
-		two_opt_solver->setScheduleCostFunction(cost_function);
+        return sa_solver;
+    }
 
-		tsp_solver->addTSPSolver(sa_solver);
-		tsp_solver->addTSPSolver(two_opt_solver);
-		return tsp_solver;
-	}
+    virtual const char* getAlgorithmName() override
+    {
+        return "SA";
+    }
+private:
+    std::unique_ptr<TemperatureScheduler> temperature_scheduler;
+};
 
-	virtual const char* getAlgorithmName() override
-	{
-		return "SA >> 2-Opt";
-	}
+class FourSA_2Opt_TspLibInstance : public TspLibTestInstance
+{
+public:
+    FourSA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 1.f, 0.999724f));
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.1, 0.99963f));
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.01f, 0.99954f));
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.001f, 0.999448f));
+    }
+
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        TheBestTSPSolver *tsp_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+        tsp_solver->setScheduleCostFunction(cost_function);
+
+        for (auto& temperatureScheduler : temperature_schedulers) {
+            tsp_solver->addTSPSolver(createSASolver(strategy, temperatureScheduler.get()));
+        }
+
+        return tsp_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "4 x SA";
+    }
+private:
+    TSPSolver* createSASolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
+    {
+        SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+        sa_solver->setScheduleCostFunction(cost_function);
+        sa_solver->setTemperatureScheduler(temperatureScheduler);
+        sa_solver->setType(SimulatedAnnealingType::Greedy);
+
+        return sa_solver;
+    }
+
+    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
 };
 
 class OneRelocate_TspLibInstance : public TspLibTestInstance
@@ -447,7 +484,7 @@ int main(int argc, char **argv)
 		publisher.reset(new StdoutBenchmarkPublisher());
 	}
 	
-	{
+    {
 		Optimal_TspLibInstance test(light_datasets, *publisher);
 		test.run();
 	}
@@ -465,7 +502,12 @@ int main(int argc, char **argv)
 	{
 		SA_2Opt_TspLibInstance test(light_datasets, *publisher);
 		test.run();
-	}
+    }
+
+    {
+        FourSA_2Opt_TspLibInstance test(light_datasets, *publisher);
+        test.run();
+    }
 
 	{
 		OneRelocate_TspLibInstance test(light_datasets, *publisher);

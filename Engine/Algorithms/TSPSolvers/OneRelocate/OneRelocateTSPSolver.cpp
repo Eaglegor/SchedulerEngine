@@ -34,8 +34,8 @@ namespace Scheduler
 		bool changed = true;
 		while (changed) {
 			changed = false;
-			for (auto stop_it1 = stops.begin(); stop_it1 != stops.end(); ++stop_it1) {
-				for (auto stop_it2 = stop_it1; stop_it2 != stops.end(); ++stop_it2) {
+            for (auto stop_it1 = stops.begin(); stop_it1 != stops.end() - 1; ++stop_it1) {
+                for (auto stop_it2 = stop_it1 + 1; stop_it2 != stops.end(); ++stop_it2) {
 					SceneEditor editor;
 					editor.performAction<MoveRunWorkStop>(run, *stop_it1, *stop_it2);
 					Cost cost = schedule_cost_function->calculateCost(run->getSchedule());

@@ -14,7 +14,8 @@ namespace Scheduler
 
 	ScheduleActualizer::ScheduleActualizer(Schedule * schedule, const ScheduleActualizer & rhs):
 		schedule(schedule),
-		algorithms_factory(rhs.algorithms_factory)
+		algorithms_factory(rhs.algorithms_factory),
+		is_actualizing(false)
 	{
 		for (ScheduleActualizationAlgorithm* algorithm : rhs.algorithms)
 		{

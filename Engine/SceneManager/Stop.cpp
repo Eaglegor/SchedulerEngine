@@ -6,8 +6,7 @@
 namespace Scheduler
 {
 
-	Stop::Stop(const Location& location, Run* run):
-	location(location),
+	Stop::Stop(Run* run):
 	run(run),
 	schedule_actualizer(nullptr),
 	nextStop(nullptr),
@@ -48,10 +47,6 @@ namespace Scheduler
 
 	Run *Stop::getRun() {
 		return run;
-	}
-
-	const Location &Stop::getLocation() const {
-		return location;
 	}
 
 	Stop* Stop::getNextStop() const

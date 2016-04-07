@@ -31,6 +31,7 @@ target_link_libraries(Engine
 	GreedyTSPSolver
 	ChainTSPSolver
 	OneRelocateTSPSolver
+	TheBestTSPSolver
 	
 	TotalDistanceCostFunctions
     )

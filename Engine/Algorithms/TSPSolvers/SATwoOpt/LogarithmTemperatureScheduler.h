@@ -19,7 +19,7 @@ namespace Scheduler
         virtual void changeTemperature() override;
         virtual void reset() override;
 
-        static constexpr const char* staticGetName() { return "Linear"; }
+        static constexpr const char* staticGetName() { return "Logarithm"; }
         virtual const char* getName() const override
         {
             return staticGetName();

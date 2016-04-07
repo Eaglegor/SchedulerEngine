@@ -186,20 +186,9 @@ namespace Scheduler {
 		
 		if (!stops_factory) return nullptr;
 
-		WorkStop* stop = createWorkStop(new_operation);
+		WorkStop* stop = work_stops[index];
 
-		assert(stop);
-
-		Stop* old_stop = work_stops[index];
-		Stop* prev_stop = old_stop->getPrevStop();
-		Stop* next_stop = old_stop->getNextStop();
-		prev_stop->setNextStop(stop);
-		stop->setPrevStop(prev_stop);
-		stop->setNextStop(next_stop);
-		next_stop->setPrevStop(stop);
-
-		stops_factory->destroyObject(work_stops[index]);
-		work_stops[index] = stop;
+		stop->setOperation(new_operation);
 
 		schedule_actualizer->onStopReplaced(this, stop, index);
 
@@ -277,7 +266,7 @@ namespace Scheduler {
 
 	WorkStop* Run::createWorkStop(const Operation * operation)
 	{
-		WorkStop *stop = stops_factory->createObject(operation->getLocation(), this);
+		WorkStop *stop = stops_factory->createObject(this);
 		stop->setScheduleActualizer(schedule_actualizer);
 		stop->setOperation(operation);
 		return stop;
