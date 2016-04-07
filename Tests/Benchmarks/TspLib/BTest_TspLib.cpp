@@ -374,48 +374,6 @@ private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
 };
 
-class FourSA_2Opt_TspLibInstance : public TspLibTestInstance
-{
-public:
-    FourSA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
-        : TspLibTestInstance(datasets, publisher)
-    {
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 1.f, 0.999724f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.1, 0.99963f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.01f, 0.99954f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.001f, 0.999448f));
-    }
-
-    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
-    {
-        TheBestTSPSolver *tsp_solver = strategy->createTSPSolver<TheBestTSPSolver>();
-        tsp_solver->setScheduleCostFunction(cost_function);
-
-        for (auto& temperatureScheduler : temperature_schedulers) {
-            tsp_solver->addTSPSolver(createSASolver(strategy, temperatureScheduler.get()));
-        }
-
-        return tsp_solver;
-    }
-
-    virtual const char* getAlgorithmName() override
-    {
-        return "4 x SA";
-    }
-private:
-    TSPSolver* createSASolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
-    {
-        SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
-        sa_solver->setScheduleCostFunction(cost_function);
-        sa_solver->setTemperatureScheduler(temperatureScheduler);
-        sa_solver->setType(SimulatedAnnealingType::Greedy);
-
-        return sa_solver;
-    }
-
-    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
-};
-
 class OneRelocate_TspLibInstance : public TspLibTestInstance
 {
 public:
@@ -470,6 +428,47 @@ public:
 	{
 		return "Greedy >> 2-Opt >> 1-Relocate";
 	}
+
+class FourSA_2Opt_TspLibInstance : public TspLibTestInstance
+{
+public:
+    FourSA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 1.f, 0.999724f));
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.1, 0.99963f));
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.01f, 0.99954f));
+        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.001f, 0.999448f));
+    }
+
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        TheBestTSPSolver *tsp_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+        tsp_solver->setScheduleCostFunction(cost_function);
+
+        for (auto& temperatureScheduler : temperature_schedulers) {
+            tsp_solver->addTSPSolver(createSASolver(strategy, temperatureScheduler.get()));
+        }
+
+        return tsp_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "4 x SA";
+    }
+private:
+    TSPSolver* createSASolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
+    {
+        SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+        sa_solver->setScheduleCostFunction(cost_function);
+        sa_solver->setTemperatureScheduler(temperatureScheduler);
+        sa_solver->setType(SimulatedAnnealingType::Greedy);
+
+        return sa_solver;
+    }
+
+    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
 };
 
 int main(int argc, char **argv)
@@ -502,6 +501,11 @@ int main(int argc, char **argv)
 	{
 		SA_2Opt_TspLibInstance test(light_datasets, *publisher);
 		test.run();
+    }
+
+    {
+        FourSA_2Opt_TspLibInstance test(light_datasets, *publisher);
+        test.run();
     }
 
     {
