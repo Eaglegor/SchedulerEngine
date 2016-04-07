@@ -30,6 +30,7 @@ target_link_libraries(Engine
 	SATwoOptTSPSolver
 	GreedyTSPSolver
 	ChainTSPSolver
+	TheBestTSPSolver
 	
 	TotalDistanceCostFunctions
     )
