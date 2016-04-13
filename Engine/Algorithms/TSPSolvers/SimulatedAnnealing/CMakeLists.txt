@@ -1,0 +1,20 @@
+add_library(SimulatedAnnealingTSPSolver SHARED
+	
+	SimulatedAnnealingTSPSolver.h
+	SimulatedAnnealingTSPSolver.cpp
+	TemperatureScheduler.h
+	TemperatureScheduler.cpp
+	GeometricTemperatureScheduler.h
+	GeometricTemperatureScheduler.cpp
+	ListTemperatureScheduler.h
+	ListTemperatureScheduler.cpp
+)
+
+set_target_properties(SimulatedAnnealingTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/SimulatedAnnealing")
+
+target_link_libraries(SimulatedAnnealingTSPSolver SceneManager SceneEditor)
+
+cotire(SimulatedAnnealingTSPSolver)
+
+include(GenerateExportHeader)
+generate_export_header(SimulatedAnnealingTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SimulatedAnnealingTSPSolver_export.h)

@@ -57,55 +57,55 @@ std::vector<std::string> light_datasets
 
 std::vector<std::string> medium_datasets
 {
-	"Medium/a280",
-	"Medium/bier127",
-	"Medium/brg180",
-	"Medium/ch130",
-	"Medium/ch150",
-	"Medium/d198",
+    "Medium/a280",
+    "Medium/bier127",
+    "Medium/brg180",
+    "Medium/ch130",
+    "Medium/ch150",
+    "Medium/d198",
 	"Medium/d493",
-	"Medium/eil101",
+    "Medium/eil101",
 	"Medium/fl417",
-	"Medium/ftv170",
-	"Medium/gil262",
-	"Medium/gr120",
-	"Medium/gr137",
-	"Medium/gr202",
-	"Medium/gr229",
+    "Medium/ftv170",
+    "Medium/gil262",
+    "Medium/gr120",
+    "Medium/gr137",
+    "Medium/gr202",
+    "Medium/gr229",
 	"Medium/gr431",
-	"Medium/kro124p",
-	"Medium/kroA100",
-	"Medium/kroA150",
-	"Medium/kroA200",
-	"Medium/kroB100",
-	"Medium/kroB150",
-	"Medium/kroB200",
-	"Medium/kroC100",
-	"Medium/kroD100",
-	"Medium/kroE100",
-	"Medium/lin105",
-	"Medium/lin318",
+    "Medium/kro124p",
+    "Medium/kroA100",
+    "Medium/kroA150",
+    "Medium/kroA200",
+    "Medium/kroB100",
+    "Medium/kroB150",
+    "Medium/kroB200",
+    "Medium/kroC100",
+    "Medium/kroD100",
+    "Medium/kroE100",
+    "Medium/lin105",
+    "Medium/lin318",
 	"Medium/pcb442",
-	"Medium/pr107",
-	"Medium/pr124",
-	"Medium/pr136",
-	"Medium/pr144",
-	"Medium/pr152",
-	"Medium/pr226",
-	"Medium/pr264",
-	"Medium/pr299",
+    "Medium/pr107",
+    "Medium/pr124",
+    "Medium/pr136",
+    "Medium/pr144",
+    "Medium/pr152",
+    "Medium/pr226",
+    "Medium/pr264",
+    "Medium/pr299",
 	"Medium/pr439",
-	"Medium/rat195",
-	"Medium/rbg323",
-	"Medium/rbg358",
+    "Medium/rat195",
+    "Medium/rbg323",
+    "Medium/rbg358",
 	"Medium/rbg403",
 	"Medium/rbg443",
-	"Medium/rd100",
-	"Medium/rd400",
-	"Medium/si175",
-	"Medium/ts225",
-	"Medium/tsp225",
-	"Medium/u159"
+    "Medium/rd100",
+    "Medium/rd400",
+    "Medium/si175",
+    "Medium/ts225",
+    "Medium/tsp225",
+    "Medium/u159"
 };
 
 std::vector<std::string> heavy_datasets
@@ -357,11 +357,12 @@ public:
 
     virtual TSPSolver* createTSPSolver(Strategy* strategy) override
     {
-        temperature_scheduler.reset(new PowerTemperatureScheduler(1000.f, 1.f, 0.999862f));
+        temperature_scheduler.reset(new ListTemperatureScheduler());
 
-        SATwoOptTSPSolver* sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+        SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
+        sa_solver->setMarkovScale(4.f);
 
         return sa_solver;
     }
@@ -428,47 +429,6 @@ public:
 	{
 		return "Greedy >> 2-Opt >> 1-Relocate";
 	}
-
-class FourSA_2Opt_TspLibInstance : public TspLibTestInstance
-{
-public:
-    FourSA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
-        : TspLibTestInstance(datasets, publisher)
-    {
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 1.f, 0.999724f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.1, 0.99963f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.01f, 0.99954f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.001f, 0.999448f));
-    }
-
-    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
-    {
-        TheBestTSPSolver *tsp_solver = strategy->createTSPSolver<TheBestTSPSolver>();
-        tsp_solver->setScheduleCostFunction(cost_function);
-
-        for (auto& temperatureScheduler : temperature_schedulers) {
-            tsp_solver->addTSPSolver(createSASolver(strategy, temperatureScheduler.get()));
-        }
-
-        return tsp_solver;
-    }
-
-    virtual const char* getAlgorithmName() override
-    {
-        return "4 x SA";
-    }
-private:
-    TSPSolver* createSASolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
-    {
-        SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
-        sa_solver->setScheduleCostFunction(cost_function);
-        sa_solver->setTemperatureScheduler(temperatureScheduler);
-        sa_solver->setType(SimulatedAnnealingType::Greedy);
-
-        return sa_solver;
-    }
-
-    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
 };
 
 int main(int argc, char **argv)
@@ -482,46 +442,39 @@ int main(int argc, char **argv)
 	{
 		publisher.reset(new StdoutBenchmarkPublisher());
 	}
+
+    auto datasets = {light_datasets, medium_datasets};
 	
-    {
-		Optimal_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
+    for (const auto &dataset : datasets) {
+        {
+            Optimal_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
 
-	{
-		Greedy_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
+        {
+            Greedy_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
 
-	{
-		Greedy_2Opt_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
+        {
+            Greedy_2Opt_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
 
-	{
-		SA_2Opt_TspLibInstance test(light_datasets, *publisher);
-		test.run();
+        {
+            SA_2Opt_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            OneRelocate_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            Greedy_TwoOpt_OneRelocate_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
     }
-
-    {
-        FourSA_2Opt_TspLibInstance test(light_datasets, *publisher);
-        test.run();
-    }
-
-    {
-        FourSA_2Opt_TspLibInstance test(light_datasets, *publisher);
-        test.run();
-    }
-
-	{
-		OneRelocate_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
-	
-	{
-		Greedy_TwoOpt_OneRelocate_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
-	
 	publisher->publish();
 }

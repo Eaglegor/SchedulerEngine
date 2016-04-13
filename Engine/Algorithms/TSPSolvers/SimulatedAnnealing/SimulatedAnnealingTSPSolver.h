@@ -1,40 +1,41 @@
 #pragma once
 
 #include <Engine/StrategiesManager/TSPSolver.h>
-#include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
-#include "TemperatureScheduler.h"
-#include <SATwoOptTSPSolver_export.h>
+#include <cstddef>
+#include <SimulatedAnnealingTSPSolver_export.h>
 
 namespace Scheduler
 {
-    enum class SimulatedAnnealingType
-    {
-        Default,
-        Greedy
-    };
+    class ScheduleCostFunction;
+    class TemperatureScheduler;
+    class Cost;
 
-    class SATWOOPTTSPSOLVER_EXPORT SATwoOptTSPSolver : public TSPSolver
+    class SIMULATEDANNEALINGTSPSOLVER_EXPORT SimulatedAnnealingTSPSolver : public TSPSolver
 	{
 	public:
-        SATwoOptTSPSolver();
+        SimulatedAnnealingTSPSolver();
 
 		virtual void optimize(Schedule* schedule) const override;
-		virtual void optimize(Run* schedule) const override;
+        virtual void optimize(Run* run) const override;
 
 		void setScheduleCostFunction(ScheduleCostFunction* cost_function);
         void setTemperatureScheduler(TemperatureScheduler* temperature_scheduler);
-        void setType(SimulatedAnnealingType type);
+        void seed(unsigned long long value);
+        void setUseAdaptiveOps(bool useAdaptiveOps);
+        void setMarkovScale(float markovScale);
 
         static constexpr const char* staticGetName() { return "Simulated Annealing"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:
-        virtual void default_optimize(Run* schedule) const;
-        virtual void greedy_optimize(Run* schedule) const;
         bool acceptance(Cost delta, float random) const;
 
 		ScheduleCostFunction* schedule_cost_function;
         TemperatureScheduler* temperature_scheduler;
-        SimulatedAnnealingType type;
+
+        unsigned long long seed_value;
+
+        bool use_adaptive_ops;
+        float markov_scale;
 	};
 }

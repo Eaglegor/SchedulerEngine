@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <SceneEditor_export.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
 
 namespace Scheduler
 {
@@ -14,16 +15,14 @@ namespace Scheduler
 	class SCENEEDITOR_EXPORT MoveRunWorkStop : public Action
 	{
 	public:
-		MoveRunWorkStop(Run* r, WorkStop* from, WorkStop* to);
-		MoveRunWorkStop(Run* r, size_t from_index, size_t to_index);
+        using RunIterator = ImmutableVector<Run*>::const_iterator;
+        using WorkStopIterator = ImmutableVector<WorkStop*>::const_iterator;
+        MoveRunWorkStop(RunIterator run_iterator, WorkStopIterator start_stop, WorkStopIterator end_stop);
 
 		virtual void perform() override;
 		virtual void rollback() override;
 
 	private:
-		static size_t determine_stop_index(WorkStop* stop);
-		static size_t determine_run_index(Run* run);
-
 		Schedule* schedule;
 		size_t irun;
 		size_t ifrom;
