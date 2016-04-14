@@ -42,8 +42,7 @@ namespace Scheduler
         auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
         const auto &stops = run->getWorkStops();
 
-        std::random_device rd;
-        auto nseed_value = rd();
+        auto nseed_value = seed_value;
         std::mt19937_64 random_engine(nseed_value);
 
         std::uniform_int_distribution<> index_distribution(0, stops.size() - 1);
