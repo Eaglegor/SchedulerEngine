@@ -367,7 +367,7 @@ public:
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
         sa_solver->setMarkovScale(4.f);
         sa_solver->setIterationsLimit(100, 100 * 100 * 3);
-        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 6);
+        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 10);
 
         return sa_solver;
     }
@@ -386,10 +386,10 @@ public:
     MTSATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -37)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -27)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -17)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -7)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -29)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -24)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -19)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -14)), 1000));
     }
 
     TSPSolver* createSATSPSolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
@@ -399,7 +399,7 @@ public:
         sa_solver->setTemperatureScheduler(temperatureScheduler);
         sa_solver->setMarkovScale(2.f);
         sa_solver->setIterationsLimit(100, 100 * 100 * 3);
-        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 5);
+        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 10);
 
         return sa_solver;
     }
