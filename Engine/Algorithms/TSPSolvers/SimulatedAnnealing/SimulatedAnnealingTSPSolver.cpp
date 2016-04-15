@@ -48,7 +48,9 @@ namespace Scheduler
         std::uniform_int_distribution<> index_distribution(0, stops.size() - 1);
         std::uniform_real_distribution<> float_distribution(0.f, 1.f);
 
+
         temperature_scheduler->initialize(run, schedule_cost_function, nseed_value);
+
         Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
 
         size_t number_of_iterations = 0;
@@ -65,17 +67,21 @@ namespace Scheduler
 
         float markov_scale_ = markov_scale;
 
-        const size_t light_limit = 100 * 100 * 3;
-        const size_t medium_limit = 100 * 100 * 3 * 6;
         size_t M_ = std::nearbyint(stops.size() * markov_scale_);
-        if (stops.size() < 100 &&
-            M_ * stops.size() > light_limit) {
-            M_ = light_limit / stops.size();
-        }
 
-        if (stops.size() >= 100 &&
-            M_ * stops.size() > medium_limit) {
-            M_ = medium_limit / stops.size();
+        if (limits.size()) {
+            const size_t stops_size = stops.size();
+            auto limit_it = std::find_if(limits.begin(), limits.end(), [stops_size] (const std::pair<size_t,size_t> & lv) {
+                return stops_size < lv.first;
+            });
+            if (limit_it == limits.end()) {
+                limit_it = std::prev(limits.end());
+            }
+
+
+            if (M_ * stops.size() > limit_it->second) {
+                M_ = limit_it->second / stops.size();
+            }
         }
 
         const size_t M = std::max(M_, (size_t)1);
@@ -178,5 +184,10 @@ namespace Scheduler
     void SimulatedAnnealingTSPSolver::setMarkovScale(float markovScale)
     {
         this->markov_scale = markovScale;
+    }
+
+    void SimulatedAnnealingTSPSolver::setIterationsLimit(size_t stops_count, size_t limit)
+    {
+        this->limits[stops_count] = limit;
     }
 }

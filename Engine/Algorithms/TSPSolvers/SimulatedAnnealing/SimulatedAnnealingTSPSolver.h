@@ -2,6 +2,7 @@
 
 #include <Engine/StrategiesManager/TSPSolver.h>
 #include <cstddef>
+#include <map>
 #include <SimulatedAnnealingTSPSolver_export.h>
 
 namespace Scheduler
@@ -23,12 +24,15 @@ namespace Scheduler
         void seed(unsigned long long value);
         void setUseAdaptiveOps(bool useAdaptiveOps);
         void setMarkovScale(float markovScale);
+        void setIterationsLimit(size_t stops_count, size_t limit);
 
         static constexpr const char* staticGetName() { return "Simulated Annealing"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:
         bool acceptance(Cost delta, float random) const;
+
+        std::map<size_t, size_t> limits;
 
 		ScheduleCostFunction* schedule_cost_function;
         TemperatureScheduler* temperature_scheduler;

@@ -12,6 +12,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <sstream>
 
 #include "../Publishers/StdoutBenchmarkPublisher.h"
 #include "../Publishers/MarkdownBenchmarkPublisher.h"
@@ -54,6 +55,8 @@ std::vector<std::string> light_datasets
 	"Light/ulysses16",
 	"Light/ulysses22"
 };
+
+std::vector<std::string> ftv_datasets { "Medium/ftv170"};
 
 std::vector<std::string> medium_datasets
 {
@@ -215,7 +218,7 @@ protected:
 		result.dataset_name = datasets[id];
 
 		long long nanoseconds = 0;
-        const size_t number_of_iterations = 10;
+        const size_t number_of_iterations = 1;
 
         for (size_t i = 0; i < number_of_iterations; ++i)
 		{
@@ -347,22 +350,24 @@ public:
 	}
 };
 
-class SA_2Opt_TspLibInstance : public TspLibTestInstance
+class SATspLibInstance : public TspLibTestInstance
 {
 public:
-    SA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+    SATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
     }
 
     virtual TSPSolver* createTSPSolver(Strategy* strategy) override
     {
-        temperature_scheduler.reset(new ListTemperatureScheduler());
+        temperature_scheduler.reset(new ListTemperatureScheduler(124, std::log(std::pow(10, -17)), 1000));
 
         SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
         sa_solver->setMarkovScale(4.f);
+        sa_solver->setIterationsLimit(100, 100 * 100 * 3);
+        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 6);
 
         return sa_solver;
     }
@@ -373,6 +378,49 @@ public:
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
+};
+
+class MTSATspLibInstance : public TspLibTestInstance
+{
+public:
+    MTSATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -37)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -27)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -17)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -7)), 1000));
+    }
+
+    TSPSolver* createSATSPSolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
+    {
+        SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
+        sa_solver->setScheduleCostFunction(cost_function);
+        sa_solver->setTemperatureScheduler(temperatureScheduler);
+        sa_solver->setMarkovScale(2.f);
+        sa_solver->setIterationsLimit(100, 100 * 100 * 3);
+        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 5);
+
+        return sa_solver;
+    }
+
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        TheBestTSPSolver* best_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+        best_solver->setScheduleCostFunction(cost_function);
+        for (auto& ts : temperature_schedulers) {
+            best_solver->addTSPSolver(createSATSPSolver(strategy, ts.get()));
+        }
+
+        return best_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "MTSA";
+    }
+private:
+    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
 };
 
 class OneRelocate_TspLibInstance : public TspLibTestInstance
@@ -444,7 +492,6 @@ int main(int argc, char **argv)
 	}
 
     auto datasets = {light_datasets, medium_datasets};
-	
     for (const auto &dataset : datasets) {
         {
             Optimal_TspLibInstance test(dataset, *publisher);
@@ -462,7 +509,12 @@ int main(int argc, char **argv)
         }
 
         {
-            SA_2Opt_TspLibInstance test(dataset, *publisher);
+            SATspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            MTSATspLibInstance test(dataset, *publisher);
             test.run();
         }
 

@@ -2,9 +2,6 @@
 #include <thread>
 #include <mutex>
 #include <map>
-//#include <boost/asio/io_service.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/thread/thread.hpp>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Scene.h>
@@ -15,7 +12,7 @@
 
 namespace Scheduler
 {
-    TheBestTSPSolver::TheBestTSPSolver() : number_of_threads(1)
+    TheBestTSPSolver::TheBestTSPSolver()
 	{
 	}
 
@@ -39,11 +36,6 @@ namespace Scheduler
     void TheBestTSPSolver::setScheduleCostFunction(ScheduleCostFunction *cost_function)
     {
         schedule_cost_function = cost_function;
-    }
-
-    void TheBestTSPSolver::setNumberOfThreads(unsigned number_of_threads)
-    {
-        this->number_of_threads = number_of_threads;
     }
 
     void TheBestTSPSolver::sequentialOptimize(Schedule* schedule) const
@@ -105,7 +97,7 @@ namespace Scheduler
 
         for (auto& worker : workers) {
             worker.join();
-        }
+        }        
 
         Cost best_cost;
         auto best_cost_it = schedules.end();
@@ -122,52 +114,5 @@ namespace Scheduler
 
     void TheBestTSPSolver::concurrentOptimize(Run* run) const
     {
-        ;
     }
-
-    void TheBestTSPSolver::boostOptimize(Schedule *schedule) const
-    {
-        /*boost::asio::io_service ioService;
-        boost::thread_group threadpool;
-        boost::asio::io_service::work work(ioService);
-
-        for (size_t idx = 0; idx < number_of_threads; ++idx) {
-            threadpool.create_thread(
-                boost::bind(&boost::asio::io_service::run, &ioService)
-            );
-        }
-
-        std::vector<TemporarySchedule> schedules;
-
-        for (size_t idx = 0; idx < tsp_solvers.size(); ++idx) {
-            schedules.emplace_back(schedule->getScene()->createTemporaryScheduleCopy(schedule));
-        }
-
-        for (size_t idx = 0; idx < this->tsp_solvers.size(); ++idx) {
-            TSPSolver* solver = this->tsp_solvers.at(idx);
-            Schedule* schedule = schedules.at(idx).get();
-            ioService.post([solver, schedule] {
-                solver->optimize(schedule);
-            });
-        }
-
-        ioService.stop();
-
-        threadpool.join_all();
-
-        Cost best_cost;
-        auto best_cost_it = schedules.end();
-        for (auto it = schedules.begin(); it != schedules.end(); ++it) {
-            const Cost cost = schedule_cost_function->calculateCost((*it).get());
-            if (cost < best_cost || best_cost_it == schedules.end()) {
-                best_cost = cost;
-                best_cost_it = it;
-            }
-        }
-
-        ScheduleStateUtils::copyState((*best_cost_it).get(), schedule);*/
-    }
-
-    void TheBestTSPSolver::boostOptimize(Run *schedule) const
-    {}
 }

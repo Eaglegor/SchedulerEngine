@@ -26,7 +26,7 @@ namespace Scheduler
 
     void GeometricTemperatureScheduler::initialize(Run* run, ScheduleCostFunction* schedule_cost_function, unsigned long long seed_value)
     {
-        const auto costs = create_initial_costs(run, schedule_cost_function, 500, seed_value);
+        const auto costs = create_initial_costs(run, schedule_cost_function, 1000, seed_value);
 
         const auto best_cost_it = std::min_element(costs.begin(), costs.end());
         const auto best_cost = *best_cost_it;

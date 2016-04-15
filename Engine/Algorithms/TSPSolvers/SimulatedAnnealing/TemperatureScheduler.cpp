@@ -1,5 +1,6 @@
 #include "ListTemperatureScheduler.h"
 #include <algorithm>
+#include <mutex>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/TemporarySchedule.h>
@@ -13,13 +14,10 @@
 namespace Scheduler
 {
 
-std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* originalRun, ScheduleCostFunction* schedule_cost_function, size_t length, unsigned long long seed_value)
+std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* run, ScheduleCostFunction* schedule_cost_function, size_t length, unsigned long long seed_value)
 {
     std::vector<Cost> costs;
 
-    TemporarySchedule temporary_schedule = originalRun->getSchedule()->getScene()->createTemporaryScheduleCopy(originalRun->getSchedule());
-    auto original_run_iter = std::find(originalRun->getSchedule()->getRuns().begin(), originalRun->getSchedule()->getRuns().end(), originalRun);
-    Run* run = temporary_schedule->getRuns().at(std::distance(originalRun->getSchedule()->getRuns().begin(), original_run_iter));
     auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
     const auto &stops = run->getWorkStops();
 
@@ -28,11 +26,11 @@ std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* originalRun, S
     std::uniform_real_distribution<> float_distribution(0.f, 1.f);
 
     Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
-
+    SceneEditor editor;
     for (size_t number_of_iterations = 0; number_of_iterations < length; ++number_of_iterations) {
-        SceneEditor editor;
         size_t i = 0;
         size_t j = 0;
+        const size_t checkpoint = editor.checkpoint();
         while (i == j) {
             i = index_distribution(random_engine);
             j = index_distribution(random_engine);
@@ -53,10 +51,11 @@ std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* originalRun, S
         if (cost < best_cost) {
             best_cost = cost;
         } else {
-            editor.rollbackAll();
+            editor.rollbackToCheckpoint(checkpoint);
         }
         costs.push_back(cost);
     }
+    editor.rollbackAll();
 
     return costs;
 }
