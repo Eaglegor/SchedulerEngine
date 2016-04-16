@@ -8,21 +8,13 @@
 
 namespace Scheduler
 {
-	MoveRunWorkStop::MoveRunWorkStop(Run* r, WorkStop* from, WorkStop* to):
-		schedule(r->getSchedule()),
-		irun(determine_run_index(r)),
-		ifrom(determine_stop_index(from)),
-		ito(determine_stop_index(to))
+    MoveRunWorkStop::MoveRunWorkStop(RunIterator run_iterator, WorkStopIterator from, WorkStopIterator to) :
+        schedule((*run_iterator)->getSchedule()),
+        irun(std::distance<ImmutableVector<Run*>::const_iterator>(schedule->getRuns().begin(), run_iterator)),
+        ifrom(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), from)),
+        ito(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), to))
 	{
 
-	}
-
-	MoveRunWorkStop::MoveRunWorkStop(Run* r, size_t from_index, size_t to_index):
-		schedule(r->getSchedule()),
-		irun(determine_run_index(r)),
-		ifrom(from_index),
-		ito(to_index)
-	{
 	}
 
 	void MoveRunWorkStop::perform()
@@ -54,31 +46,4 @@ namespace Scheduler
 		ito = ifrom;
 		ifrom = temp;
 	}
-
-	size_t MoveRunWorkStop::determine_stop_index(WorkStop* stop)
-	{
-		Run* run = stop->getRun();
-		for (size_t i = 0; i < run->getWorkStops().size(); ++i)
-		{
-			if (run->getWorkStops()[i] == stop) return i;
-		}
-
-		// We are not allowed to go there
-		assert(false);
-		return -1;
-	}
-
-	size_t MoveRunWorkStop::determine_run_index(Run* run)
-	{
-		Schedule* schedule = run->getSchedule();
-		for (size_t i = 0; i < schedule->getRuns().size(); ++i)
-		{
-			if (schedule->getRuns()[i] == run) return i;
-		}
-
-		// We are not allowed to go there
-		assert(false);
-		return -1;
-	}
-
 }

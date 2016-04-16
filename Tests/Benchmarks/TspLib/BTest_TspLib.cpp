@@ -12,6 +12,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <sstream>
 
 #include "../Publishers/StdoutBenchmarkPublisher.h"
 #include "../Publishers/MarkdownBenchmarkPublisher.h"
@@ -55,57 +56,59 @@ std::vector<std::string> light_datasets
 	"Light/ulysses22"
 };
 
+std::vector<std::string> ftv_datasets { "Medium/ftv170"};
+
 std::vector<std::string> medium_datasets
 {
-	"Medium/a280",
-	"Medium/bier127",
-	"Medium/brg180",
-	"Medium/ch130",
-	"Medium/ch150",
-	"Medium/d198",
+    "Medium/a280",
+    "Medium/bier127",
+    "Medium/brg180",
+    "Medium/ch130",
+    "Medium/ch150",
+    "Medium/d198",
 	"Medium/d493",
-	"Medium/eil101",
+    "Medium/eil101",
 	"Medium/fl417",
-	"Medium/ftv170",
-	"Medium/gil262",
-	"Medium/gr120",
-	"Medium/gr137",
-	"Medium/gr202",
-	"Medium/gr229",
+    "Medium/ftv170",
+    "Medium/gil262",
+    "Medium/gr120",
+    "Medium/gr137",
+    "Medium/gr202",
+    "Medium/gr229",
 	"Medium/gr431",
-	"Medium/kro124p",
-	"Medium/kroA100",
-	"Medium/kroA150",
-	"Medium/kroA200",
-	"Medium/kroB100",
-	"Medium/kroB150",
-	"Medium/kroB200",
-	"Medium/kroC100",
-	"Medium/kroD100",
-	"Medium/kroE100",
-	"Medium/lin105",
-	"Medium/lin318",
+    "Medium/kro124p",
+    "Medium/kroA100",
+    "Medium/kroA150",
+    "Medium/kroA200",
+    "Medium/kroB100",
+    "Medium/kroB150",
+    "Medium/kroB200",
+    "Medium/kroC100",
+    "Medium/kroD100",
+    "Medium/kroE100",
+    "Medium/lin105",
+    "Medium/lin318",
 	"Medium/pcb442",
-	"Medium/pr107",
-	"Medium/pr124",
-	"Medium/pr136",
-	"Medium/pr144",
-	"Medium/pr152",
-	"Medium/pr226",
-	"Medium/pr264",
-	"Medium/pr299",
+    "Medium/pr107",
+    "Medium/pr124",
+    "Medium/pr136",
+    "Medium/pr144",
+    "Medium/pr152",
+    "Medium/pr226",
+    "Medium/pr264",
+    "Medium/pr299",
 	"Medium/pr439",
-	"Medium/rat195",
-	"Medium/rbg323",
-	"Medium/rbg358",
+    "Medium/rat195",
+    "Medium/rbg323",
+    "Medium/rbg358",
 	"Medium/rbg403",
 	"Medium/rbg443",
-	"Medium/rd100",
-	"Medium/rd400",
-	"Medium/si175",
-	"Medium/ts225",
-	"Medium/tsp225",
-	"Medium/u159"
+    "Medium/rd100",
+    "Medium/rd400",
+    "Medium/si175",
+    "Medium/ts225",
+    "Medium/tsp225",
+    "Medium/u159"
 };
 
 std::vector<std::string> heavy_datasets
@@ -215,7 +218,7 @@ protected:
 		result.dataset_name = datasets[id];
 
 		long long nanoseconds = 0;
-        const size_t number_of_iterations = 10;
+        const size_t number_of_iterations = 1;
 
         for (size_t i = 0; i < number_of_iterations; ++i)
 		{
@@ -347,21 +350,24 @@ public:
 	}
 };
 
-class SA_2Opt_TspLibInstance : public TspLibTestInstance
+class SATspLibInstance : public TspLibTestInstance
 {
 public:
-    SA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+    SATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
     }
 
     virtual TSPSolver* createTSPSolver(Strategy* strategy) override
     {
-        temperature_scheduler.reset(new PowerTemperatureScheduler(1000.f, 1.f, 0.999862f));
+        temperature_scheduler.reset(new ListTemperatureScheduler(124, std::log(std::pow(10, -17)), 1000));
 
-        SATwoOptTSPSolver* sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
+        SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
+        sa_solver->setMarkovScale(4.f);
+        sa_solver->setIterationsLimit(100, 100 * 100 * 3);
+        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 10);
 
         return sa_solver;
     }
@@ -372,6 +378,49 @@ public:
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
+};
+
+class MTSATspLibInstance : public TspLibTestInstance
+{
+public:
+    MTSATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -29)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -24)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -19)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -14)), 1000));
+    }
+
+    TSPSolver* createSATSPSolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
+    {
+        SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
+        sa_solver->setScheduleCostFunction(cost_function);
+        sa_solver->setTemperatureScheduler(temperatureScheduler);
+        sa_solver->setMarkovScale(2.f);
+        sa_solver->setIterationsLimit(100, 100 * 100 * 3);
+        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 10);
+
+        return sa_solver;
+    }
+
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        TheBestTSPSolver* best_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+        best_solver->setScheduleCostFunction(cost_function);
+        for (auto& ts : temperature_schedulers) {
+            best_solver->addTSPSolver(createSATSPSolver(strategy, ts.get()));
+        }
+
+        return best_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "MTSA";
+    }
+private:
+    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
 };
 
 class OneRelocate_TspLibInstance : public TspLibTestInstance
@@ -428,47 +477,6 @@ public:
 	{
 		return "Greedy >> 2-Opt >> 1-Relocate";
 	}
-
-class FourSA_2Opt_TspLibInstance : public TspLibTestInstance
-{
-public:
-    FourSA_2Opt_TspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
-        : TspLibTestInstance(datasets, publisher)
-    {
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 1.f, 0.999724f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.1, 0.99963f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.01f, 0.99954f));
-        temperature_schedulers.emplace_back(new PowerTemperatureScheduler(1000.f, 0.001f, 0.999448f));
-    }
-
-    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
-    {
-        TheBestTSPSolver *tsp_solver = strategy->createTSPSolver<TheBestTSPSolver>();
-        tsp_solver->setScheduleCostFunction(cost_function);
-
-        for (auto& temperatureScheduler : temperature_schedulers) {
-            tsp_solver->addTSPSolver(createSASolver(strategy, temperatureScheduler.get()));
-        }
-
-        return tsp_solver;
-    }
-
-    virtual const char* getAlgorithmName() override
-    {
-        return "4 x SA";
-    }
-private:
-    TSPSolver* createSASolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
-    {
-        SATwoOptTSPSolver *sa_solver = strategy->createTSPSolver<SATwoOptTSPSolver>();
-        sa_solver->setScheduleCostFunction(cost_function);
-        sa_solver->setTemperatureScheduler(temperatureScheduler);
-        sa_solver->setType(SimulatedAnnealingType::Greedy);
-
-        return sa_solver;
-    }
-
-    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
 };
 
 int main(int argc, char **argv)
@@ -482,46 +490,43 @@ int main(int argc, char **argv)
 	{
 		publisher.reset(new StdoutBenchmarkPublisher());
 	}
-	
-    {
-		Optimal_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
 
-	{
-		Greedy_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
+    auto datasets = {light_datasets, medium_datasets};
+    for (const auto &dataset : datasets) {
+        {
+            Optimal_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
 
-	{
-		Greedy_2Opt_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
+        {
+            Greedy_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
 
-	{
-		SA_2Opt_TspLibInstance test(light_datasets, *publisher);
-		test.run();
+        {
+            Greedy_2Opt_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            SATspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            MTSATspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            OneRelocate_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            Greedy_TwoOpt_OneRelocate_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
     }
-
-    {
-        FourSA_2Opt_TspLibInstance test(light_datasets, *publisher);
-        test.run();
-    }
-
-    {
-        FourSA_2Opt_TspLibInstance test(light_datasets, *publisher);
-        test.run();
-    }
-
-	{
-		OneRelocate_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
-	
-	{
-		Greedy_TwoOpt_OneRelocate_TspLibInstance test(light_datasets, *publisher);
-		test.run();
-	}
-	
 	publisher->publish();
 }
