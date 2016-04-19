@@ -30,6 +30,7 @@ namespace Scheduler
 	private:
         bool acceptance(Cost delta, float random) const;
         size_t calculate_markov_chain_length (Run* run) const;
+        void random_shuffle (Run* run) const;
 
         std::map<size_t, size_t> limits;
 

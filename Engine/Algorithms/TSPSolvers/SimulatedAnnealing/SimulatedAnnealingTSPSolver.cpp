@@ -66,20 +66,19 @@ namespace Scheduler
 
         const auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
         const auto &stops = run->getWorkStops();
+
+        random_shuffle(run);
+
+        temperature_scheduler->initialize(run, schedule_cost_function);
+        Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
+
         std::random_device random_device;
         std::mt19937_64 random_engine(random_device());
         std::mt19937_64 random_engine2(random_device());
-        std::uniform_int_distribution<> index_distribution(0, stops.size() - 1);
-        std::uniform_real_distribution<> float_distribution(0.f, 1.f);
-
-        temperature_scheduler->initialize(run, schedule_cost_function);
-
-        Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
-
-        const size_t M = calculate_markov_chain_length(run);
-
+        std::uniform_int_distribution<size_t> index_distribution(0, stops.size() - 1);
+        std::uniform_real_distribution<float> float_distribution(0.f, 1.f);
         SceneEditor scene_editor;
-
+        const size_t M = calculate_markov_chain_length(run);
         while (!temperature_scheduler->isFinish()) {
             for (size_t m = 0; m < M; ++m) {
                 size_t i = 0;
@@ -116,6 +115,19 @@ namespace Scheduler
                 }
             }
             temperature_scheduler->changeTemperature();
+        }
+    }
+
+    void SimulatedAnnealingTSPSolver::random_shuffle (Run* run) const
+    {
+        const auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
+        const auto &stops = run->getWorkStops();
+        std::random_device random_device;
+        std::mt19937_64 random_engine(random_device());
+        std::uniform_int_distribution<size_t> shuffle_distribution;
+        SceneEditor scene_editor;
+        for (size_t i = stops.size() - 1; i > 0; --i) {
+            scene_editor.performAction<SwapRunWorkStops>(run_iter, stops.begin() + i, stops.begin() + shuffle_distribution(random_engine, std::uniform_int_distribution<size_t>::param_type(0, i)));
         }
     }
 
