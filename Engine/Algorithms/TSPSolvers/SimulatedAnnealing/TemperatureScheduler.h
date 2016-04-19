@@ -22,9 +22,9 @@ namespace Scheduler
 
         virtual void adapt (float value) = 0;
         virtual void changeTemperature() = 0;
-        virtual void initialize(Run* schedule, ScheduleCostFunction* cost_function, unsigned long long seed_value) = 0;
+        virtual void initialize(Run* schedule, ScheduleCostFunction* cost_function) = 0;
 
     protected:
-        std::vector<Cost> create_initial_costs(Run* run, ScheduleCostFunction* cost_function, size_t length, unsigned long long seed_value);
+        std::vector<Cost> create_initial_costs(Run* run, ScheduleCostFunction* cost_function, size_t length);
     };
 }

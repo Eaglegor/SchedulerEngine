@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(CPP_SCHEDULER)
 
 if(NOT MSVC)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes ")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -pthread")
 else()
 	add_definitions( "/wd4251 /wd4275" )
 endif()

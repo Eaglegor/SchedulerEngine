@@ -56,8 +56,6 @@ std::vector<std::string> light_datasets
 	"Light/ulysses22"
 };
 
-std::vector<std::string> ftv_datasets { "Medium/ftv170"};
-
 std::vector<std::string> medium_datasets
 {
     "Medium/a280",
@@ -156,8 +154,10 @@ std::vector<std::string> huge_datasets
 	"Huge/vm1748"
 };
 
-const char* COST_KPI_NAME = "Cost";
+const char* COST_KPI_NAME = "Mean Cost";
+const char* VARIATION_KPI_NAME = "Variation";
 const char* AVERAGE_TIME_KPI_NAME = "Average time (ms)";
+const char* TOTAL_DEVIATION = "Deviation";
 
 using namespace Scheduler;
 
@@ -185,7 +185,7 @@ public:
 	{
 		std::cout << "############# Testing solver: "  << getAlgorithmName() << " ####################" << std::endl;
 
-		total_cost = 0;
+        total_cost = 0.f;
 		total_time = 0;
 		for (size_t i = 0; i < datasets.size(); ++i)
 		{
@@ -196,6 +196,8 @@ public:
 		result.algorithm_name = getAlgorithmName();
 		result.dataset_name = "{Summary}";
 		result.kpi.emplace(COST_KPI_NAME, std::to_string(total_cost));
+		const float geometric_deviation = std::pow(std::accumulate(deviations.begin(), deviations.end(), 1.f, std::multiplies<float>()), 1.f / deviations.size());
+        result.kpi.emplace(TOTAL_DEVIATION, std::to_string(geometric_deviation * 100.f - 100.f));
 		if(total_time > FLOAT_EPSILON) result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(total_time));
 		publisher.addResult(result);
 	}
@@ -211,14 +213,14 @@ protected:
 
 		TSPSolver* solver = createTSPSolver(strategy);
 
-		Cost cost;
+        std::vector<float> costs;
 		uint32_t optimal_value;
 
         std::cout << "Running " << id + 1 << "/" << datasets.size() << ": " << datasets[id] << " " << std::flush;
 		result.dataset_name = datasets[id];
 
 		long long nanoseconds = 0;
-        const size_t number_of_iterations = 1;
+        const size_t number_of_iterations = 10;
 
         for (size_t i = 0; i < number_of_iterations; ++i)
 		{
@@ -232,25 +234,35 @@ protected:
 			long long count = local_duration.count();
 			nanoseconds += count;
 
-			cost = cost_function->calculateCost(scene->getSchedules()[0]);
+            const Cost cost = cost_function->calculateCost(scene->getSchedules()[0]);
+            costs.push_back(cost.getValue());
 
             std::cout << "#" << std::flush;
 		}
 
 		std::cout << std::endl;
 
-		float deviation = (cost.getValue() - optimal_value) / static_cast<float>(optimal_value);
+        const float mean_cost = std::accumulate(costs.begin(), costs.end(), 0.f) / costs.size();
+        deviations.push_back(mean_cost / optimal_value);
+        const float mean_deviation = (mean_cost - optimal_value) / optimal_value;
+        result.kpi.emplace(COST_KPI_NAME, std::to_string(mean_cost) + " (" + std::to_string(mean_deviation * 100) + "%) ");
 
-		result.kpi.emplace(COST_KPI_NAME, std::to_string(cost.getValue()) + " (" + std::to_string(deviation * 100) + "%) ");
+        const float sq_sum = std::inner_product(costs.begin(), costs.end(), costs.begin(), 0.f);
+        const float stdev2 = sq_sum / costs.size() - mean_cost * mean_cost;
+        const float stdev = stdev2 > 0.f ? std::sqrt(stdev2) : 0.f;
+        const float variation = stdev / mean_cost * 100.f;
+        result.kpi.emplace(VARIATION_KPI_NAME, std::to_string(variation));
+
         result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(nanoseconds / (number_of_iterations * 1000000.0f)));
 
-		total_cost += cost.getValue();
+        total_cost += mean_cost;
         total_time += nanoseconds / (number_of_iterations * 1000000.0f);
 
 		publisher.addResult(result);
 	}
 
 	float total_cost;
+	std::vector<float> deviations;
 	float total_time;
 
 	Scheduler::TspLibRoutingService routing_service;
@@ -356,18 +368,15 @@ public:
     SATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
+        temperature_scheduler.reset(new ListTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000));
     }
 
     virtual TSPSolver* createTSPSolver(Strategy* strategy) override
     {
-        temperature_scheduler.reset(new ListTemperatureScheduler(124, std::log(std::pow(10, -17)), 1000));
-
         SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
-        sa_solver->setMarkovScale(4.f);
-        sa_solver->setIterationsLimit(100, 100 * 100 * 3);
-        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 10);
+        sa_solver->setMarkovChainLengthScale(2.f);
 
         return sa_solver;
     }
@@ -386,10 +395,10 @@ public:
     MTSATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -29)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -24)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -19)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(103, std::log(std::pow(10, -14)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -18)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -13)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -8)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -3)), 1000));
     }
 
     TSPSolver* createSATSPSolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
@@ -397,9 +406,7 @@ public:
         SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperatureScheduler);
-        sa_solver->setMarkovScale(2.f);
-        sa_solver->setIterationsLimit(100, 100 * 100 * 3);
-        sa_solver->setIterationsLimit(500, 100 * 100 * 3 * 10);
+        sa_solver->setMarkovChainLengthScale(2.f);
 
         return sa_solver;
     }
@@ -509,22 +516,22 @@ int main(int argc, char **argv)
         }
 
         {
-            SATspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
-            MTSATspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
             OneRelocate_TspLibInstance test(dataset, *publisher);
             test.run();
         }
 
         {
             Greedy_TwoOpt_OneRelocate_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            SATspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            MTSATspLibInstance test(dataset, *publisher);
             test.run();
         }
     }

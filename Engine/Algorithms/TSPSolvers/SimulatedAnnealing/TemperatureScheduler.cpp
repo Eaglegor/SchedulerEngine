@@ -14,14 +14,15 @@
 namespace Scheduler
 {
 
-std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* run, ScheduleCostFunction* schedule_cost_function, size_t length, unsigned long long seed_value)
+std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* run, ScheduleCostFunction* schedule_cost_function, size_t length)
 {
     std::vector<Cost> costs;
 
     auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
     const auto &stops = run->getWorkStops();
 
-    std::mt19937_64 random_engine(seed_value);
+    std::random_device random_device;
+    std::mt19937_64 random_engine(random_device());
     std::uniform_int_distribution<> index_distribution(0, stops.size() - 1);
     std::uniform_real_distribution<> float_distribution(0.f, 1.f);
 
@@ -35,15 +36,12 @@ std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* run, ScheduleC
             i = index_distribution(random_engine);
             j = index_distribution(random_engine);
         }
-        if (i > j) {
-            std::swap(i,  j);
-        }
 
         const float random_value = float_distribution(random_engine);random_value < 2.f / 3;
         if (random_value < 1.f / 3) {
             editor.performAction<SwapRunWorkStops>(run_iter, stops.begin() + i, stops.begin() + j);
-        } else if (random_value < 2.f / 3){
-            editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stops.begin() + i, stops.begin() + j + 1);
+        } else if (random_value < 2.f / 3) {
+            editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stops.begin() + std::min(i, j), stops.begin() + std::max(i, j) + 1);
         } else {
             editor.performAction<MoveRunWorkStop>(run_iter, stops.begin() + i, stops.begin() + j);
         }
