@@ -20,9 +20,9 @@ namespace Scheduler
 
         virtual void adapt(float value) override;
         virtual void changeTemperature() override;
-        virtual void initialize(Run* run, ScheduleCostFunction* cost_function, unsigned long long value) override;
+        virtual void initialize(Run* run, ScheduleCostFunction* cost_function) override;
 
-        static constexpr const char* staticGetName() { return "Power"; }
+        static constexpr const char* staticGetName() { return "List"; }
         virtual const char* getName() const override
         {
             return staticGetName();

@@ -30,12 +30,12 @@ namespace Scheduler
         ++i;
     }
 
-    void ListTemperatureScheduler::initialize(Run* run, ScheduleCostFunction* cost_function, unsigned long long seed_value)
+    void ListTemperatureScheduler::initialize(Run* run, ScheduleCostFunction* cost_function)
     {
         std::priority_queue<float> new_values;
-        const auto costs = create_initial_costs(run, cost_function, length, seed_value);
+        const auto costs = create_initial_costs(run, cost_function, length);
         const auto best_cost_it = std::min_element(costs.begin(), costs.end());
-        const auto best_cost = *best_cost_it;
+        auto best_cost = *best_cost_it;
         for (const auto &cost : costs) {
             const float t = -fabs((cost - best_cost).getValue()) / this->initial_probability;
             new_values.push(t);

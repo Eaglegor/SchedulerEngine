@@ -4,8 +4,6 @@ add_library(SimulatedAnnealingTSPSolver SHARED
 	SimulatedAnnealingTSPSolver.cpp
 	TemperatureScheduler.h
 	TemperatureScheduler.cpp
-	GeometricTemperatureScheduler.h
-	GeometricTemperatureScheduler.cpp
 	ListTemperatureScheduler.h
 	ListTemperatureScheduler.cpp
 )
