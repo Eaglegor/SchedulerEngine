@@ -1,7 +1,9 @@
+#include "Schedule.h"
 #include <assert.h>
 #include <algorithm>
-#include "Schedule.h"
 #include "Run.h"
+#include "WorkStop.h"
+#include "Vehicle.h"
 #include "Extensions/RunVehicleBinder.h"
 #include "ScheduleStateUtils.h"
 #include "ScheduleActualizer.h"
@@ -182,6 +184,27 @@ namespace Scheduler {
 	{
 		return shift_end_location_specified;
 	}
+
+    bool Schedule::isValid() const
+    {
+        for (Run* run : runs) {
+            const auto& stops = run->getWorkStops();
+            const Capacity vehicle_capacity = run->getVehicle()->getCapacity();
+            bool overflow = false;
+            Capacity run_capacity;
+            for (auto stop_it = stops.begin();
+                 stop_it != stops.end() && !overflow;
+                 ++stop_it) {
+                run_capacity += (*stop_it)->getOperation()->getDemand();
+                overflow = (run_capacity > vehicle_capacity);
+            }
+            if (overflow) {
+                return false;
+            }
+
+        }
+        return true;
+    }
 
 	void Schedule::setStopsFactory(SceneObjectsFactory<WorkStop> *factory)
 	{
