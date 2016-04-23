@@ -1,7 +1,6 @@
 #include "SweepVRPSolver.h"
 #include <vector>
 #include <algorithm>
-#include <iostream>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
@@ -34,15 +33,18 @@ namespace Scheduler
             {
                 const float x = (location.getLatitude() - center_location.getLatitude()).getValue();
                 const float y = (location.getLongitude() - center_location.getLongitude()).getValue();
-                if (y == 0.f) {
-                    return 0.f;
-                }
-                const float ctg = x / y;
-                return M_PI_2 - std::atan(ctg);
+                const float hypot = std::hypot(x, y);
+                const float angle = std::acos(y / hypot);
+                return x > 0.f ? angle : 2* M_PI - angle;
+            }
+            float degreeAngle(const Location& location) const
+            {
+                return angle(location) * 180.f / M_PI;
             }
 
             Location center_location;
         };
+
         assert(scene);
 
         auto& schedules = scene->getSchedules();
@@ -63,7 +65,6 @@ namespace Scheduler
             Location depot_location = schedule->getDepotLocation();
             ByAngle by_angle(depot_location);
             std::sort(operations.begin(), operations.end(), by_angle);
-
             Run* run = schedule->createRun(depot_location, depot_location);
             while (!operations.empty() && schedule->isValid()) {
                 run->allocateWorkOperation(operations.back());
