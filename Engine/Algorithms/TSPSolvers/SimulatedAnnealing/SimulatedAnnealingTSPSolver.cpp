@@ -67,6 +67,10 @@ namespace Scheduler
         const auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
         const auto &stops = run->getWorkStops();
 
+        if (stops.size() <= 1) {
+            return;
+        }
+
         random_shuffle(run);
 
         temperature_scheduler->initialize(run, schedule_cost_function);
