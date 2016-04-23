@@ -313,13 +313,33 @@ public:
         return "Sweep";
     }
 private:
-    TSPSolver* createTSPSolver(Strategy* strategy)
+    TSPSolver* createTSPSolverSA (Strategy* strategy)
     {
         SimulatedAnnealingTSPSolver* tsp_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
         tsp_solver->setScheduleCostFunction(strategy->createScheduleCostFunction<TotalDistanceScheduleCostFunction>());
         tsp_solver->setTemperatureScheduler(new ListTemperatureScheduler(120, std::log(std::pow(10, -3)), 1000));
         tsp_solver->setMarkovChainLengthScale(2.f);
         return tsp_solver;
+    }
+
+    TSPSolver* createTSPSolver2Opt (Strategy* strategy)
+    {
+        ChainTSPSolver* tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+
+        GreedyTSPSolver* greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+        greedy_solver->setRoutingService(&routing_service);
+        tsp_solver->addTSPSolver(greedy_solver);
+
+        SimpleTwoOptTSPSolver* two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
+        two_opt_solver->setScheduleCostFunction(strategy->createScheduleCostFunction<TotalDistanceScheduleCostFunction>());
+        tsp_solver->addTSPSolver(two_opt_solver);
+
+        return tsp_solver;
+    }
+
+    TSPSolver* createTSPSolver (Strategy* strategy)
+    {
+        return createTSPSolver2Opt(strategy);
     }
 };
 
