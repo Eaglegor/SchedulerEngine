@@ -16,7 +16,7 @@ namespace Scheduler
 
 		void setScheduleCostFunction(ScheduleCostFunction* cost_function);
 
-		static constexpr const char* staticGetName() { return "SimpleTwoOpt"; }
+        static constexpr const char* staticGetName() { return "HybridOpt"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:
