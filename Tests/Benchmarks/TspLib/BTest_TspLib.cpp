@@ -362,6 +362,34 @@ public:
 	}
 };
 
+class Greedy_HybridOpt_TspLibInstance : public TspLibTestInstance
+{
+public:
+    Greedy_HybridOpt_TspLibInstance (const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+    }
+
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+        GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+        greedy_solver->setRoutingService(&routing_service);
+
+        HybridOptTSPSolver *hybrid_opt_solver = strategy->createTSPSolver<HybridOptTSPSolver>();
+        hybrid_opt_solver->setScheduleCostFunction(cost_function);
+
+        tsp_solver->addTSPSolver(greedy_solver);
+        tsp_solver->addTSPSolver(hybrid_opt_solver);
+        return tsp_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "Greedy >> Hybrid-Opt";
+    }
+};
+
 class SATspLibInstance : public TspLibTestInstance
 {
 public:
@@ -516,17 +544,12 @@ int main(int argc, char **argv)
         }
 
         {
-            OneRelocate_TspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
             Greedy_TwoOpt_OneRelocate_TspLibInstance test(dataset, *publisher);
             test.run();
         }
 
         {
-            SATspLibInstance test(dataset, *publisher);
+            Greedy_HybridOpt_TspLibInstance test(dataset, *publisher);
             test.run();
         }
 
