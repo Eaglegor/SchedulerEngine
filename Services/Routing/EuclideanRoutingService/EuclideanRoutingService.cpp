@@ -23,7 +23,7 @@ namespace Scheduler
 		auto dx = x2 - x1;
 		auto dy = y2 - y1;
 		
-		Distance distance( static_cast<float>(sqrt(dx*dx + dy*dx)) );
+        Distance distance( static_cast<float>(sqrt(dx*dx + dy*dy)) );
 		Duration duration = distance / routing_profile.getAverageSpeed();
 
 		return Route(from, to, distance, duration);

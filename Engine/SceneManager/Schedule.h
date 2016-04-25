@@ -59,6 +59,8 @@ namespace Scheduler
 
 		bool hasSpecificEndLocation() const;
 
+        bool isValid() const;
+
 		ScheduleActualizer* getScheduleActualizer();
 
 		const TimeWindow& getShift() const;

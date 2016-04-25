@@ -65,7 +65,7 @@ namespace Scheduler
 	bool Capacity::operator<(const Capacity &rhs) const
 	{
 		for (size_t i = 0; i < 4; ++i) {
-			if (capacity[i] > rhs.capacity[i] - FLOAT_EPSILON) return false;
+            if (capacity[i] > rhs.capacity[i] + FLOAT_EPSILON) return false;
 		}
 		return true;
 	}
@@ -73,7 +73,7 @@ namespace Scheduler
 	bool Capacity::operator>(const Capacity &rhs) const
 	{
 		for (size_t i = 0; i < 4; ++i) {
-			if (capacity[i] < rhs.capacity[i] + FLOAT_EPSILON) return false;
+            if (capacity[i] < rhs.capacity[i] - FLOAT_EPSILON) return false;
 		}
 		return true;
 	}

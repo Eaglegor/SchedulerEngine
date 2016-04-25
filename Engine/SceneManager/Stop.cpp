@@ -39,6 +39,8 @@ namespace Scheduler
 		this->next_route = route;
 
 		schedule_actualizer->onStopNextRouteChanged(this);
+
+        has_actual_route = true;
 	}
 
 	const Run *Stop::getRun() const {

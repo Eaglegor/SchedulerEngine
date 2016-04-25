@@ -25,6 +25,7 @@ target_link_libraries(Engine
     TransparentVRPSolver
     ChainVRPSolver
     TSPOnlyVRPSolver
+	SweepVRPSolver
     
 	SimpleTwoOptTSPSolver
 	SimulatedAnnealingTSPSolver
