@@ -33,6 +33,7 @@ target_link_libraries(Engine
 	ChainTSPSolver
 	OneRelocateTSPSolver
 	TheBestTSPSolver
+	HybridOptTSPSolver
 	
 	TotalDistanceCostFunctions
     )
