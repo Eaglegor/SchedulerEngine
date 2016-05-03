@@ -16,9 +16,9 @@ target_link_libraries(Engine
     
     PerformerAssignedVehicleBinder
     
-	RoutesActualizationAlgorithm
-    StopDurationActualizationAlgorithm
-    StopArrivalTimeActualizationAlgorithm
+	DefaultRouteActualizationAlgorithm
+    DefaultDurationActualizationAlgorithm
+    DefaultArrivalTimeActualizationAlgorithm
     
     FirstTimeWindowSelector
     

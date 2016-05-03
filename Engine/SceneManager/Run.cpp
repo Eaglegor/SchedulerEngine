@@ -3,8 +3,7 @@
 #include "Stop.h"
 #include "Vehicle.h"
 #include <Engine/Engine/Services/RoutingService.h>
-#include "Views/RunStopsView.h"
-#include "ScheduleActualizer.h"
+#include "ScheduleActualizationModel.h"
 #include "WorkStop.h"
 
 #include <iostream>
@@ -20,12 +19,12 @@ namespace Scheduler {
             start_stop(start_location, this),
             end_stop(end_location, this),
             vehicle(nullptr),
-            schedule_actualizer(nullptr)
+            schedule_actualization_model(nullptr)
     {
 		start_stop.setNextStop(&end_stop);
     }
 
-    size_t Run::getId() {
+    size_t Run::getId() const {
         return id;
     }
 
@@ -75,6 +74,8 @@ namespace Scheduler {
 
     RunBoundaryStop *Run::allocateStartOperation(const Operation *operation) {
         start_stop.addOperation(operation);
+		start_stop.invalidateDuration();
+		invalidateArrivalTimes();
         return &start_stop;
     }
 
@@ -104,20 +105,23 @@ namespace Scheduler {
 
         work_stops.insert(work_stops.begin() + index, stop);
 
-        schedule_actualizer->onStopAdded(this, stop, index);
-
         invalidateWorkStopRoutes(index);
+		invalidateArrivalTimes();
 
         return stop;
     }
 
     RunBoundaryStop *Run::allocateEndOperation(const Operation *operation) {
         end_stop.addOperation(operation);
+		end_stop.invalidateDuration();
+		invalidateArrivalTimes();
         return &end_stop;
     }
 
     void Run::unallocateStartOperation(const Operation *operation) {
         start_stop.removeOperation(operation);
+		start_stop.invalidateDuration();
+		invalidateArrivalTimes();
     }
 
     void Run::unallocateWorkOperation(const Operation *operation, size_t hint) {
@@ -151,12 +155,13 @@ namespace Scheduler {
 
         if(work_stops.empty()) start_stop.invalidateRoute();
         else invalidateWorkStopRoutes(index > 0 ? index - 1 : 0);
-
-        schedule_actualizer->onStopRemoved(this, index);
+		invalidateArrivalTimes();
     }
 
     void Run::unallocateEndOperation(const Operation *operation) {
         end_stop.removeOperation(operation);
+		end_stop.invalidateDuration();
+		invalidateArrivalTimes();
     }
 
 	Stop * Run::replaceWorkOperation(const Operation * old_operation, const Operation * new_operation, size_t hint)
@@ -190,9 +195,9 @@ namespace Scheduler {
 
 		stop->setOperation(new_operation);
 
-		schedule_actualizer->onStopReplaced(this, stop, index);
-
 		invalidateWorkStopRoutes(index);
+		stop->invalidateDuration();
+		invalidateArrivalTimes();
 
 		return stop;
 	}
@@ -206,28 +211,22 @@ namespace Scheduler {
             (this->vehicle == nullptr || vehicle->getRoutingProfile() != this->vehicle->getRoutingProfile())) {
             this->vehicle = vehicle;
             invalidateRoutes();
+			invalidateArrivalTimes();
         }
         else {
             this->vehicle = vehicle;
         }
-        schedule_actualizer->onRunVehicleChanged(this, vehicle);
     }
 
     void Run::invalidateRoutes() {
         if (vehicle == nullptr) return;
 
-        RunStopsView all_stops(this);
+		if (!schedule_actualization_model || !schedule_actualization_model->getRouteActualizationAlgorithm()) return;
 
-        if (all_stops.empty()) return;
-
-        auto s1 = all_stops.begin();
-        auto s2 = all_stops.begin() + 1;
-
-        while (s2 != all_stops.end()) {
-            (*s1)->invalidateRoute();
-            ++s1;
-            ++s2;
-        }
+		for (Stop* stop = &start_stop; stop != &end_stop; stop = stop->getNextStop())
+		{
+			stop->invalidateRoute();
+		}
     }
 
     void Run::invalidateWorkStopRoutes(size_t index) {
@@ -255,20 +254,36 @@ namespace Scheduler {
         }
     }
 
-    void Run::setScheduleActualizer(ScheduleActualizer *actualizer) {
-        assert(actualizer);
+    void Run::setScheduleActualizationModel(ScheduleActualizationModel* model) {
+        this->schedule_actualization_model = model;
 
-        this->schedule_actualizer = actualizer;
+		start_stop.setActualizationModel(model);
+		end_stop.setActualizationModel(model);
 
-		start_stop.setScheduleActualizer(actualizer);
-		end_stop.setScheduleActualizer(actualizer);
+		for(WorkStop* stop : work_stops)
+		{
+			stop->setActualizationModel(model);
+		}
     }
+
+	void Run::invalidateArrivalTimes()
+	{
+		if (!schedule_actualization_model || !schedule_actualization_model->getArrivalTimeActualizationAlgorithm()) return;
+
+		start_stop.invalidateArrivalTime();
+		end_stop.invalidateArrivalTime();
+		for(WorkStop *stop : work_stops)
+		{
+			stop->invalidateArrivalTime();
+		}
+	}
 
 	WorkStop* Run::createWorkStop(const Operation * operation)
 	{
 		WorkStop *stop = stops_factory->createObject(this);
-		stop->setScheduleActualizer(schedule_actualizer);
+		stop->setActualizationModel(schedule_actualization_model);
 		stop->setOperation(operation);
+		invalidateArrivalTimes();
 		return stop;
 	}
 }

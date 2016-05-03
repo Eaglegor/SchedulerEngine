@@ -13,7 +13,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
-#include <Engine/Algorithms/ScheduleActualization/Routes/RoutesActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
 #include <Engine/Algorithms/RunVehicleBinders/PerformerAssigned/PerformerAssignedVehicleBinder.h>
 
 namespace Scheduler
@@ -45,6 +45,10 @@ namespace Scheduler
 
 		PerformerAssignedVehicleBinder* vehicle_binder = scene->createRunVehicleBinder<PerformerAssignedVehicleBinder>();
 
+		ScheduleActualizationModel* actualization_model = scene_manager->createScheduleActualizationModel();
+		DefaultRouteActualizationAlgorithm* route_actualization_algorithm = scene_manager->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(rs);
+		actualization_model->setRouteActualizationAlgorithm(route_actualization_algorithm);
+
 		for (size_t i = 0; i < customers_number; ++i)
 		{
 			Vehicle* vehicle = scene->createVehicle();
@@ -66,7 +70,7 @@ namespace Scheduler
 				schedule->setName(name.c_str());
 				schedule->setDepotLocation(depot_location);
 
-				schedule->getScheduleActualizer()->createAlgorithm<RoutesActualizationAlgorithm>(rs);
+				schedule->setActualizationModel(actualization_model);
 			}
 
 			Order* order = scene->createOrder();

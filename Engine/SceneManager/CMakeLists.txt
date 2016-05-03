@@ -29,8 +29,11 @@ add_library(SceneManager SHARED
 
 	TemporarySchedule.h TemporarySchedule.cpp
 	
-	ScheduleActualizer.h
-	ScheduleActualizer.cpp
+    Actualizable.h
+    ScheduleActualizationModel.h ScheduleActualizationModel.cpp
+	RouteActualizer.h
+    ArrivalTimeActualizer.h
+    DurationActualizer.h
     
 	Stop.h
 	Stop.cpp
@@ -44,16 +47,12 @@ add_library(SceneManager SHARED
 	Vehicle.cpp
 	
 	SceneObjectsFactory.h
-	
-	Views/RunStopsView.h
-	Views/RunStopsView.cpp
-	
-	Views/ScheduleStopsView.h
-	Views/ScheduleStopsView.cpp
-	
+
 	Extensions/TimeWindowSelector.h
 	Extensions/RunVehicleBinder.h
-	Extensions/ScheduleActualizationAlgorithm.h
+	Extensions/ArrivalTimeActualizationAlgorithm.h
+    Extensions/DurationActualizationAlgorithm.h
+    Extensions/RouteActualizationAlgorithm.h
     
 )
 

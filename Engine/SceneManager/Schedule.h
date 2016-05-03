@@ -4,10 +4,10 @@
 #include <Engine/Concepts/Location.h>
 #include "Performer.h"
 #include <Engine/Utils/Collections/ImmutableVector.h>
-#include "ScheduleActualizer.h"
 #include "SceneObjectsFactory.h"
 
 #include <SceneManager_export.h>
+#include "ScheduleActualizationModel.h"
 
 namespace Scheduler
 {
@@ -61,7 +61,7 @@ namespace Scheduler
 
         bool isValid() const;
 
-		ScheduleActualizer* getScheduleActualizer();
+		void setActualizationModel(ScheduleActualizationModel* model);
 
 		const TimeWindow& getShift() const;
 		void setShift(const TimeWindow &shift);
@@ -77,6 +77,8 @@ namespace Scheduler
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 
 		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
+
+		void invalidateArrivalTimes();
 
 	private:
         size_t id;
@@ -101,7 +103,7 @@ namespace Scheduler
 
 		TimeWindow shift;
 
-		ScheduleActualizer schedule_actualizer;
+		ScheduleActualizationModel* schedule_actualization_model;
 
 		RunVehicleBinder* run_vehicle_binder;
     };

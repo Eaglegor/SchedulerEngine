@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <cstddef>
 #include <Engine/Utils/Collections/ImmutableVector.h>
-#include <Engine/SceneManager/Extensions/ScheduleActualizationAlgorithm.h>
+#include <unordered_set>
 #include <Engine/SceneManager/Extensions/RunVehicleBinder.h>
 #include "TemporarySchedule.h"
 
@@ -11,6 +11,7 @@
 #include <Engine/Utils/Factory.h>
 
 #include <SceneManager_export.h>
+#include "ScheduleActualizationModel.h"
 
 namespace Scheduler
 {
@@ -87,8 +88,6 @@ namespace Scheduler
 
 		void setRoutingService(RoutingService *routing_service);
 
-		void setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm>* factory);
-
 		void setRunVehicleSelectorsFactory(Factory<RunVehicleBinder>* factory);
 
     private:
@@ -110,7 +109,6 @@ namespace Scheduler
 		SceneObjectsFactory<Run> *runs_factory;
 		SceneObjectsFactory<WorkStop> *stops_factory;
 
-		Factory<ScheduleActualizationAlgorithm> *schedule_actualization_algorithms_factory;
 		Factory<RunVehicleBinder> *run_vehicle_binders_factory;
 
 		RunVehicleBinder *run_vehicle_binder;

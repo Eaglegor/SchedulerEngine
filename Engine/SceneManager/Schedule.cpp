@@ -6,7 +6,6 @@
 #include "Vehicle.h"
 #include "Extensions/RunVehicleBinder.h"
 #include "ScheduleStateUtils.h"
-#include "ScheduleActualizer.h"
 
 namespace Scheduler {
 
@@ -18,7 +17,7 @@ namespace Scheduler {
 			stops_factory(nullptr),
 			shift_start_location_specified(false),
 			shift_end_location_specified(false),
-			schedule_actualizer(this),
+			schedule_actualization_model(nullptr),
 			run_vehicle_binder(nullptr)
 	{
     }
@@ -26,7 +25,7 @@ namespace Scheduler {
 	Schedule::Schedule(size_t id, const Schedule* rhs):
 		id(id),
 		name(rhs->name),
-		schedule_actualizer(this, rhs->schedule_actualizer),
+		schedule_actualization_model(rhs->schedule_actualization_model),
 		performer(rhs->performer),
 		scene(nullptr),
 		runs_factory(rhs->runs_factory),
@@ -83,10 +82,16 @@ namespace Scheduler {
 		Run* r = runs_factory->createObject(from, to, this);
 
 		r->setStopsFactory(stops_factory);
-		r->setScheduleActualizer(&schedule_actualizer);
+		r->setScheduleActualizationModel(schedule_actualization_model);
+
+		if(index > 0)
+		{
+			runs[index - 1]->getEndStop()->invalidateRoute();
+		}
+
+		invalidateArrivalTimes();
 
 		if (run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
-
 
 		Stop* prev_stop = nullptr;
 		Stop* next_stop = nullptr;
@@ -114,8 +119,6 @@ namespace Scheduler {
 
 		runs.insert(runs.begin() + index, r);
 
-		schedule_actualizer.onRunAdded(r, index);
-
 		return r;
 	}
 
@@ -135,11 +138,15 @@ namespace Scheduler {
 		if (prev_stop) prev_stop->setNextStop(next_stop);
 		if (next_stop) next_stop->setPrevStop(prev_stop);
 
+		if(index > 0)
+		{
+			runs[index - 1]->getEndStop()->invalidateRoute();
+		}
 		runs.erase(runs.begin() + index);
 		assert(runs_factory);
 		runs_factory->destroyObject(r);
 
-		schedule_actualizer.onRunRemoved();
+		invalidateArrivalTimes();
 	}
 
 	Schedule::~Schedule() {
@@ -153,6 +160,7 @@ namespace Scheduler {
 	void Schedule::setShiftStartLocation(const Location &shift_start_location) {
 		this->shift_start_location = shift_start_location;
 		shift_start_location_specified = true;
+		invalidateArrivalTimes();
 	}
 
 	const Location& Schedule::getDepotLocation() const {
@@ -164,6 +172,7 @@ namespace Scheduler {
 
 		if(!shift_start_location_specified) shift_start_location = depot_location;
 		if(!shift_end_location_specified) shift_end_location = depot_location;
+		invalidateArrivalTimes();
 	}
 
 	const Location& Schedule::getShiftEndLocation() const {
@@ -173,6 +182,7 @@ namespace Scheduler {
 	void Schedule::setShiftEndLocation(const Location &shift_end_location) {
 		this->shift_end_location = shift_end_location;
 		shift_end_location_specified = true;
+		invalidateArrivalTimes();
 	}
 
 	bool Schedule::hasSpecificStartLocation() const
@@ -206,13 +216,18 @@ namespace Scheduler {
         return true;
     }
 
+	void Schedule::setActualizationModel(ScheduleActualizationModel* model)
+	{
+		this->schedule_actualization_model = model;
+		for(Run* r : runs)
+		{
+			r->setScheduleActualizationModel(model);
+		}
+	}
+
 	void Schedule::setStopsFactory(SceneObjectsFactory<WorkStop> *factory)
 	{
 		this->stops_factory = factory;
-	}
-
-	ScheduleActualizer *Schedule::getScheduleActualizer() {
-		return &schedule_actualizer;
 	}
 
 	const TimeWindow& Schedule::getShift() const
@@ -223,6 +238,7 @@ namespace Scheduler {
 	void Schedule::setShift(const TimeWindow &shift)
 	{
 		this->shift = shift;
+		invalidateArrivalTimes();
 	}
 
 	void Schedule::clear()
@@ -254,5 +270,13 @@ namespace Scheduler {
 
 	void Schedule::setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder) {
 		this->run_vehicle_binder = run_vehicle_binder;
+	}
+
+	void Schedule::invalidateArrivalTimes()
+	{
+		for (Run *run : runs)
+		{
+			run->invalidateArrivalTimes();
+		}
 	}
 }

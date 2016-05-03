@@ -15,7 +15,7 @@ namespace Scheduler
 	class WorkStop;
 	class RoutingService;
 	class RoutingProfile;
-	class ScheduleActualizer;
+	class ScheduleActualizationModel;
 
 	/**
 		Class representing single performer trip which starts and ends in the specified locations.
@@ -35,7 +35,7 @@ namespace Scheduler
 		Run(size_t id, const Location& start_location, const Location& end_location, Schedule* schedule);
 		~Run();
 
-		size_t getId();
+		size_t getId() const;
 
 		const Schedule* getSchedule() const;
 		Schedule* getSchedule();
@@ -71,7 +71,9 @@ namespace Scheduler
 
 		// == framework internal ====================================
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
-		void setScheduleActualizer(ScheduleActualizer* actualizer);
+		void setScheduleActualizationModel(ScheduleActualizationModel* model);
+
+		void invalidateArrivalTimes();
 
 	private:
 		WorkStop* createWorkStop(const Operation* operation);
@@ -89,10 +91,7 @@ namespace Scheduler
 
 		SceneObjectsFactory<WorkStop> *stops_factory;
 
-		ScheduleActualizer* schedule_actualizer;
-
-		
-		
+		ScheduleActualizationModel* schedule_actualization_model;
 
 	private:
 		void invalidateRoutes();
