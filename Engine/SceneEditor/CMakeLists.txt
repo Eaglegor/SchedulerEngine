@@ -8,7 +8,8 @@ add_library(SceneEditor SHARED
     Actions/SwapRunWorkStops.h Actions/SwapRunWorkStops.cpp
     Actions/ReverseRunWorkStopsSubsequence.h Actions/ReverseRunWorkStopsSubsequence.cpp
     Actions/MoveRunWorkStop.h Actions/MoveRunWorkStop.cpp
-    
+    Actions/ScrambleWorkStopsSubsequence.h Actions/ScrambleWorkStopsSubsequence.cpp
+    Actions/RotateWorkStopsSubsequence.h Actions/RotateWorkStopsSubsequence.cpp
 )
 
 set_target_properties(SceneEditor PROPERTIES FOLDER "Engine")
