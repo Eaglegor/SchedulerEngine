@@ -4,6 +4,7 @@
 #include "Schedule.h"
 #include "Vehicle.h"
 #include "Performer.h"
+#include "ScheduleActualizationModel.h"
 
 namespace Scheduler {
 
@@ -98,9 +99,6 @@ namespace Scheduler {
 		schedule->setRunsFactory(runs_factory);
 		schedule->setStopsFactory(stops_factory);
         schedule->setRunVehicleBinder(run_vehicle_binder);
-
-        ScheduleActualizer* actualizer = schedule->getScheduleActualizer();
-        actualizer->setScheduleActualizationAlgorithmsFactory(schedule_actualization_algorithms_factory);
 
         schedules.push_back(schedule);
 
@@ -201,11 +199,7 @@ namespace Scheduler {
 		this->stops_factory = factory;
 	}
 
-    void Scene::setScheduleActualizationAlgorithmsFactory(Factory<ScheduleActualizationAlgorithm> *factory) {
-        this->schedule_actualization_algorithms_factory = factory;
-    }
-
-    void Scene::setRunVehicleSelectorsFactory(Factory<RunVehicleBinder> *factory) {
+	void Scene::setRunVehicleSelectorsFactory(Factory<RunVehicleBinder> *factory) {
         this->run_vehicle_binders_factory = factory;
     }
 }

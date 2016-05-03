@@ -1,0 +1,14 @@
+add_library(DefaultRouteActualizationAlgorithm SHARED
+	
+	DefaultRouteActualizationAlgorithm.h
+	DefaultRouteActualizationAlgorithm.cpp
+)
+
+set_target_properties(DefaultRouteActualizationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/ScheduleActualization/Route")
+
+target_link_libraries(DefaultRouteActualizationAlgorithm SceneManager)
+
+cotire(DefaultRouteActualizationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(DefaultRouteActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DefaultRouteActualizationAlgorithm_export.h)

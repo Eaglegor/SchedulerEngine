@@ -1,5 +1,5 @@
 #pragma once
 
-#include <Engine/Algorithms/ScheduleActualization/Routes/RoutesActualizationAlgorithm.h>
-#include <Engine/Algorithms/ScheduleActualization/StopDuration/StopDurationActualizationAlgorithm.h>
-#include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/Duration/Default/DefaultDurationActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/ArrivalTime/Default/DefaultArrivalTimeActualizationAlgorithm.h>

@@ -1,24 +1,24 @@
 #include "Stop.h"
+#include "Run.h"
 #include <Engine/Utils/Collections/Algorithms.h>
+#include "ScheduleActualizationModel.h"
+#include "RouteActualizer.h"
+#include "ArrivalTimeActualizer.h"
+#include "DurationActualizer.h"
 #include <assert.h>
-#include "ScheduleActualizer.h"
 
 namespace Scheduler
 {
 
 	Stop::Stop(Run* run):
 	run(run),
-	schedule_actualizer(nullptr),
 	nextStop(nullptr),
-	prevStop(nullptr),
-	has_actual_route(false)
+	prevStop(nullptr)
 	{
 	}
 
 	const TimeWindow &Stop::getAllocationTime() const {
-		schedule_actualizer->actualize();
-
-		return allocation_time;
+		return allocation_time.get();
 	}
 
 	void Stop::setAllocationTime(const TimeWindow &time) {
@@ -26,9 +26,7 @@ namespace Scheduler
 	}
 
 	const Duration &Stop::getDuration() const {
-		schedule_actualizer->actualize();
-
-		return duration;
+		return duration.get();
 	}
 
 	void Stop::setDuration(const Duration &duration) {
@@ -37,10 +35,6 @@ namespace Scheduler
 
 	void Stop::setNextRoute(const Route &route) {
 		this->next_route = route;
-
-		schedule_actualizer->onStopNextRouteChanged(this);
-
-        has_actual_route = true;
 	}
 
 	const Run *Stop::getRun() const {
@@ -61,27 +55,31 @@ namespace Scheduler
 		return prevStop;
 	}
 
-	const Route &Stop::getNextRoute() const
+	void Stop::setActualizationModel(ScheduleActualizationModel* actualization_model)
 	{
-		schedule_actualizer->actualize();
-
-		return next_route;
+		this->next_route.setActualizer(actualization_model ? RouteActualizer(actualization_model->getRouteActualizationAlgorithm(), this) : RouteActualizer());
+		this->allocation_time.setActualizer(actualization_model ? ArrivalTimeActualizer(actualization_model->getArrivalTimeActualizationAlgorithm(), this->getRun()->getSchedule()) : ArrivalTimeActualizer());
+		this->duration.setActualizer(actualization_model ? DurationActualizer(actualization_model->getDurationActualizationAlgorithm(), this) : DurationActualizer());
 	}
 
-	void Stop::setScheduleActualizer(ScheduleActualizer *actualizer) {
-		assert(actualizer);
-
-		this->schedule_actualizer = actualizer;
+	const Route &Stop::getNextRoute() const
+	{
+		return next_route.get();
 	}
 
 	void Stop::invalidateRoute()
 	{
-		has_actual_route = false;
+        next_route.setActual(false);
 	}
 
-	bool Stop::hasActualRoute() const
+	void Stop::invalidateArrivalTime()
 	{
-		return has_actual_route;
+		allocation_time.setActual(false);
+	}
+
+	void Stop::invalidateDuration()
+	{
+		duration.setActual(false);
 	}
 
 	void Stop::setNextStop(Stop* stop)
@@ -96,11 +94,11 @@ namespace Scheduler
 
 	void Stop::setStartTime(const TimePoint &time)
 	{
-		this->setAllocationTime(TimeWindow(time, time + duration));
+		this->setAllocationTime(TimeWindow(time, time + duration.get()));
 	}
 
 	void Stop::setEndTime(const TimePoint &time)
 	{
-		this->setAllocationTime(TimeWindow(time - duration, time));
+		this->setAllocationTime(TimeWindow(time - duration.get(), time));
 	}
 }

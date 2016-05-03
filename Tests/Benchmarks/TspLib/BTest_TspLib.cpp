@@ -5,6 +5,8 @@
 #include <sch_cost_functions>
 #include <sch_tsp_solvers>
 
+#include <numeric>
+
 
 #include <Services/Routing/TspLibRoutingService/TspLibRoutingService.h>
 #include <Persistence/SceneLoaders/TspLibSceneLoader/TspLibSceneLoader.h>
@@ -526,7 +528,7 @@ int main(int argc, char **argv)
 		publisher.reset(new StdoutBenchmarkPublisher());
 	}
 
-    auto datasets = {light_datasets, medium_datasets};
+    auto datasets = {light_datasets/*, medium_datasets*/};
     for (const auto &dataset : datasets) {
         {
             Optimal_TspLibInstance test(dataset, *publisher);

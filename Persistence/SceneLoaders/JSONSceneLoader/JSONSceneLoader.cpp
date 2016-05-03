@@ -20,8 +20,9 @@
 #include <Engine/Concepts/Location.h>
 #include <Engine/Utils/Units/DurationUnits.h>
 
-#include <Engine/Algorithms/ScheduleActualization/StopDuration/StopDurationActualizationAlgorithm.h>
-#include <Engine/Algorithms/ScheduleActualization/StopArrivalTime/StopArrivalTimeActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/Duration/Default/DefaultDurationActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/ArrivalTime/Default/DefaultArrivalTimeActualizationAlgorithm.h>
 
 #include <locale>
 
@@ -29,8 +30,9 @@
 
 namespace Scheduler
 {
-	JSONSceneLoader::JSONSceneLoader(SceneManager * scene_manager):
-		scene_manager(scene_manager)
+	JSONSceneLoader::JSONSceneLoader(SceneManager * scene_manager, RoutingService* rs):
+		scene_manager(scene_manager),
+		routing_service(rs)
 	{
 	}
 
@@ -266,8 +268,15 @@ namespace Scheduler
 
 			schedule->setShift(createTimeWindow(schedule_desc.shift.time_window, settings));
 
-			schedule->getScheduleActualizer()->createAlgorithm<StopDurationActualizationAlgorithm>();
-			schedule->getScheduleActualizer()->createAlgorithm<StopArrivalTimeActualizationAlgorithm>();
+			ScheduleActualizationModel* actualization_model = scene_manager->createScheduleActualizationModel();
+			DefaultRouteActualizationAlgorithm* route_actualization_algorithm = scene_manager->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(routing_service);
+			actualization_model->setRouteActualizationAlgorithm(route_actualization_algorithm);
+			DefaultDurationActualizationAlgorithm* duration_actualization_algorithm = scene_manager->createDurationActualizationAlgorithm<DefaultDurationActualizationAlgorithm>();
+			actualization_model->setDurationActualizationAlgorithm(duration_actualization_algorithm);
+			DefaultArrivalTimeActualizationAlgorithm* arrival_time_actualization_algorithm = scene_manager->createArrivalTimeActualizationAlgorithm<DefaultArrivalTimeActualizationAlgorithm>();
+			actualization_model->setArrivalTimeActualizationAlgorithm(arrival_time_actualization_algorithm);
+
+			schedule->setActualizationModel(actualization_model);
 
 			for(const RunDesc &run_desc : schedule_desc.runs)
 			{

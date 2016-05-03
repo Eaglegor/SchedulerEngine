@@ -1,3 +1,3 @@
-add_subdirectory(Routes)
-add_subdirectory(StopArrivalTime)
-add_subdirectory(StopDuration)
+add_subdirectory(Route)
+add_subdirectory(ArrivalTime)
+add_subdirectory(Duration)

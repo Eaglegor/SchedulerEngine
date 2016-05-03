@@ -29,8 +29,13 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
     schedule->setDepotLocation(start_location);
     schedule->setShiftEndLocation(end_location);
 
-	schedule->getScheduleActualizer()->createAlgorithm<RoutesActualizationAlgorithm>(&routing_service);
-    schedule->getScheduleActualizer()->createAlgorithm<StopDurationActualizationAlgorithm>();
+	ScheduleActualizationModel* actualization_model = sm->createScheduleActualizationModel();
+	DefaultRouteActualizationAlgorithm* route_actualization_algorithm = sm->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(&routing_service);
+	actualization_model->setRouteActualizationAlgorithm(route_actualization_algorithm);
+	DefaultDurationActualizationAlgorithm* duration_actualization_algorithm = sm->createDurationActualizationAlgorithm<DefaultDurationActualizationAlgorithm>();
+	actualization_model->setDurationActualizationAlgorithm(duration_actualization_algorithm);
+	
+	schedule->setActualizationModel(actualization_model);
 
     Run* r = schedule->createRun(start_location, end_location);
     r->setVehicle(vehicle);
@@ -145,8 +150,13 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
     Route r4 = routing_service.calculateRoute(loc3, loc4, vehicle->getRoutingProfile());
     Route r5 = routing_service.calculateRoute(loc4, end_location, vehicle->getRoutingProfile());
 
-    schedule->getScheduleActualizer()->createAlgorithm<StopDurationActualizationAlgorithm>();
-    schedule->getScheduleActualizer()->createAlgorithm<StopArrivalTimeActualizationAlgorithm>();
+	ScheduleActualizationModel* actualization_model = sm->createScheduleActualizationModel();
+	DefaultRouteActualizationAlgorithm* route_actualization_algorithm = sm->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(&routing_service);
+	actualization_model->setRouteActualizationAlgorithm(route_actualization_algorithm);
+	DefaultDurationActualizationAlgorithm* duration_actualization_algorithm = sm->createDurationActualizationAlgorithm<DefaultDurationActualizationAlgorithm>();
+	actualization_model->setDurationActualizationAlgorithm(duration_actualization_algorithm);
+
+    schedule->setActualizationModel(actualization_model);
 
     TimeWindow estimated_allocation_1;
     TimeWindow estimated_allocation_2;

@@ -3,15 +3,21 @@
 #include <cstddef>
 #include <Engine/Concepts/Route.h>
 #include <Engine/Concepts/TimeWindow.h>
-
+#include "Actualizable.h"
 #include <SceneManager_export.h>
+
+#include "ArrivalTimeActualizer.h"
+#include "DurationActualizer.h"
+#include "RouteActualizer.h"
 
 namespace Scheduler
 {
+	class ScheduleActualizationModel;
 	class Run;
-	class ScheduleActualizer;
-	class RouteActualizer;
 	class Operation;
+	class RouteActualizationAlgorithm;
+	class ArrivalTimeActualizationAlgorithm;
+	class DurationActualizationAlgorithm;
 
 	class StopVisitor;
 
@@ -45,28 +51,29 @@ namespace Scheduler
 		Stop* getPrevStop() const;
 
 		// == framework internal ====================================
-		void setScheduleActualizer(ScheduleActualizer* actualizer);
+		void setActualizationModel(ScheduleActualizationModel* actualization_model);
 
 		void invalidateRoute();
-		bool hasActualRoute() const;
+		void invalidateArrivalTime();
+		void invalidateDuration();
 
 		void setNextStop(Stop* stop);
 		void setPrevStop(Stop* stop);
 
 		virtual void acceptVisitor(StopVisitor* visitor) = 0;
 
-	protected:
-		ScheduleActualizer* schedule_actualizer;
-
 	private:
-		TimeWindow allocation_time;
-		Duration duration;
-		Route next_route;
+		using ActualizableAllocationTime = Actualizable<TimeWindow, ArrivalTimeActualizer>;
+		using ActualizableDuration = Actualizable<Duration, DurationActualizer>;
+		using ActualizableRoute = Actualizable<Route, RouteActualizer>;
+
+		ActualizableAllocationTime allocation_time;
+        ActualizableDuration duration;
+		ActualizableRoute next_route;
+
 		Run* run;
 
 		Stop* nextStop;
 		Stop* prevStop;
-
-		bool has_actual_route;
 	};
 }

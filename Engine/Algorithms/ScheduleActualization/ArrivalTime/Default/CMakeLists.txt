@@ -1,0 +1,14 @@
+add_library(DefaultArrivalTimeActualizationAlgorithm SHARED
+	
+	DefaultArrivalTimeActualizationAlgorithm.h
+	DefaultArrivalTimeActualizationAlgorithm.cpp
+)
+
+set_target_properties(DefaultArrivalTimeActualizationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/ScheduleActualization/ArrivalTime")
+
+target_link_libraries(DefaultArrivalTimeActualizationAlgorithm SceneManager FirstTimeWindowSelector)
+
+cotire(DefaultArrivalTimeActualizationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(DefaultArrivalTimeActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DefaultArrivalTimeActualizationAlgorithm_export.h)

@@ -23,7 +23,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 	ifile.open("TestData/IFTest_JSONSceneLoader/TestScene1.json");
 	REQUIRE(ifile.is_open());
 
-	JSONSceneLoader loader(sm);
+	JSONSceneLoader loader(sm, &rs);
 	Scene* scene = loader.loadScene(ifile);
 
 	REQUIRE(scene);

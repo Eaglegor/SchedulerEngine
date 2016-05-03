@@ -1,5 +1,4 @@
-#include "StopArrivalTimeActualizationAlgorithm.h"
-#include <Engine/SceneManager/Views/ScheduleStopsView.h>
+#include "DefaultArrivalTimeActualizationAlgorithm.h"
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
@@ -8,22 +7,9 @@
 
 namespace Scheduler
 {
-
-    StopArrivalTimeActualizationAlgorithm::StopArrivalTimeActualizationAlgorithm(Schedule* schedule):
-    ScheduleActualizationAlgorithm(schedule),
-    dirty_flag(true)
-    {
-    }
-
-    void StopArrivalTimeActualizationAlgorithm::actualize() {
-        if(!dirty_flag) return;
-
-		//ScheduleStopsView stops(schedule);
-		if (schedule->getRuns().empty())
-		{
-			dirty_flag = false;
-			return;
-		}
+	void DefaultArrivalTimeActualizationAlgorithm::actualize(Schedule* schedule)
+	{
+		if (schedule->getRuns().empty()) return;
 
 		Stop* first_stop = (*schedule->getRuns().begin())->getStartStop();
 
@@ -47,9 +33,9 @@ namespace Scheduler
 
 			// If we have detected waiting time because of the next stop time window, we try to start the run later to avoid such waiting
 			Duration waiting_time = next_time_window.getStartTime() - next_route_end;
-			if(waiting_time > Duration(0))
+			if (waiting_time > Duration(0))
 			{
-				if(forward_shift_budget > Duration(0))
+				if (forward_shift_budget > Duration(0))
 				{
 					Duration shift = std::min(forward_shift_budget, waiting_time);
 					for (Stop* s = first_stop; s != next_stop; s = s->getNextStop())
@@ -65,49 +51,5 @@ namespace Scheduler
 			// Budget can only get smaller due to it's purpose
 			forward_shift_budget = std::min(forward_shift_budget, next_time_window.getEndTime() - next_stop->getAllocationTime().getEndTime());
 		}
-
-		dirty_flag = false;
-    }
-
-	ScheduleActualizationAlgorithm * StopArrivalTimeActualizationAlgorithm::clone(Schedule* schedule, Factory<ScheduleActualizationAlgorithm>* factory)
-	{
-		return factory->createObject<StopArrivalTimeActualizationAlgorithm>(schedule);
 	}
-
-    void StopArrivalTimeActualizationAlgorithm::onOperationAdded(const Stop *stop, const Operation *operation) {
-        dirty_flag = true;
-    }
-
-    void StopArrivalTimeActualizationAlgorithm::onOperationRemoved(const Stop *stop) {
-        dirty_flag = true;
-    }
-
-    void StopArrivalTimeActualizationAlgorithm::onStopAdded(const Run *run, const Stop *stop, size_t index) {
-        dirty_flag = true;
-    }
-
-	void StopArrivalTimeActualizationAlgorithm::onStopReplaced(const Run * run, const Stop * new_stop, size_t index)
-	{
-		dirty_flag = true;
-	}
-
-    void StopArrivalTimeActualizationAlgorithm::onStopRemoved(const Run *run, size_t index) {
-        dirty_flag = true;
-    }
-
-    void StopArrivalTimeActualizationAlgorithm::onRunVehicleChanged(const Run *run, const Vehicle *vehicle) {
-        dirty_flag = true;
-    }
-
-    void StopArrivalTimeActualizationAlgorithm::onRunAdded(const Run *run, size_t index) {
-        dirty_flag = true;
-    }
-
-    void StopArrivalTimeActualizationAlgorithm::onRunRemoved() {
-        dirty_flag = true;
-    }
-
-    void StopArrivalTimeActualizationAlgorithm::onStopNextRouteChanged(const Stop *stop) {
-        dirty_flag = true;
-    }
 }

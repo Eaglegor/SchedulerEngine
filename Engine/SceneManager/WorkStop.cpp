@@ -2,7 +2,6 @@
 
 #include <Engine/Utils/Collections/Algorithms.h>
 #include <Engine/SceneManager/Operation.h>
-#include "ScheduleActualizer.h"
 
 #include "StopVisitor.h"
 
@@ -21,9 +20,7 @@ namespace Scheduler
 
 	void WorkStop::setOperation(const Operation * operation)
 	{
-		if (this->operation) schedule_actualizer->onOperationRemoved(this);
 		this->operation = operation;
-		if (operation) schedule_actualizer->onOperationAdded(this, operation);
 	}
 
 	const Location& WorkStop::getLocation() const

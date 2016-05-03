@@ -10,6 +10,7 @@
 #include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
 #include <Engine/SceneEditor/Actions/MoveRunWorkStop.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
+#include <random>
 
 namespace Scheduler
 {

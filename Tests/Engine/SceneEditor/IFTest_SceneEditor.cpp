@@ -21,7 +21,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	CREATE_ENGINE(engine);
 
-	JSONSceneLoader loader(engine.getSceneManager());
+	JSONSceneLoader loader(engine.getSceneManager(), &routing_service);
 
 	Scene* scene = loader.loadScene("TestData/IFTest_SceneEditor/TestScene.json");
 
@@ -162,7 +162,7 @@ TEST_CASE("Reverse action works", "[integration][functional][scene_editor]")
 
 	CREATE_ENGINE(engine);
 
-	JSONSceneLoader loader(engine.getSceneManager());
+	JSONSceneLoader loader(engine.getSceneManager(), &routing_service);
 
 	Scene* scene = loader.loadScene("TestData/IFTest_SceneEditor/TestScene.json");
 
