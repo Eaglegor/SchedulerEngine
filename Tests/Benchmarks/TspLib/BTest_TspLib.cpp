@@ -406,7 +406,7 @@ public:
         SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
-        sa_solver->setMarkovChainLengthScale(2.f);
+        sa_solver->setMarkovChainLengthScale(1.f);
 
         return sa_solver;
     }
@@ -436,7 +436,7 @@ public:
         SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperatureScheduler);
-        sa_solver->setMarkovChainLengthScale(2.f);
+        sa_solver->setMarkovChainLengthScale(1.f);
 
         return sa_solver;
     }
@@ -528,7 +528,7 @@ int main(int argc, char **argv)
 		publisher.reset(new StdoutBenchmarkPublisher());
 	}
 
-    auto datasets = {light_datasets/*, medium_datasets*/};
+    auto datasets = {light_datasets, medium_datasets};
     for (const auto &dataset : datasets) {
         {
             Optimal_TspLibInstance test(dataset, *publisher);
@@ -552,6 +552,11 @@ int main(int argc, char **argv)
 
         {
             Greedy_HybridOpt_TspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            SATspLibInstance test(dataset, *publisher);
             test.run();
         }
 

@@ -6,6 +6,8 @@ add_library(SimulatedAnnealingTSPSolver SHARED
 	TemperatureScheduler.cpp
 	ListTemperatureScheduler.h
 	ListTemperatureScheduler.cpp
+	SolutionGenerator.h
+	SolutionGenerator.cpp
 )
 
 set_target_properties(SimulatedAnnealingTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/SimulatedAnnealing")
