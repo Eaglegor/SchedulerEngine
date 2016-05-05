@@ -1,0 +1,14 @@
+add_library(DistanceLimitScheduleValidationAlgorithm SHARED
+	
+	DistanceLimitScheduleValidationAlgorithm.h
+	DistanceLimitScheduleValidationAlgorithm.cpp
+)
+
+set_target_properties(DistanceLimitScheduleValidationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/Validation/Schedule")
+
+target_link_libraries(DistanceLimitScheduleValidationAlgorithm SceneManager)
+
+cotire(DistanceLimitScheduleValidationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(DistanceLimitScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DistanceLimitScheduleValidationAlgorithm_export.h)
