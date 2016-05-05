@@ -14,15 +14,15 @@ namespace Scheduler
 	{
 		return schedule_validation_algorithm;
 	}
-	void ScheduleValidationModel::getStopValidationAlgorithm(StopValidationAlgorithm * algorithm)
+	void ScheduleValidationModel::setStopValidationAlgorithm(StopValidationAlgorithm * algorithm)
 	{
 		this->stop_validation_algorithm = algorithm;
 	}
-	void ScheduleValidationModel::getRunValidationAlgorithm(RunValidationAlgorithm * algorithm)
+	void ScheduleValidationModel::setRunValidationAlgorithm(RunValidationAlgorithm * algorithm)
 	{
 		this->run_validation_algorithm = algorithm;
 	}
-	void ScheduleValidationModel::getScheduleValidationAlgorithm(ScheduleValidationAlgorithm * algorithm)
+	void ScheduleValidationModel::setScheduleValidationAlgorithm(ScheduleValidationAlgorithm * algorithm)
 	{
 		this->schedule_validation_algorithm = algorithm;
 	}

@@ -1,0 +1,14 @@
+add_library(OverloadRunValidationAlgorithm SHARED
+	
+	OverloadRunValidationAlgorithm.h
+	OverloadRunValidationAlgorithm.cpp
+)
+
+set_target_properties(OverloadRunValidationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/Validation/Run")
+
+target_link_libraries(OverloadRunValidationAlgorithm SceneManager)
+
+cotire(OverloadRunValidationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(OverloadRunValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/OverloadRunValidationAlgorithm_export.h)

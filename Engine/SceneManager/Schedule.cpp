@@ -204,21 +204,6 @@ namespace Scheduler {
     {
 		if (schedule_validation_model == nullptr || schedule_validation_model->getScheduleValidationAlgorithm() == nullptr) return true;
 		return schedule_validation_model->getScheduleValidationAlgorithm()->isValid(this);
-        /*for (Run* run : runs) {
-            const auto& stops = run->getWorkStops();
-            const Capacity vehicle_capacity = run->getVehicle()->getCapacity();
-            bool overflow = false;
-            Capacity run_capacity;
-            for (auto stop_it = stops.begin();
-                 stop_it != stops.end() && !overflow;
-                 ++stop_it) {
-                run_capacity += (*stop_it)->getOperation()->getDemand();
-                overflow = (run_capacity > vehicle_capacity);
-            }
-            if (overflow) {
-                return false;
-            }
-        }*/
     }
 
 	void Schedule::setActualizationModel(ScheduleActualizationModel* model)
