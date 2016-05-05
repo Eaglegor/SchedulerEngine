@@ -1,0 +1,14 @@
+add_library(ValidRunsScheduleValidationAlgorithm SHARED
+	
+	ValidRunsScheduleValidationAlgorithm.h
+	ValidRunsScheduleValidationAlgorithm.cpp
+)
+
+set_target_properties(ValidRunsScheduleValidationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/Validation/Schedule")
+
+target_link_libraries(ValidRunsScheduleValidationAlgorithm SceneManager)
+
+cotire(ValidRunsScheduleValidationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(ValidRunsScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ValidRunsScheduleValidationAlgorithm_export.h)

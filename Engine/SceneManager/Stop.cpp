@@ -5,6 +5,8 @@
 #include "RouteActualizer.h"
 #include "ArrivalTimeActualizer.h"
 #include "DurationActualizer.h"
+#include "ScheduleValidationModel.h"
+#include "Extensions/StopValidationAlgorithm.h"
 #include <assert.h>
 
 namespace Scheduler
@@ -13,7 +15,9 @@ namespace Scheduler
 	Stop::Stop(Run* run):
 	run(run),
 	nextStop(nullptr),
-	prevStop(nullptr)
+	prevStop(nullptr),
+	schedule_actualizaton_model(nullptr),
+	schedule_validation_model(nullptr)
 	{
 	}
 
@@ -55,11 +59,17 @@ namespace Scheduler
 		return prevStop;
 	}
 
-	void Stop::setActualizationModel(ScheduleActualizationModel* actualization_model)
+	void Stop::setScheduleActualizationModel(ScheduleActualizationModel* model)
 	{
-		this->next_route.setActualizer(actualization_model ? RouteActualizer(actualization_model->getRouteActualizationAlgorithm(), this) : RouteActualizer());
-		this->allocation_time.setActualizer(actualization_model ? ArrivalTimeActualizer(actualization_model->getArrivalTimeActualizationAlgorithm(), this->getRun()->getSchedule()) : ArrivalTimeActualizer());
-		this->duration.setActualizer(actualization_model ? DurationActualizer(actualization_model->getDurationActualizationAlgorithm(), this) : DurationActualizer());
+		this->schedule_actualizaton_model = model;
+		this->next_route.setActualizer(model ? RouteActualizer(model->getRouteActualizationAlgorithm(), this) : RouteActualizer());
+		this->allocation_time.setActualizer(model ? ArrivalTimeActualizer(model->getArrivalTimeActualizationAlgorithm(), this->getRun()->getSchedule()) : ArrivalTimeActualizer());
+		this->duration.setActualizer(model ? DurationActualizer(model->getDurationActualizationAlgorithm(), this) : DurationActualizer());
+	}
+
+	void Stop::setScheduleValidationModel(ScheduleValidationModel* model)
+	{
+		this->schedule_validation_model = model;
 	}
 
 	const Route &Stop::getNextRoute() const
@@ -90,6 +100,12 @@ namespace Scheduler
 	void Stop::setPrevStop(Stop* stop)
 	{
 		this->prevStop = stop;
+	}
+
+	bool Stop::isValid() const
+	{
+		if (schedule_validation_model == nullptr || schedule_validation_model->getStopValidationAlgorithm() == nullptr) return true;
+		return schedule_validation_model->getStopValidationAlgorithm()->isValid(this);
 	}
 
 	void Stop::setStartTime(const TimePoint &time)

@@ -17,6 +17,7 @@ namespace Scheduler
 	class RoutingService;
 	class LoggingService;
 	class RunVehicleBinder;
+	class ScheduleValidationModel;
 
 	/**
 		Class representing single performer's work shift.
@@ -62,6 +63,7 @@ namespace Scheduler
         bool isValid() const;
 
 		void setActualizationModel(ScheduleActualizationModel* model);
+		void setValidationModel(ScheduleValidationModel* model);
 
 		const TimeWindow& getShift() const;
 		void setShift(const TimeWindow &shift);
@@ -104,6 +106,7 @@ namespace Scheduler
 		TimeWindow shift;
 
 		ScheduleActualizationModel* schedule_actualization_model;
+		ScheduleValidationModel* schedule_validation_model;
 
 		RunVehicleBinder* run_vehicle_binder;
     };

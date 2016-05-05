@@ -35,6 +35,8 @@ add_library(SceneManager SHARED
     ArrivalTimeActualizer.h
     DurationActualizer.h
     
+	ScheduleValidationModel.h ScheduleValidationModel.cpp
+	
 	Stop.h
 	Stop.cpp
 	
@@ -53,6 +55,9 @@ add_library(SceneManager SHARED
 	Extensions/ArrivalTimeActualizationAlgorithm.h
     Extensions/DurationActualizationAlgorithm.h
     Extensions/RouteActualizationAlgorithm.h
+	Extensions/StopValidationAlgorithm.h
+	Extensions/RunValidationAlgorithm.h
+	Extensions/ScheduleValidationAlgorithm.h
     
 )
 

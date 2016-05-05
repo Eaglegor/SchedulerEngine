@@ -10,10 +10,14 @@
 #include "WorkStop.h"
 
 #include "ScheduleActualizationModel.h"
+#include "ScheduleValidationModel.h"
 #include "Extensions/RouteActualizationAlgorithm.h"
 #include "Extensions/ArrivalTimeActualizationAlgorithm.h"
 #include "Extensions/DurationActualizationAlgorithm.h"
 #include "Extensions/RunVehicleBinder.h"
+#include "Extensions/StopValidationAlgorithm.h"
+#include "Extensions/ScheduleValidationAlgorithm.h"
+#include "Extensions/RunValidationAlgorithm.h"
 
 #include <Engine/MemoryManager/ObjectSizes.h>
 
@@ -33,6 +37,10 @@ namespace Scheduler
 			route_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
 			duration_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
 			arrival_time_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+			schedule_validation_models_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+			schedule_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+			run_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+			stop_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
 			run_vehicle_selectors_factory(memory_manager, Pool::MEDIUM_OBJECT, 100),
 			routing_service(routing_service)
 	{
@@ -72,6 +80,20 @@ namespace Scheduler
 		schedule_actualization_models_factory.destroyObject(model);
 	}
 
+	ScheduleValidationModel* SceneManager::createScheduleValidationModel()
+	{
+		ScheduleValidationModel* model = schedule_validation_models_factory.createObject<ScheduleValidationModel>();
+		schedule_validation_models.emplace(model);
+		return model;
+	}
+
+	void SceneManager::destroyScheduleValidationModel(ScheduleValidationModel* model)
+	{
+		assert(schedule_validation_models.find(model) != schedule_validation_models.end());
+		schedule_validation_models.erase(model);
+		schedule_validation_models_factory.destroyObject(model);
+	}
+
 	void SceneManager::destroyRouteActualizationAlgorithm(RouteActualizationAlgorithm* algorithm)
 	{
 		assert(route_actualization_algorithms.find(algorithm) != route_actualization_algorithms.end());
@@ -91,6 +113,27 @@ namespace Scheduler
 		assert(duration_actualization_algorithms.find(algorithm) != duration_actualization_algorithms.end());
 		duration_actualization_algorithms.erase(algorithm);
 		duration_actualization_algorithms_factory.destroyObject(algorithm);
+	}
+
+	void SceneManager::destroyScheduleValidationAlgorithm(ScheduleValidationAlgorithm* algorithm)
+	{
+		assert(schedule_validation_algorithms.find(algorithm) != schedule_validation_algorithms.end());
+		schedule_validation_algorithms.erase(algorithm);
+		schedule_validation_algorithms_factory.destroyObject(algorithm);
+	}
+
+	void SceneManager::destroyRunValidationAlgorithm(RunValidationAlgorithm* algorithm)
+	{
+		assert(run_validation_algorithms.find(algorithm) != run_validation_algorithms.end());
+		run_validation_algorithms.erase(algorithm);
+		run_validation_algorithms_factory.destroyObject(algorithm);
+	}
+
+	void SceneManager::destroyStopValidationAlgorithm(StopValidationAlgorithm* algorithm)
+	{
+		assert(stop_validation_algorithms.find(algorithm) != stop_validation_algorithms.end());
+		stop_validation_algorithms.erase(algorithm);
+		stop_validation_algorithms_factory.destroyObject(algorithm);
 	}
 
 	void SceneManager::destroyScene(Scene *scene)
@@ -135,6 +178,26 @@ namespace Scheduler
 		for (DurationActualizationAlgorithm* algorithm : duration_actualization_algorithms)
 		{
 			duration_actualization_algorithms_factory.destroyObject(algorithm);
+		}
+
+		for (ScheduleValidationModel* validation_model: schedule_validation_models)
+		{
+			schedule_validation_models_factory.destroyObject(validation_model);
+		}
+
+		for (ScheduleValidationAlgorithm* algorithm : schedule_validation_algorithms)
+		{
+			schedule_validation_algorithms_factory.destroyObject(algorithm);
+		}
+
+		for (RunValidationAlgorithm* algorithm : run_validation_algorithms)
+		{
+			run_validation_algorithms_factory.destroyObject(algorithm);
+		}
+
+		for (StopValidationAlgorithm* algorithm : stop_validation_algorithms)
+		{
+			stop_validation_algorithms_factory.destroyObject(algorithm);
 		}
 
 		for (auto &iter : attributes)

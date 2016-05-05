@@ -1,0 +1,14 @@
+add_library(ChainStopValidationAlgorithm SHARED
+	
+	ChainStopValidationAlgorithm.h
+	ChainStopValidationAlgorithm.cpp
+)
+
+set_target_properties(ChainStopValidationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/Validation/Stop")
+
+target_link_libraries(ChainStopValidationAlgorithm SceneManager)
+
+cotire(ChainStopValidationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(ChainStopValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ChainStopValidationAlgorithm_export.h)

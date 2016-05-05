@@ -15,8 +15,7 @@ namespace Scheduler
 	class WorkStop;
 	class RoutingService;
 	class RoutingProfile;
-	class ScheduleActualizationModel;
-	class ScheduleValidationModel;
+	class ScheduleActualizer;
 
 	/**
 		Class representing single performer trip which starts and ends in the specified locations.
@@ -36,7 +35,7 @@ namespace Scheduler
 		Run(size_t id, const Location& start_location, const Location& end_location, Schedule* schedule);
 		~Run();
 
-		size_t getId() const;
+		size_t getId();
 
 		const Schedule* getSchedule() const;
 		Schedule* getSchedule();
@@ -48,8 +47,8 @@ namespace Scheduler
 		const RunBoundaryStop* getStartStop() const;
 		RunBoundaryStop* getStartStop();
 
-		const ImmutableVector<WorkStop*>& getWorkStops() const;
-		ImmutableVector<WorkStop*>& getWorkStops();
+		/*const ImmutableVector<WorkStop*>& getWorkStops() const;
+		ImmutableVector<WorkStop*>& getWorkStops();*/
 
 		const RunBoundaryStop* getEndStop() const;
 		RunBoundaryStop* getEndStop();
@@ -58,47 +57,36 @@ namespace Scheduler
 		const Location& getEndLocation() const;
 
 		RunBoundaryStop* allocateStartOperation(const Operation *operation);
-		WorkStop* allocateWorkOperation(const Operation *operation, size_t index);
-		WorkStop* allocateWorkOperation(const Operation *operation);
+		//WorkStop* allocateWorkOperation(const Operation *operation, size_t index);
+		//WorkStop* allocateWorkOperation(const Operation *operation);
 		RunBoundaryStop* allocateEndOperation(const Operation *operation);
 
 		void unallocateStartOperation(const Operation *operation);
-		void unallocateWorkOperation(const Operation *operation, size_t hint = 0);
-		void unallocateWorkOperationAt(size_t index);
+		//void unallocateWorkOperation(const Operation *operation, size_t hint = 0);
+		//void unallocateWorkOperationAt(size_t index);
 		void unallocateEndOperation(const Operation *operation);
 
-		Stop* replaceWorkOperation(const Operation *old_operation, const Operation *new_operation, size_t hint = 0);
-		Stop* replaceWorkOperationAt(size_t index, const Operation* new_operation);
-
-		bool isValid() const;
+		//Stop* replaceWorkOperation(const Operation *old_operation, const Operation *new_operation, size_t hint = 0);
+		//Stop* replaceWorkOperationAt(size_t index, const Operation* new_operation);
 
 		// == framework internal ====================================
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
-		void setScheduleActualizationModel(ScheduleActualizationModel* model);
-		void setScheduleValidationModel(ScheduleValidationModel* model);
-
-		void invalidateArrivalTimes();
+		void setScheduleActualizer(ScheduleActualizer* actualizer);
 
 	private:
-		WorkStop* createWorkStop(const Operation* operation);
-
 		size_t id;
 		Schedule* schedule;
 		const Vehicle* vehicle;
 
-		Location start_location;
-		Location end_location;
-
 		RunBoundaryStop start_stop;
-		std::vector<WorkStop*> work_stops;
+		//std::vector<WorkStop*> work_stops;
 		RunBoundaryStop end_stop;
 
+	protected:
 		SceneObjectsFactory<WorkStop> *stops_factory;
+		ScheduleActualizer* schedule_actualizer;
+		WorkStop* createWorkStop(const Operation* operation);
 
-		ScheduleActualizationModel* schedule_actualization_model;
-		ScheduleValidationModel* schedule_validation_model;
-
-	private:
 		void invalidateRoutes();
 		void invalidateWorkStopRoutes(size_t index);
 	};

@@ -5,6 +5,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include "ActionsImpl.h"
 #include <assert.h>
+#include <random>
 
 namespace Scheduler
 {
