@@ -10,11 +10,11 @@ bool Scheduler::OverloadRunValidationAlgorithm::isValid(const Run * run) const
 	if (run->getVehicle() == nullptr) return true; // Have no vehicle to check with
 	const auto& stops = run->getWorkStops();
 	const Capacity vehicle_capacity = run->getVehicle()->getCapacity();
-	bool overflow = false;
+	bool overload = false;
 	Capacity run_demand;
-	for (auto stop_it = stops.begin(); stop_it != stops.end() && !overflow;	++stop_it) {
+	for (auto stop_it = stops.begin(); stop_it != stops.end() && !overload;	++stop_it) {
 		run_demand += (*stop_it)->getOperation()->getDemand();
-		overflow = (run_demand > vehicle_capacity);
+		overload = (run_demand > vehicle_capacity);
 	}
-	return overflow;
+	return !overload;
 }
