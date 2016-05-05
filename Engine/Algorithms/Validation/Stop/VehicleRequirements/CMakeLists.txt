@@ -1,0 +1,14 @@
+add_library(VehicleRequirementsStopValidationAlgorithm SHARED
+	
+	VehicleRequirementsStopValidationAlgorithm.h
+	VehicleRequirementsStopValidationAlgorithm.cpp
+)
+
+set_target_properties(VehicleRequirementsStopValidationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/Validation/Stop")
+
+target_link_libraries(VehicleRequirementsStopValidationAlgorithm SceneManager)
+
+cotire(VehicleRequirementsStopValidationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(VehicleRequirementsStopValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/VehicleRequirementsStopValidationAlgorithm_export.h)
