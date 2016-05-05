@@ -7,6 +7,7 @@ add_custom_target(Utils SOURCES
 	Collections/ImmutableVector.h
 	
     Aggregators/DistanceAccumulator.h
+    Aggregators/DurationAccumulator.h
     
 	Factory.h
     CallableVisitorProxy.h
