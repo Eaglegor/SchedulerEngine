@@ -1,3 +1,4 @@
 add_subdirectory(ValidRuns)
 add_subdirectory(Chain)
 add_subdirectory(DistanceLimit)
+add_subdirectory(DurationLimit)

@@ -1,0 +1,14 @@
+add_library(DurationLimitScheduleValidationAlgorithm SHARED
+	
+	DurationLimitScheduleValidationAlgorithm.h
+	DurationLimitScheduleValidationAlgorithm.cpp
+)
+
+set_target_properties(DurationLimitScheduleValidationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/Validation/Schedule")
+
+target_link_libraries(DurationLimitScheduleValidationAlgorithm SceneManager)
+
+cotire(DurationLimitScheduleValidationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(DurationLimitScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DurationLimitScheduleValidationAlgorithm_export.h)
