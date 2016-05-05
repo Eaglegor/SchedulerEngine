@@ -9,7 +9,7 @@ namespace Scheduler
 	class DISTANCELIMITSCHEDULEVALIDATIONALGORITHM_EXPORT DistanceLimitScheduleValidationAlgorithm : public ScheduleValidationAlgorithm
 	{
 	public:
-		explicit DistanceLimitScheduleValidationAlgorithm(Distance limit);
+		explicit DistanceLimitScheduleValidationAlgorithm(const Distance &limit);
 		virtual bool isValid(const Schedule * run) const override;
 
 	private:

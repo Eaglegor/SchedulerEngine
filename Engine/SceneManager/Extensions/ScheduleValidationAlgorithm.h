@@ -7,6 +7,8 @@ namespace Scheduler
 	class ScheduleValidationAlgorithm
 	{
 		public:
+			virtual ~ScheduleValidationAlgorithm(){}
+
 			virtual bool isValid(const Schedule* schedule) const = 0;
 	};
 }

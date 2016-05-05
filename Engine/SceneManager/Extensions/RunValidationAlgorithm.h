@@ -7,6 +7,8 @@ namespace Scheduler
 	class RunValidationAlgorithm
 	{
 		public:
+			virtual ~RunValidationAlgorithm(){}
+
 			virtual bool isValid(const Run* run) const = 0;
 	};
 }

@@ -6,7 +6,7 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Utils/Aggregators/DurationAccumulator.h>
 
-Scheduler::DurationLimitScheduleValidationAlgorithm::DurationLimitScheduleValidationAlgorithm(Duration limit):
+Scheduler::DurationLimitScheduleValidationAlgorithm::DurationLimitScheduleValidationAlgorithm(const Duration &limit):
 	limit(limit)
 {
 }

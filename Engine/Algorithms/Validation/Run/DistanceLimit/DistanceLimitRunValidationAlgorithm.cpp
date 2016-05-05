@@ -6,7 +6,7 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Utils/Aggregators/DistanceAccumulator.h>
 
-Scheduler::DistanceLimitRunValidationAlgorithm::DistanceLimitRunValidationAlgorithm(Distance limit):
+Scheduler::DistanceLimitRunValidationAlgorithm::DistanceLimitRunValidationAlgorithm(const Distance &limit):
 	limit(limit)
 {
 }
