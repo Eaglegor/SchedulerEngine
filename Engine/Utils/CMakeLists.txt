@@ -7,6 +7,7 @@ add_custom_target(Utils SOURCES
 	Collections/ImmutableVector.h
 	
 	Factory.h
+    CallableVisitorProxy.h
 )
 
 set_target_properties(Utils PROPERTIES FOLDER "Engine")

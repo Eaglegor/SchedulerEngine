@@ -4,6 +4,7 @@
 #include <Engine/SceneManager/Operation.h>
 
 #include "StopVisitor.h"
+#include "ConstStopVisitor.h"
 
 namespace Scheduler
 {
@@ -30,6 +31,11 @@ namespace Scheduler
 	}
 
 	void WorkStop::acceptVisitor(StopVisitor * visitor)
+	{
+		visitor->dispatch(this);
+	}
+
+	void WorkStop::acceptVisitor(ConstStopVisitor* visitor) const
 	{
 		visitor->dispatch(this);
 	}

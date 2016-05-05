@@ -22,6 +22,7 @@ namespace Scheduler
 		ImmutableUnorderedSet<const Operation*> getOperations() const;
 
 		void acceptVisitor(StopVisitor* visitor) override;
+		void acceptVisitor(ConstStopVisitor* visitor) const override;
 
 	private:
 		Location location;

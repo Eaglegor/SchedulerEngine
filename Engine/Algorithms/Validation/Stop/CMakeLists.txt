@@ -1,1 +1,3 @@
 add_subdirectory(Chain)
+add_subdirectory(PerformerSkills)
+add_subdirectory(VehicleRequirements)

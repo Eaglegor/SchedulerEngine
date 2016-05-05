@@ -21,6 +21,7 @@ namespace Scheduler
 	class DurationActualizationAlgorithm;
 
 	class StopVisitor;
+	class ConstStopVisitor;
 
 	/**
 		Class representing a single stop to perform some operation (e.g. delivering order or working at a customer site).
@@ -63,6 +64,7 @@ namespace Scheduler
 		void setPrevStop(Stop* stop);
 
 		virtual void acceptVisitor(StopVisitor* visitor) = 0;
+		virtual void acceptVisitor(ConstStopVisitor* visitor) const = 0;
 
 		bool isValid() const;
 

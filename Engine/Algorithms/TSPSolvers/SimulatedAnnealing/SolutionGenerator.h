@@ -34,10 +34,10 @@ public:
     void rollbackTo (size_t checkpoint);
 
 private:
-    typedef typename std::uniform_int_distribution<size_t> index_distr_t;
-    typedef typename std::uniform_real_distribution<float> float_distr_t;
-    typedef typename index_distr_t::param_type index_param_t;
-    typedef typename float_distr_t::param_type float_param_t;
+    typedef std::uniform_int_distribution<size_t> index_distr_t;
+    typedef std::uniform_real_distribution<float> float_distr_t;
+    typedef index_distr_t::param_type index_param_t;
+    typedef float_distr_t::param_type float_param_t;
 
     void blockInsert();
     void blockReverse();
