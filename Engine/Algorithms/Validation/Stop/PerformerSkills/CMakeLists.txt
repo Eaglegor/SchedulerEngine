@@ -1,0 +1,14 @@
+add_library(PerformerSkillsStopValidationAlgorithm SHARED
+	
+	PerformerSkillsStopValidationAlgorithm.h
+	PerformerSkillsStopValidationAlgorithm.cpp
+)
+
+set_target_properties(PerformerSkillsStopValidationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/Validation/Stop")
+
+target_link_libraries(PerformerSkillsStopValidationAlgorithm SceneManager)
+
+cotire(PerformerSkillsStopValidationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(PerformerSkillsStopValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/PerformerSkillsStopValidationAlgorithm_export.h)

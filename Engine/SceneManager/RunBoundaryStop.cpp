@@ -5,6 +5,7 @@
 
 #include <Engine/Utils/Collections/Algorithms.h>
 #include "StopVisitor.h"
+#include "ConstStopVisitor.h"
 
 namespace Scheduler
 {
@@ -44,5 +45,9 @@ namespace Scheduler
 	{
 		visitor->dispatch(this);
 	}
-	
+
+	void RunBoundaryStop::acceptVisitor(ConstStopVisitor* visitor) const
+	{
+		visitor->dispatch(this);
+	}
 }

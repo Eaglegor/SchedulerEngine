@@ -19,6 +19,15 @@ target_link_libraries(Engine
 	DefaultRouteActualizationAlgorithm
     DefaultDurationActualizationAlgorithm
     DefaultArrivalTimeActualizationAlgorithm
+	
+	ChainScheduleValidationAlgorithm
+	ValidRunsScheduleValidationAlgorithm
+	
+	ChainRunValidationAlgorithm
+	OverloadRunValidationAlgorithm
+	ValidStopsRunValidationAlgorithm
+	
+	ChainStopValidationAlgorithm
     
     FirstTimeWindowSelector
     

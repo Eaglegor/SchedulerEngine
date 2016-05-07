@@ -20,6 +20,7 @@ namespace Scheduler
 		virtual const Location& getLocation() const override;
 
 		void acceptVisitor(StopVisitor* visitor) override;
+		void acceptVisitor(ConstStopVisitor* visitor) const override;
 
 	private:
 		size_t id;

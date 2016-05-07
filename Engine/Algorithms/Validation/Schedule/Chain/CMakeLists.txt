@@ -1,0 +1,14 @@
+add_library(ChainScheduleValidationAlgorithm SHARED
+	
+	ChainScheduleValidationAlgorithm.h
+	ChainScheduleValidationAlgorithm.cpp
+)
+
+set_target_properties(ChainScheduleValidationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/Validation/Schedule")
+
+target_link_libraries(ChainScheduleValidationAlgorithm SceneManager)
+
+cotire(ChainScheduleValidationAlgorithm)
+
+include(GenerateExportHeader)
+generate_export_header(ChainScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ChainScheduleValidationAlgorithm_export.h)

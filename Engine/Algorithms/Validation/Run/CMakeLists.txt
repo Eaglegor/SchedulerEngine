@@ -1,0 +1,5 @@
+add_subdirectory(ValidStops)
+add_subdirectory(Chain)
+add_subdirectory(Overload)
+add_subdirectory(DistanceLimit)
+add_subdirectory(DurationLimit)

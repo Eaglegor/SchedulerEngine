@@ -16,6 +16,10 @@
 #include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
 #include <Engine/Algorithms/RunVehicleBinders/PerformerAssigned/PerformerAssignedVehicleBinder.h>
 
+#include <Engine/SceneManager/ScheduleValidationModel.h>
+#include <Engine/Algorithms/Validation/Schedule/ValidRuns/ValidRunsScheduleValidationAlgorithm.h>
+#include <Engine/Algorithms/Validation/Run/Overload/OverloadRunValidationAlgorithm.h>
+
 namespace Scheduler
 {
 
@@ -49,6 +53,12 @@ namespace Scheduler
 		DefaultRouteActualizationAlgorithm* route_actualization_algorithm = scene_manager->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(rs);
 		actualization_model->setRouteActualizationAlgorithm(route_actualization_algorithm);
 
+		ScheduleValidationModel* validation_model = scene_manager->createScheduleValidationModel();
+		ScheduleValidationAlgorithm* valid_runs_algorithm = scene_manager->createScheduleValidationAlgorithm<ValidRunsScheduleValidationAlgorithm>();
+		RunValidationAlgorithm* overload_check_algorithm = scene_manager->createRunValidationAlgorithm<OverloadRunValidationAlgorithm>();
+		validation_model->setScheduleValidationAlgorithm(valid_runs_algorithm);
+		validation_model->setRunValidationAlgorithm(overload_check_algorithm);
+
 		for (size_t i = 0; i < customers_number; ++i)
 		{
 			Vehicle* vehicle = scene->createVehicle();
@@ -71,6 +81,7 @@ namespace Scheduler
 				schedule->setDepotLocation(depot_location);
 
 				schedule->setActualizationModel(actualization_model);
+				schedule->setValidationModel(validation_model);
 			}
 
 			Order* order = scene->createOrder();

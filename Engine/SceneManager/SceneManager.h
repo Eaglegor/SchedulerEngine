@@ -30,6 +30,11 @@ namespace Scheduler
 	class DurationActualizationAlgorithm;
 	class RunVehicleBinder;
 
+	class ScheduleValidationModel;
+	class ScheduleValidationAlgorithm;
+	class RunValidationAlgorithm;
+	class StopValidationAlgorithm;
+
     class SCENEMANAGER_EXPORT SceneManager
     {
     public:
@@ -47,6 +52,9 @@ namespace Scheduler
 
 		ScheduleActualizationModel* createScheduleActualizationModel();
 		void destroyScheduleActualizationModel(ScheduleActualizationModel* model);
+
+		ScheduleValidationModel* createScheduleValidationModel();
+		void destroyScheduleValidationModel(ScheduleValidationModel* model);
 
 		template<typename T, typename... Args>
 		T* createRouteActualizationAlgorithm(Args&& ...args)
@@ -81,6 +89,39 @@ namespace Scheduler
 
 		void destroyDurationActualizationAlgorithm(DurationActualizationAlgorithm* algorithm);
 
+		template<typename T, typename... Args>
+		T* createScheduleValidationAlgorithm(Args&& ...args)
+		{
+			static_assert(std::is_base_of<ScheduleValidationAlgorithm, T>::value, "Incompatible class");
+			T* algorithm = schedule_validation_algorithms_factory.createObject<T>(std::forward<Args>(args)...);
+			schedule_validation_algorithms.emplace(algorithm);
+			return algorithm;
+		}
+
+		void destroyScheduleValidationAlgorithm(ScheduleValidationAlgorithm* algorithm);
+
+		template<typename T, typename... Args>
+		T* createRunValidationAlgorithm(Args&& ...args)
+		{
+			static_assert(std::is_base_of<RunValidationAlgorithm, T>::value, "Incompatible class");
+			T* algorithm = run_validation_algorithms_factory.createObject<T>(std::forward<Args>(args)...);
+			run_validation_algorithms.emplace(algorithm);
+			return algorithm;
+		}
+
+		void destroyRunValidationAlgorithm(RunValidationAlgorithm* algorithm);
+
+		template<typename T, typename... Args>
+		T* createStopValidationAlgorithm(Args&& ...args)
+		{
+			static_assert(std::is_base_of<StopValidationAlgorithm, T>::value, "Incompatible class");
+			T* algorithm = stop_validation_algorithms_factory.createObject<T>(std::forward<Args>(args)...);
+			stop_validation_algorithms.emplace(algorithm);
+			return algorithm;
+		}
+
+		void destroyStopValidationAlgorithm(StopValidationAlgorithm* algorithm);
+
     private:
 		SceneObjectsFactory<Scene> scenes_factory;
 		SceneObjectsFactory<Operation> operations_factory;
@@ -97,12 +138,22 @@ namespace Scheduler
 		Factory<ArrivalTimeActualizationAlgorithm> arrival_time_actualization_algorithms_factory;
 		Factory<DurationActualizationAlgorithm> duration_actualization_algorithms_factory;
 
+		Factory<ScheduleValidationModel> schedule_validation_models_factory;
+		Factory<ScheduleValidationAlgorithm> schedule_validation_algorithms_factory;
+		Factory<RunValidationAlgorithm> run_validation_algorithms_factory;
+		Factory<StopValidationAlgorithm> stop_validation_algorithms_factory;
+
 		Factory<RunVehicleBinder> run_vehicle_selectors_factory;
 
 		std::unordered_set<ScheduleActualizationModel*> schedule_actualization_models;
 		std::unordered_set<RouteActualizationAlgorithm*> route_actualization_algorithms;
 		std::unordered_set<ArrivalTimeActualizationAlgorithm*> arrival_time_actualization_algorithms;
 		std::unordered_set<DurationActualizationAlgorithm*> duration_actualization_algorithms;
+
+		std::unordered_set<ScheduleValidationModel*> schedule_validation_models;
+		std::unordered_set<ScheduleValidationAlgorithm*> schedule_validation_algorithms;
+		std::unordered_set<RunValidationAlgorithm*> run_validation_algorithms;
+		std::unordered_set<StopValidationAlgorithm*> stop_validation_algorithms;
 
         std::unordered_set<Scene*> scenes;
         std::unordered_map<std::string, Attribute*> attributes;

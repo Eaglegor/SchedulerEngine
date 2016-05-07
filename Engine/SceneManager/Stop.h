@@ -13,6 +13,7 @@
 namespace Scheduler
 {
 	class ScheduleActualizationModel;
+	class ScheduleValidationModel;
 	class Run;
 	class Operation;
 	class RouteActualizationAlgorithm;
@@ -20,6 +21,7 @@ namespace Scheduler
 	class DurationActualizationAlgorithm;
 
 	class StopVisitor;
+	class ConstStopVisitor;
 
 	/**
 		Class representing a single stop to perform some operation (e.g. delivering order or working at a customer site).
@@ -51,7 +53,8 @@ namespace Scheduler
 		Stop* getPrevStop() const;
 
 		// == framework internal ====================================
-		void setActualizationModel(ScheduleActualizationModel* actualization_model);
+		void setScheduleActualizationModel(ScheduleActualizationModel* model);
+		void setScheduleValidationModel(ScheduleValidationModel* model);
 
 		void invalidateRoute();
 		void invalidateArrivalTime();
@@ -61,6 +64,9 @@ namespace Scheduler
 		void setPrevStop(Stop* stop);
 
 		virtual void acceptVisitor(StopVisitor* visitor) = 0;
+		virtual void acceptVisitor(ConstStopVisitor* visitor) const = 0;
+
+		bool isValid() const;
 
 	private:
 		using ActualizableAllocationTime = Actualizable<TimeWindow, ArrivalTimeActualizer>;
@@ -75,5 +81,8 @@ namespace Scheduler
 
 		Stop* nextStop;
 		Stop* prevStop;
+
+		ScheduleActualizationModel* schedule_actualizaton_model;
+		ScheduleValidationModel* schedule_validation_model;
 	};
 }

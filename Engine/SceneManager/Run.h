@@ -16,6 +16,7 @@ namespace Scheduler
 	class RoutingService;
 	class RoutingProfile;
 	class ScheduleActualizationModel;
+	class ScheduleValidationModel;
 
 	/**
 		Class representing single performer trip which starts and ends in the specified locations.
@@ -69,9 +70,12 @@ namespace Scheduler
 		Stop* replaceWorkOperation(const Operation *old_operation, const Operation *new_operation, size_t hint = 0);
 		Stop* replaceWorkOperationAt(size_t index, const Operation* new_operation);
 
+		bool isValid() const;
+
 		// == framework internal ====================================
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 		void setScheduleActualizationModel(ScheduleActualizationModel* model);
+		void setScheduleValidationModel(ScheduleValidationModel* model);
 
 		void invalidateArrivalTimes();
 
@@ -92,6 +96,7 @@ namespace Scheduler
 		SceneObjectsFactory<WorkStop> *stops_factory;
 
 		ScheduleActualizationModel* schedule_actualization_model;
+		ScheduleValidationModel* schedule_validation_model;
 
 	private:
 		void invalidateRoutes();

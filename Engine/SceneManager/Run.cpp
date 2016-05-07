@@ -4,6 +4,8 @@
 #include "Vehicle.h"
 #include <Engine/Engine/Services/RoutingService.h>
 #include "ScheduleActualizationModel.h"
+#include "ScheduleValidationModel.h"
+#include "Extensions/RunValidationAlgorithm.h"
 #include "WorkStop.h"
 
 #include <iostream>
@@ -19,7 +21,8 @@ namespace Scheduler {
             start_stop(start_location, this),
             end_stop(end_location, this),
             vehicle(nullptr),
-            schedule_actualization_model(nullptr)
+            schedule_actualization_model(nullptr),
+			schedule_validation_model(nullptr)
     {
 		start_stop.setNextStop(&end_stop);
     }
@@ -202,6 +205,12 @@ namespace Scheduler {
 		return stop;
 	}
 
+	bool Run::isValid() const
+	{
+		if (schedule_validation_model == nullptr || schedule_validation_model->getRunValidationAlgorithm() == nullptr) return true;
+		return schedule_validation_model->getRunValidationAlgorithm()->isValid(this);
+	}
+
     void Run::setStopsFactory(SceneObjectsFactory<WorkStop> *factory) {
         this->stops_factory = factory;
     }
@@ -257,14 +266,27 @@ namespace Scheduler {
     void Run::setScheduleActualizationModel(ScheduleActualizationModel* model) {
         this->schedule_actualization_model = model;
 
-		start_stop.setActualizationModel(model);
-		end_stop.setActualizationModel(model);
+		start_stop.setScheduleActualizationModel(model);
+		end_stop.setScheduleActualizationModel(model);
 
 		for(WorkStop* stop : work_stops)
 		{
-			stop->setActualizationModel(model);
+			stop->setScheduleActualizationModel(model);
 		}
     }
+
+	void Run::setScheduleValidationModel(ScheduleValidationModel * model)
+	{
+		this->schedule_validation_model = model;
+
+		start_stop.setScheduleValidationModel(model);
+		end_stop.setScheduleValidationModel(model);
+
+		for (WorkStop* stop : work_stops)
+		{
+			stop->setScheduleValidationModel(model);
+		}
+	}
 
 	void Run::invalidateArrivalTimes()
 	{
@@ -281,7 +303,8 @@ namespace Scheduler {
 	WorkStop* Run::createWorkStop(const Operation * operation)
 	{
 		WorkStop *stop = stops_factory->createObject(this);
-		stop->setActualizationModel(schedule_actualization_model);
+		stop->setScheduleActualizationModel(schedule_actualization_model);
+		stop->setScheduleValidationModel(schedule_validation_model);
 		stop->setOperation(operation);
 		invalidateArrivalTimes();
 		return stop;

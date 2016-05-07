@@ -6,7 +6,11 @@ add_custom_target(Utils SOURCES
 	Collections/ImmutableUnorderedSet.h
 	Collections/ImmutableVector.h
 	
+    Aggregators/DistanceAccumulator.h
+    Aggregators/DurationAccumulator.h
+    
 	Factory.h
+    CallableVisitorProxy.h
 )
 
 set_target_properties(Utils PROPERTIES FOLDER "Engine")

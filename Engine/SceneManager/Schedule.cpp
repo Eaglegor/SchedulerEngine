@@ -6,6 +6,8 @@
 #include "Vehicle.h"
 #include "Extensions/RunVehicleBinder.h"
 #include "ScheduleStateUtils.h"
+#include "ScheduleValidationModel.h"
+#include "Extensions/ScheduleValidationAlgorithm.h"
 
 namespace Scheduler {
 
@@ -18,6 +20,7 @@ namespace Scheduler {
 			shift_start_location_specified(false),
 			shift_end_location_specified(false),
 			schedule_actualization_model(nullptr),
+			schedule_validation_model(nullptr),
 			run_vehicle_binder(nullptr)
 	{
     }
@@ -26,6 +29,7 @@ namespace Scheduler {
 		id(id),
 		name(rhs->name),
 		schedule_actualization_model(rhs->schedule_actualization_model),
+		schedule_validation_model(rhs->schedule_validation_model),
 		performer(rhs->performer),
 		scene(nullptr),
 		runs_factory(rhs->runs_factory),
@@ -83,6 +87,7 @@ namespace Scheduler {
 
 		r->setStopsFactory(stops_factory);
 		r->setScheduleActualizationModel(schedule_actualization_model);
+		r->setScheduleValidationModel(schedule_validation_model);
 
 		if(index > 0)
 		{
@@ -197,23 +202,8 @@ namespace Scheduler {
 
     bool Schedule::isValid() const
     {
-        for (Run* run : runs) {
-            const auto& stops = run->getWorkStops();
-            const Capacity vehicle_capacity = run->getVehicle()->getCapacity();
-            bool overflow = false;
-            Capacity run_capacity;
-            for (auto stop_it = stops.begin();
-                 stop_it != stops.end() && !overflow;
-                 ++stop_it) {
-                run_capacity += (*stop_it)->getOperation()->getDemand();
-                overflow = (run_capacity > vehicle_capacity);
-            }
-            if (overflow) {
-                return false;
-            }
-
-        }
-        return true;
+		if (schedule_validation_model == nullptr || schedule_validation_model->getScheduleValidationAlgorithm() == nullptr) return true;
+		return schedule_validation_model->getScheduleValidationAlgorithm()->isValid(this);
     }
 
 	void Schedule::setActualizationModel(ScheduleActualizationModel* model)
@@ -222,6 +212,15 @@ namespace Scheduler {
 		for(Run* r : runs)
 		{
 			r->setScheduleActualizationModel(model);
+		}
+	}
+
+	void Schedule::setValidationModel(ScheduleValidationModel * model)
+	{
+		this->schedule_validation_model = model;
+		for (Run* r : runs)
+		{
+			r->setScheduleValidationModel(model);
 		}
 	}
 
