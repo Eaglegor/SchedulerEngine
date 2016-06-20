@@ -17,6 +17,14 @@ set(CPP_SCHEDULER_SERVICES TRUE CACHE BOOL "If enabled, services like routing wi
 set(CPP_SCHEDULER_TOOLS TRUE CACHE BOOL "If enabled, utilitary tools will be built")
 set(CPP_SCHEDULER_TESTS FALSE CACHE BOOL "If enabled, tests will be built")
 
+if(CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY)
+	message(STATUS "Benchmarks data directory is set: ${CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY}")
+	
+    set(CPP_SCHEDULER_TESTS_BENCHMARKS TRUE CACHE BOOL "If enabled, benchmarks will be built")
+else()
+	message(STATUS "Benchmarks data directory is unset. Benchmarks are unavaiable.")
+endif()
+
 if(NOT CPP_SCHEDULER_BUILD_ENABLE_CONAN)
 	set(CPP_SCHEDULER_DEPENDENCY_CATCH_ROOT_DIRECTORY CACHE PATH "Path to the catch unit test framework root directory")
 	set(CPP_SCHEDULER_DEPENDENCY_COTIRE_ROOT_DIRECTORY CACHE PATH "Path to the cotire cmake module root directory")
@@ -141,4 +149,8 @@ endif()
 
 if(CPP_SCHEDULER_TESTS)
     add_subdirectory(Tests)
+endif()
+
+if(CPP_SCHEDULER_TESTS_BENCHMARKS)
+    add_subdirectory(Benchmarks)
 endif()

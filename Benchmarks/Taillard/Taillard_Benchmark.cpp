@@ -1,11 +1,3 @@
-//#include <sch_test_all>
-#include <sch_scene_management>
-#include <sch_strategies>
-#include <sch_core>
-#include <sch_cost_functions>
-#include <sch_tsp_solvers>
-
-
 #include <Services/Routing/EuclideanRoutingService/EuclideanRoutingService.h>
 #include <Persistence/SceneLoaders/TaillardSceneLoader/TaillardSceneLoader.h>
 #include <chrono>
@@ -15,11 +7,24 @@
 
 #include "../Publishers/StdoutBenchmarkPublisher.h"
 #include "../Publishers/MarkdownBenchmarkPublisher.h"
-#include <Persistence/SceneLoaders/TspLibSceneLoader/TspLibSceneLoader.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/Transparent/TransparentVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/Chain/ChainVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Sweep/SweepVRPSolver.h>
+#include <Engine/Engine/Engine.h>
+#include <Engine/CostFunctions/TotalDistance/TotalDistanceSceneCostFunction.h>
+#include <Engine/StrategiesManager/Strategy.h>
+#include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/Schedule.h>
+#include <Engine/SceneManager/Order.h>
+#include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/Run.h>
+#include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
+#include <Engine/CostFunctions/TotalDistance/TotalDistanceScheduleCostFunction.h>
+#include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/ListTemperatureScheduler.h>
+#include <Engine/Algorithms/TSPSolvers/Chain/ChainTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
 
 std::vector<std::string> datasets
 {
@@ -88,9 +93,7 @@ public:
 		publisher(publisher),
 		datasets(datasets)
 	{
-		EngineContext engine_context;
-		engine_context.routing_service = &routing_service;
-		engine.reset(new Engine(engine_context));
+		engine.reset(new Engine());
 
 		strategy = engine->getStrategiesManager()->createStrategy();
 		cost_function = strategy->createSceneCostFunction<TotalDistanceSceneCostFunction>();

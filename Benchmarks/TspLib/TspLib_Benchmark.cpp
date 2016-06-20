@@ -1,10 +1,3 @@
-//#include <sch_test_all>
-#include <sch_scene_management>
-#include <sch_strategies>
-#include <sch_core>
-#include <sch_cost_functions>
-#include <sch_tsp_solvers>
-
 #include <numeric>
 
 
@@ -18,6 +11,18 @@
 
 #include "../Publishers/StdoutBenchmarkPublisher.h"
 #include "../Publishers/MarkdownBenchmarkPublisher.h"
+#include <Engine/Engine/Engine.h>
+#include <Engine/CostFunctions/TotalDistance/TotalDistanceScheduleCostFunction.h>
+#include <Engine/SceneManager/Scene.h>
+#include <Engine/StrategiesManager/Strategy.h>
+#include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Chain/ChainTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/HybridOpt/HybridOptTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/ListTemperatureScheduler.h>
+#include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/TheBest/TheBestTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/OneRelocate/OneRelocateTSPSolver.h>
 
 std::vector<std::string> light_datasets
 {
@@ -172,9 +177,7 @@ public:
 		publisher(publisher),
 		datasets(datasets)
 	{
-		EngineContext engine_context;
-		engine_context.routing_service = &routing_service;
-		engine.reset(new Engine(engine_context));
+		engine.reset(new Engine());
 
 		strategy = engine->getStrategiesManager()->createStrategy();
 		cost_function = strategy->createScheduleCostFunction<TotalDistanceScheduleCostFunction>();

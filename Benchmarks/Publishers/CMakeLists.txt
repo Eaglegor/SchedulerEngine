@@ -4,3 +4,5 @@ add_custom_target(BenchmarkPublishers SOURCES
     StdoutBenchmarkPublisher.h
     MarkdownBenchmarkPublisher.h
 )
+
+set_target_properties(BenchmarkPublishers PROPERTIES FOLDER "Benchmarks")
