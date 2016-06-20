@@ -33,4 +33,6 @@ if(CPP_SCHEDULER_TESTS)
 	set_target_properties(SceneEditor_Test PROPERTIES FOLDER "Engine/Tests/")
 	
 	add_custom_command(TARGET SceneEditor_Test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestScene.json ${EXECUTABLE_OUTPUT_PATH}/TestData/SceneEditor_Test/TestScene.json)
+	
+	cotire(SceneEditor_Test)
 endif()

@@ -25,4 +25,6 @@ if(CPP_SCHEDULER_TESTS)
     add_custom_command(TARGET TspLibSceneLoader_Test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Test/br17.xml ${EXECUTABLE_OUTPUT_PATH}/TestData/TspLibSceneLoader_Test/br17.xml)
     add_custom_command(TARGET TspLibSceneLoader_Test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Test/br17.bin ${EXECUTABLE_OUTPUT_PATH}/TestData/TspLibSceneLoader_Test/br17.bin)
 
+	cotire(TspLibSceneLoader_Test)
+
 endif()

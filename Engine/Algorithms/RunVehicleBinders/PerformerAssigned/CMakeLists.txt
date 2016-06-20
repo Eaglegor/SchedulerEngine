@@ -25,4 +25,6 @@ if(CPP_SCHEDULER_TESTS)
 	add_test(NAME PerformerAssignedRunVehicleBinder_Test COMMAND $<TARGET_FILE:PerformerAssignedRunVehicleBinder_Test>)
 	target_link_libraries(PerformerAssignedRunVehicleBinder_Test Engine CrowFlyRoutingService)
 	set_target_properties(PerformerAssignedRunVehicleBinder_Test PROPERTIES FOLDER "Engine/Algorithms/RunVehicleBinders/Tests/")
+	
+	cotire(PerformerAssignedRunVehicleBinder_Test)
 endif()

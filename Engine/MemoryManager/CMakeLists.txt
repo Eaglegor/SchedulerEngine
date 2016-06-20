@@ -22,4 +22,6 @@ if(CPP_SCHEDULER_TESTS)
 	add_test(NAME MemoryManager_Test COMMAND $<TARGET_FILE:MemoryManager_Test>)
 	target_link_libraries(MemoryManager_Test MemoryManager)
 	set_target_properties(MemoryManager_Test PROPERTIES FOLDER "Engine/Tests/")
+	
+	cotire(MemoryManager_Test)
 endif()

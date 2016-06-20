@@ -23,4 +23,6 @@ if(CPP_SCHEDULER_TESTS)
 	add_test(NAME ChainVRPSolver_Test COMMAND $<TARGET_FILE:ChainVRPSolver_Test>)
 	target_link_libraries(ChainVRPSolver_Test Engine CrowFlyRoutingService)
 	set_target_properties(ChainVRPSolver_Test PROPERTIES FOLDER "Engine/Algorithms/VRPSolvers/Utilitary/Tests/")
+	
+	cotire(ChainVRPSolver_Test)
 endif()

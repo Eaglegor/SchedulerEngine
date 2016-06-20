@@ -69,4 +69,5 @@ if(CPP_SCHEDULER_TESTS)
 	target_link_libraries(Concepts_Test Concepts)
 	set_target_properties(Concepts_Test PROPERTIES FOLDER "Engine/Tests/")
    
+	cotire(Concepts_Test)
 endif()

@@ -42,4 +42,6 @@ if(CPP_SCHEDULER_TESTS)
 	set_target_properties(JSONStrategyLoader_Test PROPERTIES FOLDER "Persistence/StrategyLoaders/Tests/")
 	
 	add_custom_command(TARGET JSONStrategyLoader_Test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestStrategy1.json ${EXECUTABLE_OUTPUT_PATH}/TestData/JSONStrategyLoader_Test/TestStrategy1.json)
+	
+	cotire(JSONStrategyLoader_Test)
 endif()

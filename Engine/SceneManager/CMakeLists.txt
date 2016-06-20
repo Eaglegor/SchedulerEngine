@@ -84,4 +84,6 @@ if(CPP_SCHEDULER_TESTS)
 	add_test(NAME SceneManager_Test COMMAND $<TARGET_FILE:SceneManager_Test>)
 	target_link_libraries(SceneManager_Test SceneManager CrowFlyRoutingService)
 	set_target_properties(SceneManager_Test PROPERTIES FOLDER "Engine/Tests/")
+	
+	cotire(SceneManager_Test)
 endif()

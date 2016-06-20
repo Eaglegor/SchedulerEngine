@@ -25,4 +25,6 @@ if(CPP_SCHEDULER_TESTS)
 	add_test(NAME DefaultDurationActualizationAlgorithm_Test COMMAND $<TARGET_FILE:DefaultDurationActualizationAlgorithm_Test>)
 	target_link_libraries(DefaultDurationActualizationAlgorithm_Test Engine CrowFlyRoutingService)
 	set_target_properties(DefaultDurationActualizationAlgorithm_Test PROPERTIES FOLDER "Engine/Algorithms/ScheduleActualization/Duration/Tests/")
+	
+	cotire(DefaultDurationActualizationAlgorithm_Test)
 endif()

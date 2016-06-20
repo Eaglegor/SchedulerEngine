@@ -29,4 +29,6 @@ if(CPP_SCHEDULER_TESTS)
 	add_test(NAME Utils_Test COMMAND $<TARGET_FILE:Utils_Test>)
 	target_link_libraries(Utils_Test Engine CrowFlyRoutingService)
 	set_target_properties(Utils_Test PROPERTIES FOLDER "Engine/Tests/")
+	
+	cotire(Utils_Test)
 endif()

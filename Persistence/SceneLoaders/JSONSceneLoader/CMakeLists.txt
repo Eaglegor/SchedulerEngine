@@ -59,4 +59,6 @@ if(CPP_SCHEDULER_TESTS)
 	set_target_properties(JSONSceneLoader_Test PROPERTIES FOLDER "Persistence/SceneLoaders/Tests/")
 	
 	add_custom_command(TARGET JSONSceneLoader_Test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestScene1.json ${EXECUTABLE_OUTPUT_PATH}/TestData/JSONSceneLoader_Test/TestScene1.json)
+	
+	cotire(JSONSceneLoader_Test)
 endif()

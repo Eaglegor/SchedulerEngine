@@ -17,7 +17,6 @@ namespace Scheduler
 	{
 		public:
 			Engine();
-			Engine(const EngineContext& context);
 			
 			SceneManager* getSceneManager();
 			StrategiesManager* getStrategiesManager();
