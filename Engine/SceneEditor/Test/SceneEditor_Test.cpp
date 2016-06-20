@@ -172,7 +172,7 @@ TEST_CASE("Reverse action works", "[integration][functional][scene_editor]")
 
 	JSONSceneLoader loader(engine.getSceneManager(), &routing_service);
 
-	Scene* scene = loader.loadScene("TestData/IFTest_SceneEditor/TestScene.json");
+	Scene* scene = loader.loadScene("TestData/SceneEditor_Test/TestScene.json");
 
 	Run* run = scene->getSchedules()[0]->getRuns()[0];
 
