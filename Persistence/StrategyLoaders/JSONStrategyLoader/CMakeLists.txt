@@ -37,7 +37,7 @@ if(CPP_SCHEDULER_TESTS)
 	
 	set_property(SOURCE Test/JSONStrategyLoader_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
 		
-	add_test(NAME JSONStrategyLoader_Test COMMAND $<TARGET_FILE:JSONStrategyLoader_Test>)
+	add_test(NAME JSONStrategyLoader_Test COMMAND $<TARGET_FILE:JSONStrategyLoader_Test> WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 	target_link_libraries(JSONStrategyLoader_Test JSONStrategyLoader CrowFlyRoutingService)
 	set_target_properties(JSONStrategyLoader_Test PROPERTIES FOLDER "Persistence/StrategyLoaders/Tests/")
 	

@@ -147,10 +147,6 @@ if(CPP_SCHEDULER_TOOLS)
     add_subdirectory(Tools)
 endif()
 
-if(CPP_SCHEDULER_TESTS)
-    add_subdirectory(Tests)
-endif()
-
 if(CPP_SCHEDULER_TESTS_BENCHMARKS)
     add_subdirectory(Benchmarks)
 endif()

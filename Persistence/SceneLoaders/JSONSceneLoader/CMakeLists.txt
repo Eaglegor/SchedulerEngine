@@ -54,7 +54,7 @@ if(CPP_SCHEDULER_TESTS)
 	
 	set_property(SOURCE Test/JSONSceneLoader_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
 		
-	add_test(NAME JSONSceneLoader_Test COMMAND $<TARGET_FILE:JSONSceneLoader_Test>)
+	add_test(NAME JSONSceneLoader_Test COMMAND $<TARGET_FILE:JSONSceneLoader_Test> WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 	target_link_libraries(JSONSceneLoader_Test JSONSceneLoader CrowFlyRoutingService)
 	set_target_properties(JSONSceneLoader_Test PROPERTIES FOLDER "Persistence/SceneLoaders/Tests/")
 	

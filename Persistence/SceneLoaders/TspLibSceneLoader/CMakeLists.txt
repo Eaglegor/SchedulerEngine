@@ -18,7 +18,7 @@ if(CPP_SCHEDULER_TESTS)
 	
 	set_property(SOURCE Test/TspLibSceneLoader_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
 		
-	add_test(NAME TspLibSceneLoader_Test COMMAND $<TARGET_FILE:TspLibSceneLoader_Test>)
+	add_test(NAME TspLibSceneLoader_Test COMMAND $<TARGET_FILE:TspLibSceneLoader_Test> WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
 	target_link_libraries(TspLibSceneLoader_Test TspLibSceneLoader CrowFlyRoutingService)
 	set_target_properties(TspLibSceneLoader_Test PROPERTIES FOLDER "Persistence/SceneLoaders/Tests/")
 	
