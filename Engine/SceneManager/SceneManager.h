@@ -38,6 +38,7 @@ namespace Scheduler
     class SCENEMANAGER_EXPORT SceneManager
     {
     public:
+		SceneManager(MemoryManager* memory_manager);
 		SceneManager(RoutingService *routing_service, MemoryManager* memory_manager);
         ~SceneManager();
 

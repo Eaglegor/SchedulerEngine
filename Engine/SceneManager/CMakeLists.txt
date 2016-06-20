@@ -70,3 +70,18 @@ cotire(SceneManager)
 
 include(GenerateExportHeader)
 generate_export_header(SceneManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SceneManager_export.h)
+
+
+if(CPP_SCHEDULER_TESTS)
+	add_executable(SceneManager_Test 
+	
+		Test/SceneManager_Test.cpp
+
+	)
+		
+	set_property(SOURCE Test/SceneManager_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")		
+		
+	add_test(NAME SceneManager_Test COMMAND $<TARGET_FILE:SceneManager_Test>)
+	target_link_libraries(SceneManager_Test SceneManager CrowFlyRoutingService)
+	set_target_properties(SceneManager_Test PROPERTIES FOLDER "Engine/Tests/")
+endif()
