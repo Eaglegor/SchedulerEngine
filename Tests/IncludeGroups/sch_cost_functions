@@ -1,5 +1,0 @@
-#pragma once
-
-#include <Engine/CostFunctions/TotalDistance/TotalDistanceRunCostFunction.h>
-#include <Engine/CostFunctions/TotalDistance/TotalDistanceScheduleCostFunction.h>
-#include <Engine/CostFunctions/TotalDistance/TotalDistanceSceneCostFunction.h>

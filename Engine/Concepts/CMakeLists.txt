@@ -68,4 +68,5 @@ if(CPP_SCHEDULER_TESTS)
 	add_test(NAME Concepts_Test COMMAND $<TARGET_FILE:Concepts_Test>)
 	target_link_libraries(Concepts_Test Concepts)
 	set_target_properties(Concepts_Test PROPERTIES FOLDER "Engine/Tests/")
+   
 endif()

@@ -1,7 +1,12 @@
-#include <sch_test_all>
+#include <catch.hpp>
 
 #include <Services/Routing/TspLibRoutingService/TspLibRoutingService.h>
 #include <Persistence/SceneLoaders/TspLibSceneLoader/TspLibSceneLoader.h>
+#include <Engine/Engine/Engine.h>
+#include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/Schedule.h>
+#include <Engine/SceneManager/Run.h>
 
 TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functional][persistence]")
 {
@@ -9,10 +14,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 
 	TspLibRoutingService routing_service;
 
-	EngineContext context;
-	context.routing_service = &routing_service;
-
-	Engine engine(context);
+	Engine engine;
 
 	SceneManager* sm = engine.getSceneManager();
 
@@ -24,12 +26,12 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 
 	SECTION("XML")
 	{
-		scene = loader.loadScene("TestData/IFTest_TspLibSceneLoader/br17.xml", &routing_service, TspLibSceneLoader::Format::XML, optimum);
+		scene = loader.loadScene("TestData/TspLibSceneLoader_Test/br17.xml", &routing_service, TspLibSceneLoader::Format::XML, optimum);
 	}
 
 	SECTION("Binary")
 	{
-		scene = loader.loadScene("TestData/IFTest_TspLibSceneLoader/br17.bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimum);
+		scene = loader.loadScene("TestData/TspLibSceneLoader_Test/br17.bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimum);
 	}
 	
 

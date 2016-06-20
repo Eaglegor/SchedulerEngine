@@ -1,9 +1,23 @@
-#include <sch_test_all>
+#include <catch.hpp>
 
-#include <Persistence/SceneLoaders/JSONSceneLoader/JSONSceneLoader.h>
+#include <fstream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#include <fstream>
+
+#include <Persistence/SceneLoaders/JSONSceneLoader/JSONSceneLoader.h>
+#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
+#include <Engine/Engine/Engine.h>
+#include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/Performer.h>
+#include <Engine/SceneManager/Vehicle.h>
+#include <Engine/SceneManager/Schedule.h>
+#include <Engine/SceneManager/Run.h>
+#include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/Operation.h>
+#include <Engine/Utils/Units/DurationUnits.h>
+#include <Engine/Utils/Units/SpeedUnits.h>
+#include <Engine/Utils/Collections/Algorithms.h>
 
 TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functional][persistence]")
 {
@@ -12,15 +26,12 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 
 	CrowFlyRoutingService rs;
 
-	EngineContext context;
-	context.routing_service = &rs;
-
-	Engine engine(context);
+	Engine engine;
 
 	SceneManager* sm = engine.getSceneManager();
 
 	std::ifstream ifile;
-	ifile.open("TestData/IFTest_JSONSceneLoader/TestScene1.json");
+	ifile.open("TestData/JSONSceneLoader_Test/TestScene1.json");
 	REQUIRE(ifile.is_open());
 
 	JSONSceneLoader loader(sm, &rs);

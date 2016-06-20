@@ -28,3 +28,18 @@ cotire(JSONStrategyLoader)
 
 include(GenerateExportHeader)
 generate_export_header(JSONStrategyLoader EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/JSONStrategyLoader_export.h)
+
+
+if(CPP_SCHEDULER_TESTS)
+	add_executable(JSONStrategyLoader_Test 
+		Test/JSONStrategyLoader_Test.cpp
+	)
+	
+	set_property(SOURCE Test/JSONStrategyLoader_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
+		
+	add_test(NAME JSONStrategyLoader_Test COMMAND $<TARGET_FILE:JSONStrategyLoader_Test>)
+	target_link_libraries(JSONStrategyLoader_Test JSONStrategyLoader CrowFlyRoutingService)
+	set_target_properties(JSONStrategyLoader_Test PROPERTIES FOLDER "Persistence/StrategyLoaders/Tests/")
+	
+	add_custom_command(TARGET JSONStrategyLoader_Test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestStrategy1.json ${EXECUTABLE_OUTPUT_PATH}/TestData/JSONStrategyLoader_Test/TestStrategy1.json)
+endif()

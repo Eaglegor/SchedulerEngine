@@ -1,5 +1,5 @@
-#define CATCH_CONFIG_MAIN
 #include <catch.hpp>
+
 #include <Persistence/SceneLoaders/JSONSceneLoader/Model/SceneDesc.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -427,7 +427,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader - ModelLoading", "[unit]
 	boost::property_tree::ptree props;
 
 	std::ifstream ifile;
-	ifile.open("TestData/UFTest_JSONSceneLoader/TestScene1.json");
+	ifile.open("TestData/JSONSceneLoader_Test/TestScene1.json");
 	
 	REQUIRE(ifile.is_open());
 

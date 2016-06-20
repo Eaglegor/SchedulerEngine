@@ -1,4 +1,0 @@
-#pragma once
-
-#include <Engine/Concepts/Test/MakeLocation.h>
-#include <Engine/Concepts/Test/MakeTimeWindow.h>

@@ -1,9 +1,11 @@
-#include <sch_test_all>
+#include <catch.hpp>
 
 #include <Persistence/StrategyLoaders/JSONStrategyLoader/JSONStrategyLoader.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <fstream>
+#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
+#include <Engine/Engine/Engine.h>
 
 TEST_CASE("Persistence - StrategyLoaders - JSONStrategyLoader", "[integration][functional][persistence]")
 {
@@ -11,16 +13,12 @@ TEST_CASE("Persistence - StrategyLoaders - JSONStrategyLoader", "[integration][f
 	using namespace Scheduler;
 
 	CrowFlyRoutingService rs;
-
-	EngineContext context;
-	context.routing_service = &rs;
-
-	Engine engine(context);
+	Engine engine;
 
 	StrategiesManager* sm = engine.getStrategiesManager();
 
 	std::ifstream ifile;
-	ifile.open("TestData/IFTest_JSONStrategyLoader/TestStrategy1.json");
+	ifile.open("TestData/JSONStrategyLoader_Test/TestStrategy1.json");
 	REQUIRE(ifile.is_open());
 
 	JSONStrategyLoader loader(sm);

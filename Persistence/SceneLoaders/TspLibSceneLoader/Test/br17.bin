@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head prefix='og: http://ogp.me/ns#'>
+<meta charset='utf-8'>
+<meta content='IE=edge' http-equiv='X-UA-Compatible'>
+<meta content='object' property='og:type'>
+<meta content='GitLab' property='og:site_name'>
+<meta content='Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin · master · Nikolay Gorbachenko / CppScheduler' property='og:title'>
+<meta content='Logistics scheduler C++ implementation' property='og:description'>
+<meta content='https://gitlab.com/assets/gitlab_logo-cdf021b35c4e6bb149e26460f26fae81e80552bc879179dd80e9e9266b14e894.png' property='og:image'>
+<meta content='https://gitlab.com/eaglegor/CppScheduler/blob/master/Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin' property='og:url'>
+<meta content='summary' property='twitter:card'>
+<meta content='Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin · master · Nikolay Gorbachenko / CppScheduler' property='twitter:title'>
+<meta content='Logistics scheduler C++ implementation' property='twitter:description'>
+<meta content='https://gitlab.com/assets/gitlab_logo-cdf021b35c4e6bb149e26460f26fae81e80552bc879179dd80e9e9266b14e894.png' property='twitter:image'>
+
+<title>Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin · master · Nikolay Gorbachenko / CppScheduler · GitLab</title>
+<meta content='Logistics scheduler C++ implementation' name='description'>
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-075eba76312e8421991a0c1f89a89ee81678bcde72319dd3e8047e2a47cd3a42.ico" />
+<link rel="stylesheet" media="all" href="/assets/application-65b1626ff3ea11fb637c6cbbbb434e73523842fccaa2fa216c941aabb5f99968.css" />
+<link rel="stylesheet" media="print" href="/assets/print-68eed6d8135d858318821e790e25da27b2b4b9b8dbb1993fa6765d8e2e3e16ee.css" />
+<script src="/assets/application-43f1c09abb3cb2305c9c17419df838ec4853c94724444c08e080b037e1ba892a.js"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="m83aXDLp0fJDrFOdlQidC2knNB2ghroYyZ8UBp9nwUncK5TM/xGU7a13kVFvoqCuLQ0KMmzRiJHMLAzpycdEUA==" />
+<meta content='origin-when-cross-origin' name='referrer'>
+<meta content='width=device-width, initial-scale=1, maximum-scale=1' name='viewport'>
+<meta content='#474D57' name='theme-color'>
+<link rel="apple-touch-icon" type="image/x-icon" href="/assets/touch-icon-iphone-2d64ecc33893baab71adc15ff19a803a59911cc2651fb9d4d62af1379ff89aab.png" />
+<link rel="apple-touch-icon" type="image/x-icon" href="/assets/touch-icon-ipad-d08897d57e1bc9400024ac15465340e832a8e7b166b91624138d48ea2c739596.png" sizes="76x76" />
+<link rel="apple-touch-icon" type="image/x-icon" href="/assets/touch-icon-iphone-retina-81446c57f3351d1dacd0fb5f23ced74ba63d3878810bedea343999c6a12b3915.png" sizes="120x120" />
+<link rel="apple-touch-icon" type="image/x-icon" href="/assets/touch-icon-ipad-retina-e2a776da039936ac240e76615add47b25ab77c75a5fa2d1b3907f83d5502b911.png" sizes="152x152" />
+<link color='rgb(226, 67, 41)' href='/assets/logo-d36b5212042cebc89b96df4bf6ac24e43db316143e89926c0db839ff694d2de4.svg' rel='mask-icon'>
+<meta content='/assets/msapplication-tile-49c9c46afd2ab9bbf35e69138bc62f8c31fa55584bd494956ac6e58e6aadc813.png' name='msapplication-TileImage'>
+<meta content='#30353E' name='msapplication-TileColor'>
+
+
+<!-- Piwik -->
+<script>
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//piwik.gitlab.com/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 1]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//piwik.gitlab.com/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+<!-- End Piwik Code -->
+
+
+<style>
+  [data-user-is] {
+    display: none !important;
+  }
+  
+  [data-user-is="179834"] {
+    display: block !important;
+  }
+  
+  [data-user-is="179834"][data-display="inline"] {
+    display: inline !important;
+  }
+  
+  [data-user-is-not] {
+    display: block !important;
+  }
+  
+  [data-user-is-not][data-display="inline"] {
+    display: inline !important;
+  }
+  
+  [data-user-is-not="179834"] {
+    display: none !important;
+  }
+</style>
+
+</head>
+
+<body class='ui_charcoal' data-group='' data-page='projects:blob:show' data-project='CppScheduler'>
+<script>
+//<![CDATA[
+window.gon={};gon.api_version="v3";gon.default_avatar_url="https://gitlab.com/assets/no_avatar-07eeb128b993e74003e8664cff0b8e1e7234cec0443766a6763df32ca3472c23.png";gon.default_issues_tracker="gitlab";gon.max_file_size=10;gon.relative_url_root="";gon.shortcuts_path="/help/shortcuts";gon.user_color_scheme="white";gon.award_menu_url="/emojis";gon.current_user_id=179834;gon.api_token="SsiA8htsaGvuFZo1oN3H";
+//]]>
+</script>
+<script>
+  window.project_uploads_path = "/eaglegor/CppScheduler/uploads";
+  window.markdown_preview_path = "/eaglegor/CppScheduler/markdown_preview";
+</script>
+
+<header class='header-collapsed navbar navbar-fixed-top navbar-gitlab with-horizontal-nav'>
+<div class='container-fluid'>
+<div class='header-content'>
+<button class='side-nav-toggle' type='button'>
+<span class='sr-only'>Toggle navigation</span>
+<i class="fa fa-bars"></i>
+</button>
+<button class='navbar-toggle' type='button'>
+<span class='sr-only'>Toggle navigation</span>
+<i class="fa fa-angle-left"></i>
+</button>
+<div class='navbar-collapse collapse'>
+<ul class='nav navbar-nav'>
+<li class='hidden-sm hidden-xs'>
+<div class='has-location-badge search search-form'>
+<form class="navbar-form" action="/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" />
+<div class='search-input-container'>
+<div class='location-badge'>This project</div>
+<div class='search-input-wrap'>
+<div class='dropdown' data-url='/search/autocomplete'>
+<input type="search" name="search" id="search" placeholder="Search" class="search-input dropdown-menu-toggle" spellcheck="false" tabindex="1" autocomplete="off" data-toggle="dropdown" />
+<div class='dropdown-menu dropdown-select'>
+<div class="dropdown-content"><ul>
+<li>
+<a class='is-focused dropdown-menu-empty-link'>
+Loading...
+</a>
+</li>
+</ul>
+</div><div class="dropdown-loading"><i class="fa fa-spinner fa-spin"></i></div>
+</div>
+<i class='search-icon'></i>
+<i class='clear-icon js-clear-input'></i>
+</div>
+</div>
+</div>
+<input type="hidden" name="group_id" id="group_id" />
+<input type="hidden" name="project_id" id="search_project_id" value="545669" />
+<input type="hidden" name="search_code" id="search_code" value="true" />
+<script>
+  gl.projectOptions = gl.projectOptions || {};
+  gl.projectOptions["CppScheduler"] = {
+    issuesPath: "/eaglegor/CppScheduler/issues",
+    mrPath: "/eaglegor/CppScheduler/merge_requests",
+    name: "CppScheduler"
+  };
+</script>
+<script>
+  gl.dashboardOptions = {
+    issuesPath: "https://gitlab.com/dashboard/issues",
+    mrPath: "https://gitlab.com/dashboard/merge_requests"
+  };
+</script>
+<input type="hidden" name="repository_ref" id="repository_ref" value="master" />
+
+<div class='search-autocomplete-opts hide' data-autocomplete-path='/search/autocomplete' data-autocomplete-project-id='545669' data-autocomplete-project-ref='master'></div>
+</form>
+
+</div>
+
+</li>
+<li class='visible-sm visible-xs'>
+<a title="Search" data-toggle="tooltip" data-placement="bottom" data-container="body" href="/search"><i class="fa fa-search"></i>
+</a></li>
+<li>
+<a title="Todos" data-toggle="tooltip" data-placement="bottom" data-container="body" href="/dashboard/todos"><i class="fa fa-bell fa-fw"></i>
+<span class='badge hidden todos-pending-count'>
+0
+</span>
+</a></li>
+<li>
+<a title="New project" data-toggle="tooltip" data-placement="bottom" data-container="body" href="/projects/new"><i class="fa fa-plus fa-fw"></i>
+</a></li>
+<li>
+<a class="logout" title="Sign out" data-toggle="tooltip" data-placement="bottom" data-container="body" rel="nofollow" data-method="delete" href="/users/sign_out"><i class="fa fa-sign-out"></i>
+</a></li>
+</ul>
+</div>
+<h1 class='title'><a href="/u/eaglegor">Nikolay Gorbachenko</a> / <a class="project-item-select-holder" href="/eaglegor/CppScheduler">CppScheduler</a><i data-target=".js-dropdown-menu-projects" data-toggle="dropdown" class="fa fa-chevron-down dropdown-toggle-caret js-projects-dropdown-toggle"></i></h1>
+<div class='header-logo'>
+<a class="home" title="Dashboard" id="logo" href="/"><svg width="36" height="36" id="tanuki-logo">
+  <path id="tanuki-right-ear" class="tanuki-shape" fill="#e24329" d="M2 14l9.38 9v-9l-4-12.28c-.205-.632-1.176-.632-1.38 0z"/>
+  <path id="tanuki-left-ear" class="tanuki-shape" fill="#e24329" d="M34 14l-9.38 9v-9l4-12.28c.205-.632 1.176-.632 1.38 0z"/>
+  <path id="tanuki-nose" class="tanuki-shape" fill="#e24329" d="M18,34.38 3,14 33,14 Z"/>
+  <path id="tanuki-right-eye" class="tanuki-shape" fill="#fc6d26" d="M18,34.38 11.38,14 2,14 6,25Z"/>
+  <path id="tanuki-left-eye" class="tanuki-shape" fill="#fc6d26" d="M18,34.38 24.62,14 34,14 30,25Z"/>
+  <path id="tanuki-right-cheek" class="tanuki-shape" fill="#fca326" d="M2 14L.1 20.16c-.18.565 0 1.2.5 1.56l17.42 12.66z"/>
+  <path id="tanuki-left-cheek" class="tanuki-shape" fill="#fca326" d="M34 14l1.9 6.16c.18.565 0 1.2-.5 1.56L18 34.38z"/>
+</svg>
+
+</a></div>
+<div class='js-dropdown-menu-projects'>
+<div class='dropdown-menu dropdown-select dropdown-menu-projects'>
+<div class="dropdown-title"><span>Go to a project</span><button class="dropdown-title-button dropdown-menu-close" aria-label="Close" type="button"><i class="fa fa-times dropdown-menu-close-icon"></i></button></div>
+<div class="dropdown-input"><input type="search" id="" class="dropdown-input-field" placeholder="Search your projects" /><i class="fa fa-search dropdown-input-search"></i><i role="button" class="fa fa-times dropdown-input-clear js-dropdown-input-clear"></i></div>
+<div class="dropdown-content"></div>
+<div class="dropdown-loading"><i class="fa fa-spinner fa-spin"></i></div>
+</div>
+</div>
+
+</div>
+</div>
+</header>
+
+<script>
+  var findFileURL = "/eaglegor/CppScheduler/find_file/master";
+</script>
+
+<div class='page-sidebar-collapsed page-with-sidebar'>
+<div class='nicescroll sidebar-expanded sidebar-wrapper'>
+<a class="nav-header-btn text-center toggle-nav-collapse" title="Open/Close" href="#"><span class='sr-only'>Toggle navigation</span>
+<i class="fa fa-bars"></i>
+</a>
+<ul class='nav nav-sidebar'>
+<li class="active home"><a title="Projects" class="dashboard-shortcuts-projects" href="/dashboard/projects"><div class='icon-container'>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>Page 1</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M6,6 L12,6 L12,5 L6,5 L6,6 Z M6,8 L12,8 L12,7 L6,7 L6,8 Z M6,10 L12,10 L12,9 L6,9 L6,10 Z M6,12 L12,12 L12,11 L6,11 L6,12 Z M4,6 L5,6 L5,5 L4,5 L4,6 Z M4,8 L5,8 L5,7 L4,7 L4,8 Z M4,10 L5,10 L5,9 L4,9 L4,10 Z M4,12 L5,12 L5,11 L4,11 L4,12 Z M13,3 L10,3 L10,4 L6,4 L6,3 L3,3 L3,13 L13,13 L13,3 Z M2,14 L14,14 L14,2 L2,2 L2,14 Z M1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L15,16 C15.552,16 16,15.552 16,15 L16,1 C16,0.448 15.552,0 15,0 L1,0 Z" fill="#7F7E7E"></path>
+    </g>
+</svg>
+</div>
+<span>
+Projects
+</span>
+</a></li><li class=""><a title="Todos" href="/dashboard/todos"><div class='icon-container'>
+<i class="fa fa-bell fa-fw"></i>
+</div>
+<span>
+Todos
+<span class='count'>0</span>
+</span>
+</a></li><li class=""><a class="dashboard-shortcuts-activity" title="Activity" href="/dashboard/activity"><div class='icon-container'>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>path-1</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="_activity" fill="#7E7D7D">
+            <g id="Page-1">
+                <g id="path-1">
+                    <path d="M5,0 C4.448,0 4,0.448 4,1 L4,3 L1,3 C0.448,3 0,3.448 0,4 L0,9 C0,9.552 0.448,10 1,10 L5,10 L5,8 L11,8 L11,10 L15,10 C15.552,10 16,9.552 16,9 L16,4 C16,3.448 15.552,3 15,3 L12,3 L12,1 C12,0.448 11.552,0 11,0 L5,0 L5,0 L5,0 L5,0 Z M6,2.5 C6,2.224 6.224,2 6.5,2 L9.5,2 C9.776,2 10,2.224 10,2.5 C10,2.776 9.776,3 9.5,3 L6.5,3 C6.224,3 6,2.776 6,2.5 L6,2.5 L6,2.5 L6,2.5 Z M6,11 L10.001,11 L10.001,9 L6,9 L6,11 L6,11 L6,11 L6,11 Z M11,11 L11,12 L5,12 L5,11 L1,11 C0.448,11 0,11.448 0,12 L0,15 C0,15.552 0.448,16 1,16 L15,16 C15.552,16 16,15.552 16,15 L16,12 C16,11.448 15.552,11 15,11 L11,11 L11,11 L11,11 L11,11 Z"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
+</div>
+<span>
+Activity
+</span>
+</a></li><li class=""><a title="Groups" href="/dashboard/groups"><div class='icon-container'>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7.2 (28276) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" fill="#303030">
+            <path d="M15.6667,10.0105 L10.3337,10.0105 C10.1497,10.0105 9.9997,10.1775 9.9997,10.3845 L9.9997,15.6145 C9.9997,15.8215 10.1497,15.9885 10.3337,15.9885 L15.6667,15.9885 C15.8507,15.9885 15.9997,15.8215 15.9997,15.6145 L15.9997,10.3845 C15.9997,10.1775 15.8507,10.0105 15.6667,10.0105 L15.6667,10.0105 L15.6667,10.0105 Z M11.9997,14.0105 L13.9997,14.0105 L13.9997,12.0105 L11.9997,12.0105 L11.9997,14.0105 L11.9997,14.0105 Z" id="Fill-11"></path>
+            <path d="M5.6667,10.0105 L0.3337,10.0105 C0.1497,10.0105 -0.0003,10.1775 -0.0003,10.3845 L-0.0003,15.6145 C-0.0003,15.8215 0.1497,15.9885 0.3337,15.9885 L5.6667,15.9885 C5.8507,15.9885 5.9997,15.8215 5.9997,15.6145 L5.9997,10.3845 C5.9997,10.1775 5.8507,10.0105 5.6667,10.0105 L5.6667,10.0105 L5.6667,10.0105 Z M1.9997,14.0105 L3.9997,14.0105 L3.9997,12.0105 L1.9997,12.0105 L1.9997,14.0105 L1.9997,14.0105 Z" id="Fill-8"></path>
+            <polygon id="Stroke-1" points="12.5 7.5834 3.5 7.5834 3.5 9.5834 12.5 9.5834"></polygon>
+            <polygon id="Stroke-3" points="9 9.0834 9 5.0834 7 5.0834 7 9.0834"></polygon>
+            <polygon id="Stroke-4" points="4 11.0834 4 7.5834 2 7.5834 2 11.0834"></polygon>
+            <polygon id="Stroke-6" points="14 11.0834 14 7.5834 12 7.5834 12 11.0834"></polygon>
+            <path d="M11.6667,6.21724894e-15 L4.3337,6.21724894e-15 C4.1497,6.21724894e-15 3.9997,0.167 3.9997,0.374 L3.9997,6.604 C3.9997,6.811 4.1497,6.978 4.3337,6.978 L11.6667,6.978 C11.8507,6.978 11.9997,6.811 11.9997,6.604 L11.9997,0.374 C11.9997,0.167 11.8507,6.21724894e-15 11.6667,6.21724894e-15 L11.6667,6.21724894e-15 L11.6667,6.21724894e-15 Z M5.9997,5 L9.9997,5 L9.9997,2 L5.9997,2 L5.9997,5 L5.9997,5 Z" id="Fill-14"></path>
+        </g>
+    </g>
+</svg>
+</div>
+<span>
+Groups
+</span>
+</a></li><li class=""><a title="Milestones" href="/dashboard/milestones"><div class='icon-container'>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="17px" viewBox="0 0 16 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7.2 (28276) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" fill="#7E7C7C">
+            <path d="M15.1111,1 L0.8891,1 C0.3981,1 0.0001,1.446 0.0001,1.996 L0.0001,15.945 C0.0001,16.495 0.3981,16.941 0.8891,16.941 L15.1111,16.941 C15.6021,16.941 16.0001,16.495 16.0001,15.945 L16.0001,1.996 C16.0001,1.446 15.6021,1 15.1111,1 L15.1111,1 L15.1111,1 Z M14.0001,6.0002 L14.0001,14.949 L2.0001,14.949 L2.0001,6.0002 L14.0001,6.0002 Z M14.0001,4.0002 L14.0001,2.993 L2.0001,2.993 L2.0001,4.0002 L14.0001,4.0002 Z" id="Combined-Shape"></path>
+            <polygon id="Fill-11" points="3 2.0002 5 2.0002 5 0.0002 3 0.0002"></polygon>
+            <polygon id="Fill-16" points="11 2.0002 13 2.0002 13 0.0002 11 0.0002"></polygon>
+            <path d="M5.37709616,11.5511984 L6.92309616,12.7821984 C7.35112915,13.123019 7.97359761,13.0565604 8.32002627,12.6330535 L10.7740263,9.63305349 C11.1237073,9.20557058 11.0606364,8.57555475 10.6331535,8.22587373 C10.2056706,7.87619272 9.57565475,7.93926361 9.22597373,8.36674651 L6.77197373,11.3667465 L8.16890384,11.2176016 L6.62290384,9.98660159 C6.19085236,9.6425813 5.56172188,9.71394467 5.21770159,10.1459962 C4.8736813,10.5780476 4.94504467,11.2071781 5.37709616,11.5511984 L5.37709616,11.5511984 Z" id="Stroke-21"></path>
+        </g>
+    </g>
+</svg>
+</div>
+<span>
+Milestones
+</span>
+</a></li><li class=""><a title="Issues" class="dashboard-shortcuts-issues" href="/dashboard/issues?assignee_id=179834"><div class='icon-container'>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7.2 (28276) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" fill="#7E7C7C">
+            <path d="M8,0 C3.581,0 0,3.581 0,8 C0,12.419 3.581,16 8,16 C12.419,16 16,12.419 16,8 C16,3.581 12.419,0 8,0 M8,2 C11.308,2 14,4.692 14,8 C14,11.308 11.308,14 8,14 C4.692,14 2,11.308 2,8 C2,4.692 4.692,2 8,2" id="Fill-1"></path>
+            <path d="M7.1597,4 L8.8887,4 L8.8887,8 L7.1107,8 L7.1597,4 Z M7.1597,9.6667 L8.8887,9.6667 L8.8887,11.4447 L7.1107,11.4447 L7.1597,9.6667 Z" id="Combined-Shape"></path>
+        </g>
+    </g>
+</svg>
+</div>
+<span>
+Issues
+<span class='count'>2</span>
+</span>
+</a></li><li class=""><a title="Merge Requests" class="dashboard-shortcuts-merge_requests" href="/dashboard/merge_requests?assignee_id=179834"><div class='icon-container'>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7.2 (28276) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" fill="#7E7C7C">
+            <path d="M15.1111,0 L0.8891,0 C0.3981,0 0.0001,0.446 0.0001,0.996 L0.0001,14.945 C0.0001,15.495 0.3981,15.941 0.8891,15.941 L15.1111,15.941 C15.6021,15.941 16.0001,15.495 16.0001,14.945 L16.0001,0.996 C16.0001,0.446 15.6021,0 15.1111,0 L15.1111,0 L15.1111,0 Z M2.0001,13.949 L14.0001,13.949 L14.0001,1.993 L2.0001,1.993 L2.0001,13.949 Z M2,5.0002 L14,5.0002 L14,3.0002 L2,3.0002 L2,5.0002 Z" id="Combined-Shape"></path>
+            <path d="M8.547,12.0002 L12,12.0002 L12,10.0002 L8.547,10.0002 L8.547,12.0002 Z M5.2029,12 L3.9999,10.867 L5.2029,9.501 L3.9999,8.181 L5.2029,7 L7.4529,9.499 L5.2029,12 Z" id="Combined-Shape"></path>
+        </g>
+    </g>
+</svg>
+</div>
+<span>
+Merge Requests
+<span class='count'>0</span>
+</span>
+</a></li><li class=""><a title="Snippets" href="/dashboard/snippets"><div class='icon-container'>
+<i class="fa fa-clipboard fa-fw"></i>
+</div>
+<span>
+Snippets
+</span>
+</a></li><li class=""><a title="Help" href="/help"><div class='icon-container'>
+<i class="fa fa-question-circle fa-fw"></i>
+</div>
+<span>
+Help
+</span>
+</a></li><li class=""><a title="Profile Settings" data-placement="bottom" href="/profile"><div class='icon-container'>
+<i class="fa fa-user fa-fw"></i>
+</div>
+<span>
+Profile Settings
+</span>
+</a></li></ul>
+
+<a class="sidebar-user" title="Profile" data-user="eaglegor" href="/u/eaglegor"><img alt="Profile" class="avatar avatar s36" src="https://gitlab.com/uploads/user/avatar/179834/7291630.png" />
+<div class='username'>
+eaglegor
+</div>
+</a><a class="nav-header-btn text-center pin-nav-btn  js-nav-pin" title="Pin/Unpin navigation" href="#"><span class='sr-only'>Toggle navigation pinning</span>
+<i class="fa fa-thumb-tack"></i>
+</a></div>
+<div class='layout-nav'>
+<div class='container-fluid'>
+<div class='controls'>
+<div class='dropdown project-settings-dropdown'>
+<a class='dropdown-new btn btn-default' data-toggle='dropdown' href='#' id='project-settings-button'>
+<i class="fa fa-cog"></i>
+<i class="fa fa-caret-down"></i>
+</a>
+<ul class='dropdown-menu dropdown-menu-align-right'>
+<li class=""><a title="Members" class="team-tab tab" href="/eaglegor/CppScheduler/project_members"><span>
+Members
+</span>
+</a></li><li class=""><a title="Groups" href="/eaglegor/CppScheduler/group_links"><span>
+Groups
+</span>
+</a></li><li class=""><a title="Deploy Keys" href="/eaglegor/CppScheduler/deploy_keys"><span>
+Deploy Keys
+</span>
+</a></li><li class=""><a title="Webhooks" href="/eaglegor/CppScheduler/hooks"><span>
+Webhooks
+</span>
+</a></li><li class=""><a title="Services" href="/eaglegor/CppScheduler/services"><span>
+Services
+</span>
+</a></li><li class=""><a title="Protected Branches" href="/eaglegor/CppScheduler/protected_branches"><span>
+Protected Branches
+</span>
+</a></li><li class=""><a title="Runners" href="/eaglegor/CppScheduler/runners"><span>
+Runners
+</span>
+</a></li><li class=""><a title="Variables" href="/eaglegor/CppScheduler/variables"><span>
+Variables
+</span>
+</a></li><li class=""><a title="Triggers" href="/eaglegor/CppScheduler/triggers"><span>
+Triggers
+</span>
+</a></li><li class=""><a title="Badges" href="/eaglegor/CppScheduler/badges"><span>
+Badges
+</span>
+</a></li><li class=""><a title="Git Hooks" href="/eaglegor/CppScheduler/git_hooks"><span>
+Git Hooks
+</span>
+</a></li><li class=""><a title="Mirror Repository" data-placement="right" href="/eaglegor/CppScheduler/mirror"><span>
+Mirror Repository
+</span>
+</a></li><li class=""><a title="Pages" data-placement="right" href="/eaglegor/CppScheduler/pages"><span>
+Pages
+</span>
+</a></li><li class=""><a title="Audit Events" href="/eaglegor/CppScheduler/audit_events"><span>
+Audit Events
+</span>
+</a></li>
+<li class='divider'></li>
+<li>
+<a href="/eaglegor/CppScheduler/edit">Edit Project
+</a></li>
+<li>
+<a data-confirm="Are you sure you want to leave the &quot;Nikolay Gorbachenko / CppScheduler&quot; project?" title="Leave project" rel="nofollow" data-method="delete" href="/eaglegor/CppScheduler/project_members/leave">Leave Project
+</a></li>
+</ul>
+</div>
+</div>
+<div class='nav-control'>
+<ul class='nav-links scrolling-tabs'>
+<div class='fade-left'></div>
+<li class="home"><a title="Project" class="shortcuts-project" href="/eaglegor/CppScheduler"><span>
+Project
+</span>
+</a></li><li class=""><a title="Activity" class="shortcuts-project-activity" href="/eaglegor/CppScheduler/activity"><span>
+Activity
+</span>
+</a></li><li class="active"><a title="Code" class="shortcuts-tree" href="/eaglegor/CppScheduler/tree/master"><span>
+Code
+</span>
+</a></li><li class=""><a title="Pipelines" class="shortcuts-pipelines" href="/eaglegor/CppScheduler/pipelines"><span>
+Pipelines
+</span>
+</a></li><li class=""><a title="Container Registry" class="shortcuts-container-registry" href="/eaglegor/CppScheduler/container_registry"><span>
+Registry
+</span>
+</a></li><li class=""><a title="Graphs" class="shortcuts-graphs" href="/eaglegor/CppScheduler/graphs/master"><span>
+Graphs
+</span>
+</a></li><li class=""><a title="Issues" class="shortcuts-issues" href="/eaglegor/CppScheduler/issues"><span>
+Issues
+<span class='badge count issue_counter'>12</span>
+</span>
+</a></li><li class=""><a title="Merge Requests" class="shortcuts-merge_requests" href="/eaglegor/CppScheduler/merge_requests"><span>
+Merge Requests
+<span class='badge count merge_counter'>0</span>
+</span>
+</a></li><li class=""><a title="Wiki" class="shortcuts-wiki" href="/eaglegor/CppScheduler/wikis/home"><span>
+Wiki
+</span>
+</a></li><li class=""><a title="Snippets" class="shortcuts-snippets" href="/eaglegor/CppScheduler/snippets"><span>
+Snippets
+</span>
+</a></li><li class='hidden'>
+<a title="Network" class="shortcuts-network" href="/eaglegor/CppScheduler/network/master">Network
+</a></li>
+<li class='hidden'>
+<a class="shortcuts-new-issue" href="/eaglegor/CppScheduler/issues/new">Create a new issue
+</a></li>
+<li class='hidden'>
+<a title="Builds" class="shortcuts-builds" href="/eaglegor/CppScheduler/builds">Builds
+</a></li>
+<li class='hidden'>
+<a title="Commits" class="shortcuts-commits" href="/eaglegor/CppScheduler/commits/master">Commits
+</a></li>
+<div class='fade-right'></div>
+</ul>
+</div>
+
+</div>
+</div>
+<div class='content-wrapper page-with-layout-nav'>
+
+
+<div class='flash-container'>
+</div>
+
+
+<div class='container-fluid container-limited'>
+<div class='content'>
+<div class='clearfix'>
+<div class='row-content-block top-block clear-block hidden-xs'>
+<div class='container-fluid container-limited'>
+<div class='event-last-push'>
+<div class='event-last-push-text'>
+<span>You pushed to</span>
+<a href="/eaglegor/CppScheduler/commits/RevivingTests"><strong>RevivingTests</strong>
+</a>branch
+<time class="time_ago js-timeago js-timeago-pending" datetime="2016-06-20T16:41:08Z" title="Jun 20, 2016 4:41pm" data-toggle="tooltip" data-placement="top" data-container="body">2016-06-20 16:41:08 UTC</time><script>
+//<![CDATA[
+$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()
+//]]>
+</script>
+</div>
+<div class='pull-right'>
+<a title="New Merge Request" class="btn btn-info btn-sm" href="/eaglegor/CppScheduler/merge_requests/new?merge_request%5Bsource_branch%5D=RevivingTests&amp;merge_request%5Bsource_project_id%5D=545669&amp;merge_request%5Btarget_branch%5D=master&amp;merge_request%5Btarget_project_id%5D=545669">Create Merge Request
+</a></div>
+</div>
+</div>
+</div>
+
+<div class='tree-holder' id='tree-holder'>
+<div class='nav-block'>
+<div class='tree-ref-holder'>
+<form class="project-refs-form" action="/eaglegor/CppScheduler/refs/switch" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" />
+<select name="ref" id="ref" class="project-refs-select select2 select2-sm"><optgroup label="Branches"><option value="RevivingTests">RevivingTests</option>
+<option selected="selected" value="master">master</option>
+<option value="20-SweepVRPSolver">20-SweepVRPSolver</option>
+<option value="22-TwoOptTSPSolver">22-TwoOptTSPSolver</option>
+<option value="39-SATSPSolver">39-SATSPSolver</option>
+<option value="65-ScheduleCopy">65-ScheduleCopy</option>
+<option value="68-OneRelocateTSP">68-OneRelocateTSP</option>
+<option value="72-ActualizationRefactoring">72-ActualizationRefactoring</option>
+<option value="73-ValidationAlgorithms">73-ValidationAlgorithms</option>
+<option value="73-ValidationModel">73-ValidationModel</option>
+<option value="ActualizationRefactoring">ActualizationRefactoring</option>
+<option value="HelloWorld">HelloWorld</option>
+<option value="TSPBattle">TSPBattle</option></optgroup><optgroup label="Tags"><option value="0.1">0.1</option></optgroup></select>
+<input type="hidden" name="destination" id="destination" value="blob" />
+<input type="hidden" name="path" id="path" value="Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin" />
+</form>
+
+
+</div>
+<ul class='breadcrumb repo-breadcrumb'>
+<li>
+<a href="/eaglegor/CppScheduler/tree/master">CppScheduler
+</a></li>
+<li>
+<a href="/eaglegor/CppScheduler/tree/master/Tests">Tests</a>
+</li>
+<li>
+<a href="/eaglegor/CppScheduler/tree/master/Tests/Persistence">Persistence</a>
+</li>
+<li>
+<a href="/eaglegor/CppScheduler/tree/master/Tests/Persistence/SceneLoaders">SceneLoaders</a>
+</li>
+<li>
+<a href="/eaglegor/CppScheduler/tree/master/Tests/Persistence/SceneLoaders/TspLibSceneLoader">TspLibSceneLoader</a>
+</li>
+<li>
+<a href="/eaglegor/CppScheduler/blob/master/Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin"><strong>
+br17.bin
+</strong>
+</a></li>
+</ul>
+</div>
+<ul class='blob-commit-info hidden-xs'>
+<li class='commit js-toggle-container' id='commit-c5708bb5'>
+<img class="avatar s36 hidden-xs" width="36" alt="" src="https://gitlab.com/uploads/user/avatar/179834/7291630.png" />
+<div class='commit-row-title'>
+<span class='item-title'>
+<a class="commit-row-message" href="/eaglegor/CppScheduler/commit/c5708bb5a13af8c1eec71b7a822d14a6de953907">[</a><a href="/eaglegor/CppScheduler/issues/34" data-original="#34" data-project="545669" data-issue="1358214" data-reference-type="issue" title="Issue: Сгенерировать тест-кейсы для TSP-солверов на базе TSPLIB" class="gfm gfm-issue commit-row-message">#34</a><a class="commit-row-message" href="/eaglegor/CppScheduler/commit/c5708bb5a13af8c1eec71b7a822d14a6de953907">] TspLib scene loader binary files support</a>
+<span class='commit-row-message visible-xs-inline'>
+&middot;
+c5708bb5
+</span>
+<a class="ci-status-link ci-status-icon-success visible-xs-inline" title="Commit: passed" data-toggle="tooltip" data-placement="auto left" href="/eaglegor/CppScheduler/commit/c5708bb5a13af8c1eec71b7a822d14a6de953907/builds"><i class="fa fa-check fa-fw"></i></a>
+<a class='text-expander hidden-xs js-toggle-button'>...</a>
+</span>
+<div class='commit-actions hidden-xs'>
+<a class="ci-status-link ci-status-icon-success btn btn-transparent" title="Commit: passed" data-toggle="tooltip" data-placement="auto left" href="/eaglegor/CppScheduler/commit/c5708bb5a13af8c1eec71b7a822d14a6de953907/builds"><i class="fa fa-check fa-fw"></i></a>
+<button class="btn btn-transparent" data-clipboard-text="c5708bb5a13af8c1eec71b7a822d14a6de953907" type="button"><i class="fa fa-clipboard"></i></button>
+<a class="commit-short-id btn btn-transparent" href="/eaglegor/CppScheduler/commit/c5708bb5a13af8c1eec71b7a822d14a6de953907">c5708bb5</a>
+<a class="btn btn-default" href="/eaglegor/CppScheduler/tree/c5708bb5a13af8c1eec71b7a822d14a6de953907">Browse Files</a>
+</div>
+</div>
+<pre class='commit-row-description js-toggle-content'>&#x000A;Loader is now able to load scene from the files created by&#x000A;TspLibFormatConverter tool</pre>
+<div class='commit-row-info'>
+<a class="commit-author-link has-tooltip" title="eaglegor@gmail.com" href="/u/eaglegor">Nikolay Gorbachenko</a>
+authored
+<time class="time_ago js-timeago js-timeago-pending" datetime="2016-03-20T23:53:43Z" title="Mar 20, 2016 11:53pm" data-toggle="tooltip" data-placement="top" data-container="body">2016-03-21 03:53:43 +0400</time><script>
+//<![CDATA[
+$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()
+//]]>
+</script>
+</div>
+</li>
+
+</ul>
+<div class='blob-content-holder' id='blob-content-holder'>
+<article class='file-holder'>
+<div class='file-title'>
+<i class="fa fa-file-text-o fa-fw"></i>
+<strong>
+br17.bin
+</strong>
+<small>
+1.14 KB
+</small>
+<div class='file-actions hidden-xs'>
+<div class='btn-group tree-btn-group'>
+<a class="btn btn-sm" target="_blank" href="/eaglegor/CppScheduler/raw/master/Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin">Raw</a>
+<a class="btn btn-sm" href="/eaglegor/CppScheduler/commits/master/Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin">History</a>
+<a class="btn btn-sm" href="/eaglegor/CppScheduler/blob/b02a14ad9e4d2e585c2300437d6a03fe4de75fa3/Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin">Permalink</a>
+</div>
+<div class='btn-group' role='group'>
+
+
+<button name="button" type="submit" class="btn btn-default" data-target="#modal-upload-blob" data-toggle="modal">Replace</button>
+<button name="button" type="submit" class="btn btn-remove" data-target="#modal-remove-blob" data-toggle="modal">Delete</button>
+</div>
+
+</div>
+</div>
+<div class='file-content blob_file blob-no-preview'>
+<div class='center'>
+<a href="/eaglegor/CppScheduler/raw/master/Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin"><h1 class='light'>
+<i class='fa fa-download'></i>
+</h1>
+<h4>
+Download (1.14 KB)
+</h4>
+</a></div>
+</div>
+
+</article>
+</div>
+
+</div>
+<div class='modal' id='modal-remove-blob'>
+<div class='modal-dialog'>
+<div class='modal-content'>
+<div class='modal-header'>
+<a class='close' data-dismiss='modal' href='#'>×</a>
+<h3 class='page-title'>Delete br17.bin</h3>
+</div>
+<div class='modal-body'>
+<form class="form-horizontal js-replace-blob-form js-quick-submit js-requires-input" action="/eaglegor/CppScheduler/blob/master/Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="_method" value="delete" /><input type="hidden" name="authenticity_token" value="RAISDgRSarB49QTOdMITMZutgYxcgq92hVnvkOW6YdUD5Fyeyaovr5YuxgKOaC6U34e/o5DVnf+A6vd/sxrkzA==" />
+<div class='form-group commit_message-group'>
+<label class="control-label" for="commit_message-b87c8c705f5dacc1de03de21adb1cd20">Commit message
+</label><div class='col-sm-10'>
+<div class='commit-message-container'>
+<div class='max-width-marker'></div>
+<textarea name="commit_message" id="commit_message-b87c8c705f5dacc1de03de21adb1cd20" class="form-control js-commit-message" placeholder="Delete br17.bin" required="required" rows="3">
+Delete br17.bin</textarea>
+</div>
+</div>
+</div>
+
+<div class='form-group branch'>
+<label class="control-label" for="target_branch">Target branch</label>
+<div class='col-sm-10'>
+<input type="text" name="target_branch" id="target_branch" value="master" required="required" class="form-control js-target-branch" />
+<div class='js-create-merge-request-container'>
+<div class='checkbox'>
+<label for="create_merge_request-04a5a64d1b22ec66a34ab033515093bc"><input type="checkbox" name="create_merge_request" id="create_merge_request-04a5a64d1b22ec66a34ab033515093bc" value="1" class="js-create-merge-request" checked="checked" />
+Start a <strong>new merge request</strong> with these changes
+</label></div>
+</div>
+</div>
+</div>
+<input type="hidden" name="original_branch" id="original_branch" value="master" class="js-original-branch" />
+
+<div class='form-group'>
+<div class='col-sm-offset-2 col-sm-10'>
+<button name="button" type="submit" class="btn btn-remove btn-remove-file">Delete file</button>
+<a class="btn btn-cancel" data-dismiss="modal" href="#">Cancel</a>
+</div>
+</div>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+<script>
+  new NewCommitForm($('.js-replace-blob-form'))
+</script>
+
+<div class='modal' id='modal-upload-blob'>
+<div class='modal-dialog'>
+<div class='modal-content'>
+<div class='modal-header'>
+<a class='close' data-dismiss='modal' href='#'>×</a>
+<h3 class='page-title'>Replace br17.bin</h3>
+</div>
+<div class='modal-body'>
+<form class="js-quick-submit js-upload-blob-form form-horizontal" action="/eaglegor/CppScheduler/update/master/Tests/Persistence/SceneLoaders/TspLibSceneLoader/br17.bin" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="_method" value="put" /><input type="hidden" name="authenticity_token" value="mnjPH1nyruRy8lIEc4iBXYYRviz4ycVcAqzut1tEeW/dnoGPlArr+5wpkMiJIrz4wjuAAzSe99UHH/ZYDeT8dg==" />
+<div class='dropzone'>
+<div class='dropzone-previews blob-upload-dropzone-previews'>
+<p class='dz-message light'>
+Attach a file by drag &amp; drop or
+<a class="markdown-selector" href="#">click to upload</a>
+</p>
+</div>
+</div>
+<br>
+<div class='alert alert-danger data dropzone-alerts' style='display:none'></div>
+<div class='form-group commit_message-group'>
+<label class="control-label" for="commit_message-65ffb7801312b97a102f1a634f86abcb">Commit message
+</label><div class='col-sm-10'>
+<div class='commit-message-container'>
+<div class='max-width-marker'></div>
+<textarea name="commit_message" id="commit_message-65ffb7801312b97a102f1a634f86abcb" class="form-control js-commit-message" placeholder="Replace br17.bin" required="required" rows="3">
+Replace br17.bin</textarea>
+</div>
+</div>
+</div>
+
+<div class='form-group branch'>
+<label class="control-label" for="target_branch">Target branch</label>
+<div class='col-sm-10'>
+<input type="text" name="target_branch" id="target_branch" value="master" required="required" class="form-control js-target-branch" />
+<div class='js-create-merge-request-container'>
+<div class='checkbox'>
+<label for="create_merge_request-aaa29eb338e313119ff67ee239b1cb2c"><input type="checkbox" name="create_merge_request" id="create_merge_request-aaa29eb338e313119ff67ee239b1cb2c" value="1" class="js-create-merge-request" checked="checked" />
+Start a <strong>new merge request</strong> with these changes
+</label></div>
+</div>
+</div>
+</div>
+<input type="hidden" name="original_branch" id="original_branch" value="master" class="js-original-branch" />
+
+<div class='form-actions'>
+<button name="button" type="submit" class="btn btn-small btn-create btn-upload-file" id="submit-all">Replace file</button>
+<a class="btn btn-cancel" data-dismiss="modal" href="#">Cancel</a>
+</div>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+<script>
+  disableButtonIfEmptyField($('.js-upload-blob-form').find('.js-commit-message'), '.btn-upload-file');
+  new BlobFileDropzone($('.js-upload-blob-form'), 'put');
+  new NewCommitForm($('.js-upload-blob-form'))
+</script>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+</body>
+</html>
+
