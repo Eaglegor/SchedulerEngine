@@ -16,7 +16,7 @@ namespace Scheduler
 	class ENGINE_EXPORT Engine
 	{
 		public:
-			Engine(const EngineContext& context);
+			Engine();
 			
 			SceneManager* getSceneManager();
 			StrategiesManager* getStrategiesManager();

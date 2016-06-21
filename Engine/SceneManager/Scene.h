@@ -86,8 +86,6 @@ namespace Scheduler
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 
-		void setRoutingService(RoutingService *routing_service);
-
 		void setRunVehicleSelectorsFactory(Factory<RunVehicleBinder>* factory);
 
     private:
@@ -112,7 +110,5 @@ namespace Scheduler
 		Factory<RunVehicleBinder> *run_vehicle_binders_factory;
 
 		RunVehicleBinder *run_vehicle_binder;
-
-		RoutingService* routing_service;
     };
 }

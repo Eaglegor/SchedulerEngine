@@ -1,7 +1,0 @@
-add_executable(IFTest_JSONStrategyLoader IFTest_JSONStrategyLoader.cpp)
-add_custom_command(TARGET IFTest_JSONStrategyLoader POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/TestStrategy1.json ${EXECUTABLE_OUTPUT_PATH}/TestData/IFTest_JSONStrategyLoader/TestStrategy1.json)
-add_test(NAME IFTest_JSONStrategyLoader COMMAND $<TARGET_FILE:IFTest_JSONStrategyLoader> WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
-set_target_properties(IFTest_JSONStrategyLoader PROPERTIES FOLDER "Tests/StrategyLoaders/JSONStrategyLoader")
-target_link_libraries(IFTest_JSONStrategyLoader StrategiesManager)
-target_link_libraries(IFTest_JSONStrategyLoader JSONStrategyLoader)
-target_link_libraries(IFTest_JSONStrategyLoader CrowFlyRoutingService)

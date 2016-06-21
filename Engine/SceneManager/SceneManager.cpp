@@ -23,26 +23,25 @@
 
 namespace Scheduler
 {
-	SceneManager::SceneManager(RoutingService* routing_service, MemoryManager* memory_manager) :
-			scenes_factory(memory_manager, 5),
-			operations_factory(memory_manager),
-			orders_factory(memory_manager),
-			vehicles_factory(memory_manager),
-			performers_factory(memory_manager),
-			schedules_factory(memory_manager),
-			attributes_factory(memory_manager),
-			runs_factory(memory_manager),
-			stops_factory(memory_manager),
-			schedule_actualization_models_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-			route_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-			duration_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-			arrival_time_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-			schedule_validation_models_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-			schedule_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-			run_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-			stop_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-			run_vehicle_selectors_factory(memory_manager, Pool::MEDIUM_OBJECT, 100),
-			routing_service(routing_service)
+	SceneManager::SceneManager(MemoryManager* memory_manager) :
+		scenes_factory(memory_manager, 5),
+		operations_factory(memory_manager),
+		orders_factory(memory_manager),
+		vehicles_factory(memory_manager),
+		performers_factory(memory_manager),
+		schedules_factory(memory_manager),
+		attributes_factory(memory_manager),
+		runs_factory(memory_manager),
+		stops_factory(memory_manager),
+		schedule_actualization_models_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+		route_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+		duration_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+		arrival_time_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+		schedule_validation_models_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+		schedule_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+		run_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+		stop_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
+		run_vehicle_selectors_factory(memory_manager, Pool::MEDIUM_OBJECT, 100)
 	{
 	}
 
@@ -59,8 +58,6 @@ namespace Scheduler
 		scene->setStopsFactory(&stops_factory);
 
 		scene->setRunVehicleSelectorsFactory(&run_vehicle_selectors_factory);
-
-		scene->setRoutingService(routing_service);
 
 		scenes.insert(scene);
 		return scene;

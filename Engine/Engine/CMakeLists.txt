@@ -3,8 +3,6 @@ add_library(Engine SHARED
 	Engine.h
 	Engine.cpp
 	
-	EngineContext.h
-	
 	Services/RoutingService.h
 )
 

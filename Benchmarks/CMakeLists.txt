@@ -1,0 +1,3 @@
+add_subdirectory(TspLib)
+add_subdirectory(Taillard)
+add_subdirectory(Publishers)

@@ -1,6 +1,0 @@
-#pragma once
-
-#include <sch_crowfly_routing>
-
-#define CREATE_ENGINE(EngineName) EngineContext context; CrowFlyRoutingService routing_service; context.routing_service = &routing_service; Engine EngineName(context);
-#define STOP_FIRST_OPERATION(stop) (*(stop->getOperations().begin()))

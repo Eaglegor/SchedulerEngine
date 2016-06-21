@@ -15,7 +15,6 @@ namespace Scheduler {
             performers_factory(nullptr),
             vehicles_factory(nullptr),
             schedules_factory(nullptr),
-			routing_service(nullptr),
             run_vehicle_binders_factory(nullptr),
             run_vehicle_binder(nullptr)
     {
@@ -183,10 +182,6 @@ namespace Scheduler {
 		vehicles.push_back(vehicle);
 
 		return vehicle;
-	}
-
-	void Scene::setRoutingService(RoutingService *routing_service) {
-		this->routing_service = routing_service;
 	}
 
 	void Scene::setRunsFactory(SceneObjectsFactory<Run> *factory)

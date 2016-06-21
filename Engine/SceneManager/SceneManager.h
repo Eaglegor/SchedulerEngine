@@ -38,7 +38,7 @@ namespace Scheduler
     class SCENEMANAGER_EXPORT SceneManager
     {
     public:
-		SceneManager(RoutingService *routing_service, MemoryManager* memory_manager);
+		SceneManager(MemoryManager* memory_manager);
         ~SceneManager();
 
 		/// Creates an empty scene
@@ -157,7 +157,5 @@ namespace Scheduler
 
         std::unordered_set<Scene*> scenes;
         std::unordered_map<std::string, Attribute*> attributes;
-
-		RoutingService* routing_service;
     };
 }
