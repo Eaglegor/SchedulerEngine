@@ -19,10 +19,10 @@ namespace Scheduler
 			run_iterator,
 			inew_position < istart_stop ? new_position : start_stop,
 			inew_position <= istart_stop ? start_stop : end_stop,
-			iend_stop < inew_position ? new_position : end_stop
+			inew_position > iend_stop ? new_position : end_stop
 		)
 	{
-		assert(std::distance(new_position, start_stop) >= 0 || std::distance(end_stop, new_position) > 0);
+		assert(std::distance(new_position, start_stop) >= 0 || std::distance(end_stop, new_position) >= 0);
 	}
 
 	void MoveRunWorkStopsSubsequence::perform()

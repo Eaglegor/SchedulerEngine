@@ -25,6 +25,7 @@ generate_export_header(SceneEditor EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/
 if(CPP_SCHEDULER_TESTS)
 	add_executable(SceneEditor_Test
 		Test/SceneEditor_Test.cpp
+		Test/SceneEditor_Test_MoveRunWorkStop.cpp
 		Test/SceneEditor_Test_MoveRunWorkStopsSubsequence.cpp
 	)
 		
