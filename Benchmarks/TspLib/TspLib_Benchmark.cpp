@@ -23,6 +23,7 @@
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/TheBest/TheBestTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/OneRelocate/OneRelocateTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/GCBI/GCBITSPSolver.h>
 
 std::vector<std::string> light_datasets
 {
@@ -225,7 +226,7 @@ protected:
 		result.dataset_name = datasets[id];
 
 		long long nanoseconds = 0;
-        const size_t number_of_iterations = 10;
+        const size_t number_of_iterations = 1;
 
         for (size_t i = 0; i < number_of_iterations; ++i)
 		{
@@ -519,6 +520,37 @@ public:
 	}
 };
 
+class GCBITspLibInstance : public TspLibTestInstance
+{
+public:
+	GCBITspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+		: TspLibTestInstance(datasets, publisher)
+	{
+	}
+
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	{
+		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+
+		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+		greedy_solver->setRoutingService(&routing_service);
+
+		GCBITSPSolver *gcbi_solver = strategy->createTSPSolver<GCBITSPSolver>();
+		gcbi_solver->setCostFunction(cost_function);
+		gcbi_solver->setRoutingService(&routing_service);
+
+		tsp_solver->addTSPSolver(greedy_solver);
+		tsp_solver->addTSPSolver(gcbi_solver);
+
+		return tsp_solver;
+	}
+
+	virtual const char* getAlgorithmName() override
+	{
+		return "Greedy >> GCBI";
+	}
+};
+
 int main(int argc, char **argv)
 {
 	std::unique_ptr<Scheduler::BenchmarkPublisher> publisher;
@@ -531,8 +563,9 @@ int main(int argc, char **argv)
 		publisher.reset(new StdoutBenchmarkPublisher());
 	}
 
-    auto datasets = {light_datasets, medium_datasets};
+    auto datasets = {light_datasets/*, medium_datasets*/};
     for (const auto &dataset : datasets) {
+		/*
         {
             Optimal_TspLibInstance test(dataset, *publisher);
             test.run();
@@ -566,7 +599,12 @@ int main(int argc, char **argv)
         {
             MTSATspLibInstance test(dataset, *publisher);
             test.run();
-        }
+        }*/
+
+		{
+			GCBITspLibInstance test(dataset, *publisher);
+			test.run();
+		}
     }
 	publisher->publish();
 }

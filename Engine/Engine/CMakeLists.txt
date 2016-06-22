@@ -41,6 +41,7 @@ target_link_libraries(Engine
 	OneRelocateTSPSolver
 	TheBestTSPSolver
 	HybridOptTSPSolver
+	GCBITSPSolver
 	
 	TotalDistanceCostFunctions
     )

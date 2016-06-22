@@ -3,14 +3,14 @@
 #include <Engine/StrategiesManager/TSPSolver.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/Engine/Services/RoutingService.h>
-#include <GreedyCircularBlockInsertionTSPSolver_export.h>
+#include <GCBITSPSolver_export.h>
 
 namespace Scheduler
 {
-    class GREEDYCIRCULARBLOCKINSERTIONTSPSOLVER_EXPORT GreedyCircularBlockInsertionTSPSolver : public TSPSolver
+    class GCBITSPSOLVER_EXPORT GCBITSPSolver : public TSPSolver
 	{
 	public:
-		GreedyCircularBlockInsertionTSPSolver();
+		GCBITSPSolver();
 
 		virtual void optimize(Schedule* schedule) const override;
 		virtual void optimize(Run* run) const override;
@@ -18,7 +18,7 @@ namespace Scheduler
         void setRoutingService(RoutingService* routing_service);
 		void setCostFunction(ScheduleCostFunction* cost_function);
 
-        static constexpr const char* staticGetName() { return "GreedyCircularBlockInsertion"; }
+        static constexpr const char* staticGetName() { return "GCBI"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:
