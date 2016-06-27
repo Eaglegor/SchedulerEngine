@@ -27,7 +27,7 @@
 
 std::vector<std::string> light_datasets
 {
-	"Light/att48",
+	"Light/att48"/*,
 	"Light/bayg29",
 	"Light/bays29",
 	"Light/berlin52",
@@ -61,12 +61,12 @@ std::vector<std::string> light_datasets
 	"Light/st70",
 	"Light/swiss42",
 	"Light/ulysses16",
-	"Light/ulysses22"
+	"Light/ulysses22"*/
 };
 
 std::vector<std::string> medium_datasets
 {
-    "Medium/a280",
+    /*"Medium/a280",
     "Medium/bier127",
     "Medium/brg180",
     "Medium/ch130",
@@ -114,7 +114,7 @@ std::vector<std::string> medium_datasets
     "Medium/si175",
     "Medium/ts225",
     "Medium/tsp225",
-    "Medium/u159"
+    "Medium/u159"*/
 };
 
 std::vector<std::string> heavy_datasets
