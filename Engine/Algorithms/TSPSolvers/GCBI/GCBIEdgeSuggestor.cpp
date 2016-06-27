@@ -94,5 +94,8 @@ namespace Scheduler
 				rating.push_back(edge);
 			}
 		}
+
+		auto comparator = [](const Entry& lhs, const Entry& rhs) {return lhs.distance < rhs.distance; };
+		std::sort(rating.begin(), rating.end(), comparator);
 	}
 }

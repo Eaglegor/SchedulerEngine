@@ -22,7 +22,13 @@ namespace Scheduler
 			return false;
 		}
 
-		Iterator subsequence_start = run->getWorkStops().begin() + edge.to_index;
+		if(edge.to_index == 0)
+		{
+			assert(false);
+			return false;
+		}
+
+		Iterator subsequence_start = run->getWorkStops().begin() + (edge.to_index - 1);
 		Iterator subsequence_end = run->getWorkStops().begin() + edge.from_index;
 
 	 	bool first = true;

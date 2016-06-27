@@ -23,9 +23,7 @@ namespace Scheduler
 		Iterator from_iter = run->getWorkStops().begin() + edge.from_index;
 		Iterator to_iter = run->getWorkStops().begin() + (edge.to_index - 1);
 
-		Cost best_cost = cost_function->calculateCost(run->getSchedule());
-
-		Iterator best_iterator = run->getWorkStops().end();
+		Iterator best_iterator;
 
 		BestAllocationResult before_edge_allocation = getBestAllocationVariant(from_iter, to_iter, run->getWorkStops().begin(), from_iter);
 		if (before_edge_allocation.iterator != run->getWorkStops().end()) best_iterator = before_edge_allocation.iterator;
@@ -33,10 +31,10 @@ namespace Scheduler
 		if (to_iter != run->getWorkStops().end())
 		{
 			BestAllocationResult after_edge_allocation = getBestAllocationVariant(from_iter, to_iter, to_iter + 1, run->getWorkStops().end());
-			if (after_edge_allocation.iterator != run->getWorkStops().end() && after_edge_allocation.cost < before_edge_allocation.cost) best_iterator = after_edge_allocation.iterator;
+			if (best_iterator == from_iter || after_edge_allocation.cost < before_edge_allocation.cost) best_iterator = after_edge_allocation.iterator;
 		}
 
-		if (best_iterator == run->getWorkStops().end()) return false;
+		if (best_iterator == from_iter) return false;
 
 		scene_editor.performAction<MoveRunWorkStopsSubsequence>(run_iter, from_iter, to_iter, best_iterator);
 		return true;
@@ -46,7 +44,7 @@ namespace Scheduler
 	{
 		bool is_first = true;
 		BestAllocationResult result;
-		result.iterator = run->getWorkStops().end();
+		result.iterator = target_range_start;
 		size_t checkpoint = scene_editor.checkpoint();
 		for (auto target_iter = target_range_start; target_iter != target_range_end; ++target_iter)
 		{

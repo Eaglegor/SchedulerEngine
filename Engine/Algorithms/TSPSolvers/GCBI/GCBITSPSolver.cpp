@@ -58,6 +58,7 @@ namespace Scheduler
 					if (edge.from_index == edge.to_index) continue;
 					if (edge.from_index == 0 && edge.to_index == run->getWorkStops().size() + 1) continue;
 					if (edge.from_index == run->getWorkStops().size() + 1) continue;
+					if (edge.to_index == 0) continue;
 					if (introducer.introduce(edge))
 					{
 						scene_editor.commit();
