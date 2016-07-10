@@ -3,6 +3,7 @@
 #include <Engine/StrategiesManager/TSPSolver.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/Engine/Services/RoutingService.h>
+#include <Engine/LoggingManager/LoggingManager.h>
 #include <GCBITSPSolver_export.h>
 
 namespace Scheduler
@@ -24,5 +25,6 @@ namespace Scheduler
 	private:
         RoutingService* routing_service;
 		ScheduleCostFunction* cost_function;
+		Logger* logger;
 	};
 }

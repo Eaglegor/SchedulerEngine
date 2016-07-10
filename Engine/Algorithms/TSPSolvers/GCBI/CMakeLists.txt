@@ -15,7 +15,7 @@ add_library(GCBITSPSolver SHARED
 
 set_target_properties(GCBITSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/GCBI")
 
-target_link_libraries(GCBITSPSolver SceneManager SceneEditor)
+target_link_libraries(GCBITSPSolver SceneManager SceneEditor LoggingManager)
 
 cotire(GCBITSPSolver)
 
