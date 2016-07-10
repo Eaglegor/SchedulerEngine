@@ -4,6 +4,7 @@ stages:
 building:
     stage: build
     script:
+        - pip install --upgrade conan
         - mkdir build
         - cd build
         - cmake -DCPP_SCHEDULER_TESTS=TRUE ../
