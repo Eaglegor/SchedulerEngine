@@ -18,13 +18,11 @@ namespace Scheduler
 	{
 		if(edge.from_index <= edge.to_index)
 		{
-			assert(false);
 			return false;
 		}
 
 		if(edge.to_index == 0)
 		{
-			assert(false);
 			return false;
 		}
 

@@ -5,41 +5,37 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Concepts/Distance.h>
 #include <Engine/LoggingManager/LoggingManager.h>
+#include <Engine/SceneManager/Stop.h>
 
 namespace Scheduler
 {
 	class RoutingService;
 	class Run;
 
-	class GCBIEdgeSuggestor : public EdgeSuggestor
+	class BetterEdgeSuggestor : public EdgeSuggestor
 	{
 	public:
-		GCBIEdgeSuggestor(Run* run, RoutingService* routing_service);
+		BetterEdgeSuggestor(Run* run, RoutingService* routing_service);
 
 		virtual std::vector<SuggestedEdge> next() override;
 		virtual bool hasNext() override;
 		virtual void reset() override;
 
-		void onSolutionAccepted();
 	private:
 		struct Entry
 		{
-			Location from;
-			Location to;
-			Distance distance;
+			SuggestedEdge edge;
+			float distance;
+
+			bool operator<(const Entry& rhs) const
+			{
+				return this->distance < rhs.distance;
+			}
 		};
-
-		using Rating = std::vector<Entry>;
-
-		std::vector<size_t> findStopsByLocation(const Location& location) const;
-
-		void generateRating();
 
 		Run* run;
 		RoutingService* routing_service;
-		Rating rating;
-		Rating::iterator current_iterator;
+		size_t current_index;
 		Logger* logger;
-		Distance max_run_distance;
 	};
 }

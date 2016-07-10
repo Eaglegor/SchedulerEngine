@@ -27,7 +27,7 @@
 
 std::vector<std::string> light_datasets
 {
-	"Light/att48",
+	"Light/att48"/*,
 	"Light/bayg29",
 	"Light/bays29",
 	"Light/berlin52",
@@ -61,7 +61,7 @@ std::vector<std::string> light_datasets
 	"Light/st70",
 	"Light/swiss42",
 	"Light/ulysses16",
-	"Light/ulysses22"
+	"Light/ulysses22"*/
 };
 
 std::vector<std::string> medium_datasets
@@ -553,6 +553,8 @@ public:
 
 int main(int argc, char **argv)
 {
+	LoggingManager::configure("logging.cfg");
+
 	std::unique_ptr<Scheduler::BenchmarkPublisher> publisher;
 	if (argc > 1)
 	{

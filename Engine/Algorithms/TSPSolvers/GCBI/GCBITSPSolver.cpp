@@ -15,7 +15,11 @@
 #include "EdgeSuggestor.h"
 #include "EdgeIntroducer.h"
 #include "GCBIEdgeSuggestor.h"
-#include "GCBIEdgeIntroducer.h"
+#include "EdgeIntroducers/CompositeEdgeIntroducer.h"
+#include "BetterEdgeSuggestor.h"
+#include "EdgeIntroducers/DirectEdgeIntroducer.h"
+#include "EdgeIntroducers/CircularEdgeIntroducer.h"
+#include "EdgeIntroducers/ReverseEdgeIntroducer.h"
 
 namespace Scheduler
 {
@@ -34,14 +38,14 @@ namespace Scheduler
 			return;
 		}
 
-		SIMPLE_LOG_INFO(logger, "Multirun TSP started");
+		SIMPLE_LOG_DEBUG(logger, "Multirun TSP started");
 
 		for(Run* r: schedule->getRuns())
 		{
 			optimize(r);
 		}
 
-		SIMPLE_LOG_INFO(logger, "Multirun TSP finished");
+		SIMPLE_LOG_DEBUG(logger, "Multirun TSP finished");
 	}
 
 	void GCBITSPSolver::optimize(Run* run) const
@@ -53,7 +57,7 @@ namespace Scheduler
 			return;
 		}
 
-		SIMPLE_LOG_INFO(logger, "Single run TSP started");
+		SIMPLE_LOG_DEBUG(logger, "Single run TSP started");
 
 		SIMPLE_LOG_TRACE(logger, "Initializing");
 
@@ -63,8 +67,13 @@ namespace Scheduler
 
 		SceneEditor scene_editor;
 		
-		GCBIEdgeSuggestor suggestor(run, routing_service);
-		GCBIEdgeIntroducer introducer(run, cost_function, scene_editor);
+		//GCBIEdgeSuggestor suggestor(run, routing_service);
+		BetterEdgeSuggestor suggestor(run, routing_service);
+		
+		CompositeEdgeIntroducer edge_introducer(run, cost_function, scene_editor);
+		edge_introducer.addIntroducer<ReverseEdgeIntroducer>(run, cost_function, scene_editor);
+		edge_introducer.addIntroducer<DirectEdgeIntroducer>(run, cost_function, scene_editor);
+		edge_introducer.addIntroducer<CircularEdgeIntroducer>(run, cost_function, scene_editor);
 
 		SIMPLE_LOG_TRACE(logger, "Starting main cycle");
 
@@ -75,7 +84,6 @@ namespace Scheduler
 			while (suggestor.hasNext())
 			{
 				std::vector<SuggestedEdge> edges = suggestor.next();
-				LOG_DEBUG(logger, "{} new edges suggested", edges.size());
 				for (SuggestedEdge edge : edges)
 				{
 					LOG_DEBUG(logger, "Suggested edge: {}-{}", edge.from_index, edge.to_index);
@@ -84,7 +92,7 @@ namespace Scheduler
 					if (edge.from_index == run->getWorkStops().size() + 1) continue;
 					if (edge.to_index == 0) continue;
 					SIMPLE_LOG_TRACE(logger, "Trying to introduce suggested edge");
-					if (introducer.introduce(edge))
+					if (edge_introducer.introduce(edge))
 					{
 						SIMPLE_LOG_TRACE(logger, "Introduction successful. Commiting changes");
 						scene_editor.commit();
@@ -102,7 +110,7 @@ namespace Scheduler
 			suggestor.reset();
 		}
 
-		SIMPLE_LOG_INFO(logger, "Single run TSP finished");
+		SIMPLE_LOG_DEBUG(logger, "Single run TSP finished");
 	}
 
 	void GCBITSPSolver::setRoutingService(RoutingService* routing_service)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EdgeIntroducer.h"
+#include "../EdgeIntroducer.h"
 #include <Engine/SceneManager/Run.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
 
@@ -22,7 +22,7 @@ namespace Scheduler
 			Iterator iterator;
 		};
 
-		BestAllocationResult getBestAllocationVariant(Iterator subsequence_start, Iterator subsequece_end, Iterator target_range_start, Iterator target_range_end);
+		BestAllocationResult getBestAllocationVariant(Iterator subsequence_start, Iterator subsequence_end, Iterator target_range_start, Iterator target_range_end);
 
 		Run* run;
 		ImmutableVector<Run*>::const_iterator run_iter;

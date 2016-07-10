@@ -10,6 +10,7 @@ namespace Scheduler
 	{
 	public:
 		static Logger* getLogger(const char* name);
+		static void configure(const char* config_filename);
 	};
 }
 

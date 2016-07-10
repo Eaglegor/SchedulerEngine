@@ -16,7 +16,6 @@ namespace Scheduler
 	bool DirectEdgeIntroducer::introduce(const SuggestedEdge& edge)
 	{
 		if (edge.from_index >= edge.to_index) {
-			assert(false);
 			return false;
 		}
 
@@ -40,7 +39,7 @@ namespace Scheduler
 		return true;
 	}
 
-	DirectEdgeIntroducer::BestAllocationResult DirectEdgeIntroducer::getBestAllocationVariant(Iterator subsequence_start, Iterator subsequece_end, Iterator target_range_start, Iterator target_range_end)
+	DirectEdgeIntroducer::BestAllocationResult DirectEdgeIntroducer::getBestAllocationVariant(Iterator subsequence_start, Iterator subsequence_end, Iterator target_range_start, Iterator target_range_end)
 	{
 		bool is_first = true;
 		BestAllocationResult result;
@@ -48,7 +47,7 @@ namespace Scheduler
 		size_t checkpoint = scene_editor.checkpoint();
 		for (auto target_iter = target_range_start; target_iter != target_range_end; ++target_iter)
 		{
-			scene_editor.performAction<MoveRunWorkStopsSubsequence>(run_iter, subsequence_start, subsequece_end, target_iter);
+			scene_editor.performAction<MoveRunWorkStopsSubsequence>(run_iter, subsequence_start, subsequence_end, target_iter);
 			Cost new_cost = cost_function->calculateCost(run->getSchedule());
 			if (is_first || new_cost < result.cost)
 			{

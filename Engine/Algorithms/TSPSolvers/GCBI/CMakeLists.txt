@@ -7,10 +7,12 @@ add_library(GCBITSPSolver SHARED
     SuggestedEdge.h
     
     GCBIEdgeSuggestor.h GCBIEdgeSuggestor.cpp
-    GCBIEdgeIntroducer.h GCBIEdgeIntroducer.cpp
+    BetterEdgeSuggestor.h BetterEdgeSuggestor.cpp
     
-    DirectEdgeIntroducer.h DirectEdgeIntroducer.cpp
-    CircularEdgeIntroducer.h CircularEdgeIntroducer.cpp
+    EdgeIntroducers/CompositeEdgeIntroducer.h EdgeIntroducers/CompositeEdgeIntroducer.cpp
+    EdgeIntroducers/DirectEdgeIntroducer.h EdgeIntroducers/DirectEdgeIntroducer.cpp
+    EdgeIntroducers/CircularEdgeIntroducer.h EdgeIntroducers/CircularEdgeIntroducer.cpp
+    EdgeIntroducers/ReverseEdgeIntroducer.h EdgeIntroducers/ReverseEdgeIntroducer.cpp
 )
 
 set_target_properties(GCBITSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/GCBI")
