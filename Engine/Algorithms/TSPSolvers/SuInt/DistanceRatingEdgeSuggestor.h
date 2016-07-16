@@ -5,16 +5,17 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Concepts/Distance.h>
 #include <Engine/LoggingManager/LoggingManager.h>
+#include <cstdint>
 
 namespace Scheduler
 {
 	class RoutingService;
 	class Run;
 
-	class GCBIEdgeSuggestor : public EdgeSuggestor
+	class DistanceRatingEdgeSuggestor : public EdgeSuggestor
 	{
 	public:
-		GCBIEdgeSuggestor(Run* run, RoutingService* routing_service);
+		DistanceRatingEdgeSuggestor(Run* run, RoutingService* routing_service);
 
 		virtual std::vector<SuggestedEdge> next() override;
 		virtual bool hasNext() override;

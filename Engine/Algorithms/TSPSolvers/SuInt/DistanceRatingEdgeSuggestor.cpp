@@ -1,4 +1,4 @@
-#include "GCBIEdgeSuggestor.h"
+#include "DistanceRatingEdgeSuggestor.h"
 
 #include <unordered_set>
 #include <Engine/Engine/Services/RoutingService.h>
@@ -9,7 +9,7 @@
 
 namespace Scheduler
 {
-	GCBIEdgeSuggestor::GCBIEdgeSuggestor(Run* run, RoutingService* routing_service):
+	DistanceRatingEdgeSuggestor::DistanceRatingEdgeSuggestor(Run* run, RoutingService* routing_service):
 		run(run),
 		routing_service(routing_service),
 		logger(LoggingManager::getLogger("GCBIEdgeSuggestor"))
@@ -25,7 +25,7 @@ namespace Scheduler
 		max_run_distance = max_distance;
 	}
 
-	std::vector<SuggestedEdge> GCBIEdgeSuggestor::next()
+	std::vector<SuggestedEdge> DistanceRatingEdgeSuggestor::next()
 	{
 		assert(current_iterator != rating.end());
 
@@ -70,7 +70,7 @@ namespace Scheduler
 		return edges;
 	}
 
-	bool GCBIEdgeSuggestor::hasNext()
+	bool DistanceRatingEdgeSuggestor::hasNext()
 	{
 		if (current_iterator->distance > max_run_distance)
 		{
@@ -81,12 +81,12 @@ namespace Scheduler
 		return current_iterator != rating.end();
 	}
 
-	void GCBIEdgeSuggestor::reset()
+	void DistanceRatingEdgeSuggestor::reset()
 	{
 		current_iterator = rating.begin();
 	}
 
-	void GCBIEdgeSuggestor::onSolutionAccepted()
+	void DistanceRatingEdgeSuggestor::onSolutionAccepted()
 	{
 		SIMPLE_LOG_TRACE(logger, "Updating run max distance");
 		Distance max_distance;
@@ -97,7 +97,7 @@ namespace Scheduler
 		max_run_distance = max_distance;
 	}
 
-	std::vector<size_t> GCBIEdgeSuggestor::findStopsByLocation(const Location& location) const
+	std::vector<size_t> DistanceRatingEdgeSuggestor::findStopsByLocation(const Location& location) const
 	{
 		std::vector<size_t> result;
 		
@@ -115,7 +115,7 @@ namespace Scheduler
 		return result;
 	}
 
-	void GCBIEdgeSuggestor::generateRating()
+	void DistanceRatingEdgeSuggestor::generateRating()
 	{
 		rating.clear();
 

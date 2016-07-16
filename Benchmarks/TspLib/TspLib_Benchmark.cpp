@@ -23,11 +23,11 @@
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/TheBest/TheBestTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/OneRelocate/OneRelocateTSPSolver.h>
-#include <Engine/Algorithms/TSPSolvers/GCBI/GCBITSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/SuInt/SuIntTSPSolver.h>
 
 std::vector<std::string> light_datasets
 {
-	"Light/att48"/*,
+	"Light/att48",
 	"Light/bayg29",
 	"Light/bays29",
 	"Light/berlin52",
@@ -61,7 +61,7 @@ std::vector<std::string> light_datasets
 	"Light/st70",
 	"Light/swiss42",
 	"Light/ulysses16",
-	"Light/ulysses22"*/
+	"Light/ulysses22"
 };
 
 std::vector<std::string> medium_datasets
@@ -520,10 +520,10 @@ public:
 	}
 };
 
-class GCBITspLibInstance : public TspLibTestInstance
+class SuIntTspLibInstance : public TspLibTestInstance
 {
 public:
-	GCBITspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+	SuIntTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
 		: TspLibTestInstance(datasets, publisher)
 	{
 	}
@@ -535,19 +535,23 @@ public:
 		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
 		greedy_solver->setRoutingService(&routing_service);
 
-		GCBITSPSolver *gcbi_solver = strategy->createTSPSolver<GCBITSPSolver>();
-		gcbi_solver->setCostFunction(cost_function);
-		gcbi_solver->setRoutingService(&routing_service);
+		SuIntTSPSolver *suint_solver = strategy->createTSPSolver<SuIntTSPSolver>();
+		suint_solver->setCostFunction(cost_function);
+		suint_solver->setRoutingService(&routing_service);
+		suint_solver->setEdgeSuggestor(EdgeSuggestorType::BETTER_EDGE);
+		suint_solver->addEdgeIntroducer(EdgeIntroducerType::REVERSE);
+		suint_solver->addEdgeIntroducer(EdgeIntroducerType::DIRECT);
+		suint_solver->addEdgeIntroducer(EdgeIntroducerType::CIRCULAR);
 
 		tsp_solver->addTSPSolver(greedy_solver);
-		tsp_solver->addTSPSolver(gcbi_solver);
+		tsp_solver->addTSPSolver(suint_solver);
 
 		return tsp_solver;
 	}
 
 	virtual const char* getAlgorithmName() override
 	{
-		return "Greedy >> GCBI";
+		return "Greedy >> SuInt";
 	}
 };
 
@@ -567,7 +571,7 @@ int main(int argc, char **argv)
 
     auto datasets = {light_datasets/*, medium_datasets*/};
     for (const auto &dataset : datasets) {
-		/*
+		
         {
             Optimal_TspLibInstance test(dataset, *publisher);
             test.run();
@@ -601,10 +605,10 @@ int main(int argc, char **argv)
         {
             MTSATspLibInstance test(dataset, *publisher);
             test.run();
-        }*/
+        }
 
 		{
-			GCBITspLibInstance test(dataset, *publisher);
+			SuIntTspLibInstance test(dataset, *publisher);
 			test.run();
 		}
     }

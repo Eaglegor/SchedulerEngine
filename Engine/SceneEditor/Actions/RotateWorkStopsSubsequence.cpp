@@ -21,13 +21,13 @@ namespace Scheduler
 		assert(start_index < (*run_iterator)->getWorkStops().size());
 		assert(end_index >= start_index);
         assert(middle_index >= start_index);
-        assert(end_index > middle_index);
+        assert(end_index >= middle_index);
 		assert(end_index <= (*run_iterator)->getWorkStops().size());
 	}
 
 	void RotateWorkStopsSubsequence::perform()
 	{
-		if (start_index == end_index || start_index == middle_index) return;
+		if (start_index == end_index || start_index == middle_index || end_index == middle_index) return;
 
 		Run* r = schedule->getRuns()[run_index];
 
@@ -47,7 +47,7 @@ namespace Scheduler
 
 	void RotateWorkStopsSubsequence::rollback()
 	{
-        if (start_index == end_index || start_index == middle_index) return;
+        if (start_index == end_index || start_index == middle_index || end_index == middle_index) return;
 
         Run* r = schedule->getRuns()[run_index];
 

@@ -1,4 +1,4 @@
-#include "GCBITSPSolver.h"
+#include "SuIntTSPSolver.h"
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
 #include <Engine/SceneManager/Run.h>
@@ -14,7 +14,7 @@
 #include "SuggestedEdge.h"
 #include "EdgeSuggestor.h"
 #include "EdgeIntroducer.h"
-#include "GCBIEdgeSuggestor.h"
+#include "DistanceRatingEdgeSuggestor.h"
 #include "EdgeIntroducers/CompositeEdgeIntroducer.h"
 #include "BetterEdgeSuggestor.h"
 #include "EdgeIntroducers/DirectEdgeIntroducer.h"
@@ -23,14 +23,14 @@
 
 namespace Scheduler
 {
-	GCBITSPSolver::GCBITSPSolver():
+	SuIntTSPSolver::SuIntTSPSolver():
 		routing_service(nullptr),
 		cost_function(nullptr),
 		logger(LoggingManager::getLogger("GCBITSPSolver"))
 	{
 	}
 
-	void GCBITSPSolver::optimize(Schedule* schedule) const
+	void SuIntTSPSolver::optimize(Schedule* schedule) const
 	{
 		if (routing_service == nullptr || cost_function == nullptr) {
 			if (routing_service == nullptr) SIMPLE_LOG_WARNING(logger, "Routing service is not set. Can't solve TSP.");
@@ -48,7 +48,7 @@ namespace Scheduler
 		SIMPLE_LOG_DEBUG(logger, "Multirun TSP finished");
 	}
 
-	void GCBITSPSolver::optimize(Run* run) const
+	void SuIntTSPSolver::optimize(Run* run) const
 	{
 		if (routing_service == nullptr || cost_function == nullptr)
 		{
@@ -63,17 +63,48 @@ namespace Scheduler
 
 		bool finished = false;
 
-		Cost current_cost = cost_function->calculateCost(run->getSchedule());
-
 		SceneEditor scene_editor;
 		
-		//GCBIEdgeSuggestor suggestor(run, routing_service);
-		BetterEdgeSuggestor suggestor(run, routing_service);
+		std::unique_ptr<EdgeSuggestor> suggestor;
+
+		switch(edge_suggestor_type)
+		{
+			case EdgeSuggestorType::BETTER_EDGE:
+			{
+				suggestor.reset(new BetterEdgeSuggestor(run, routing_service));
+				break;
+			}
+			case EdgeSuggestorType::DISTANCE_RATING:
+			{
+				suggestor.reset(new DistanceRatingEdgeSuggestor(run, routing_service));
+				break;
+			}
+		}
 		
 		CompositeEdgeIntroducer edge_introducer(run, cost_function, scene_editor);
-		edge_introducer.addIntroducer<ReverseEdgeIntroducer>(run, cost_function, scene_editor);
-		edge_introducer.addIntroducer<DirectEdgeIntroducer>(run, cost_function, scene_editor);
-		edge_introducer.addIntroducer<CircularEdgeIntroducer>(run, cost_function, scene_editor);
+		for(const EdgeIntroducerType& introducer_type : edge_introducers_types)
+		{
+			switch(introducer_type)
+			{
+				case EdgeIntroducerType::CIRCULAR:
+				{
+					edge_introducer.addIntroducer<CircularEdgeIntroducer>(run, cost_function, scene_editor);
+					break;
+				}
+				case EdgeIntroducerType::DIRECT:
+				{
+					edge_introducer.addIntroducer<DirectEdgeIntroducer>(run, cost_function, scene_editor);
+					break;
+				}
+				case EdgeIntroducerType::REVERSE:
+				{
+					edge_introducer.addIntroducer<ReverseEdgeIntroducer>(run, cost_function, scene_editor);
+					break;
+				}
+			}
+		}
+		
+		assert(suggestor);
 
 		SIMPLE_LOG_TRACE(logger, "Starting main cycle");
 
@@ -81,9 +112,9 @@ namespace Scheduler
 		{
 			SIMPLE_LOG_TRACE(logger, "Starting next iteration");
 			finished = true;
-			while (suggestor.hasNext())
+			while (suggestor->hasNext())
 			{
-				std::vector<SuggestedEdge> edges = suggestor.next();
+				std::vector<SuggestedEdge> edges = suggestor->next();
 				for (SuggestedEdge edge : edges)
 				{
 					LOG_DEBUG(logger, "Suggested edge: {}-{}", edge.from_index, edge.to_index);
@@ -107,19 +138,29 @@ namespace Scheduler
 				}
 			}
 			SIMPLE_LOG_TRACE(logger, "Resetting suggestor");
-			suggestor.reset();
+			suggestor->reset();
 		}
 
 		SIMPLE_LOG_DEBUG(logger, "Single run TSP finished");
 	}
 
-	void GCBITSPSolver::setRoutingService(RoutingService* routing_service)
+	void SuIntTSPSolver::setRoutingService(RoutingService* routing_service)
 	{
 		this->routing_service = routing_service;
 	}
 
-	void GCBITSPSolver::setCostFunction(ScheduleCostFunction* cost_function)
+	void SuIntTSPSolver::setCostFunction(ScheduleCostFunction* cost_function)
 	{
 		this->cost_function = cost_function;
+	}
+
+	void SuIntTSPSolver::setEdgeSuggestor(const EdgeSuggestorType& type)
+	{
+		this->edge_suggestor_type = type;
+	}
+
+	void SuIntTSPSolver::addEdgeIntroducer(const EdgeIntroducerType& type)
+	{
+		this->edge_introducers_types.push_back(type);
 	}
 }
