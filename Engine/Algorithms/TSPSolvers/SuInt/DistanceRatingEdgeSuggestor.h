@@ -5,7 +5,7 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Concepts/Distance.h>
 #include <Engine/LoggingManager/LoggingManager.h>
-#include <cstdint>
+#include <cstddef>
 
 namespace Scheduler
 {
