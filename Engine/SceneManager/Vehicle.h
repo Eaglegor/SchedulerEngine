@@ -8,6 +8,7 @@
 #include <Engine/Concepts/Capacity.h>
 #include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 #include "Attribute.h"
+#include "Constraints/Vehicle/VehicleConstraints.h"
 
 #include <SceneManager_export.h>
 
@@ -52,6 +53,9 @@ namespace Scheduler
 		const ImmutableUnorderedSet <const Attribute *>& getAttributes() const;
 		void setAttributes(const ImmutableUnorderedSet<const Attribute *> &attributes);
 
+		const VehicleConstraints& constraints() const;
+		VehicleConstraints& constraints();
+
 	private:
         size_t id;
         std::string name;
@@ -65,5 +69,7 @@ namespace Scheduler
 		Capacity capacity;
 
 		std::unordered_set<const Attribute*> attributes;
+
+		VehicleConstraints vehicle_constraints;
     };
 }

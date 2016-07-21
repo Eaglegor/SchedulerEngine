@@ -257,6 +257,16 @@ namespace Scheduler {
 		return scene;
 	}
 
+	const ScheduleConstraints & Schedule::constraints() const
+	{
+		return schedule_constraints;
+	}
+
+	ScheduleConstraints & Schedule::constraints()
+	{
+		return schedule_constraints;
+	}
+
 	const Scene* Schedule::getScene() const
 	{
 		return scene;

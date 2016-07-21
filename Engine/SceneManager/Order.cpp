@@ -65,6 +65,16 @@ namespace Scheduler {
         this->performer_skills_requirements = attributes;
     }
 
+	const OrderConstraints & Order::constraints() const
+	{
+		return order_constraints;
+	}
+
+	OrderConstraints & Order::constraints()
+	{
+		return order_constraints;
+	}
+
     void Order::setOperationsFactory(SceneObjectsFactory<Operation> *factory) {
         this->operations_factory = factory;
     }

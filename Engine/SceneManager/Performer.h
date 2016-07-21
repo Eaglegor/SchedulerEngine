@@ -9,6 +9,8 @@
 #include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 #include "Attribute.h"
 
+#include "Constraints/Driver/DriverConstraints.h"
+
 #include <SceneManager_export.h>
 
 namespace Scheduler
@@ -41,6 +43,9 @@ namespace Scheduler
 		const ImmutableUnorderedSet<const Attribute*>& getSkills() const;
 		void setSkills(const ImmutableUnorderedSet<const Attribute*> &skills);
 
+		const DriverConstraints& constraints() const;
+		DriverConstraints& constraints();
+
 	private:
 		size_t id;
 		std::string name;
@@ -49,5 +54,7 @@ namespace Scheduler
 		Cost activation_cost;
 
 		std::unordered_set<const Attribute*> skills;
+
+		DriverConstraints driver_constraints;
 	};
 }

@@ -74,5 +74,13 @@ namespace Scheduler
 	void Vehicle::setAttributes(const ImmutableUnorderedSet<const Attribute *> &attributes) {
 		this->attributes = attributes;
 	}
+	const VehicleConstraints & Vehicle::constraints() const
+	{
+		return vehicle_constraints;
+	}
+	VehicleConstraints & Vehicle::constraints()
+	{
+		return vehicle_constraints;
+	}
 }
 

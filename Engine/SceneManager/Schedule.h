@@ -5,6 +5,7 @@
 #include "Performer.h"
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "SceneObjectsFactory.h"
+#include "Constraints/Schedule/ScheduleConstraints.h"
 
 #include <SceneManager_export.h>
 #include "ScheduleActualizationModel.h"
@@ -73,6 +74,9 @@ namespace Scheduler
 		const Scene* getScene() const;
 		Scene* getScene();
 
+		const ScheduleConstraints& constraints() const;
+		ScheduleConstraints& constraints();
+
 		// == framework internal ====================================
 		void setScene(Scene* scene);
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
@@ -109,5 +113,7 @@ namespace Scheduler
 		ScheduleValidationModel* schedule_validation_model;
 
 		RunVehicleBinder* run_vehicle_binder;
+
+		ScheduleConstraints schedule_constraints;
     };
 }

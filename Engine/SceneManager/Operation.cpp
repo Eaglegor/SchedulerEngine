@@ -57,6 +57,16 @@ namespace Scheduler
 		this->demand = demand;
 	}
 
+	const OperationConstraints & Operation::constraints() const
+	{
+		return operations_constraints;
+	}
+
+	OperationConstraints & Operation::constraints()
+	{
+		return operations_constraints;
+	}
+
 	const Capacity &Operation::getDemand() const {
 		return demand;
 	}

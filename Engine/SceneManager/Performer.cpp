@@ -48,5 +48,13 @@ namespace Scheduler {
 	void Performer::setSkills(const ImmutableUnorderedSet<const Attribute *> &skills) {
 		this->skills = skills;
 	}
+	const DriverConstraints & Performer::constraints() const
+	{
+		return driver_constraints;
+	}
+	DriverConstraints & Performer::constraints()
+	{
+		return driver_constraints;
+	}
 }
 

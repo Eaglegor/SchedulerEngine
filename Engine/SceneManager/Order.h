@@ -6,6 +6,7 @@
 #include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 
 #include "SceneObjectsFactory.h"
+#include "Constraints/Order/OrderConstraints.h"
 
 #include <SceneManager_export.h>
 
@@ -54,6 +55,9 @@ namespace Scheduler
 		void setVehicleRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes);
 		void setPerformerSkillsRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes);
 
+		const OrderConstraints& constraints() const;
+		OrderConstraints& constraints();
+
 		// == framework internal ====================================
 		void setOperationsFactory(SceneObjectsFactory<Operation> *factory);
 
@@ -69,5 +73,7 @@ namespace Scheduler
 		std::unordered_set<const Attribute*> performer_skills_requirements;
 
 		SceneObjectsFactory<Operation> *operations_factory;
+
+		OrderConstraints order_constraints;
     };
 }

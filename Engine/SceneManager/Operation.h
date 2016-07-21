@@ -7,6 +7,7 @@
 #include <Engine/Concepts/Capacity.h>
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "Order.h"
+#include "Constraints/Operation/OperationConstraints.h"
 
 #include <SceneManager_export.h>
 
@@ -44,6 +45,9 @@ namespace Scheduler
 
 		void setDemand(const Capacity &demand);
 
+		const OperationConstraints& constraints() const;
+		OperationConstraints& constraints();
+
 	private:
         size_t id;
         std::string name;
@@ -54,5 +58,7 @@ namespace Scheduler
 
         const Order* order;
 		Capacity demand;
+
+		OperationConstraints operations_constraints;
     };
 }
