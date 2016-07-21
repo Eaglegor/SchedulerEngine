@@ -23,15 +23,15 @@ public:
 	virtual void dispatch(const Scheduler::WorkStop* work_stop) override
 	{
 		is_valid = true;
-		const Scheduler::Order* order = work_stop->getOperation()->getOrder();
+		const Scheduler::Operation* operation = work_stop->getOperation();
 		const Scheduler::Vehicle* vehicle = work_stop->getRun()->getVehicle();
-		if (order != nullptr && vehicle != nullptr)
+		if (vehicle != nullptr && operation->constraints().vehicleAttributesRequirements().isSet())
 		{
-			/*for(const Scheduler::Attribute* requirement : order->getVehicleRequirements())
+			for(const Scheduler::Attribute* requirement : operation->constraints().vehicleAttributesRequirements().get())
 			{
 				is_valid = is_valid && std::contains_key(vehicle->getAttributes(), requirement);
 				if (!is_valid) break;
-			}*/
+			}
 		}
 	}
 
@@ -40,15 +40,14 @@ public:
 		is_valid = true;
 		for (const Scheduler::Operation* operation : run_boundary_stop->getOperations())
 		{
-			const Scheduler::Order* order = operation->getOrder();
 			const Scheduler::Vehicle* vehicle = run_boundary_stop->getRun()->getVehicle();
-			if (order != nullptr && vehicle != nullptr)
+			if (vehicle != nullptr && operation->constraints().vehicleAttributesRequirements().isSet())
 			{
-				/*for (const Scheduler::Attribute* requirement : order->getVehicleRequirements())
+				for (const Scheduler::Attribute* requirement : operation->constraints().vehicleAttributesRequirements().get())
 				{
 					is_valid = is_valid && std::contains_key(vehicle->getAttributes(), requirement);
 					if (!is_valid) break;
-				}*/
+				}
 			}
 			if (!is_valid) break;
 		}

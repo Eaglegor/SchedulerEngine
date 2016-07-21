@@ -34,7 +34,8 @@ namespace Scheduler {
 		stops_factory(rhs->stops_factory),
 		run_vehicle_binder(rhs->run_vehicle_binder),
 		depot_location(rhs->depot_location),
-		shift(rhs->shift)
+		shift(rhs->shift),
+		schedule_constraints(rhs->schedule_constraints)
 	{
 		ScheduleStateUtils::copyState(rhs, this);
 	}

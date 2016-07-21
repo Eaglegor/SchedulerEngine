@@ -56,9 +56,9 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Scene] Checking if operation is created in default state") {
         REQUIRE(strcmp(free_operation->getName(), "") == 0);
         REQUIRE(free_operation->getDuration() == Duration(0));
-        REQUIRE(free_operation->constraints().demand().get() == Capacity(0, 0, 0, 0));
+        REQUIRE_FALSE(free_operation->constraints().demand().isSet());
         REQUIRE(free_operation->getOrder() == nullptr);
-        REQUIRE(free_operation->constraints().timeWindows().get().empty());
+        REQUIRE_FALSE(free_operation->constraints().timeWindows().isSet());
         REQUIRE(free_operation->getLocation() == Location());
     }
 
@@ -93,9 +93,9 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
         REQUIRE(vehicle->getDurationUnitCost() == Cost(0));
         REQUIRE(vehicle->getDistanceUnitCost() == Cost(0));
         REQUIRE(vehicle->getAttributes().empty());
-        REQUIRE(vehicle->constraints().capacity().get() == Capacity(0, 0, 0, 0));
+        REQUIRE_FALSE(vehicle->constraints().capacity().isSet());
         REQUIRE(vehicle->getRoutingProfile() == RoutingProfile());
-        REQUIRE(vehicle->constraints().availabilityWindows().get().empty());
+        REQUIRE_FALSE(vehicle->constraints().availabilityWindows().isSet());
     }
 
     RoutingProfile defaultRoutingProfile;
@@ -132,7 +132,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
         REQUIRE(strcmp(performer->getName(), "") == 0);
         REQUIRE(performer->getActivationCost() == Cost(0));
         REQUIRE(performer->getDurationUnitCost() == Cost(0));
-        REQUIRE(performer->constraints().availabilityWindows().get().empty());
+        REQUIRE_FALSE(performer->constraints().availabilityWindows().isSet());
         REQUIRE(performer->getSkills().empty());
     }
 
@@ -161,8 +161,6 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Scene] Checking if schedule is created in default state") {
         REQUIRE(strcmp(schedule->getName(), "") == 0);
         REQUIRE(schedule->getDepotLocation() == make_location(0, 0));
-        REQUIRE(schedule->constraints().shiftStartLocation().get() == schedule->getDepotLocation());
-        REQUIRE(schedule->constraints().shiftEndLocation().get() == schedule->getDepotLocation());
         REQUIRE_FALSE(schedule->constraints().shiftStartLocation().isSet());
         REQUIRE_FALSE(schedule->constraints().shiftEndLocation().isSet());
         REQUIRE(schedule->getRuns().empty());
@@ -177,8 +175,6 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Schedule] Checking if schedule state is changed corretly") {
         REQUIRE(strcmp(schedule->getName(), "Schedule1") == 0);
         REQUIRE(schedule->getDepotLocation() == depot);
-        REQUIRE(schedule->constraints().shiftStartLocation().get() == schedule->getDepotLocation());
-        REQUIRE(schedule->constraints().shiftEndLocation().get() == schedule->getDepotLocation());
         REQUIRE_FALSE(schedule->constraints().shiftStartLocation().isSet());
         REQUIRE_FALSE(schedule->constraints().shiftEndLocation().isSet());
         REQUIRE(schedule->getRuns().empty());
@@ -186,15 +182,14 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(schedule->getShift() == make_time_window(0, 3600));
     }
 
-    //schedule->setShiftEndLocation(shift_end);
+    schedule->constraints().shiftEndLocation().set(shift_end);
 
     INFO("[Schedule] Checking if schedule end location is set correctly") {
         REQUIRE(schedule->constraints().shiftEndLocation().get() == shift_end);
         REQUIRE(schedule->constraints().shiftEndLocation().isSet());
-        REQUIRE(schedule->constraints().shiftEndLocation().isSet());
     }
 
-    //schedule->setShiftStartLocation(shift_start);
+    schedule->constraints().shiftStartLocation().set(shift_start);
 
     INFO("[Schedule] Checking if start location is set correctly") {
         REQUIRE(schedule->constraints().shiftStartLocation().get() == shift_start);
@@ -207,25 +202,15 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 
     INFO("[Scene] Checking if order is created in default state") {
         REQUIRE(strcmp(order->getName(), "") == 0);
-        //REQUIRE(order->getPerformerSkillsRequirements().empty());
-        //REQUIRE(order->getVehicleRequirements().empty());
         REQUIRE(order->getStartOperation() == nullptr);
         REQUIRE(order->getWorkOperations().empty());
         REQUIRE(order->getEndOperation() == nullptr);
     }
 
     order->setName("Order1");
-    //order->setPerformerSkillsRequirements({skill1, skill2});
-    //order->setVehicleRequirements({attr1, attr2});
 
     INFO("[Order] Checking if order state is changed correctly") {
         REQUIRE(strcmp(order->getName(), "Order1") == 0);
-        //REQUIRE(order->getPerformerSkillsRequirements().size() == 2);
-        //REQUIRE(std::contains_key(order->getPerformerSkillsRequirements(), skill1));
-        //REQUIRE(std::contains_key(order->getPerformerSkillsRequirements(), skill2));
-        //REQUIRE(order->getVehicleRequirements().size() == 2);
-        //REQUIRE(std::contains_key(order->getVehicleRequirements(), attr1));
-        //REQUIRE(std::contains_key(order->getVehicleRequirements(), attr2));
         REQUIRE(order->getStartOperation() == nullptr);
         REQUIRE(order->getWorkOperations().empty());
         REQUIRE(order->getEndOperation() == nullptr);
@@ -238,9 +223,9 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Order] Checking if start operation is created in default state") {
         REQUIRE(strcmp(order1_start_operation->getName(), "") == 0);
         REQUIRE(order1_start_operation->getDuration() == Duration(0));
-        REQUIRE(order1_start_operation->constraints().demand().get() == Capacity(0, 0, 0, 0));
+        REQUIRE_FALSE(order1_start_operation->constraints().demand().isSet());
         REQUIRE(order1_start_operation->getOrder() == order);
-        REQUIRE(order1_start_operation->constraints().timeWindows().get().empty());
+        REQUIRE_FALSE(order1_start_operation->constraints().timeWindows().isSet());
         REQUIRE(order1_start_operation->getLocation() == Location());
     }
 
@@ -257,9 +242,9 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Order] Checking if end operation is created in default state") {
         REQUIRE(strcmp(order1_end_operation->getName(), "") == 0);
         REQUIRE(order1_end_operation->getDuration() == Duration(0));
-        REQUIRE(order1_end_operation->constraints().demand().get() == Capacity(0, 0, 0, 0));
+        REQUIRE_FALSE(order1_end_operation->constraints().demand().isSet());
         REQUIRE(order1_end_operation->getOrder() == order);
-        REQUIRE(order1_end_operation->constraints().timeWindows().get().empty());
+        REQUIRE_FALSE(order1_end_operation->constraints().timeWindows().isSet());
         REQUIRE(order1_end_operation->getLocation() == Location());
     }
 
@@ -277,9 +262,9 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Order] Checking if work operation 1 is created in default state") {
         REQUIRE(strcmp(order1_work_operation1->getName(), "") == 0);
         REQUIRE(order1_work_operation1->getDuration() == Duration(0));
-        REQUIRE(order1_work_operation1->constraints().demand().get() == Capacity(0, 0, 0, 0));
+        REQUIRE_FALSE(order1_work_operation1->constraints().demand().isSet());
         REQUIRE(order1_work_operation1->getOrder() == order);
-        REQUIRE(order1_work_operation1->constraints().timeWindows().get().empty());
+        REQUIRE_FALSE(order1_work_operation1->constraints().timeWindows().isSet());
         REQUIRE(order1_work_operation1->getLocation() == Location());
     }
 
@@ -298,9 +283,9 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     INFO("[Order] Checking if work operation 2 is created in default state") {
         REQUIRE(strcmp(order1_work_operation2->getName(), "") == 0);
         REQUIRE(order1_work_operation2->getDuration() == Duration(0));
-        REQUIRE(order1_work_operation2->constraints().demand().get() == Capacity(0, 0, 0, 0));
+        REQUIRE_FALSE(order1_work_operation2->constraints().demand().isSet());
         REQUIRE(order1_work_operation2->getOrder() == order);
-        REQUIRE(order1_work_operation2->constraints().timeWindows().get().empty());
+        REQUIRE_FALSE(order1_work_operation2->constraints().timeWindows().isSet());
         REQUIRE(order1_work_operation2->getLocation() == Location());
     }
 

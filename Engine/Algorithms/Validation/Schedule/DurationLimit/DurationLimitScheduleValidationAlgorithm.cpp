@@ -6,13 +6,9 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Utils/Aggregators/DurationAccumulator.h>
 
-Scheduler::DurationLimitScheduleValidationAlgorithm::DurationLimitScheduleValidationAlgorithm(const Duration &limit):
-	limit(limit)
-{
-}
-
 bool Scheduler::DurationLimitScheduleValidationAlgorithm::isValid(const Schedule * schedule) const
 {
 	if (schedule->getRuns().empty()) return true;
-	return DurationAccumulator::accumulateDuration(schedule->getRuns().front()->getStartStop(), schedule->getRuns().back()->getEndStop()) > limit;
+	if (!schedule->constraints().scheduleWorkingTimeLimit().isSet()) return true;
+	return DurationAccumulator::accumulateDuration(schedule->getRuns().front()->getStartStop(), schedule->getRuns().back()->getEndStop()) > schedule->constraints().scheduleWorkingTimeLimit();
 }

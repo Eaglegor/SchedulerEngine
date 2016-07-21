@@ -187,8 +187,8 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 		Schedule* schedule1 = scene->getSchedules()[0];
 		REQUIRE(schedule1->getPerformer() == scene->getPerformers()[0]);
 		REQUIRE(schedule1->getDepotLocation() == DC_Location);
-		REQUIRE(schedule1->constraints().shiftStartLocation().get() == DC_Location);
-		REQUIRE(schedule1->constraints().shiftEndLocation().get() == DC_Location);
+		REQUIRE_FALSE(schedule1->constraints().shiftStartLocation().isSet());
+		REQUIRE_FALSE(schedule1->constraints().shiftEndLocation().isSet());
 		REQUIRE(schedule1->getShift().getStartTime() - Units::hours_minutes(8, 0) == TimePoint(0));
 		REQUIRE(schedule1->getShift().getEndTime() - Units::hours_minutes(18, 0) == TimePoint(0));
 

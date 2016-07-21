@@ -9,10 +9,8 @@ namespace Scheduler
 	class DURATIONLIMITRUNVALIDATIONALGORITHM_EXPORT DurationLimitRunValidationAlgorithm : public RunValidationAlgorithm
 	{
 	public:
-		explicit DurationLimitRunValidationAlgorithm(const Duration &limit);
-		virtual bool isValid(const Run * run) const override;
+		DurationLimitRunValidationAlgorithm() = default;
 
-	private:
-		Duration limit;
+		virtual bool isValid(const Run * run) const override;
 	};
 }
