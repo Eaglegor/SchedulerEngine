@@ -48,7 +48,17 @@ namespace Scheduler {
 		return schedules;
 	}
 
-    void Scene::setOperationsfactory(SceneObjectsFactory<Operation> *factory) {
+	const SceneConstraints & Scene::constraints() const
+	{
+		return scene_constraints;
+	}
+
+	SceneConstraints & Scene::constraints()
+	{
+		return scene_constraints;
+	}
+
+	void Scene::setOperationsfactory(SceneObjectsFactory<Operation> *factory) {
         this->operations_factory = factory;
     }
 

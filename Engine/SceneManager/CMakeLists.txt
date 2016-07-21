@@ -51,6 +51,22 @@ add_library(SceneManager SHARED
 	
 	SceneObjectsFactory.h
 
+    Constraints/ConstraintHolder.h
+    
+	Constraints/Performer/PerformerConstraints.h Constraints/Performer/PerformerConstraints.cpp
+	
+	Constraints/Operation/OperationConstraints.h Constraints/Operation/OperationConstraints.cpp
+	
+	Constraints/Order/OrderConstraints.h Constraints/Order/OrderConstraints.cpp
+	
+	Constraints/Scene/SceneConstraints.h Constraints/Scene/SceneConstraints.cpp
+	
+	Constraints/Schedule/ScheduleConstraints.h Constraints/Schedule/ScheduleConstraints.cpp
+	
+	Constraints/Vehicle/VehicleConstraints.h Constraints/Vehicle/VehicleConstraints.cpp
+	
+	
+	
 	Extensions/TimeWindowSelector.h
 	Extensions/RunVehicleBinder.h
 	Extensions/ArrivalTimeActualizationAlgorithm.h
@@ -59,7 +75,6 @@ add_library(SceneManager SHARED
 	Extensions/StopValidationAlgorithm.h
 	Extensions/RunValidationAlgorithm.h
 	Extensions/ScheduleValidationAlgorithm.h
-    
 )
 
 set_target_properties(SceneManager PROPERTIES FOLDER "Engine")

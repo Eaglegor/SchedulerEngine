@@ -13,6 +13,8 @@
 #include <SceneManager_export.h>
 #include "ScheduleActualizationModel.h"
 
+#include "Constraints/Scene/SceneConstraints.h"
+
 namespace Scheduler
 {
     class Operation;
@@ -77,6 +79,9 @@ namespace Scheduler
 			return new_binder;
 		}
 
+		const SceneConstraints& constraints() const;
+		SceneConstraints& constraints();
+
 		// == framework internal ====================================
         void setOperationsfactory(SceneObjectsFactory<Operation> *factory);
         void setOrdersFactory(SceneObjectsFactory<Order> *factory);
@@ -110,5 +115,7 @@ namespace Scheduler
 		Factory<RunVehicleBinder> *run_vehicle_binders_factory;
 
 		RunVehicleBinder *run_vehicle_binder;
+
+		SceneConstraints scene_constraints;
     };
 }

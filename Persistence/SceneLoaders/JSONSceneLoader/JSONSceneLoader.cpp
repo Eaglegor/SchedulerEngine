@@ -101,9 +101,9 @@ namespace Scheduler
 			load.setValue(i, operation_desc.load[i]);
 		}
 
-		out_operation->setDemand(load);
+		out_operation->constraints().demand().set(load);
 
-		out_operation->setTimeWindows(createTimeWindows(operation_desc.time_windows, settings));
+		out_operation->constraints().timeWindows().set(createTimeWindows(operation_desc.time_windows, settings));
 
 		if (operation_desc.duration_format)
 		{
@@ -152,7 +152,7 @@ namespace Scheduler
 			performer->setName(performer_desc.name.c_str());
 			if (performer_desc.activation_cost) performer->setActivationCost(Cost(performer_desc.activation_cost.get()));
 			if (performer_desc.hour_cost) performer->setDurationUnitCost(Cost(performer_desc.hour_cost.get() / Units::hours(1).getValue()));
-			performer->setAvailabilityWindows(createTimeWindows(performer_desc.availability_windows, settings));
+			performer->constraints().availabilityWindows().set(createTimeWindows(performer_desc.availability_windows, settings));
 			
 			std::unordered_set<const Attribute*> skills;
 			for (const std::string &skill : performer_desc.skills)
@@ -175,7 +175,7 @@ namespace Scheduler
 			if (vehicle_desc.hour_cost) vehicle->setDurationUnitCost(Cost(vehicle_desc.hour_cost.get() / Units::hours(1).getValue()));
 			if (vehicle_desc.distance_unit_cost) vehicle->setDistanceUnitCost(Cost(vehicle_desc.distance_unit_cost.get()));
 
-			vehicle->setAvailabilityWindows(createTimeWindows(vehicle_desc.availability_windows, settings));
+			vehicle->constraints().availabilityWindows().set(createTimeWindows(vehicle_desc.availability_windows, settings));
 
 			std::unordered_set<const Attribute*> attributes;
 			for (const std::string &attr : vehicle_desc.attributes)
@@ -197,7 +197,7 @@ namespace Scheduler
 				capacity.setValue(i, vehicle_desc.capacity[i]);
 			}
 
-			vehicle->setCapacity(capacity);
+			vehicle->constraints().capacity().set(capacity);
 
 			vehicles.emplace(vehicle_desc.name, vehicle);
 		}
@@ -223,7 +223,7 @@ namespace Scheduler
 				const Attribute* attribute = scene_manager->createAttribute(vehicle_requirement.c_str());
 				vehicle_requirements.emplace(attribute);
 			}
-			order->setVehicleRequirements(vehicle_requirements);
+			//order->setVehicleRequirements(vehicle_requirements);
 
 			std::unordered_set<const Attribute*> performer_skill_requirements;
 			for (const std::string &performer_skill_requirement : order_desc.performer_skill_requirements)
@@ -231,7 +231,7 @@ namespace Scheduler
 				const Attribute* attribute = scene_manager->createAttribute(performer_skill_requirement.c_str());
 				performer_skill_requirements.emplace(attribute);
 			}
-			order->setPerformerSkillsRequirements(performer_skill_requirements);
+			//order->setPerformerSkillsRequirements(performer_skill_requirements);
 
 			if(order_desc.start_operation)
 			{
@@ -262,9 +262,9 @@ namespace Scheduler
 		{
 			Performer* performer = performers.at(schedule_desc.performer);
 			Schedule* schedule = scene->createSchedule(performer);
-			if (schedule_desc.shift.start_location) schedule->setShiftStartLocation(locations.at(schedule_desc.shift.start_location.get()));
+			//if (schedule_desc.shift.start_location) schedule->setShiftStartLocation(locations.at(schedule_desc.shift.start_location.get()));
 			schedule->setDepotLocation(locations.at(schedule_desc.shift.depot_location));
-			if (schedule_desc.shift.end_location) schedule->setShiftEndLocation(locations.at(schedule_desc.shift.end_location.get()));
+			//if (schedule_desc.shift.end_location) schedule->setShiftEndLocation(locations.at(schedule_desc.shift.end_location.get()));
 
 			schedule->setShift(createTimeWindow(schedule_desc.shift.time_window, settings));
 

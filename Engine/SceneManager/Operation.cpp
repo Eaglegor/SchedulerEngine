@@ -17,10 +17,6 @@ namespace Scheduler
         return id;
     }
 
-    ImmutableVector<TimeWindow>& Operation::getTimeWindows() const {
-        return time_windows;
-    }
-
     const Location& Operation::getLocation() const {
         return location;
     }
@@ -37,10 +33,6 @@ namespace Scheduler
         this->name = name;
     }
 
-    void Operation::setTimeWindows(ImmutableVector<TimeWindow> &time_windows) {
-        this->time_windows = time_windows;
-    }
-
     void Operation::setLocation(const Location &location) {
         this->location = location;
     }
@@ -53,11 +45,14 @@ namespace Scheduler
         this->order = order;
     }
 
-	void Operation::setDemand(const Capacity &demand) {
-		this->demand = demand;
+	const OperationConstraints & Operation::constraints() const
+	{
+		return operations_constraints;
 	}
 
-	const Capacity &Operation::getDemand() const {
-		return demand;
+	OperationConstraints & Operation::constraints()
+	{
+		return operations_constraints;
 	}
+
 }

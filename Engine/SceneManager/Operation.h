@@ -7,6 +7,7 @@
 #include <Engine/Concepts/Capacity.h>
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "Order.h"
+#include "Constraints/Operation/OperationConstraints.h"
 
 #include <SceneManager_export.h>
 
@@ -22,8 +23,6 @@ namespace Scheduler
 
         size_t getId() const;
 
-        ImmutableVector<TimeWindow>& getTimeWindows() const;
-
         const Location& getLocation() const;
 
         const Duration& getDuration() const;
@@ -32,27 +31,24 @@ namespace Scheduler
 
         void setName(const char* name);
 
-        void setTimeWindows(ImmutableVector<TimeWindow> &time_windows);
-
         void setLocation(const Location &location);
 
         void setDuration(const Duration &duration);
 
         void setOrder(const Order *order);
 
-		const Capacity& getDemand() const;
-
-		void setDemand(const Capacity &demand);
+		const OperationConstraints& constraints() const;
+		OperationConstraints& constraints();
 
 	private:
         size_t id;
         std::string name;
 
-        std::vector<TimeWindow> time_windows;
         Location location;
         Duration duration;
 
         const Order* order;
-		Capacity demand;
+
+		OperationConstraints operations_constraints;
     };
 }

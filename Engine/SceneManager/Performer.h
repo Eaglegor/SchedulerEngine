@@ -9,6 +9,8 @@
 #include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 #include "Attribute.h"
 
+#include "Constraints/Performer/PerformerConstraints.h"
+
 #include <SceneManager_export.h>
 
 namespace Scheduler
@@ -27,13 +29,11 @@ namespace Scheduler
 
 		size_t getId() const;
 		const char* getName() const;
-		ImmutableVector<TimeWindow>& getAvailabilityWindows();
 
 		const Cost& getDurationUnitCost() const;
 		const Cost& getActivationCost() const;
 
 		void setName(const char* name);
-		void setAvailabilityWindows(ImmutableVector<TimeWindow> &time_windows);
 
 		void setDurationUnitCost(const Cost &cost);
 		void setActivationCost(const Cost &cost);
@@ -41,13 +41,17 @@ namespace Scheduler
 		const ImmutableUnorderedSet<const Attribute*>& getSkills() const;
 		void setSkills(const ImmutableUnorderedSet<const Attribute*> &skills);
 
+		const PerformerConstraints& constraints() const;
+		PerformerConstraints& constraints();
+
 	private:
 		size_t id;
 		std::string name;
-		std::vector<TimeWindow> availability_windows;
 		Cost duration_unit_cost;
 		Cost activation_cost;
 
 		std::unordered_set<const Attribute*> skills;
+
+		PerformerConstraints performer_constraints;
 	};
 }
