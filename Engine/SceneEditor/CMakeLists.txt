@@ -10,6 +10,7 @@ add_library(SceneEditor SHARED
     Actions/MoveRunWorkStop.h Actions/MoveRunWorkStop.cpp
     Actions/ScrambleWorkStopsSubsequence.h Actions/ScrambleWorkStopsSubsequence.cpp
     Actions/RotateWorkStopsSubsequence.h Actions/RotateWorkStopsSubsequence.cpp
+	Actions/MoveRunWorkStopsSubsequence.h Actions/MoveRunWorkStopsSubsequence.cpp
 )
 
 set_target_properties(SceneEditor PROPERTIES FOLDER "Engine")
@@ -24,6 +25,8 @@ generate_export_header(SceneEditor EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/
 if(CPP_SCHEDULER_TESTS)
 	add_executable(SceneEditor_Test
 		Test/SceneEditor_Test.cpp
+		Test/SceneEditor_Test_MoveRunWorkStop.cpp
+		Test/SceneEditor_Test_MoveRunWorkStopsSubsequence.cpp
 	)
 		
 	set_property(SOURCE Test/SceneEditor_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")

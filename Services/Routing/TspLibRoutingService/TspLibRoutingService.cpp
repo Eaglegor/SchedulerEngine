@@ -36,7 +36,7 @@ namespace Scheduler
 
 		size_t from_index = std::round(from.getLatitude().getValue());
 		size_t to_index = std::round(to.getLatitude().getValue());
-
+		
 		float distance = routes[from_index * nodes_count + to_index];
 
 		Route r;

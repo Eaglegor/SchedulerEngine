@@ -13,13 +13,6 @@
 #include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
 #include <Engine/SceneManager/WorkStop.h>
 
-void checkOrder(Scheduler::Run* run, std::vector<size_t> expected_order)
-{
-	for (int i = 0; i < run->getWorkStops().size(); ++i)
-	{
-		REQUIRE(std::string("Operation") + std::to_string(expected_order[i]) == run->getWorkStops()[i]->getOperation()->getName());
-	}
-}
 
 TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 {
@@ -35,6 +28,14 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 	Run* run = scene->getSchedules()[0]->getRuns()[0];
 
 	const auto& work_stops = run->getWorkStops();
+
+	auto checkOrder = [&](Scheduler::Run* run, std::vector<size_t> expected_order)
+	{
+		for (int i = 0; i < run->getWorkStops().size(); ++i)
+		{
+			REQUIRE(std::string("Operation") + std::to_string(expected_order[i]) == run->getWorkStops()[i]->getOperation()->getName());
+		}
+	};
 
 	checkOrder(run, { 1, 2, 3, 4, 5 });
 
@@ -165,6 +166,14 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 TEST_CASE("Reverse action works", "[integration][functional][scene_editor]")
 {
+	auto checkOrder = [&](Scheduler::Run* run, std::vector<size_t> expected_order)
+	{
+		for (int i = 0; i < run->getWorkStops().size(); ++i)
+		{
+			REQUIRE(std::string("Operation") + std::to_string(expected_order[i]) == run->getWorkStops()[i]->getOperation()->getName());
+		}
+	};
+
 	using namespace Scheduler;
 
 	Engine engine;
