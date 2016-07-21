@@ -43,17 +43,12 @@ namespace Scheduler
 		const ImmutableVector<Operation*>& getWorkOperations() const;
 		Operation* getEndOperation();
         const Operation* getEndOperation() const;
-        ImmutableUnorderedSet<const Attribute*>& getVehicleRequirements() const;
-		ImmutableUnorderedSet<const Attribute*>& getPerformerSkillsRequirements() const;
 
 		void setName(const char* name);
 
 		Operation* createStartOperation();
 		Operation* createWorkOperation();
 		Operation* createEndOperation();
-
-		void setVehicleRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes);
-		void setPerformerSkillsRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes);
 
 		const OrderConstraints& constraints() const;
 		OrderConstraints& constraints();
@@ -68,9 +63,6 @@ namespace Scheduler
         Operation* start_operation;
         std::vector<Operation*> work_operations;
         Operation* end_operation;
-
-		std::unordered_set<const Attribute*> vehicle_requirements;
-		std::unordered_set<const Attribute*> performer_skills_requirements;
 
 		SceneObjectsFactory<Operation> *operations_factory;
 

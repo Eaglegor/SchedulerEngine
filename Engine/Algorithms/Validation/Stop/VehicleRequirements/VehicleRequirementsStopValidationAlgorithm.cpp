@@ -27,11 +27,11 @@ public:
 		const Scheduler::Vehicle* vehicle = work_stop->getRun()->getVehicle();
 		if (order != nullptr && vehicle != nullptr)
 		{
-			for(const Scheduler::Attribute* requirement : order->getVehicleRequirements())
+			/*for(const Scheduler::Attribute* requirement : order->getVehicleRequirements())
 			{
 				is_valid = is_valid && std::contains_key(vehicle->getAttributes(), requirement);
 				if (!is_valid) break;
-			}
+			}*/
 		}
 	}
 
@@ -44,11 +44,11 @@ public:
 			const Scheduler::Vehicle* vehicle = run_boundary_stop->getRun()->getVehicle();
 			if (order != nullptr && vehicle != nullptr)
 			{
-				for (const Scheduler::Attribute* requirement : order->getVehicleRequirements())
+				/*for (const Scheduler::Attribute* requirement : order->getVehicleRequirements())
 				{
 					is_valid = is_valid && std::contains_key(vehicle->getAttributes(), requirement);
 					if (!is_valid) break;
-				}
+				}*/
 			}
 			if (!is_valid) break;
 		}

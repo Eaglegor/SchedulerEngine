@@ -3,122 +3,83 @@
 
 namespace Scheduler
 {
-	const Distance * ScheduleConstraints::scheduleDistanceLimit() const
+	const ScheduleConstraints::ScheduleDistanceLimitConstraint& ScheduleConstraints::scheduleDistanceLimit() const
 	{
-		return _schedule_distance_limit.get();
-	}
-	const Duration * ScheduleConstraints::scheduleDrivingTimeLimit() const
-	{
-		return _schedule_driving_time_limit.get();
-	}
-	const Duration * ScheduleConstraints::scheduleWorkingTimeLimit() const
-	{
-		return _schedule_working_time_limit.get();
-	}
-	const Distance * ScheduleConstraints::runDistanceLimit() const
-	{
-		return _run_distance_limit.get();
-	}
-	const Duration * ScheduleConstraints::runDrivingTimeLimit() const
-	{
-		return _run_driving_time_limit.get();
-	}
-	const Duration * ScheduleConstraints::runWorkingTimeLimit() const
-	{
-		return _run_working_time_limit.get();
-	}
-	void ScheduleConstraints::addConstraint(const DistanceConstraint & type, const Distance & distance)
-	{
-		switch (type)
-		{
-		case DistanceConstraint::RUN_DISTANCE_LIMIT:
-		{
-			_run_distance_limit = std::make_unique<Distance>(distance);
-			break;
-		}
-		case DistanceConstraint::SCHEDULE_DISTANCE_LIMIT:
-		{
-			_schedule_distance_limit = std::make_unique<Distance>(distance);
-			break;
-		}
-		default:
-			break;
-		}
-	}
-	void ScheduleConstraints::addConstraint(const DurationConstraint & type, const Duration & duration)
-	{
-		switch (type)
-		{
-		case DurationConstraint::RUN_DRIVING_TIME:
-		{
-			_run_driving_time_limit = std::make_unique<Duration>(duration);
-			break;
-		}
-		case DurationConstraint::RUN_WORKING_TIME:
-		{
-			_run_working_time_limit = std::make_unique<Duration>(duration);
-			break;
-		}
-		case DurationConstraint::SCHEDULE_DRIVING_TIME:
-		{
-			_schedule_driving_time_limit = std::make_unique<Duration>(duration);
-			break;
-		}
-		case DurationConstraint::SCHEDULE_WORKING_TIME:
-		{
-			_schedule_working_time_limit = std::make_unique<Duration>(duration);
-			break;
-		}
-		default:
-			break;
-		}
+		return schedule_distance_limit_constraint;
 	}
 
-	void ScheduleConstraints::removeDistanceConstraint(const DistanceConstraint & type)
+	ScheduleConstraints::ScheduleDistanceLimitConstraint& ScheduleConstraints::scheduleDistanceLimit()
 	{
-		switch (type)
-		{
-		case DistanceConstraint::RUN_DISTANCE_LIMIT:
-		{
-			_run_distance_limit.reset();
-			break;
-		}
-		case DistanceConstraint::SCHEDULE_DISTANCE_LIMIT:
-		{
-			_schedule_distance_limit.reset();
-			break;
-		}
-		default:
-			break;
-		}
+		return schedule_distance_limit_constraint;
 	}
 
-	void ScheduleConstraints::removeDurationConstraint(const DurationConstraint & type)
+	const ScheduleConstraints::RunDistanceLimitConstraint& ScheduleConstraints::runDistanceLimit() const
 	{
-		switch (type)
-		{
-		case DurationConstraint::RUN_DRIVING_TIME:
-		{
-			_run_driving_time_limit.reset();
-			break;
-		}
-		case DurationConstraint::RUN_WORKING_TIME:
-		{
-			_run_working_time_limit.reset();
-			break;
-		}
-		case DurationConstraint::SCHEDULE_DRIVING_TIME:
-		{
-			_schedule_driving_time_limit.reset();
-			break;
-		}
-		case DurationConstraint::SCHEDULE_WORKING_TIME:
-		{
-			_schedule_working_time_limit.reset();
-			break;
-		}
-		default:
-			break;
-		}
+		return run_distance_limit_constraint;
+	}
+
+	ScheduleConstraints::RunDistanceLimitConstraint& ScheduleConstraints::runDistanceLimit()
+	{
+		return run_distance_limit_constraint;
+	}
+
+	const ScheduleConstraints::ScheduleDrivingTimeLimitConstraint& ScheduleConstraints::scheduleDrivingTimeLimit() const
+	{
+		return schedule_driving_time_limit_constraint;
+	}
+
+	ScheduleConstraints::ScheduleDrivingTimeLimitConstraint& ScheduleConstraints::scheduleDrivingTimeLimit()
+	{
+		return schedule_driving_time_limit_constraint;
+	}
+
+	const ScheduleConstraints::RunDrivingTimeLimitConstraint& ScheduleConstraints::runDrivingTimeLimit() const
+	{
+		return run_driving_time_limit_constraint;
+	}
+
+	ScheduleConstraints::RunDrivingTimeLimitConstraint& ScheduleConstraints::runDrivingTimeLimit()
+	{
+		return run_driving_time_limit_constraint;
+	}
+
+	const ScheduleConstraints::ScheduleWorkingTimeLimitConstraint& ScheduleConstraints::scheduleWorkingTimeLimit() const
+	{
+		return schedule_working_time_limit_constraint;
+	}
+
+	ScheduleConstraints::ScheduleWorkingTimeLimitConstraint& ScheduleConstraints::scheduleWorkingTimeLimit()
+	{
+		return schedule_working_time_limit_constraint;
+	}
+
+	const ScheduleConstraints::RunWorkingTimeLimitConstraint& ScheduleConstraints::runWorkingTimeLimit() const
+	{
+		return run_working_time_limit_constraint;
+	}
+
+	const ScheduleConstraints::ScheduleShiftStartLocationConstraint& ScheduleConstraints::shiftStartLocation() const
+	{
+		return schedule_shift_start_location_constraint;
+	}
+
+	ScheduleConstraints::ScheduleShiftStartLocationConstraint& ScheduleConstraints::shiftStartLocation()
+	{
+		return schedule_shift_start_location_constraint;
+	}
+
+	const ScheduleConstraints::ScheduleShiftEndLocationConstraint& ScheduleConstraints::shiftEndLocation() const
+	{
+		return schedule_shift_end_location_constraint;
+	}
+
+	ScheduleConstraints::ScheduleShiftEndLocationConstraint& ScheduleConstraints::shiftEndLocation()
+	{
+		return schedule_shift_end_location_constraint;
+	}
+
+	ScheduleConstraints::RunWorkingTimeLimitConstraint& ScheduleConstraints::runWorkingTimeLimit()
+	{
+		return run_working_time_limit_constraint;
 	}
 }

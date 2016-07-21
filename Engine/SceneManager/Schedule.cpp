@@ -17,8 +17,6 @@ namespace Scheduler {
 			scene(nullptr),
 			runs_factory(nullptr),
 			stops_factory(nullptr),
-			shift_start_location_specified(false),
-			shift_end_location_specified(false),
 			schedule_actualization_model(nullptr),
 			schedule_validation_model(nullptr),
 			run_vehicle_binder(nullptr)
@@ -34,12 +32,8 @@ namespace Scheduler {
 		scene(nullptr),
 		runs_factory(rhs->runs_factory),
 		stops_factory(rhs->stops_factory),
-		shift_start_location_specified(rhs->shift_start_location_specified),
-		shift_end_location_specified(rhs->shift_end_location_specified),
 		run_vehicle_binder(rhs->run_vehicle_binder),
 		depot_location(rhs->depot_location),
-		shift_start_location(rhs->shift_start_location),
-		shift_end_location(rhs->shift_end_location),
 		shift(rhs->shift)
 	{
 		ScheduleStateUtils::copyState(rhs, this);
@@ -158,16 +152,6 @@ namespace Scheduler {
 		clear();
 	}
 
-	const Location& Schedule::getShiftStartLocation() const {
-		return shift_start_location;
-	}
-
-	void Schedule::setShiftStartLocation(const Location &shift_start_location) {
-		this->shift_start_location = shift_start_location;
-		shift_start_location_specified = true;
-		invalidateArrivalTimes();
-	}
-
 	const Location& Schedule::getDepotLocation() const {
 		return depot_location;
 	}
@@ -175,29 +159,7 @@ namespace Scheduler {
 	void Schedule::setDepotLocation(const Location &depot_location) {
 		this->depot_location = depot_location;
 
-		if(!shift_start_location_specified) shift_start_location = depot_location;
-		if(!shift_end_location_specified) shift_end_location = depot_location;
 		invalidateArrivalTimes();
-	}
-
-	const Location& Schedule::getShiftEndLocation() const {
-		return shift_end_location;
-	}
-
-	void Schedule::setShiftEndLocation(const Location &shift_end_location) {
-		this->shift_end_location = shift_end_location;
-		shift_end_location_specified = true;
-		invalidateArrivalTimes();
-	}
-
-	bool Schedule::hasSpecificStartLocation() const
-	{
-		return shift_start_location_specified;
-	}
-
-	bool Schedule::hasSpecificEndLocation() const
-	{
-		return shift_end_location_specified;
 	}
 
     bool Schedule::isValid() const

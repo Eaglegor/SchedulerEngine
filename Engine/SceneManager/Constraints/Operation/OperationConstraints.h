@@ -2,27 +2,40 @@
 #include <vector>
 #include <memory>
 
+#include "../ConstraintHolder.h"
 #include <Engine/Concepts/Capacity.h>
-#include "TimeWindowsConstraint.h"
+
+#include <SceneManager_export.h>
+#include <Engine/Concepts/TimeWindow.h>
 
 namespace Scheduler
 {
-	using Demand = Capacity;
+	class Attribute;
 
-	class OperationConstraints
+	class SCENEMANAGER_EXPORT OperationConstraints
 	{
 	public:
-		const TimeWindowsConstraint* timeWindows() const;
-		const Demand* demand() const;
+		using TimeWindowsConstraint = ConstraintHolder<std::vector<TimeWindow>>;
+		using DemandConstraint = ConstraintHolder<Capacity>;
+		using PerformerSkillsRequirements = ConstraintHolder<std::vector<const Attribute*>>;
+		using VehicleAttributesRequirements = ConstraintHolder<std::vector<const Attribute*>>;
 
-		void addConstraint(const TimeWindowsConstraint& time_windows);
-		void addConstraint(const Demand& demand);
-		
-		void removeTimeWindowsConstraint();
-		void removeDemandConstraint();
+		const TimeWindowsConstraint& timeWindows() const;
+		TimeWindowsConstraint& timeWindows();
+
+		const DemandConstraint& demand() const;
+		DemandConstraint& demand();
+
+		const VehicleAttributesRequirements& vehicleAttributesRequirements() const;
+		VehicleAttributesRequirements& vehicleAttributesRequirements();
+
+		const PerformerSkillsRequirements& performerSkillsRequirements() const;
+		PerformerSkillsRequirements& performerSkillsRequirements();
 
 	private:
-		std::unique_ptr<TimeWindowsConstraint> _time_windows;
-		std::unique_ptr<Demand> _demand;
+		TimeWindowsConstraint time_windows_constraint;
+		DemandConstraint demand_constraint;
+		VehicleAttributesRequirements vehicle_attributes_requirements_constraint;
+		PerformerSkillsRequirements performer_skill_requirements_constraint;
 	};
 }

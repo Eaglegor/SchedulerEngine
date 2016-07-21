@@ -41,28 +41,12 @@ namespace Scheduler {
         return end_operation;
     }
 
-    ImmutableUnorderedSet<const Attribute*>& Order::getVehicleRequirements() const {
-        return vehicle_requirements;
-    }
-
-    ImmutableUnorderedSet<const Attribute*>& Order::getPerformerSkillsRequirements() const {
-        return performer_skills_requirements;
-    }
-
-    size_t Order::getId() const {
+	size_t Order::getId() const {
         return id;
     }
 
     void Order::setName(const char *name) {
         this->name = name;
-    }
-
-    void Order::setVehicleRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes) {
-        this->vehicle_requirements = attributes;
-    }
-
-    void Order::setPerformerSkillsRequirements(const ImmutableUnorderedSet<const Attribute*> &attributes) {
-        this->performer_skills_requirements = attributes;
     }
 
 	const OrderConstraints & Order::constraints() const

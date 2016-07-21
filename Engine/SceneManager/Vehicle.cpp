@@ -14,10 +14,6 @@ namespace Scheduler
 		return name.c_str();
 	}
 
-	const ImmutableVector<TimeWindow>& Vehicle::getAvailabilityWindows() const {
-		return availability_windows;
-	}
-
 	const RoutingProfile& Vehicle::getRoutingProfile() const {
 		return routing_profile;
 	}
@@ -42,10 +38,6 @@ namespace Scheduler
 		this->routing_profile = routing_profile;
 	}
 
-	void Vehicle::setAvailabilityWindows(const ImmutableVector<TimeWindow> &windows) {
-		this->availability_windows = windows;
-	}
-
 	void Vehicle::setDurationUnitCost(const Cost &cost) {
 		this->duration_unit_cost = cost;
 	}
@@ -56,15 +48,6 @@ namespace Scheduler
 
 	void Vehicle::setActivationCost(const Cost &cost) {
 		this->activation_cost = cost;
-	}
-
-
-	const Capacity &Vehicle::getCapacity() const {
-		return capacity;
-	}
-
-	void Vehicle::setCapacity(const Capacity &capacity) {
-		this->capacity = capacity;
 	}
 
 	const ImmutableUnorderedSet <const Attribute *> &Vehicle::getAttributes() const {

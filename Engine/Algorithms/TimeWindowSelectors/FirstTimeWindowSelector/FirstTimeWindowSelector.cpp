@@ -15,7 +15,7 @@ namespace Scheduler
 		{
 			assert(work_stop->getOperation());
 
-			const ImmutableVector<TimeWindow>& time_windows = work_stop->getOperation()->getTimeWindows() ;
+			const ImmutableVector<TimeWindow>& time_windows = work_stop->getOperation()->constraints().timeWindows();
 			if (time_windows.empty()) return;
 			out_time_window = time_windows[0];
 		}
@@ -24,7 +24,7 @@ namespace Scheduler
 		{
 			if (run_boundary_stop->getOperations().empty()) return;
 
-			const ImmutableVector<TimeWindow>& time_windows = (*(run_boundary_stop->getOperations().begin()))->getTimeWindows();
+			const ImmutableVector<TimeWindow>& time_windows = (*(run_boundary_stop->getOperations().begin()))->constraints().timeWindows();
 			if (time_windows.empty()) return;
 			out_time_window = time_windows[0];
 		}

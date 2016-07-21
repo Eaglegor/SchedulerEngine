@@ -1,20 +1,26 @@
 #include "VehicleConstraints.h"
 #include <Engine/Concepts/Capacity.h>
+#include <assert.h>
 
 namespace Scheduler
 {
-	const Capacity * VehicleConstraints::capacity() const
+	const VehicleConstraints::CapacityConstraint& VehicleConstraints::capacity() const
 	{
-		return capacity_constraint.get();
+		return capacity_constraint;
 	}
 
-	void VehicleConstraints::addConstraint(const Capacity& capacity)
+	VehicleConstraints::CapacityConstraint& VehicleConstraints::capacity()
 	{
-		capacity_constraint = std::make_unique<Capacity>(capacity);
+		return capacity_constraint;
 	}
 
-	void VehicleConstraints::removeCapacityConstraint()
+	const VehicleConstraints::AvailabilityWindowsConstraint& VehicleConstraints::availabilityWindows() const
 	{
-		capacity_constraint.reset();
+		return availability_windows_constraint;
+	}
+
+	VehicleConstraints::AvailabilityWindowsConstraint& VehicleConstraints::availabilityWindows()
+	{
+		return availability_windows_constraint;
 	}
 }

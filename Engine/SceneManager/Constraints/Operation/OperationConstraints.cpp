@@ -1,34 +1,45 @@
 #include "OperationConstraints.h"
-#include "TimeWindowsConstraint.h"
+#include <assert.h>
 
 namespace Scheduler
 {
-
-	const TimeWindowsConstraint * OperationConstraints::timeWindows() const
+	const OperationConstraints::TimeWindowsConstraint& OperationConstraints::timeWindows() const
 	{
-		return _time_windows.get();
+		return time_windows_constraint;
 	}
 
-	const Demand * OperationConstraints::demand() const
+	OperationConstraints::TimeWindowsConstraint& OperationConstraints::timeWindows()
 	{
-		return _demand.get();
+		return time_windows_constraint;
 	}
 
-	void OperationConstraints::addConstraint(const TimeWindowsConstraint & time_windows)
+	const OperationConstraints::DemandConstraint& OperationConstraints::demand() const
 	{
-		this->_time_windows = std::make_unique<TimeWindowsConstraint>(time_windows);
+		return demand_constraint;
 	}
 
-	void OperationConstraints::addConstraint(const Demand & demand)
+	OperationConstraints::DemandConstraint& OperationConstraints::demand()
 	{
-		this->_demand = std::make_unique<Demand>(demand);
+		return demand_constraint;
 	}
-	void OperationConstraints::removeTimeWindowsConstraint()
+
+	const OperationConstraints::VehicleAttributesRequirements& OperationConstraints::vehicleAttributesRequirements() const
 	{
-		_time_windows.reset();
+		return vehicle_attributes_requirements_constraint;
 	}
-	void OperationConstraints::removeDemandConstraint()
+
+	OperationConstraints::VehicleAttributesRequirements& OperationConstraints::vehicleAttributesRequirements()
 	{
-		_demand.reset();
+		return vehicle_attributes_requirements_constraint;
+	}
+
+	const OperationConstraints::PerformerSkillsRequirements& OperationConstraints::performerSkillsRequirements() const
+	{
+		return performer_skill_requirements_constraint;
+	}
+
+	OperationConstraints::PerformerSkillsRequirements& OperationConstraints::performerSkillsRequirements()
+	{
+		return performer_skill_requirements_constraint;
 	}
 }

@@ -13,16 +13,8 @@ namespace Scheduler {
         return name.c_str();
     }
 
-	ImmutableVector<TimeWindow>& Performer::getAvailabilityWindows() {
-        return availability_windows;
-    }
-
-    void Performer::setName(const char *name) {
+	void Performer::setName(const char *name) {
         this->name = name;
-    }
-
-    void Performer::setAvailabilityWindows(ImmutableVector<TimeWindow> &time_windows) {
-        this->availability_windows = time_windows;
     }
 
 	const Cost& Performer::getDurationUnitCost() const {
@@ -48,13 +40,13 @@ namespace Scheduler {
 	void Performer::setSkills(const ImmutableUnorderedSet<const Attribute *> &skills) {
 		this->skills = skills;
 	}
-	const DriverConstraints & Performer::constraints() const
+	const PerformerConstraints & Performer::constraints() const
 	{
-		return driver_constraints;
+		return performer_constraints;
 	}
-	DriverConstraints & Performer::constraints()
+	PerformerConstraints & Performer::constraints()
 	{
-		return driver_constraints;
+		return performer_constraints;
 	}
 }
 

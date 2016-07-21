@@ -40,7 +40,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
 
     Schedule* schedule = s->createSchedule(performer);
     schedule->setDepotLocation(start_location);
-    schedule->setShiftEndLocation(end_location);
+    schedule->constraints().shiftEndLocation().set(end_location);
 
 	ScheduleActualizationModel* actualization_model = sm->createScheduleActualizationModel();
 	DefaultRouteActualizationAlgorithm* route_actualization_algorithm = sm->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(&routing_service);

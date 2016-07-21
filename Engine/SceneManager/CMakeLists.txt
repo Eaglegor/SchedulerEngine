@@ -51,20 +51,17 @@ add_library(SceneManager SHARED
 	
 	SceneObjectsFactory.h
 
-	Constraints/Driver/DriverConstraints.h Constraints/Driver/DriverConstraints.cpp
-	
+    Constraints/ConstraintHolder.h
+    
+	Constraints/Performer/PerformerConstraints.h Constraints/Performer/PerformerConstraints.cpp
 	
 	Constraints/Operation/OperationConstraints.h Constraints/Operation/OperationConstraints.cpp
-	Constraints/Operation/TimeWindowsConstraint.h Constraints/Operation/TimeWindowsConstraint.cpp
 	
 	Constraints/Order/OrderConstraints.h Constraints/Order/OrderConstraints.cpp
 	
-	
 	Constraints/Scene/SceneConstraints.h Constraints/Scene/SceneConstraints.cpp
 	
-	
 	Constraints/Schedule/ScheduleConstraints.h Constraints/Schedule/ScheduleConstraints.cpp
-	
 	
 	Constraints/Vehicle/VehicleConstraints.h Constraints/Vehicle/VehicleConstraints.cpp
 	

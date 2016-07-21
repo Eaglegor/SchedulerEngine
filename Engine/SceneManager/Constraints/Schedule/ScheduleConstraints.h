@@ -4,49 +4,62 @@
 #include <Engine/Concepts/Distance.h>
 #include <Engine/Concepts/Duration.h>
 
+#include <SceneManager_export.h>
+#include <Engine/Concepts/Location.h>
+#include "../ConstraintHolder.h"
+
 namespace Scheduler
 {
-	class RunLimitationsConstraint;
-	class ScheduleLimitationsConstraint;
-	
-	class ScheduleConstraints
+	class SCENEMANAGER_EXPORT ScheduleConstraints
 	{
 		public:
-			enum class DistanceConstraint
-			{
-				RUN_DISTANCE_LIMIT,
-				SCHEDULE_DISTANCE_LIMIT
-			};
+			using ScheduleDistanceLimitConstraint = ConstraintHolder<Distance>;
+			using RunDistanceLimitConstraint = ConstraintHolder<Distance>;
 
-			enum class DurationConstraint
-			{
-				RUN_DRIVING_TIME,
-				RUN_WORKING_TIME,
-				SCHEDULE_DRIVING_TIME,
-				SCHEDULE_WORKING_TIME
-			};
+			using ScheduleDrivingTimeLimitConstraint = ConstraintHolder<Duration>;
+			using RunDrivingTimeLimitConstraint = ConstraintHolder<Duration>;
 
-			const Distance* scheduleDistanceLimit() const;
-			const Duration* scheduleDrivingTimeLimit() const;
-			const Duration* scheduleWorkingTimeLimit() const;
+			using ScheduleWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
+			using RunWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
 
-			const Distance* runDistanceLimit() const;
-			const Duration* runDrivingTimeLimit() const;
-			const Duration* runWorkingTimeLimit() const;
-		
-			void addConstraint(const DistanceConstraint& type, const Distance& distance);
-			void addConstraint(const DurationConstraint& type, const Duration& duration);
+			using ScheduleShiftStartLocationConstraint = ConstraintHolder<Location>;
+			using ScheduleShiftEndLocationConstraint = ConstraintHolder<Location>;
 
-			void removeDistanceConstraint(const DistanceConstraint& type);
-			void removeDurationConstraint(const DurationConstraint& type);
+			const ScheduleDistanceLimitConstraint& scheduleDistanceLimit() const;
+			ScheduleDistanceLimitConstraint& scheduleDistanceLimit();
+
+			const RunDistanceLimitConstraint& runDistanceLimit() const;
+			RunDistanceLimitConstraint& runDistanceLimit();
+
+			const ScheduleDrivingTimeLimitConstraint& scheduleDrivingTimeLimit() const;
+			ScheduleDrivingTimeLimitConstraint& scheduleDrivingTimeLimit();
+
+			const RunDrivingTimeLimitConstraint& runDrivingTimeLimit() const;
+			RunDrivingTimeLimitConstraint& runDrivingTimeLimit();
+
+			const ScheduleWorkingTimeLimitConstraint& scheduleWorkingTimeLimit() const;
+			ScheduleWorkingTimeLimitConstraint& scheduleWorkingTimeLimit();
+
+			const RunWorkingTimeLimitConstraint& runWorkingTimeLimit() const;
+			RunWorkingTimeLimitConstraint& runWorkingTimeLimit();
+
+			const ScheduleShiftStartLocationConstraint& shiftStartLocation() const;
+			ScheduleShiftStartLocationConstraint& shiftStartLocation();
+
+			const ScheduleShiftEndLocationConstraint& shiftEndLocation() const;
+			ScheduleShiftEndLocationConstraint& shiftEndLocation();
 
 		private:
-			std::unique_ptr<Distance> _schedule_distance_limit;
-			std::unique_ptr<Duration> _schedule_driving_time_limit;
-			std::unique_ptr<Duration> _schedule_working_time_limit;
+			ScheduleDistanceLimitConstraint schedule_distance_limit_constraint;
+			RunDistanceLimitConstraint run_distance_limit_constraint;
 
-			std::unique_ptr<Distance> _run_distance_limit;
-			std::unique_ptr<Duration> _run_driving_time_limit;
-			std::unique_ptr<Duration> _run_working_time_limit;
+			ScheduleDrivingTimeLimitConstraint schedule_driving_time_limit_constraint;
+			RunDrivingTimeLimitConstraint run_driving_time_limit_constraint;
+
+			ScheduleWorkingTimeLimitConstraint schedule_working_time_limit_constraint;
+			RunWorkingTimeLimitConstraint run_working_time_limit_constraint;
+
+			ScheduleShiftStartLocationConstraint schedule_shift_start_location_constraint;
+			ScheduleShiftEndLocationConstraint schedule_shift_end_location_constraint;
 	};
 }

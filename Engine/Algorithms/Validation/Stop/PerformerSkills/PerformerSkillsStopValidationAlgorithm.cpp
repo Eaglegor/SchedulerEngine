@@ -26,11 +26,11 @@ public:
 		const Scheduler::Performer* performer = work_stop->getRun()->getSchedule()->getPerformer();
 		if (order != nullptr)
 		{
-			for(const Scheduler::Attribute* requirement : order->getPerformerSkillsRequirements())
+			/*for(const Scheduler::Attribute* requirement : order->getPerformerSkillsRequirements())
 			{
 				is_valid = is_valid && std::contains_key(performer->getSkills(), requirement);
 				if (!is_valid) break;
-			}
+			}*/
 		}
 	}
 
@@ -43,11 +43,11 @@ public:
 			const Scheduler::Performer* performer = run_boundary_stop->getRun()->getSchedule()->getPerformer();
 			if (order != nullptr)
 			{
-				for (const Scheduler::Attribute* requirement : order->getPerformerSkillsRequirements())
+				/*for (const Scheduler::Attribute* requirement : order->getPerformerSkillsRequirements())
 				{
 					is_valid = is_valid && std::contains_key(performer->getSkills(), requirement);
 					if (!is_valid) break;
-				}
+				}*/
 			}
 			if (!is_valid) break;
 		}

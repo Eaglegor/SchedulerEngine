@@ -1,8 +1,10 @@
 #pragma once
 
+#include <SceneManager_export.h>
+
 namespace Scheduler
 {
-	class SceneConstraints
+	class SCENEMANAGER_EXPORT SceneConstraints
 	{
 	public:
 

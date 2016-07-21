@@ -45,21 +45,9 @@ namespace Scheduler
 		void destroyRun(Run *run, size_t hint = 0);
 		void destroyRun(size_t index);
 
-		const Location& getShiftStartLocation() const;
-
-		void setShiftStartLocation(const Location &shift_start_location);
-
 		const Location& getDepotLocation() const;
 
 		void setDepotLocation(const Location &depot_location);
-
-		const Location& getShiftEndLocation() const;
-
-		void setShiftEndLocation(const Location &shift_end_location);
-
-		bool hasSpecificStartLocation() const;
-
-		bool hasSpecificEndLocation() const;
 
         bool isValid() const;
 
@@ -99,13 +87,7 @@ namespace Scheduler
 		SceneObjectsFactory<Run> *runs_factory;
 		SceneObjectsFactory<WorkStop> *stops_factory;
 
-		bool shift_start_location_specified;
-		Location shift_start_location;
-
 		Location depot_location;
-
-		bool shift_end_location_specified;
-		Location shift_end_location;
 
 		TimeWindow shift;
 

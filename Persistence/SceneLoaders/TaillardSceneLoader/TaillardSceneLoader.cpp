@@ -65,7 +65,7 @@ namespace Scheduler
 			{
 				std::string name = "Vehicle" + std::to_string(i);
 				vehicle->setName(name.c_str());
-				vehicle->setCapacity(Capacity(vehicle_capacity, 0, 0, 0));
+				vehicle->constraints().capacity().set(Capacity(vehicle_capacity, 0, 0, 0));
 			}
 			Performer* performer = scene->createPerformer();
 			{
@@ -95,7 +95,7 @@ namespace Scheduler
 				{
 					std::string op_name = name + ".Work";
 					work_operation->setName(op_name.c_str());
-					work_operation->setDemand(Capacity(demand, 0, 0, 0));
+					work_operation->constraints().demand().set(Capacity(demand, 0, 0, 0));
 					work_operation->setLocation(Location(Coordinate(x), Coordinate(y)));
 				}
 			}

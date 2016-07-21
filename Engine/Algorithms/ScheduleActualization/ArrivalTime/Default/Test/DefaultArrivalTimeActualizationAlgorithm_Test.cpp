@@ -59,7 +59,7 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     Schedule* schedule = s->createSchedule(performer);
     schedule->setDepotLocation(start_location);
-    schedule->setShiftEndLocation(end_location);
+    schedule->constraints().shiftEndLocation().set(end_location);
 
     Run* r = schedule->createRun(start_location, end_location);
     r->setVehicle(vehicle);
@@ -107,10 +107,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     SECTION("Narrow time windows")
     {
-        op1->setTimeWindows({make_time_window(770, 1370)});
-        op2->setTimeWindows({make_time_window(2140, 2740)});
-        op3->setTimeWindows({make_time_window(3510, 4110)});
-        op4->setTimeWindows({make_time_window(4880, 5480)});
+        op1->constraints().timeWindows().set({make_time_window(770, 1370)});
+        op2->constraints().timeWindows().set({make_time_window(2140, 2740)});
+        op3->constraints().timeWindows().set({make_time_window(3510, 4110)});
+        op4->constraints().timeWindows().set({make_time_window(4880, 5480)});
 
         estimated_allocation_1.setStartTime(TimePoint(100));
         estimated_allocation_1.setEndTime(TimePoint(100));
@@ -133,10 +133,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     SECTION("Narrow time windows with budget")
     {
-        op1->setTimeWindows({make_time_window(770, 20000)});
-        op2->setTimeWindows({make_time_window(2140, 20000)});
-        op3->setTimeWindows({make_time_window(3510, 20000)});
-        op4->setTimeWindows({make_time_window(4880, 20000)});
+        op1->constraints().timeWindows().set({make_time_window(770, 20000)});
+        op2->constraints().timeWindows().set({make_time_window(2140, 20000)});
+        op3->constraints().timeWindows().set({make_time_window(3510, 20000)});
+        op4->constraints().timeWindows().set({make_time_window(4880, 20000)});
 
         estimated_allocation_1.setStartTime(TimePoint(400));
         estimated_allocation_1.setEndTime(estimated_allocation_1.getStartTime());
@@ -159,10 +159,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     SECTION("Narrow time windows with budget gap")
     {
-        op1->setTimeWindows({make_time_window(770, 20000)});
-        op2->setTimeWindows({make_time_window(2140, 2740)}); // <== This stop can't be shifted to compensate waiting due to its time window
-        op3->setTimeWindows({make_time_window(3510, 20000)});
-        op4->setTimeWindows({make_time_window(4880, 20000)});
+        op1->constraints().timeWindows().set({make_time_window(770, 20000)});
+        op2->constraints().timeWindows().set({make_time_window(2140, 2740)}); // <== This stop can't be shifted to compensate waiting due to its time window
+        op3->constraints().timeWindows().set({make_time_window(3510, 20000)});
+        op4->constraints().timeWindows().set({make_time_window(4880, 20000)});
 
         estimated_allocation_1.setStartTime(TimePoint(200));
         estimated_allocation_1.setEndTime(estimated_allocation_1.getStartTime());
