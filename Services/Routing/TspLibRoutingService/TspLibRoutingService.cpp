@@ -31,11 +31,8 @@ namespace Scheduler
 
 	Route TspLibRoutingService::calculateRoute(const Location& from, const Location& to, const RoutingProfile& routing_profile)
 	{
-		assert(from.getLatitude().getValue() >= -0.4);
-		assert(to.getLatitude().getValue() >= -0.4);
-
-		size_t from_index = std::round(from.getLatitude().getValue());
-		size_t to_index = std::round(to.getLatitude().getValue());
+		size_t from_index = from.getLatitude().getValue();
+		size_t to_index = to.getLatitude().getValue();
 		
 		float distance = routes[from_index * nodes_count + to_index];
 

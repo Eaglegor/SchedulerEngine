@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cmath>
-#include <Engine/Math/FloatEpsilon.h>
+#include <cstdint>
+#include <Engine/Math/FixedPointMath.h>
 
 #include <Concepts_export.h>
 
@@ -10,12 +10,14 @@ namespace Scheduler
 	class CONCEPTS_EXPORT Coordinate
 	{
 	public:
+		static const size_t PRECISION = 6;
+
 		Coordinate();
-		explicit Coordinate(float value);
+		explicit Coordinate(FixedPointType value);
 		Coordinate(const Coordinate &rhs);
 
-		float getValue() const;
-		void setValue(float value);
+		FixedPointType getValue() const;
+		void setValue(FixedPointType value);
 
 		bool operator==(const Coordinate &rhs) const;
 		bool operator!=(const Coordinate &rhs) const;
@@ -40,7 +42,9 @@ namespace Scheduler
 
 		Coordinate operator-(const Coordinate &rhs) const;
 
+		static Coordinate createFromFloat(float value);
+
 	private:
-		float value;
+		FixedPointType value;
 	};
 }

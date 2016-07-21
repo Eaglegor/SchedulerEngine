@@ -1,4 +1,5 @@
 #include "Coordinate.h"
+#include <cmath>
 
 namespace Scheduler
 {
@@ -6,18 +7,19 @@ namespace Scheduler
 	Coordinate::Coordinate() : value(0)
 	{ }
 
-	Coordinate::Coordinate(float value) : value(value)
-	{ }
+	Coordinate::Coordinate(FixedPointType value): value(value)
+	{
+	}
 
 	Coordinate::Coordinate(const Coordinate &rhs) : value(rhs.value)
 	{ }
 
-	float Coordinate::getValue() const
+	FixedPointType Coordinate::getValue() const
 	{
 		return value;
 	}
 
-	void Coordinate::setValue(float value)
+	void Coordinate::setValue(FixedPointType value)
 	{
 		this->value = value;
 	}
@@ -30,7 +32,7 @@ namespace Scheduler
 
 	bool Coordinate::operator==(const Coordinate &rhs) const
 	{
-		return fabs(value - rhs.value) < FLOAT_EPSILON;
+		return value == rhs.value;
 	}
 
 	bool Coordinate::operator!=(const Coordinate &rhs) const
@@ -40,7 +42,7 @@ namespace Scheduler
 
 	bool Coordinate::operator<(const Coordinate &rhs) const
 	{
-		return value < rhs.value - FLOAT_EPSILON;
+		return value < rhs.value;
 	}
 
 	bool Coordinate::operator<=(const Coordinate &rhs) const
@@ -50,7 +52,7 @@ namespace Scheduler
 
 	bool Coordinate::operator>(const Coordinate &rhs) const
 	{
-		return value > rhs.value + FLOAT_EPSILON;
+		return value > rhs.value;
 	}
 
 	bool Coordinate::operator>=(const Coordinate &rhs) const
@@ -69,6 +71,11 @@ namespace Scheduler
 		return *this;
 	}
 
+	Coordinate Coordinate::createFromFloat(float value)
+	{
+		return Coordinate(toFixedPoint<PRECISION>(value));
+	}
+
 	Coordinate Coordinate::operator-(const Coordinate &rhs) const
 	{
 		return Coordinate(value - rhs.value);
@@ -80,30 +87,30 @@ namespace Scheduler
 		return *this;
 	}
 
-	Coordinate Coordinate::operator-() const
-	{
-		return Coordinate(-value);
-	}
-
 	Coordinate Coordinate::operator*(float multiplier) const
 	{
-		return Coordinate(this->value * multiplier);
-	}
-
-	Coordinate& Coordinate::operator*=(float multiplier)
-	{
-		this->value *= multiplier;
-		return *this;
+		return Coordinate(static_cast<uint32_t>(std::trunc(this->value * multiplier)));
 	}
 
 	Coordinate Coordinate::operator/(float divider) const
 	{
-		return Coordinate(this->value / divider);
+		return Coordinate(static_cast<uint32_t>(std::trunc(this->value / divider)));
+	}
+
+	Coordinate& Coordinate::operator*=(float multiplier)
+	{
+		this->value = static_cast<uint32_t>(std::trunc(this->value * multiplier));
+		return *this;
 	}
 
 	Coordinate& Coordinate::operator/=(float divider)
 	{
-		this->value /= divider;
+		this->value = static_cast<uint32_t>(std::trunc(this->value / divider));
 		return *this;
+	}
+
+	Coordinate Coordinate::operator-() const
+	{
+		return Coordinate(-value);
 	}
 }
