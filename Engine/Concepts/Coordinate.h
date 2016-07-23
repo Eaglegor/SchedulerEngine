@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include <cstddef>
 #include <Engine/Math/FixedPointMath.h>
 
 #include <Concepts_export.h>

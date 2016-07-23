@@ -2,6 +2,7 @@
 
 #include "IntegerPower.h"
 #include <cstdint>
+#include <cmath>
 
 namespace Scheduler
 {

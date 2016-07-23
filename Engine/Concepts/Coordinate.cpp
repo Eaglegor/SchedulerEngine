@@ -1,5 +1,4 @@
 #include "Coordinate.h"
-#include <cmath>
 
 namespace Scheduler
 {
