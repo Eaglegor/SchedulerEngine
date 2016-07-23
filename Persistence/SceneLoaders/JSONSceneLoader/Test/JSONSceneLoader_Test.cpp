@@ -39,12 +39,12 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 
 	REQUIRE(scene);
 
-	Location DC_Location(Coordinate(34.567), Coordinate(23.567));
-	Location Order1_Location(Coordinate(23.65), Coordinate(23.64));
-	Location Order2_Pickup(Coordinate(25.454), Coordinate(23.5353));
-	Location Order2_Drop(Coordinate(43.64), Coordinate(54.75));
-	Location Order3_Location(Coordinate(54.23), Coordinate(23.64));
-	Location FreeOperation1_Location(Coordinate(23.44), Coordinate(23.53));
+	Location DC_Location(Coordinate::createFromFloat(34.567), Coordinate::createFromFloat(23.567));
+	Location Order1_Location(Coordinate::createFromFloat(23.65), Coordinate::createFromFloat(23.64));
+	Location Order2_Pickup(Coordinate::createFromFloat(25.454), Coordinate::createFromFloat(23.5353));
+	Location Order2_Drop(Coordinate::createFromFloat(43.64), Coordinate::createFromFloat(54.75));
+	Location Order3_Location(Coordinate::createFromFloat(54.23), Coordinate::createFromFloat(23.64));
+	Location FreeOperation1_Location(Coordinate::createFromFloat(23.44), Coordinate::createFromFloat(23.53));
 
 	INFO("Checking free operations")
 	{

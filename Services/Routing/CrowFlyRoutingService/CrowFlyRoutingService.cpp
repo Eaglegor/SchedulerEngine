@@ -16,20 +16,26 @@ namespace Scheduler
 														const RoutingProfile &routing_profile) {
 		const float EARTH_RADIUS = 6399.0f;
 
+		float from_lat = fromFixedPoint<Coordinate::PRECISION>(from.getLatitude().getValue());
+		float from_lon = fromFixedPoint<Coordinate::PRECISION>(from.getLongitude().getValue());
+
+		float to_lat = fromFixedPoint<Coordinate::PRECISION>(to.getLatitude().getValue());
+		float to_lon = fromFixedPoint<Coordinate::PRECISION>(to.getLongitude().getValue());
+
 		Distance distance(
 				acos(
-						cos((from.getLatitude() * (M_PI / 180)).getValue()) *
-						cos((from.getLongitude() * (M_PI / 180)).getValue()) *
-						cos((to.getLatitude() * (M_PI / 180)).getValue()) *
-						cos((to.getLongitude() * (M_PI / 180)).getValue())
+						cos((from_lat * (M_PI / 180))) *
+						cos((from_lon * (M_PI / 180))) *
+						cos((to_lat * (M_PI / 180))) *
+						cos((to_lon * (M_PI / 180)))
 						+
-						cos((from.getLatitude() * (M_PI / 180)).getValue()) *
-						sin((from.getLongitude() * (M_PI / 180)).getValue()) *
-						cos((to.getLatitude() * (M_PI / 180)).getValue()) *
-						sin((to.getLongitude() * (M_PI / 180)).getValue())
+						cos((from_lat * (M_PI / 180))) *
+						sin((from_lon * (M_PI / 180))) *
+						cos((to_lat * (M_PI / 180))) *
+						sin((to_lon * (M_PI / 180)))
 						+
-						sin((from.getLatitude() * (M_PI / 180)).getValue()) *
-						sin((to.getLatitude() * (M_PI / 180)).getValue())
+						sin((from_lat * (M_PI / 180))) *
+						sin((to_lat * (M_PI / 180)))
 				) * EARTH_RADIUS
 		);
 

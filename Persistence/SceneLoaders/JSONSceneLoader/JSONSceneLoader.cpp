@@ -140,8 +140,8 @@ namespace Scheduler
 		for (const LocationDesc& location_desc : scene_desc.locations)
 		{
 			Location location;
-			location.setLatitude(Coordinate(location_desc.latitude));
-			location.setLongitude(Coordinate(location_desc.longitude));
+			location.setLatitude(Coordinate::createFromFloat(location_desc.latitude));
+			location.setLongitude(Coordinate::createFromFloat(location_desc.longitude));
 			locations.emplace(location_desc.name, location);
 		}
 
