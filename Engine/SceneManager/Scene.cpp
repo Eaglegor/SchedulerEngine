@@ -5,6 +5,7 @@
 #include "Vehicle.h"
 #include "Performer.h"
 #include "ScheduleActualizationModel.h"
+#include "Utils/SceneCloner.h"
 
 namespace Scheduler {
 
@@ -116,7 +117,14 @@ namespace Scheduler {
 
 	TemporarySchedule Scene::createTemporaryScheduleCopy(Schedule * schedule) const
 	{
-		Schedule* new_schedule = schedules_factory->createObject(schedule);
+		Schedule* new_schedule = schedules_factory->createObject(schedule->getPerformer());
+		
+		new_schedule->setScene(const_cast<Scene*>(this));
+		new_schedule->setRunsFactory(runs_factory);
+		new_schedule->setStopsFactory(stops_factory);
+		new_schedule->setRunVehicleBinder(run_vehicle_binder);
+		
+		SceneCloner::cloneScheduleState(schedule, new_schedule);
 
 		return std::move(TemporarySchedule(new_schedule, TemporaryScheduleDeleter(schedules_factory)));
 	}

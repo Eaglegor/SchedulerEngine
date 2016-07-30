@@ -5,7 +5,6 @@
 #include "WorkStop.h"
 #include "Vehicle.h"
 #include "Extensions/RunVehicleBinder.h"
-#include "ScheduleStateUtils.h"
 #include "ScheduleValidationModel.h"
 #include "Extensions/ScheduleValidationAlgorithm.h"
 
@@ -22,23 +21,6 @@ namespace Scheduler {
 			run_vehicle_binder(nullptr)
 	{
     }
-
-	Schedule::Schedule(size_t id, const Schedule* rhs):
-		id(id),
-		name(rhs->name),
-		schedule_actualization_model(rhs->schedule_actualization_model),
-		schedule_validation_model(rhs->schedule_validation_model),
-		performer(rhs->performer),
-		scene(nullptr),
-		runs_factory(rhs->runs_factory),
-		stops_factory(rhs->stops_factory),
-		run_vehicle_binder(rhs->run_vehicle_binder),
-		depot_location(rhs->depot_location),
-		shift(rhs->shift),
-		schedule_constraints(rhs->schedule_constraints)
-	{
-		ScheduleStateUtils::copyState(rhs, this);
-	}
 
     size_t Schedule::getId() const {
         return id;
@@ -251,4 +233,7 @@ namespace Scheduler {
 			run->invalidateArrivalTimes();
 		}
 	}
+	
+    ScheduleValidationModel* Schedule::getValidationModel() const{return schedule_validation_model;}
+    ScheduleActualizationModel* Schedule::getActualizationModel() const{return schedule_actualization_model;}
 }

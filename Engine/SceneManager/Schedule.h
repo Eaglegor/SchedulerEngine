@@ -27,7 +27,6 @@ namespace Scheduler
     {
     public:
         Schedule(size_t id, const Performer *performer);
-		Schedule(size_t id, const Schedule *schedule);
 		~Schedule();
 
         size_t getId() const;
@@ -53,6 +52,9 @@ namespace Scheduler
 
 		void setActualizationModel(ScheduleActualizationModel* model);
 		void setValidationModel(ScheduleValidationModel* model);
+		
+		ScheduleActualizationModel* getActualizationModel() const;
+		ScheduleValidationModel* getValidationModel() const;
 
 		const TimeWindow& getShift() const;
 		void setShift(const TimeWindow &shift);

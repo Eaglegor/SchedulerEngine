@@ -4,6 +4,7 @@
 #include <vector>
 #include <TheBestTSPSolver_export.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
+#include <Engine/LoggingManager/LoggingManager.h>
 
 namespace Scheduler
 {
@@ -17,6 +18,8 @@ namespace Scheduler
 
         void addTSPSolver(TSPSolver* aTSPSolver);
         void setScheduleCostFunction(ScheduleCostFunction* cost_function);
+		
+		void setConcurrencyEnabled(bool value);
 
         static constexpr const char* staticGetName() { return "TheBest"; }
 		virtual const char* getName() const override { return staticGetName(); };
@@ -29,5 +32,7 @@ namespace Scheduler
 
         std::vector<TSPSolver*> tsp_solvers;
         ScheduleCostFunction* schedule_cost_function;
+		bool concurrency_enabled;
+		Logger* logger;
 	};
 }

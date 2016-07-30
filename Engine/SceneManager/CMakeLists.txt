@@ -23,9 +23,6 @@ add_library(SceneManager SHARED
 	
 	Schedule.h
 	Schedule.cpp
-	
-	ScheduleStateUtils.h
-	ScheduleStateUtils.cpp
 
 	TemporarySchedule.h TemporarySchedule.cpp
 	
@@ -65,7 +62,7 @@ add_library(SceneManager SHARED
 	
 	Constraints/Vehicle/VehicleConstraints.h Constraints/Vehicle/VehicleConstraints.cpp
 	
-	
+	Utils/SceneCloner.h Utils/SceneCloner.cpp
 	
 	Extensions/TimeWindowSelector.h
 	Extensions/RunVehicleBinder.h
