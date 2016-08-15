@@ -21,7 +21,7 @@ if(CPP_SCHEDULER_TESTS)
 		Test/Collections_Algorithms_Test.cpp
 		Test/DurationUnits_Test.cpp
 		Test/SpeedUnits_Test.cpp
-		
+		Test/LinkedPointersList_Test.cpp
 		)
 		
 	set_property(SOURCE Test/Collections_Algorithms_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
