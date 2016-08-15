@@ -461,7 +461,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(temporary_schedule->getShift() == schedule->getShift());
 		REQUIRE(temporary_schedule->constraints().shiftStartLocation().get() == schedule->constraints().shiftStartLocation().get());
 		REQUIRE(temporary_schedule->constraints().shiftEndLocation().get() == schedule->constraints().shiftEndLocation().get());
-		REQUIRE(temporary_schedule->getScene() == nullptr);
+		REQUIRE(temporary_schedule->getScene() == scene);
 
 		REQUIRE(temporary_schedule->getRuns().size() == schedule->getRuns().size());
 		
