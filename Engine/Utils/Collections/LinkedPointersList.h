@@ -4,6 +4,7 @@
 #include <iterator>
 #include <type_traits>
 #include <limits>
+#include <iostream>
 
 namespace Scheduler
 {
@@ -14,7 +15,7 @@ namespace Scheduler
 		
 		static_assert(std::is_pointer<T>::value, "Type must be a pointer");
 	
-		class Iterator
+		class Iterator : public std::iterator<std::bidirectional_iterator_tag, T>
 		{
 		public:
 			Iterator(T prev, T current, T next):prev(prev), current(current), next(next)
@@ -76,12 +77,12 @@ namespace Scheduler
 				return !(*this == rhs);
 			}
 			
-			const T operator*() const
+			const T& operator*() const
 			{
 				return current;
 			}
 			
-			T operator*()
+			T& operator*()
 			{
 				return current;
 			}
@@ -160,7 +161,7 @@ namespace Scheduler
 			return const_iterator(tail, tail == nullptr ? nullptr : tail->next(), nullptr);
 		}
 		
-		reverse_iterator rbegin() const
+		reverse_iterator rbegin()
 		{
 			return reverse_iterator(std::prev(end()));
 		}
@@ -170,7 +171,7 @@ namespace Scheduler
 			return const_reverse_iterator(std::prev(end()));
 		}
 		
-		reverse_iterator rend() const
+		reverse_iterator rend()
 		{
 			return reverse_iterator(std::prev(begin()));
 		}
@@ -199,41 +200,40 @@ namespace Scheduler
 		{
 			head = nullptr;
 			tail = head;
+			_size = 0;
 		}
 		
 		iterator insert(iterator pos, value_type value)
 		{
 			if(pos == end())
 			{
+				value->setNext(nullptr);
 				if(empty())
 				{
 					head = value;
 					value->setPrev(nullptr);
-					tail = head->next();
 				}
 				else
 				{
-					value_type prev = *rbegin();
+					value_type prev = tail;
 					prev->setNext(value);
 					value->setPrev(prev);
-					tail = value;
 				}
-				value->setNext(nullptr);
+				tail = value;
 				++_size;
-				return iterator(value->prev(), value, value->next());
 			}
 			else
 			{
-				if(*pos == head) head = value;
+				if(pos == begin()) head = value;
 				value_type prev = pos->prev();
-				value_type next = pos;
+				value_type next = *pos;
 				if(prev != nullptr) prev->setNext(value);
 				value->setPrev(prev);
 				value->setNext(next);
 				next->setPrev(value);
 				++_size;
-				return iterator(prev, value, next);
 			}
+			return iterator(value->prev(), value, value->next());
 		}
 		
 		iterator insert(iterator pos, iterator first, iterator last)

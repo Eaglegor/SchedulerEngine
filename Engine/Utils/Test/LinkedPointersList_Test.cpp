@@ -56,12 +56,56 @@ TEST_CASE("LinkedPointersList", "")
 		nodes[i].setValue(i);
 	}
 	
+	LinkedPointersList<Node*> nodes_list;
 	SECTION("Default state")
 	{
-		LinkedPointersList<Node*> nodes_list;
 		REQUIRE(nodes_list.empty());
 		REQUIRE(nodes_list.size() == 0);
 		REQUIRE(nodes_list.max_size() == std::numeric_limits<size_t>::max());
+	}
+	
+	SECTION("Push back + iterate + clear")
+	{
+		for(Node& node : nodes)
+		{
+			nodes_list.push_back(&node);
+		}
+		REQUIRE(!nodes_list.empty());
+		REQUIRE(nodes_list.size() == 10);
+		LinkedPointersList<Node*>::iterator current = nodes_list.begin();
+		for(int i = 0; i < nodes.size(); ++i)
+		{
+			std::cout << (*current)->value() << std::endl;
+			//REQUIRE(current->value() == i);
+			++current;
+		}
+		
+		nodes_list.clear();
+		
+		REQUIRE(nodes_list.empty());
+		REQUIRE(nodes_list.size() == 0);
+	}
+	
+	SECTION("Push front + reverse_iterate")
+	{
+		for(Node& node : nodes)
+		{
+			nodes_list.push_front(&node);
+		}
+		REQUIRE(!nodes_list.empty());
+		REQUIRE(nodes_list.size() == 10);
+		LinkedPointersList<Node*>::reverse_iterator current = nodes_list.rbegin();
+		for(int i = 0; i < nodes.size(); ++i)
+		{
+			std::cout << (*current)->value() << std::endl;
+			//REQUIRE( ((*current)->value()) == i);
+			++current;
+		}
+		
+		nodes_list.clear();
+		
+		REQUIRE(nodes_list.empty());
+		REQUIRE(nodes_list.size() == 0);
 	}
 	
 }
