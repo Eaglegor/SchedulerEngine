@@ -4,7 +4,6 @@
 #include <iterator>
 #include <type_traits>
 #include <limits>
-#include <iostream>
 
 namespace Scheduler
 {
@@ -69,7 +68,7 @@ namespace Scheduler
 			
 			bool operator==(const Iterator& rhs) const
 			{
-				return prev == rhs.prev && current == rhs.current && next == rhs.next;
+				return current == rhs.current;
 			}
 			
 			bool operator!=(const Iterator& rhs) const
@@ -87,14 +86,14 @@ namespace Scheduler
 				return current;
 			}
 			
-			const T operator->() const
+			const T* operator->() const
 			{
-				return current;
+				return &current;
 			}
 			
-			T operator->()
+			T* operator->()
 			{
-				return current;
+				return &current;
 			}
 			
 		private:
@@ -153,32 +152,32 @@ namespace Scheduler
 		
 		iterator end()
 		{
-			return iterator(tail, tail == nullptr ? nullptr : tail->next(), nullptr);
+			return iterator(tail, nullptr, nullptr);
 		}
 		
 		const_iterator cend() const
 		{
-			return const_iterator(tail, tail == nullptr ? nullptr : tail->next(), nullptr);
+			return const_iterator(tail, nullptr, nullptr);
 		}
 		
 		reverse_iterator rbegin()
 		{
-			return reverse_iterator(std::prev(end()));
+			return reverse_iterator(end());
 		}
 		
 		const_reverse_iterator crbegin() const
 		{
-			return const_reverse_iterator(std::prev(end()));
+			return const_reverse_iterator(end());
 		}
 		
 		reverse_iterator rend()
 		{
-			return reverse_iterator(std::prev(begin()));
+			return reverse_iterator(begin());
 		}
 		
 		const_reverse_iterator crend() const
 		{
-			return const_reverse_iterator(std::prev(begin()));
+			return const_reverse_iterator(begin());
 		}
 		
 		bool empty() const
@@ -225,7 +224,7 @@ namespace Scheduler
 			else
 			{
 				if(pos == begin()) head = value;
-				value_type prev = pos->prev();
+				value_type prev = (*pos)->prev();
 				value_type next = *pos;
 				if(prev != nullptr) prev->setNext(value);
 				value->setPrev(prev);
@@ -246,17 +245,17 @@ namespace Scheduler
 		
 		iterator erase(iterator pos)
 		{
-			value_type prev = pos->prev();
+			value_type prev = (*pos)->prev();
 			value_type value = *pos;
-			value_type next = pos->next();
+			value_type next = (*pos)->next();
 			
 			if(value == tail) tail = value->prev();
 			if(value == head) head = value->next();
 			
 			if(prev != nullptr) prev->setNext(next);
 			if(next != nullptr) next->setPrev(prev);
-			pos->setNext(nullptr);
-			pos->setPrev(nullptr);
+			(*pos)->setNext(nullptr);
+			(*pos)->setPrev(nullptr);
 
 			--_size;
 			
@@ -287,21 +286,21 @@ namespace Scheduler
 		{
 			if(this == &other)
 			{
-				value_type old_prev = first->prev();
-				value_type old_next = last->next();
-				value_type new_prev = pos->prev();
-				value_type new_next = pos;
+				value_type old_prev = *std::prev(first);
+				value_type old_next = *last;
+				value_type new_prev = *std::prev(pos);
+				value_type new_next = *pos;
 				if(old_prev != nullptr) old_prev->setNext(old_next);
 				if(old_next != nullptr) old_next->setPrev(old_prev);
 				
-				first->setPrev(new_prev);
+				(*first)->setPrev(new_prev);
 				if(new_prev != nullptr) new_prev->setNext(*first);
 				
-				last->setNext(new_next);
-				if(new_next != nullptr) new_next->setPrev(*last);
+				(*std::prev(last))->setNext(new_next);
+				if(new_next != nullptr) new_next->setPrev(*std::prev(last));
 				
 				if(pos == begin()) head = *first;
-				if(pos == std::prev(end())) tail = *last;
+				if(pos == end()) tail = *std::prev(last);
 			}
 			else
 			{
@@ -309,8 +308,8 @@ namespace Scheduler
 				while(current != last)
 				{
 					iterator next = std::next(current);
-					other->erase(current);
-					insert(pos, current);
+					other.erase(current);
+					insert(pos, (*current));
 					current = next;
 				}
 			}
@@ -337,11 +336,15 @@ namespace Scheduler
 		{
 			for(iterator iter = begin(); iter != end(); ++iter)
 			{
-				value_type prev = iter->getPrev();
-				value_type next = iter->getNext();
-				iter->setPrev(next);
-				iter->setNext(prev);
+				auto i = end();
+				value_type prev = (*iter)->prev();
+				value_type next = (*iter)->next();
+				(*iter)->setPrev(next);
+				(*iter)->setNext(prev);
 			}
+			T new_head = tail;
+			tail = head;
+			head = new_head;
 		}
 		
 		void sort()
