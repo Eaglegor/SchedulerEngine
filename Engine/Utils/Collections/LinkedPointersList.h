@@ -262,6 +262,16 @@ namespace Scheduler
 			return iterator(prev, next, next == nullptr ? nullptr : next->next());
 		}
 		
+		iterator erase(iterator first, iterator last)
+		{
+			iterator current = first;
+			while(current != last)
+			{
+				current = erase(current);
+			}
+			return last;
+		}
+		
 		void push_back(value_type value)
 		{
 			insert(end(), value);
@@ -334,24 +344,21 @@ namespace Scheduler
 		
 		void reverse()
 		{
-			for(iterator iter = begin(); iter != end(); ++iter)
+			reverse(begin(), end());
+		}
+	
+		void reverse(iterator first, iterator last)
+		{
+			if(first == begin()) head = *std::prev(last);
+			if(last == end()) tail = *first;
+			for(iterator iter = first; iter != last; ++iter)
 			{
-				auto i = end();
 				value_type prev = (*iter)->prev();
 				value_type next = (*iter)->next();
 				(*iter)->setPrev(next);
 				(*iter)->setNext(prev);
 			}
-			T new_head = tail;
-			tail = head;
-			head = new_head;
 		}
-		
-		void sort()
-		{}
-		
-		template<typename Compare>
-		void sort(Compare comp){}
 	
 	private:
 		value_type head;
