@@ -4,25 +4,26 @@
 
 namespace Scheduler
 {
-	template<typename T>
+	template<typename T, typename BackendCollection = LinkedPointersList<T>>
 	class LinkedPointersSublist
 	{
 	public:
 		static_assert(std::is_pointer<T>::value, "Type must be a pointer");
+		static_assert(std::is_same<BackendCollection, LinkedPointersList<T>>::value || std::is_same<BackendCollection, LinkedPointersSublist<T>>::value, "Incompatible backend collection");
 		
-		using value_type = typename LinkedPointersList<T>::value_type;
+ 		using value_type = typename BackendCollection::value_type;
 		using size_type = std::size_t;
 		using difference_type = std::ptrdiff_t;
 		using reference = value_type&;
 		using const_reference = const value_type&;
 		using pointer = value_type*;
 		using const_pointer = const value_type*;
-		using iterator = typename LinkedPointersList<value_type>::iterator;
-		using const_iterator = typename LinkedPointersList<value_type>::const_iterator;
-		using reverse_iterator = typename LinkedPointersList<value_type>::reverse_iterator;
-		using const_reverse_iterator = typename LinkedPointersList<value_type>::const_reverse_iterator;
+		using iterator = typename BackendCollection::iterator;
+		using const_iterator = typename BackendCollection::const_iterator;
+		using reverse_iterator = typename BackendCollection::reverse_iterator;
+		using const_reverse_iterator = typename BackendCollection::const_reverse_iterator;
 		
-		LinkedPointersSublist(LinkedPointersList<value_type> &parent, iterator begin, iterator end):
+		LinkedPointersSublist(BackendCollection &parent, iterator begin, iterator end):
 		_parent(parent),
 		_head(*begin),
 		_tail(*std::prev(end)),
@@ -139,6 +140,16 @@ namespace Scheduler
 			return iter;
 		}
 		
+		iterator erase(iterator first, iterator last)
+		{
+			iterator current = first;
+			while(current != last)
+			{
+				current = erase(current);
+			}
+			return last;
+		}
+		
 		void push_back(value_type value)
 		{
 			insert(end(), value);
@@ -210,7 +221,7 @@ namespace Scheduler
 		}
 		
 	private:
-		LinkedPointersList<value_type> &_parent;
+		BackendCollection &_parent;
 		value_type _head;
 		value_type _tail;
 		size_type _size;

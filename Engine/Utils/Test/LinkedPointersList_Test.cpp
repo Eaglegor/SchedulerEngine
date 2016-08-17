@@ -2006,5 +2006,57 @@ TEST_CASE("LinkedPointersSublist")
 			}
 		}
 	}
+}
+
+
+TEST_CASE("Nested sublists")
+{
+	using namespace Scheduler;
+	
+	std::vector<Node> nodes(10);
+	std::vector<Node*> pnodes(10);
+	
+	for(size_t i = 0; i < 10; ++i)
+	{
+		nodes[i].setValue(i);
+		pnodes[i] = &nodes[i];
+	}
+	
+	LinkedPointersList<Node*> nodes_list;
+	
+	nodes_list.push_front(pnodes[0]);
+	nodes_list.push_back(pnodes[8]);
+	nodes_list.push_back(pnodes[9]);
+	
+	LinkedPointersSublist<Node*> sublist1(nodes_list, std::next(nodes_list.begin()), std::prev(nodes_list.end()));
+	
+	sublist1.push_front(pnodes[7]);	
+	sublist1.push_front(pnodes[6]);
+	sublist1.push_front(pnodes[1]);
+	
+	LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>> sublist2(sublist1, std::next(sublist1.begin()), std::next(sublist1.begin(), 2));
+	
+	sublist2.push_front(pnodes[5]);
+	sublist2.push_front(pnodes[4]);
+	sublist2.push_front(pnodes[3]);
+	sublist2.push_front(pnodes[2]);
+	
+	REQUIRE(nodes_list.size() == 10);
+	REQUIRE(sublist1.size() == 8);
+	REQUIRE(sublist2.size() == 5);
+	
+	LinkedPointersList<Node*>::iterator current = nodes_list.begin();
+	for(int i = 0; i < nodes.size(); ++i)
+	{
+		REQUIRE((*current)->value() == i);
+		++current;
+	}
+	
+	sublist2.clear();
+	REQUIRE(nodes_list.size() == 5);
+	REQUIRE(sublist1.size() == 3);
+	
+	sublist1.clear();
+	REQUIRE(nodes_list.size() == 2);
 	
 }
