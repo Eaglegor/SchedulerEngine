@@ -195,25 +195,25 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 		REQUIRE(schedule1->getRuns().size() == 1);
 		{
 			Run* run1 = schedule1->getRuns()[0];
-			REQUIRE(run1->getStartLocation() == DC_Location);
-			REQUIRE(run1->getEndLocation() == DC_Location);
+			REQUIRE(run1->getStartStop()->getLocation() == DC_Location);
+			REQUIRE(run1->getEndStop()->getLocation() == DC_Location);
 			REQUIRE(run1->getVehicle() == scene->getVehicles()[0]);
 			REQUIRE(run1->getStartStop()->getOperations().empty());
 			REQUIRE(run1->getWorkStops().size() == 3);
 			{
-				WorkStop* stop1 = run1->getWorkStops()[0];
+				WorkStop* stop1 = *std::next(run1->getWorkStops().begin(), 0);
 				REQUIRE(stop1->getOperation() == scene->getOrders()[0]->getWorkOperations()[0]);
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop1->getAllocationTime().getStartTime() - Units::hours_minutes(8, 0) == TimePoint(0));
 				//REQUIRE(stop1->getAllocationTime().getEndTime() - Units::hours_minutes(8, 3) == TimePoint(0));
 
-				WorkStop* stop2 = run1->getWorkStops()[1];
+				WorkStop* stop2 = *std::next(run1->getWorkStops().begin(), 1);
 				REQUIRE(stop2->getOperation() == scene->getOrders()[1]->getWorkOperations()[0]);
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop2->getAllocationTime().getStartTime() - Units::hours_minutes(9, 0) == TimePoint(0));
 				//REQUIRE(stop2->getAllocationTime().getEndTime() - Units::hours_minutes(9, 10) == TimePoint(0));
 
-				WorkStop* stop3 = run1->getWorkStops()[2];
+				WorkStop* stop3 = *std::next(run1->getWorkStops().begin(), 2);
 				REQUIRE(stop3->getOperation() == scene->getOrders()[1]->getWorkOperations()[1]);
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop3->getAllocationTime().getStartTime() - Units::hours_minutes(10, 0) == TimePoint(0));

@@ -30,7 +30,7 @@ namespace Scheduler {
 			
 			for (Run* r : from->getRuns())
 			{
-				Run* new_run = to->createRun(r->getStartLocation(), r->getEndLocation());
+				Run* new_run = *(to->createRun(to->getRuns().end(), r->getStartStop()->getLocation(), r->getEndStop()->getLocation()));
 				new_run->setVehicle(r->getVehicle());
 				
 				for (const Operation* operation : r->getStartStop()->getOperations())
@@ -40,7 +40,7 @@ namespace Scheduler {
 
 				for (const WorkStop* stop : r->getWorkStops())
 				{
-					new_run->allocateWorkOperation(stop->getOperation());
+					new_run->createWorkStop(r->getWorkStops().end(), stop->getOperation());
 				}
 
 				for (const Operation* operation : r->getEndStop()->getOperations())

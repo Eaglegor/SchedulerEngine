@@ -6,6 +6,7 @@
 #include <SceneEditor_export.h>
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "MoveRunWorkStopsSubsequence.h"
+#include <Engine/SceneManager/Run.h>
 
 namespace Scheduler
 {
@@ -17,7 +18,8 @@ namespace Scheduler
 	{
 	public:
         using RunIterator = ImmutableVector<Run*>::const_iterator;
-        using WorkStopIterator = ImmutableVector<WorkStop*>::const_iterator;
+        using WorkStopIterator = Run::WorkStopsList::iterator;
+		
         MoveRunWorkStop(RunIterator run_iterator, WorkStopIterator from, WorkStopIterator to);
 
 		virtual void perform() override;

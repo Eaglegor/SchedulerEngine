@@ -23,7 +23,7 @@ namespace Scheduler
 
 		Stop* current_stop;
 		if (current_index == 0) current_stop = run->getStartStop();
-		else current_stop = run->getWorkStops()[current_index - 1];
+		else current_stop = *std::next(run->getWorkStops().begin(), current_index - 1);
 
 		Distance current_distance = current_stop->getNextRoute().getDistance();
 		
@@ -35,7 +35,7 @@ namespace Scheduler
 
 			Stop* new_next_stop;
 			if (i == run->getWorkStops().size() + 1) new_next_stop = run->getEndStop();
-			else new_next_stop = run->getWorkStops()[i - 1];
+			else new_next_stop = *std::next(run->getWorkStops().begin(), i - 1);
 
 			Distance new_distance = routing_service->calculateRoute(current_stop->getLocation(), new_next_stop->getLocation(), run->getVehicle()->getRoutingProfile()).getDistance();
 			if(new_distance < current_distance)

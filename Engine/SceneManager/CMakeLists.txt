@@ -39,9 +39,6 @@ add_library(SceneManager SHARED
 	
 	StopVisitor.h
     ConstStopVisitor.h
-    
-    StopIterator.h
-    StopIterator.cpp
 	
 	RunBoundaryStop.h RunBoundaryStop.cpp
 	WorkStop.h WorkStop.cpp

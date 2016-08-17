@@ -24,10 +24,10 @@ namespace Scheduler
 		Duration forward_shift_budget = first_time_window.getEndTime() - first_stop->getAllocationTime().getEndTime();
 
 
-		for (Stop* stop = first_stop; stop != (*schedule->getRuns().rbegin())->getEndStop(); stop = stop->getNextStop())
+		for (Stop* stop = first_stop; stop != (*schedule->getRuns().rbegin())->getEndStop(); stop = stop->next())
 		{
 			Stop* current_stop = stop;
-			Stop* next_stop = stop->getNextStop();
+			Stop* next_stop = stop->next();
 			TimeWindow next_time_window = time_window_selector.selectTimeWindow(next_stop);
 			TimePoint next_route_end = current_stop->getAllocationTime().getEndTime() + current_stop->getNextRoute().getDuration();
 
@@ -38,7 +38,7 @@ namespace Scheduler
 				if (forward_shift_budget > Duration(0))
 				{
 					Duration shift = std::min(forward_shift_budget, waiting_time);
-					for (Stop* s = first_stop; s != next_stop; s = s->getNextStop())
+					for (Stop* s = first_stop; s != next_stop; s = s->next())
 					{
 						s->setStartTime(s->getAllocationTime().getStartTime() + shift);
 					}

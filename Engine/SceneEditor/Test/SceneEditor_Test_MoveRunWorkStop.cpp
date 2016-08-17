@@ -31,7 +31,7 @@ TEST_CASE("Engine/SceneEditor/MoveRunWorkStop", "[integration][functional][scene
 	{
 		for (int i = 0; i < run->getWorkStops().size(); ++i)
 		{
-			REQUIRE(std::string("Operation") + std::to_string(expected_order[i] + 1) == run->getWorkStops()[i]->getOperation()->getName());
+			REQUIRE(std::string("Operation") + std::to_string(expected_order[i] + 1) == (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName());
 		}
 	};
 
@@ -43,7 +43,7 @@ TEST_CASE("Engine/SceneEditor/MoveRunWorkStop", "[integration][functional][scene
 
 	auto perform = [&](size_t ia, size_t ib)
 	{
-		editor.performAction<MoveRunWorkStop>(run_iter, run->getWorkStops().begin() + ia, run->getWorkStops().begin() + ib);
+		editor.performAction<MoveRunWorkStop>(run_iter, std::next(run->getWorkStops().begin(), ia), std::next(run->getWorkStops().begin(), ib));
 	};
 
 	SECTION("Test1")

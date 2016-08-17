@@ -14,7 +14,7 @@ namespace Scheduler
 		virtual bool introduce(const SuggestedEdge& edge) override;
 
 	private:
-		using Iterator = ImmutableVector<WorkStop*>::const_iterator;
+		using Iterator = Run::WorkStopsList::iterator;
 
 		Run* run;
 		ImmutableVector<Run*>::const_iterator run_iter;

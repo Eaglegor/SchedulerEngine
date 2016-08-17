@@ -36,10 +36,10 @@ namespace Scheduler
         const RoutingProfile &routing_profile = run->getVehicle()->getRoutingProfile();
         auto location = run->getStartStop()->getLocation();
         SceneEditor scene_editor;
-        for (auto stop_i = stops.begin(); stop_i != stops.end() - 1; ++stop_i) {
+        for (auto stop_i = stops.begin(); stop_i != std::prev(stops.end()); ++stop_i) {
             auto nearest_element_iter = stop_i;
             auto min_distance = routing_service->calculateRoute(location, (*nearest_element_iter)->getLocation(), routing_profile).getDistance();
-            for (auto stop_j = stop_i + 1; stop_j != stops.end(); ++stop_j) {
+            for (auto stop_j = std::next(stop_i); stop_j != stops.end(); ++stop_j) {
                 const auto distance = routing_service->calculateRoute(location, (*stop_j)->getLocation(), routing_profile).getDistance();
                 if (distance < min_distance) {
                     min_distance = distance;

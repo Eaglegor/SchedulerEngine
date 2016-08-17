@@ -19,17 +19,17 @@ namespace Scheduler
 			return false;
 		}
 
-		Iterator from_iter = run->getWorkStops().begin() + edge.from_index;
-		Iterator to_iter = run->getWorkStops().begin() + (edge.to_index - 1);
+		Iterator from_iter = std::next(run->getWorkStops().begin(), edge.from_index);
+		Iterator to_iter = std::next(run->getWorkStops().begin(), edge.to_index - 1);
 
-		Iterator best_iterator;
+		Iterator best_iterator = from_iter;
 
 		BestAllocationResult before_edge_allocation = getBestAllocationVariant(from_iter, to_iter, run->getWorkStops().begin(), from_iter);
 		if (before_edge_allocation.iterator != run->getWorkStops().end()) best_iterator = before_edge_allocation.iterator;
 		
 		if (to_iter != run->getWorkStops().end())
 		{
-			BestAllocationResult after_edge_allocation = getBestAllocationVariant(from_iter, to_iter, to_iter + 1, run->getWorkStops().end());
+			BestAllocationResult after_edge_allocation = getBestAllocationVariant(from_iter, to_iter, std::next(to_iter), run->getWorkStops().end());
 			if (best_iterator == from_iter || after_edge_allocation.cost < before_edge_allocation.cost) best_iterator = after_edge_allocation.iterator;
 		}
 

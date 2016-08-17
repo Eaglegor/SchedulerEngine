@@ -19,8 +19,8 @@ namespace Scheduler
 			return false;
 		}
 
-		Iterator from_iter = run->getWorkStops().begin() + edge.from_index;
-		Iterator to_iter = run->getWorkStops().begin() + edge.to_index;
+		Iterator from_iter = std::next(run->getWorkStops().begin(), edge.from_index);
+		Iterator to_iter = std::next(run->getWorkStops().begin(), edge.to_index);
 
 		scene_editor.performAction<ReverseWorkStopsSubsequence>(run_iter, from_iter, to_iter);
 		return true;

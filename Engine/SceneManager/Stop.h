@@ -49,9 +49,12 @@ namespace Scheduler
 
 		virtual const Location& getLocation() const = 0;
 
-		Stop* getNextStop() const;
-		Stop* getPrevStop() const;
+		Stop* next() const;
+		Stop* prev() const;
 
+		void setNext(Stop* stop);
+		void setPrev(Stop* stop);
+		
 		// == framework internal ====================================
 		void setScheduleActualizationModel(ScheduleActualizationModel* model);
 		void setScheduleValidationModel(ScheduleValidationModel* model);
@@ -59,9 +62,6 @@ namespace Scheduler
 		void invalidateRoute();
 		void invalidateArrivalTime();
 		void invalidateDuration();
-
-		void setNextStop(Stop* stop);
-		void setPrevStop(Stop* stop);
 
 		virtual void acceptVisitor(StopVisitor* visitor) = 0;
 		virtual void acceptVisitor(ConstStopVisitor* visitor) const = 0;

@@ -49,12 +49,12 @@ namespace Scheduler
 		return run;
 	}
 
-	Stop* Stop::getNextStop() const
+	Stop* Stop::next() const
 	{
 		return nextStop;
 	}
 
-	Stop* Stop::getPrevStop() const
+	Stop* Stop::prev() const
 	{
 		return prevStop;
 	}
@@ -92,12 +92,12 @@ namespace Scheduler
 		duration.setActual(false);
 	}
 
-	void Stop::setNextStop(Stop* stop)
+	void Stop::setNext(Stop* stop)
 	{
 		this->nextStop = stop;
 	}
 
-	void Stop::setPrevStop(Stop* stop)
+	void Stop::setPrev(Stop* stop)
 	{
 		this->prevStop = stop;
 	}

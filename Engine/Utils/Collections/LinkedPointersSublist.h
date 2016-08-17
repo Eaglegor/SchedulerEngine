@@ -23,6 +23,14 @@ namespace Scheduler
 		using reverse_iterator = typename BackendCollection::reverse_iterator;
 		using const_reverse_iterator = typename BackendCollection::const_reverse_iterator;
 		
+		LinkedPointersSublist(const LinkedPointersSublist &rhs):
+		_parent(rhs._parent),
+		_head(rhs._head),
+		_tail(rhs._tail),
+		_size(rhs._size)
+		{
+		}
+		
 		LinkedPointersSublist(BackendCollection &parent, iterator begin, iterator end):
 		_parent(parent),
 		_head(*begin),
@@ -50,7 +58,7 @@ namespace Scheduler
 			return *std::prev(end());
 		}
 		
-		iterator begin()
+		iterator begin() const
 		{
 			return iterator(_head == nullptr ? nullptr : _head->prev(), _head, _head == nullptr ? nullptr : _head->next());
 		}
@@ -60,7 +68,7 @@ namespace Scheduler
 			return const_iterator(_head == nullptr ? nullptr : _head->prev(), _head, _head == nullptr ? nullptr : _head->next());
 		}
 		
-		iterator end()
+		iterator end() const
 		{
 			return iterator(_tail, _tail == nullptr ? nullptr : _tail->next(), (_tail == nullptr || _tail->next() == nullptr) ? nullptr : _tail->next()->next());
 		}
@@ -70,7 +78,7 @@ namespace Scheduler
 			return const_iterator(_tail, _tail == nullptr ? nullptr : _tail->next(), (_tail == nullptr || _tail->next() == nullptr) ? nullptr : _tail->next()->next());
 		}
 		
-		reverse_iterator rbegin()
+		reverse_iterator rbegin() const
 		{
 			return reverse_iterator(end());
 		}
@@ -80,7 +88,7 @@ namespace Scheduler
 			return const_reverse_iterator(end());
 		}
 		
-		reverse_iterator rend()
+		reverse_iterator rend() const
 		{
 			return reverse_iterator(begin());
 		}
@@ -170,7 +178,7 @@ namespace Scheduler
 			erase(begin());
 		}
 		
-		void splice(iterator pos, LinkedPointersSublist<value_type> &other, iterator first, iterator last)
+		void splice(iterator pos, LinkedPointersSublist<value_type, BackendCollection> &other, iterator first, iterator last)
 		{
 			if(&this->_parent == &other._parent)
 			{

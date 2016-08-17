@@ -36,9 +36,9 @@ namespace Scheduler
         SceneEditor editor;
         while (changed) {
             changed = false;
-            for (auto stop_it1 = stops.begin(); stop_it1 != stops.end() - 1; ++stop_it1) {
-                for (auto stop_it2 = stop_it1 + 1; stop_it2 != stops.end(); ++stop_it2) {
-                    editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stop_it1, stop_it2 + 1);
+            for (auto stop_it1 = stops.begin(); stop_it1 != std::prev(stops.end()); ++stop_it1) {
+                for (auto stop_it2 = std::next(stop_it1); stop_it2 != stops.end(); ++stop_it2) {
+                    editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stop_it1, std::next(stop_it2));
                     const Cost reverse_cost = schedule_cost_function->calculateCost(run->getSchedule());
                     editor.rollbackAll();
 
@@ -57,7 +57,7 @@ namespace Scheduler
                         best_cost = cost;
                         changed = true;
                         if (cost == reverse_cost) {
-                            editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stop_it1, stop_it2 + 1);
+                            editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stop_it1, std::next(stop_it2));
                         } else if (cost == swap_cost) {
                             editor.performAction<SwapRunWorkStops>(run_iter, stop_it1, stop_it2);
                         } else {

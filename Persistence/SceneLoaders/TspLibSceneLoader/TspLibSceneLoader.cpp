@@ -55,7 +55,7 @@ namespace Scheduler
 
 		schedule->setActualizationModel(actualization_model);
 
-		Run *run = schedule->createRun(Location(), Location()); // Creating run (0,0) -> (0,0)
+		Run *run = *schedule->createRun(schedule->getRuns().end(), Location(), Location()); // Creating run (0,0) -> (0,0)
 		run->setVehicle(vehicle);
 
 		for (size_t i = 1; i < nodes_count; ++i)
@@ -64,7 +64,7 @@ namespace Scheduler
 			operation->setName((std::string("Operation") + std::to_string(i)).c_str());
 			operation->setDuration(Duration(0));
 			operation->setLocation(Location(Coordinate(i), Coordinate(0))); // Index is encoded in the latitude. The longitude will be unused.
-			run->allocateWorkOperation(operation);
+			run->createWorkStop(run->getWorkStops().end(), operation);
 		}
 
 		return scene;

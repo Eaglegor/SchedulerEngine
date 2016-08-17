@@ -18,7 +18,7 @@ namespace Scheduler
 		current_iterator = rating.begin();
 
 		Distance max_distance;
-		for (Stop* stop = run->getStartStop(); stop != run->getEndStop()->getNextStop(); stop = stop->getNextStop())
+		for (Stop* stop = run->getStartStop(); stop != run->getEndStop()->next(); stop = stop->next())
 		{
 			if (stop->getNextRoute().getDistance() > max_distance) max_distance = stop->getNextRoute().getDistance();
 		}
@@ -53,7 +53,7 @@ namespace Scheduler
 			{
 				if (from_index > 0 && from_index < run->getWorkStops().size() - 1)
 				{
-					if ((*(run->getWorkStops().begin() + (from_index - 1)))->getNextRoute().getDistance() < rating_entry.distance) continue;
+					if ((*( std::next(run->getWorkStops().begin(), from_index - 1)))->getNextRoute().getDistance() < rating_entry.distance) continue;
 				}
 				else
 				{
@@ -90,7 +90,7 @@ namespace Scheduler
 	{
 		SIMPLE_LOG_TRACE(logger, "Updating run max distance");
 		Distance max_distance;
-		for (Stop* stop = run->getStartStop(); stop != run->getEndStop()->getNextStop(); stop = stop->getNextStop())
+		for (Stop* stop = run->getStartStop(); stop != run->getEndStop()->next(); stop = stop->next())
 		{
 			if (stop->getNextRoute().getDistance() > max_distance) max_distance = stop->getNextRoute().getDistance();
 		}
@@ -121,7 +121,7 @@ namespace Scheduler
 
 		std::vector<Location> locations;
 
-		for (Stop* stop = run->getStartStop(); stop != run->getEndStop()->getNextStop(); stop = stop->getNextStop())
+		for (Stop* stop = run->getStartStop(); stop != run->getEndStop()->next(); stop = stop->next())
 		{
 			locations.push_back(stop->getLocation());
 		}

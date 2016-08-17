@@ -295,13 +295,11 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
     order1_work_operation2->constraints().demand().set(Capacity(1, 3, 4, 5));
     order1_work_operation2->constraints().timeWindows().set({make_time_window(0, 45)});
 
-    Run* run1 = schedule->createRun(shift_start, depot);
+    Run* run1 = *schedule->createRun(schedule->getRuns().end(), shift_start, depot);
     REQUIRE(run1 != nullptr);
 
     INFO("[Schedule] Checking if run 1 is created in default state")
     {
-        REQUIRE(run1->getStartLocation() == shift_start);
-        REQUIRE(run1->getEndLocation() == depot);
         REQUIRE(run1->getStartStop() != nullptr);
         REQUIRE(run1->getStartStop()->getOperations().empty());
         REQUIRE(run1->getStartStop()->getLocation() == shift_start);
@@ -312,13 +310,11 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
         REQUIRE(run1->getVehicle() == nullptr);
     }
 
-    Run* run0 = schedule->createRun(shift_start, shift_start, 0);
+    Run* run0 = *schedule->createRun(schedule->getRuns().begin(), shift_start, shift_start);
     REQUIRE(run0 != nullptr);
 
     INFO("[Schedule] Checking if run 0 is created in default state")
     {
-        REQUIRE(run0->getStartLocation() == shift_start);
-        REQUIRE(run0->getEndLocation() == shift_start);
         REQUIRE(run0->getStartStop() != nullptr);
         REQUIRE(run0->getStartStop()->getOperations().empty());
         REQUIRE(run0->getStartStop()->getLocation() == shift_start);
@@ -329,13 +325,11 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
         REQUIRE(run0->getVehicle() == nullptr);
     }
 
-    Run* run2 = schedule->createRun(depot, shift_end, 2);
+    Run* run2 = *schedule->createRun(schedule->getRuns().end(), depot, shift_end);
     REQUIRE(run2 != nullptr);
 
     INFO("[Schedule] Checking if run 2 is created in default state")
     {
-        REQUIRE(run2->getStartLocation() == depot);
-        REQUIRE(run2->getEndLocation() == shift_end);
         REQUIRE(run2->getStartStop() != nullptr);
         REQUIRE(run2->getStartStop()->getOperations().empty());
         REQUIRE(run2->getStartStop()->getLocation() == depot);
@@ -354,7 +348,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
         REQUIRE(schedule->getRuns()[2] == run2);
     }
 
-    WorkStop* free_operation_stop = run1->allocateWorkOperation(free_operation, 0);
+    WorkStop* free_operation_stop = *run1->createWorkStop(run1->getWorkStops().begin(), free_operation);
     REQUIRE(free_operation_stop != nullptr);
 
     INFO("[Run] Checking if stop is created in default state")
@@ -366,7 +360,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
         REQUIRE(free_operation_stop->getRun() == run1);
     }
 
-	WorkStop* work_stop1 = run1->allocateWorkOperation(order1_work_operation2, 1);
+	WorkStop* work_stop1 = *run1->createWorkStop(std::next(run1->getWorkStops().begin()), order1_work_operation2);
 	REQUIRE(work_stop1 != nullptr);
 
 	INFO("[Run] Checking if stop is created in default state")
@@ -378,7 +372,7 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 		REQUIRE(work_stop1->getRun() == run1);
 	}
 
-	WorkStop* work_stop0 = run1->allocateWorkOperation(order1_work_operation1, 0);
+	WorkStop* work_stop0 = *run1->createWorkStop(run1->getWorkStops().begin(), order1_work_operation1);
 	REQUIRE(work_stop0 != nullptr);
 
 	INFO("[Run] Checking if stop is created in default state")
@@ -393,9 +387,9 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 	INFO("[Run] Checking if stops are ordered correctly")
 	{
 		REQUIRE(run1->getWorkStops().size() == 3);
-		REQUIRE(run1->getWorkStops()[0] == work_stop0);
-		REQUIRE(run1->getWorkStops()[1] == free_operation_stop);
-		REQUIRE(run1->getWorkStops()[2] == work_stop1);
+		REQUIRE(*run1->getWorkStops().begin() == work_stop0);
+		REQUIRE(*std::next(run1->getWorkStops().begin(), 1) == free_operation_stop);
+		REQUIRE(*std::next(run1->getWorkStops().begin(), 2) == work_stop1);
 	}
 
 	INFO("[Run] Checking if only work stops are allocated")
@@ -428,23 +422,23 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 
 	INFO("[Run] Checking if routes are set correctly")
 	{
-		REQUIRE(checkRoute(run1->getStartStop(), run1->getWorkStops()[0], &routing_service, vehicle));
-		REQUIRE(checkRoute(run1->getWorkStops()[0], run1->getWorkStops()[1], &routing_service, vehicle));
-		REQUIRE(checkRoute(run1->getWorkStops()[1], run1->getWorkStops()[2], &routing_service, vehicle));
-		REQUIRE(checkRoute(run1->getWorkStops()[2], run1->getEndStop(), &routing_service, vehicle));
+		REQUIRE(checkRoute(run1->getStartStop(), *run1->getWorkStops().begin(), &routing_service, vehicle));
+		REQUIRE(checkRoute(*run1->getWorkStops().begin(), *std::next(run1->getWorkStops().begin()), &routing_service, vehicle));
+		REQUIRE(checkRoute(*std::next(run1->getWorkStops().begin(), 1), *std::next(run1->getWorkStops().begin(), 2), &routing_service, vehicle));
+		REQUIRE(checkRoute(*std::next(run1->getWorkStops().begin(), 2), run1->getEndStop(), &routing_service, vehicle));
 	}
 
 	run1->unallocateStartOperation(order1_start_operation);
 	run1->unallocateEndOperation(order1_end_operation);
-	run1->unallocateWorkOperation(free_operation);
-	run1->unallocateWorkOperationAt(0);
+	run1->destroyWorkStop( std::find_if(run1->getWorkStops().begin(), run1->getWorkStops().end(), [&](WorkStop* stop){return stop->getOperation() == free_operation; } ));
+	run1->destroyWorkStop(run1->getWorkStops().begin());
 
 	INFO("[Run] Checking if operations are unallocated correctly")
 	{
 		REQUIRE(run1->getStartStop()->getOperations().empty());
 		REQUIRE(run1->getEndStop()->getOperations().empty());
 		REQUIRE(run1->getWorkStops().size() == 1);
-		REQUIRE(run1->getWorkStops()[0] == work_stop1);
+		REQUIRE(*run1->getWorkStops().begin() == work_stop1);
 	}
 
 	INFO("Checking schedule temporary copy")
@@ -470,8 +464,6 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 			Run *orig = schedule->getRuns()[i];
 			Run *temp = temporary_schedule->getRuns()[i];
 
-			REQUIRE(orig->getStartLocation() == temp->getStartLocation());
-			REQUIRE(orig->getEndLocation() == temp->getEndLocation());
 			REQUIRE(orig->getVehicle() == temp->getVehicle());
 
 			REQUIRE(orig->getWorkStops().size() == temp->getWorkStops().size());
@@ -488,8 +480,8 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 
 			for (size_t j = 0; j < orig->getWorkStops().size(); ++j)
 			{
-				WorkStop *sorig = orig->getWorkStops()[j];
-				WorkStop *stemp = temp->getWorkStops()[j];
+				WorkStop *sorig = *std::next(orig->getWorkStops().begin(), j);
+				WorkStop *stemp = *std::next(temp->getWorkStops().begin(), j);
 
 				REQUIRE(sorig->getAllocationTime() == stemp->getAllocationTime());
 				REQUIRE(sorig->getDuration() == stemp->getDuration());

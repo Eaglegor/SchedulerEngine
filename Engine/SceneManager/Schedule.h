@@ -6,6 +6,7 @@
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "SceneObjectsFactory.h"
 #include "Constraints/Schedule/ScheduleConstraints.h"
+#include <Engine/Utils/Collections/LinkedPointersList.h>
 
 #include <SceneManager_export.h>
 #include "ScheduleActualizationModel.h"
@@ -14,6 +15,7 @@ namespace Scheduler
 {
 	class Scene;
 	class Run;
+	class Stop;
 	class WorkStop;
 	class RoutingService;
 	class LoggingService;
@@ -26,6 +28,9 @@ namespace Scheduler
     class SCENEMANAGER_EXPORT Schedule
     {
     public:
+		using RunsList = ImmutableVector<Run*>;
+		using StopsList = LinkedPointersList<Stop*>;
+		
         Schedule(size_t id, const Performer *performer);
 		~Schedule();
 
@@ -35,17 +40,16 @@ namespace Scheduler
 
         void setName(const char* name);
 
-		const ImmutableVector<Run*>& getRuns() const;
-		ImmutableVector<Run*>& getRuns();
+		const RunsList& getRuns() const;
 
-		Run* createRun(const Location &from, const Location &to);
-		Run* createRun(const Location &from, const Location &to, size_t index);
+		RunsList::iterator createRun(RunsList::const_iterator pos, const Location &from, const Location &to);
 
-		void destroyRun(Run *run, size_t hint = 0);
-		void destroyRun(size_t index);
+		const StopsList& getStops() const;
+		
+		void destroyRun(RunsList::iterator pos);
 
 		const Location& getDepotLocation() const;
-
+		
 		void setDepotLocation(const Location &depot_location);
 
         bool isValid() const;
@@ -83,6 +87,7 @@ namespace Scheduler
         const Performer* performer;
 
 		std::vector<Run*> runs;
+		StopsList stops;
 
 		Scene* scene;
 

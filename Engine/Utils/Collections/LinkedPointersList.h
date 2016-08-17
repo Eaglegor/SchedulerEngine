@@ -17,6 +17,12 @@ namespace Scheduler
 		class Iterator : public std::iterator<std::bidirectional_iterator_tag, T>
 		{
 		public:
+			using value_type = T;
+			
+			Iterator():prev(nullptr),current(nullptr),next(nullptr)
+			{
+			}
+			
 			Iterator(T prev, T current, T next):prev(prev), current(current), next(next)
 			{
 			}
@@ -140,7 +146,7 @@ namespace Scheduler
 			return tail;
 		}
 		
-		iterator begin()
+		iterator begin() const
 		{
 			return iterator(nullptr, head, head == nullptr ? nullptr : head->next());
 		}
@@ -150,7 +156,7 @@ namespace Scheduler
 			return const_iterator(nullptr, head, head == nullptr ? nullptr : head->next());
 		}
 		
-		iterator end()
+		iterator end() const
 		{
 			return iterator(tail, nullptr, nullptr);
 		}
@@ -160,7 +166,7 @@ namespace Scheduler
 			return const_iterator(tail, nullptr, nullptr);
 		}
 		
-		reverse_iterator rbegin()
+		reverse_iterator rbegin() const
 		{
 			return reverse_iterator(end());
 		}
@@ -170,7 +176,7 @@ namespace Scheduler
 			return const_reverse_iterator(end());
 		}
 		
-		reverse_iterator rend()
+		reverse_iterator rend() const
 		{
 			return reverse_iterator(begin());
 		}

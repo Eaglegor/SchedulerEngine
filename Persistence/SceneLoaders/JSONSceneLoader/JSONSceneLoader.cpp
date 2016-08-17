@@ -282,7 +282,7 @@ namespace Scheduler
 			{
 				Location start_location = locations.at(run_desc.start_location);
 				Location end_location = locations.at(run_desc.end_location);
-				Run* run = schedule->createRun(start_location, end_location);
+				Run* run = *schedule->createRun(schedule->getRuns().end(), start_location, end_location);
 				
 				Vehicle* vehicle = vehicles.at(run_desc.vehicle);
 				run->setVehicle(vehicle);
@@ -294,7 +294,7 @@ namespace Scheduler
 
 				for(const StopDesc &stop_desc : run_desc.work_operations)
 				{
-					Stop* stop = run->allocateWorkOperation(operations.at(stop_desc.operation));
+					Stop* stop = *run->createWorkStop(run->getWorkStops().end(), operations.at(stop_desc.operation));
 					stop->setAllocationTime(createTimeWindow(stop_desc.allocation_time, settings));
 				}
 

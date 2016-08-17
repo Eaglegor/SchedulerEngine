@@ -10,9 +10,9 @@ namespace Scheduler
 {
 	ReverseWorkStopsSubsequence::ReverseWorkStopsSubsequence(RunIterator run_iterator, WorkStopIterator start_stop, WorkStopIterator end_stop) :
 		schedule((*run_iterator)->getSchedule()),
-		run_index(std::distance<ImmutableVector<Run*>::const_iterator>(schedule->getRuns().begin(), run_iterator)),
-		start_index(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), start_stop)),
-		end_index(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), end_stop))
+		run_index(std::distance(schedule->getRuns().begin(), run_iterator)),
+		start_index(std::distance((*run_iterator)->getWorkStops().begin(), start_stop)),
+		end_index(std::distance((*run_iterator)->getWorkStops().begin(), end_stop))
 	{
 		assert(run_index >= 0);
 		assert(run_index < schedule->getRuns().size());

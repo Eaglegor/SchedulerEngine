@@ -69,13 +69,13 @@ namespace Scheduler
             Location depot_location = schedule->getDepotLocation();
             ByAngle by_angle(depot_location);
             std::sort(operations.begin(), operations.end(), by_angle);
-            Run* run = schedule->createRun(depot_location, depot_location);
+            Run* run = *schedule->createRun(schedule->getRuns().end(), depot_location, depot_location);
             while (!operations.empty() && schedule->isValid()) {
-                run->allocateWorkOperation(operations.back());
+                run->createWorkStop(run->getWorkStops().end(), operations.back());
                 if (schedule->isValid()) {
                     operations.pop_back();
                 } else {
-                    run->unallocateWorkOperation(operations.back());
+                    run->createWorkStop(run->getWorkStops().end(), operations.back());
                     break;
                 }
             }

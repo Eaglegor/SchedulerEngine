@@ -5,7 +5,7 @@
 
 bool Scheduler::ValidStopsRunValidationAlgorithm::isValid(const Run * run) const
 {
-	for (const Stop *s = run->getStartStop(); s != run->getEndStop()->getNextStop(); s = s->getNextStop())
+	for (const Stop *s = run->getStartStop(); s != run->getEndStop()->next(); s = s->next())
 	{
 		if (!s->isValid()) return false;
 	}

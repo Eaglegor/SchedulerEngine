@@ -33,7 +33,7 @@ TEST_CASE("Engine/SceneEditor/MoveRunWorkStopsSubsequence", "[integration][funct
 	{
 		for (int i = 0; i < run->getWorkStops().size(); ++i)
 		{
-			REQUIRE(std::string("Operation") + std::to_string(expected_order[i] + 1) == run->getWorkStops()[i]->getOperation()->getName());
+			REQUIRE(std::string("Operation") + std::to_string(expected_order[i] + 1) == (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName());
 		}
 	};
 
@@ -45,7 +45,7 @@ TEST_CASE("Engine/SceneEditor/MoveRunWorkStopsSubsequence", "[integration][funct
 
 	auto perform = [&](size_t ia, size_t ib, size_t inew)
 	{
-		editor.performAction<MoveRunWorkStopsSubsequence>(run_iter, run->getWorkStops().begin() + ia, run->getWorkStops().begin() + ib, run->getWorkStops().begin() + inew);
+		editor.performAction<MoveRunWorkStopsSubsequence>(run_iter, std::next(run->getWorkStops().begin(), ia), std::next(run->getWorkStops().begin(), ib), std::next(run->getWorkStops().begin(), inew));
 	};
 	
 
