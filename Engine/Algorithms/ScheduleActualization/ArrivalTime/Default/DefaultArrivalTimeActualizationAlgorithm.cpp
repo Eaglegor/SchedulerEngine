@@ -24,7 +24,7 @@ namespace Scheduler
 		Duration forward_shift_budget = first_time_window.getEndTime() - first_stop->getAllocationTime().getEndTime();
 
 
-		for (Stop* stop = first_stop; stop != (*schedule->getRuns().rbegin())->getEndStop(); stop = stop->next())
+		for (Stop* stop : schedule->getStops())
 		{
 			Stop* current_stop = stop;
 			Stop* next_stop = stop->next();

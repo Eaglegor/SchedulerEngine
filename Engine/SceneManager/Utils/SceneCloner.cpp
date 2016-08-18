@@ -37,16 +37,22 @@ namespace Scheduler {
 				{
 					new_run->allocateStartOperation(operation);
 				}
+				new_run->getStartStop()->setDuration(r->getStartStop()->getDuration());
+				new_run->getStartStop()->setAllocationTime(r->getStartStop()->getAllocationTime());
 
 				for (const WorkStop* stop : r->getWorkStops())
 				{
-					new_run->createWorkStop(r->getWorkStops().end(), stop->getOperation());
+					WorkStop* new_stop = *new_run->createWorkStop(new_run->getWorkStops().end(), stop->getOperation());
+					new_stop->setDuration(stop->getDuration());
+					new_stop->setAllocationTime(stop->getAllocationTime());
 				}
 
 				for (const Operation* operation : r->getEndStop()->getOperations())
 				{
 					new_run->allocateEndOperation(operation);
 				}
+				new_run->getEndStop()->setDuration(r->getEndStop()->getDuration());
+				new_run->getEndStop()->setAllocationTime(r->getEndStop()->getAllocationTime());
 			}
 		}
 }

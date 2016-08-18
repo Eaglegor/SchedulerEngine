@@ -50,7 +50,7 @@ namespace Scheduler {
 	Schedule::RunsList::iterator Schedule::createRun(RunsList::const_iterator pos, const Scheduler::Location& from, const Scheduler::Location& to) {
 		assert(runs_factory);
 
-		Run* r = runs_factory->createObject(from, to, this, stops, pos == runs.end() ? stops.end() : (*std::next(pos))->getStops().end());
+		Run* r = runs_factory->createObject(from, to, this, stops, pos == runs.end() ? stops.end() : (*pos)->getStops().begin());
 
 		r->setStopsFactory(stops_factory);
 		r->setScheduleActualizationModel(schedule_actualization_model);
