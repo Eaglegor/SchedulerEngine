@@ -19,57 +19,72 @@ namespace Scheduler
 		public:
 			using value_type = T;
 			
-			Iterator():prev(nullptr),current(nullptr),next(nullptr)
+			Iterator():
+				current(nullptr),
+				tail(nullptr),
+				head(nullptr)
 			{
 			}
 			
-			Iterator(T prev, T current, T next):prev(prev), current(current), next(next)
+			Iterator(value_type current, const value_type* head, const value_type* tail):
+				current(current),
+				head(head),
+				tail(tail)
 			{
 			}
 			
-			Iterator(const Iterator& rhs):prev(rhs.prev), current(rhs.current), next(rhs.next)
+			Iterator(const Iterator& rhs):
+				current(rhs.current),
+				head(rhs.head),
+				tail(rhs.tail)
 			{
 			}
 			
+			Iterator(Iterator &&rhs) :
+				current(rhs.current),
+				head(rhs.head),
+				tail(rhs.tail)
+			{
+				rhs.current = nullptr;
+				rhs.head = nullptr;
+				rhs.tail = nullptr;
+			}
+
 			Iterator& operator=(const Iterator& rhs)
 			{
-				this->prev = rhs.prev;
 				this->current = rhs.current;
-				this->next = rhs.next;
-                                return* this;
+				this->tail = rhs.tail;
+				this->head = rhs.head;
+				return* this;
 			}
 			
 			Iterator& operator++()
 			{
-				prev = current;
-				current = next;
-				next = (next == nullptr ? nullptr : next->next());
+				if (current == nullptr) current = *head;
+				else if (current == *tail) current = nullptr;
+				else current = current->next();
 				return *this;
 			}
 			
 			Iterator operator++(int)
 			{
-				Iterator iter(prev, current, next);
-				prev = current;
-				current = next;
-				next = (next == nullptr ? nullptr : next->next());
+				Iterator iter(*this);
+				++(*this);
 				return iter;
 			}
 			
 			Iterator& operator--()
 			{
-				next = current;
-				current = prev;
-				prev = (prev == nullptr ? nullptr : prev->prev());
+				if (current == nullptr) current = *tail;
+				else if (current == *head) current = nullptr;
+				else current = current->prev();
 				return *this;
 			}
 			
 			Iterator operator--(int)
 			{
-				Iterator iter(prev, current, next);
-				next = current;
-				current = prev;
-				prev = (prev == nullptr ? nullptr : prev->prev());
+				Iterator iter(*this);
+				--(*this);
 				return iter;
 			}
 			
@@ -83,32 +98,32 @@ namespace Scheduler
 				return !(*this == rhs);
 			}
 			
-			const T& operator*() const
+			const value_type& operator*() const
 			{
 				return current;
 			}
 			
-			T& operator*()
+			value_type& operator*()
 			{
 				return current;
 			}
 			
-			const T* operator->() const
+			const value_type* operator->() const
 			{
 				return &current;
 			}
 			
-			T* operator->()
+			value_type* operator->()
 			{
 				return &current;
 			}
 			
 		private:
-			T prev;
-			T current;
-			T next;
+			value_type current;
+			const value_type* head;
+			const value_type* tail;
 		};
-		
+
 		using value_type = T;
 		using size_type = std::size_t;
 		using difference_type = std::ptrdiff_t;
@@ -149,22 +164,22 @@ namespace Scheduler
 		
 		iterator begin() const
 		{
-			return iterator(nullptr, head, head == nullptr ? nullptr : head->next());
+			return iterator(head, &head, &tail);
 		}
 		
 		const_iterator cbegin() const
 		{
-			return const_iterator(nullptr, head, head == nullptr ? nullptr : head->next());
+			return const_iterator(head, &head, &tail);
 		}
 		
 		iterator end() const
 		{
-			return iterator(tail, nullptr, nullptr);
+			return iterator(nullptr, &head, &tail);
 		}
 		
 		const_iterator cend() const
 		{
-			return const_iterator(tail, nullptr, nullptr);
+			return const_iterator(nullptr, &head, &tail);
 		}
 		
 		reverse_iterator rbegin() const
@@ -239,7 +254,7 @@ namespace Scheduler
 				next->setPrev(value);
 				++_size;
 			}
-			return iterator(value->prev(), value, value->next());
+			return iterator(value, &head, &tail);
 		}
 		
 		iterator insert(iterator pos, iterator first, iterator last)
@@ -266,7 +281,7 @@ namespace Scheduler
 
 			--_size;
 			
-			return iterator(prev, next, next == nullptr ? nullptr : next->next());
+			return iterator(next, &head, &tail);
 		}
 		
 		iterator erase(iterator first, iterator last)
@@ -356,15 +371,18 @@ namespace Scheduler
 	
 		void reverse(iterator first, iterator last)
 		{
-			if(first == begin()) head = *std::prev(last);
-			if(last == end()) tail = *first;
-			for(iterator iter = first; iter != last; ++iter)
+			iterator iter = first;
+			while(iter != last)
 			{
+				iterator next_iter = std::next(iter);
 				value_type prev = (*iter)->prev();
 				value_type next = (*iter)->next();
 				(*iter)->setPrev(next);
 				(*iter)->setNext(prev);
+				iter = next_iter;
 			}
+			if (first == begin()) head = *std::prev(last);
+			if (last == end()) tail = *first;
 		}
 	
 	private:

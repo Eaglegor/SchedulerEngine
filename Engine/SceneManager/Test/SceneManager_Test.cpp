@@ -500,3 +500,9 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 
     scene_manager->destroyScene(scene);
 }
+
+
+TEST_CASE("Run operations")
+{
+
+}

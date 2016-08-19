@@ -24,17 +24,17 @@ namespace Scheduler
 		using const_reverse_iterator = typename BackendCollection::const_reverse_iterator;
 		
 		LinkedPointersSublist(const LinkedPointersSublist &rhs):
-		_parent(rhs._parent),
-		_head(rhs._head),
-		_tail(rhs._tail),
+		parent(rhs.parent),
+		head(rhs.head),
+		tail(rhs.tail),
 		_size(rhs._size)
 		{
 		}
 		
 		LinkedPointersSublist(BackendCollection &parent, iterator begin, iterator end):
-		_parent(parent),
-		_head(*begin),
-		_tail(*std::prev(end)),
+		parent(parent),
+		head(*begin),
+		tail(*std::prev(end)),
 		_size(std::distance(begin, end))
 		{}
 		
@@ -60,22 +60,22 @@ namespace Scheduler
 		
 		iterator begin() const
 		{
-			return iterator(_head == nullptr ? nullptr : _head->prev(), _head, _head == nullptr ? nullptr : _head->next());
+			return iterator(head, &head, &tail);
 		}
 		
 		const_iterator cbegin() const
 		{
-			return const_iterator(_head == nullptr ? nullptr : _head->prev(), _head, _head == nullptr ? nullptr : _head->next());
+			return const_iterator(head, &head, &tail);
 		}
 		
 		iterator end() const
 		{
-			return iterator(_tail, _tail == nullptr ? nullptr : _tail->next(), (_tail == nullptr || _tail->next() == nullptr) ? nullptr : _tail->next()->next());
+			return iterator(tail == nullptr ? nullptr : tail->next(), &head, &tail);
 		}
 		
 		const_iterator cend() const
 		{
-			return const_iterator(_tail, _tail == nullptr ? nullptr : _tail->next(), (_tail == nullptr || _tail->next() == nullptr) ? nullptr : _tail->next()->next());
+			return const_iterator(tail == nullptr ? nullptr : tail->next(), &head, &tail);
 		}
 		
 		reverse_iterator rbegin() const
@@ -116,16 +116,16 @@ namespace Scheduler
 		void clear()
 		{
 			if(empty()) return;
-			_tail = *_parent.erase(begin(), end());
-			_head = _tail;
+			tail = *parent.erase(begin(), end());
+			head = tail;
 			_size = 0;
 		}
 		
 		iterator insert(iterator pos, value_type value)
 		{
-			if(pos == begin()) _head = value;
-			if(pos == end()) _tail = value;
-			iterator iter = _parent.insert(pos, value);
+			if(pos == begin()) head = value;
+			if(pos == end()) tail = value;
+			iterator iter = parent.insert(pos, value);
 			++_size;
 			return iter;
 		}
@@ -140,10 +140,10 @@ namespace Scheduler
 		
 		iterator erase(iterator pos)
 		{
-			if(*pos == _head) _head = (*pos)->next();
-			if(*pos == _tail) _tail = (*pos)->prev();
+			if(*pos == head) head = (*pos)->next();
+			if(*pos == tail) tail = (*pos)->prev();
 			
-			iterator iter = _parent.erase(pos);
+			iterator iter = parent.erase(pos);
 			--_size;
 			return iter;
 		}
@@ -180,11 +180,11 @@ namespace Scheduler
 		
 		void splice(iterator pos, LinkedPointersSublist<value_type, BackendCollection> &other, iterator first, iterator last)
 		{
-			if(&this->_parent == &other._parent)
+			if(&this->parent == &other.parent)
 			{
-				if(pos == begin()) _head = *first;
-				if(pos == end()) _tail = *std::prev(last);
-				_parent.splice(pos, _parent, first, last);
+				if(pos == begin()) head = *first;
+				if(pos == end()) tail = *std::prev(last);
+				parent.splice(pos, parent, first, last);
 			}
 			else
 			{
@@ -223,15 +223,15 @@ namespace Scheduler
 		
 		void reverse(iterator first, iterator last)
 		{
-			if(first == begin()) _head = *std::prev(last);
-			if(last == end()) _tail = *first;
-			_parent.reverse(first, last);
+			if(first == begin()) head = *std::prev(last);
+			if(last == end()) tail = *first;
+			parent.reverse(first, last);
 		}
 		
 	private:
-		BackendCollection &_parent;
-		value_type _head;
-		value_type _tail;
+		BackendCollection &parent;
+		value_type head;
+		value_type tail;
 		size_type _size;
 	};
 }
