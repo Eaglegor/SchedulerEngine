@@ -102,7 +102,7 @@ namespace Scheduler
         Schedule* best_cost_schedule = nullptr;
 		
         #pragma omp parallel for
-        for (size_t idx = 0; idx < this->tsp_solvers.size(); ++idx) {
+        for (int idx = 0; idx < this->tsp_solvers.size(); ++idx) {
 			LOG_TRACE(logger, "Starting solver: {}", this->tsp_solvers.at(idx)->getName() );
             TSPSolver* solver = this->tsp_solvers.at(idx);
             Schedule* schedule = schedules.at(idx).get();
@@ -143,7 +143,7 @@ namespace Scheduler
         Schedule* best_cost_schedule = nullptr;
         
         #pragma omp parallel for
-        for (size_t idx = 0; idx < this->tsp_solvers.size(); ++idx) {
+        for (int idx = 0; idx < this->tsp_solvers.size(); ++idx) {
             TSPSolver* solver = this->tsp_solvers.at(idx);
             Schedule* schedule = schedules.at(idx).get();
             solver->optimize(*(std::next(schedule->getRuns().begin(), run_index)));

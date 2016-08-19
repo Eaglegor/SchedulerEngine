@@ -6,7 +6,7 @@ add_library(TheBestTSPSolver SHARED
 
 set_target_properties(TheBestTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/TheBest")
 
-target_link_libraries(TheBestTSPSolver SceneManager SceneEditor)
+target_link_libraries(TheBestTSPSolver SceneManager SceneEditor LoggingManager)
 
 cotire(TheBestTSPSolver)
 

@@ -36,6 +36,7 @@ namespace Scheduler
 				this->prev = rhs.prev;
 				this->current = rhs.current;
 				this->next = rhs.next;
+                                return* this;
 			}
 			
 			Iterator& operator++()
