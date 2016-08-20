@@ -27,6 +27,7 @@ if(CPP_SCHEDULER_TESTS)
 		Test/SceneEditor_Test.cpp
 		Test/SceneEditor_Test_MoveRunWorkStop.cpp
 		Test/SceneEditor_Test_MoveRunWorkStopsSubsequence.cpp
+		Test/SceneEditor_Test_ReverseRunWorkStopsSubsequence.cpp
 	)
 		
 	set_property(SOURCE Test/SceneEditor_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
