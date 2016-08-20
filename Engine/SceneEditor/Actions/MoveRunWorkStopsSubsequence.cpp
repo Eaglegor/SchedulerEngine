@@ -22,7 +22,7 @@ namespace Scheduler
 			inew_position > iend_stop ? new_position : end_stop
 		)
 	{
-		assert(std::distance(new_position, start_stop) >= 0 || std::distance(end_stop, new_position) >= 0);
+		assert(inew_position <= istart_stop || inew_position > iend_stop);
 	}
 
 	void MoveRunWorkStopsSubsequence::perform()

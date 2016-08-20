@@ -604,7 +604,7 @@ TEST_CASE("LinkedPointersSublist")
 		SECTION("Reverse")
 		{
 			std::copy(pnodes.begin(), pnodes.end(), std::back_inserter(sublist));
-			
+		
 			sublist.reverse();
 			
 			auto current = sublist.begin();

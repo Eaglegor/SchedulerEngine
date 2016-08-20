@@ -25,6 +25,7 @@ namespace Scheduler
 		
 		LinkedPointersSublist(const LinkedPointersSublist &rhs):
 		parent(rhs.parent),
+		parent_end(rhs.parent_end),
 		head(rhs.head),
 		tail(rhs.tail),
 		_size(rhs._size)
@@ -33,6 +34,7 @@ namespace Scheduler
 		
 		LinkedPointersSublist(BackendCollection &parent, iterator begin, iterator end):
 		parent(parent),
+		parent_end(end),
 		head(*begin),
 		tail(*std::prev(end)),
 		_size(std::distance(begin, end))
@@ -60,22 +62,22 @@ namespace Scheduler
 		
 		iterator begin() const
 		{
-			return iterator(head, &head, &tail);
+			return iterator(head, &head, &tail, *parent_end);
 		}
 		
 		const_iterator cbegin() const
 		{
-			return const_iterator(head, &head, &tail);
+			return const_iterator(head, &head, &tail, *parent_end);
 		}
 		
 		iterator end() const
 		{
-			return iterator(tail == nullptr ? nullptr : tail->next(), &head, &tail);
+			return iterator(*parent_end, &head, &tail, *parent_end);
 		}
 		
 		const_iterator cend() const
 		{
-			return const_iterator(tail == nullptr ? nullptr : tail->next(), &head, &tail);
+			return const_iterator(*parent_end, &head, &tail, *parent_end);
 		}
 		
 		reverse_iterator rbegin() const
@@ -182,9 +184,11 @@ namespace Scheduler
 		{
 			if(&this->parent == &other.parent)
 			{
-				if(pos == begin()) head = *first;
-				if(pos == end()) tail = *std::prev(last);
+				value_type last_value = *std::prev(last);
+				value_type first_value = *first;
 				parent.splice(pos, parent, first, last);
+				if(pos == end()) tail = last_value;
+				if(pos == begin()) head = first_value;
 			}
 			else
 			{
@@ -218,18 +222,23 @@ namespace Scheduler
 		
 		void reverse()
 		{
+			auto i = begin();
+			auto o = end();
 			reverse(begin(), end());
 		}
 		
 		void reverse(iterator first, iterator last)
 		{
-			if(first == begin()) head = *std::prev(last);
-			if(last == end()) tail = *first;
+			value_type first_value = *first;
+			value_type last_value = *std::prev(last);
 			parent.reverse(first, last);
+			if(first == begin()) head = last_value;
+			if(last == end()) tail = first_value;
 		}
 		
 	private:
 		BackendCollection &parent;
+		iterator parent_end;
 		value_type head;
 		value_type tail;
 		size_type _size;
