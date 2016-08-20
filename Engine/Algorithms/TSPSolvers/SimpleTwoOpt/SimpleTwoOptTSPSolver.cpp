@@ -47,7 +47,7 @@ namespace Scheduler
                         changed = true;
 						editor.commit();
 						//stops.update();
- 						stop_it1 = stop_it2;
+						std::swap(stop_it1, stop_it2);
                     } else {
                         editor.rollbackAll();
                     }
