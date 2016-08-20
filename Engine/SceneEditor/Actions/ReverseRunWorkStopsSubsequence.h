@@ -16,20 +16,20 @@ namespace Scheduler
 	class SCENEEDITOR_EXPORT ReverseWorkStopsSubsequence : public Action
 	{
 	public:
-		using RunIterator = ImmutableVector<Run*>::const_iterator;
-		using WorkStopIterator = Run::WorkStopsList::const_iterator;
+		using ConstRunIterator = ImmutableVector<Run*>::const_iterator;
+		using ConstWorkStopIterator = Run::WorkStopsList::const_iterator;
+		using WorkStopIterator = Run::WorkStopsList::iterator;
 
-		ReverseWorkStopsSubsequence(RunIterator run_iterator, WorkStopIterator start_stop, WorkStopIterator end_stop);
+		ReverseWorkStopsSubsequence(ConstRunIterator run_iterator, ConstWorkStopIterator start_stop, ConstWorkStopIterator end_stop);
 
 		virtual void perform() override;
 		virtual void rollback() override;
 
 	private:
 		Schedule* schedule;
-
-		size_t run_index;
-		size_t start_index;
-		size_t end_index;
-
+		ConstRunIterator run;
+		WorkStopIterator first;
+		WorkStopIterator last;
+		WorkStopIterator new_first;
 	};
 }

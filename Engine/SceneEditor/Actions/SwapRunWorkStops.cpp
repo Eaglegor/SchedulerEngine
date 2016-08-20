@@ -10,23 +10,19 @@ namespace Scheduler
 {
 	SwapRunWorkStops::SwapRunWorkStops(RunIterator run_iterator, WorkStopIterator start_stop, WorkStopIterator end_stop):
 		schedule((*run_iterator)->getSchedule()),
-		ir(std::distance(schedule->getRuns().begin(), run_iterator)),
-		ia(std::distance((*run_iterator)->getWorkStops().begin(), start_stop)),
-		ib(std::distance((*run_iterator)->getWorkStops().begin(), end_stop))
+		run(run_iterator),
+		first(start_stop),
+		second(end_stop)
 	{
 	}
 
 	void SwapRunWorkStops::perform()
 	{
-		if (ia == ib) return;
-
-		Run* r = schedule->getRuns()[ir];
-
-		ActionsImpl::swapRunWorkStops(r, ia, ib);
+		(*run)->swapWorkStops(first, second);
 	}
 
 	void SwapRunWorkStops::rollback()
 	{
-		perform();
+		(*run)->swapWorkStops(first, second);
 	}
 }

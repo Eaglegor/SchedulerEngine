@@ -24,10 +24,9 @@ namespace Scheduler
 		virtual void rollback() override;
 
 	private:
-
 		Schedule* schedule;
-		size_t ir;
-		size_t ia;
-		size_t ib;
+		RunIterator run;
+		WorkStopIterator first;
+		WorkStopIterator second;
 	};
 }
