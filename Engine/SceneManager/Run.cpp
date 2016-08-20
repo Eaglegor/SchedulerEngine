@@ -81,7 +81,6 @@ namespace Scheduler {
 		WorkStop *stop = createWorkStop(operation);
 		auto iter = work_stops->insert(pos, stop);
 				
-        invalidateWorkStopRoutes(iter);
 		invalidateArrivalTimes();
 
         return iter;
@@ -107,7 +106,6 @@ namespace Scheduler {
 
 		auto iter = work_stops->erase(pos);
 		
-        invalidateWorkStopRoutes(iter);
 		invalidateArrivalTimes();
 		
 		return iter;
@@ -133,28 +131,11 @@ namespace Scheduler {
         if (vehicle &&
             (this->vehicle == nullptr || vehicle->getRoutingProfile() != this->vehicle->getRoutingProfile())) {
             this->vehicle = vehicle;
-            invalidateRoutes();
 			invalidateArrivalTimes();
         }
         else {
             this->vehicle = vehicle;
         }
-    }
-
-    void Run::invalidateRoutes() {
-        if (vehicle == nullptr) return;
-
-		if (!schedule_actualization_model || !schedule_actualization_model->getRouteActualizationAlgorithm()) return;
-
-		for(Stop* stop : *stops)
-		{
-			stop->invalidateRoute();
-		}
-    }
-
-    void Run::invalidateWorkStopRoutes(WorkStopsList::iterator iter) {
-		(*iter)->invalidateRoute();
-		(*std::prev(iter))->invalidateRoute();
     }
 
     Run::~Run() {
@@ -217,6 +198,8 @@ namespace Scheduler {
 	
 	void Run::swapWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator second)
 	{
+		if(first == second) return;
+		
 		if(std::next(first) == second)
 		{
 			work_stops->splice(first, *work_stops, second, std::next(second));
@@ -230,16 +213,22 @@ namespace Scheduler {
 		WorkStopsList::iterator pos = std::next(second);
 		work_stops->splice(first, *work_stops, second, std::next(second));
 		work_stops->splice(pos, *work_stops, first, std::next(first));
+		
+		invalidateArrivalTimes();
 	}
 
 	void Run::reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last)
 	{
 		work_stops->reverse(first, last);
+		
+		invalidateArrivalTimes();
 	}
 
 	void Run::spliceOwnWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last)
 	{
 		work_stops->splice(pos, *work_stops, first, last);
+		
+		invalidateArrivalTimes();
 	}
 
 	const Run::StopsList& Run::getStops() const

@@ -77,11 +77,6 @@ namespace Scheduler
 		return next_route.get();
 	}
 
-	void Stop::invalidateRoute()
-	{
-        next_route.setActual(false);
-	}
-
 	void Stop::invalidateArrivalTime()
 	{
 		allocation_time.setActual(false);
@@ -95,6 +90,7 @@ namespace Scheduler
 	void Stop::setNext(Stop* stop)
 	{
 		this->nextStop = stop;
+		if(stop == nullptr || stop->getLocation() != getLocation()) next_route.setActual(false);
 	}
 
 	void Stop::setPrev(Stop* stop)

@@ -56,11 +56,6 @@ namespace Scheduler {
 		r->setScheduleActualizationModel(schedule_actualization_model);
 		r->setScheduleValidationModel(schedule_validation_model);
 
-		if(pos != runs.begin())
-		{
-			(*std::prev(pos))->getEndStop()->invalidateRoute();
-		}
-
 		invalidateArrivalTimes();
 
 		if (run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
@@ -69,12 +64,7 @@ namespace Scheduler {
 	}
 
 	void Schedule::destroyRun(RunsList::iterator pos) {
-		
-		if(pos != runs.begin())
-		{
-			(*std::prev(pos))->getEndStop()->invalidateRoute();
-		}
-		
+
 		assert(runs_factory);
 		runs_factory->destroyObject(*pos);
 

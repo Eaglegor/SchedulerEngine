@@ -6,6 +6,7 @@
 #include <Engine/Concepts/Route.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneEditor/SceneEditor.h>
+#include <Engine/Utils/Collections/PositionPreservingLinkedPointersListWrapper.h>
 #include <iostream>
 
 namespace Scheduler
@@ -30,7 +31,10 @@ namespace Scheduler
 		if (!schedule_cost_function) return; // We don't have a metric to optimize - so we can't
 
         auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
-		const auto &stops = run->getWorkStops();
+		if(run->getWorkStops().empty()) return;
+		
+		PositionPreservingLinkedPointersListWrapper<Run::WorkStopsList> stops(run->getWorkStops());
+		
 		Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
 		bool changed = true;
 		while (changed) {
@@ -39,11 +43,13 @@ namespace Scheduler
                 for (auto stop_it2 = std::next(stop_it1); stop_it2 != stops.end(); ++stop_it2) {
 					if (std::next(stop_it1) == stop_it2) continue;
 					SceneEditor editor;
-                    editor.performAction<MoveRunWorkStop>(run_iter, stop_it1, stop_it2);
+                    editor.performAction<MoveRunWorkStop>(run_iter, *stop_it1, *stop_it2);
 					Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
 					if (cost < best_cost) {
 						best_cost = cost;
 						changed = true;
+						editor.commit();
+						stops.update();
 					}
 					else {
 						editor.rollbackAll();

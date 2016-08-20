@@ -72,6 +72,10 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug)
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+	add_definitions("-DDEBUG_LOGGING")
+endif()
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set(__CONAN_ARGS "${__CONAN_ARGS} -s build_type=Debug")
 	if(MSVC)

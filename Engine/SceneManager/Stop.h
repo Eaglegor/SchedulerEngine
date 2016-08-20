@@ -59,7 +59,6 @@ namespace Scheduler
 		void setScheduleActualizationModel(ScheduleActualizationModel* model);
 		void setScheduleValidationModel(ScheduleValidationModel* model);
 
-		void invalidateRoute();
 		void invalidateArrivalTime();
 		void invalidateDuration();
 
