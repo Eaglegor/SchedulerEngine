@@ -504,5 +504,164 @@ TEST_CASE("SceneManager", "[integration][functional][scene_manager]") {
 
 TEST_CASE("Run operations")
 {
+	using namespace Scheduler;
+	
+	Engine engine;
+	SceneManager *sm = engine.getSceneManager();
+	Scene* scene = sm->createScene();
+	
+	Performer* performer = scene->createPerformer();
+	Vehicle* vehicle = scene->createVehicle();
+	
+	Operation* operation1 = scene->createFreeOperation();
+	operation1->setName("1");
+	Operation* operation2 = scene->createFreeOperation();
+	operation2->setName("2");
+	Operation* operation3 = scene->createFreeOperation();
+	operation3->setName("3");
+	Operation* operation4 = scene->createFreeOperation();
+	operation4->setName("4");
+	
+	Schedule* schedule = scene->createSchedule(performer);
+	Run* r = *schedule->createRun(schedule->getRuns().end(), Location(), Location());
+	
+	Run::WorkStopsList::iterator iter1 = r->createWorkStop(r->getWorkStops().end(), operation1);
+	Run::WorkStopsList::iterator iter2 = r->createWorkStop(r->getWorkStops().end(), operation2);
+	Run::WorkStopsList::iterator iter3 = r->createWorkStop(r->getWorkStops().end(), operation3);
+	Run::WorkStopsList::iterator iter4 = r->createWorkStop(r->getWorkStops().end(), operation4);
+	Run::WorkStopsList::iterator end = r->getWorkStops().end();
+	
+	REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation1);
+	REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation2);
+	REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation3);
+	REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation4);
+	
+	SECTION("Swap")
+	{
+		r->swapWorkStops(iter1, iter4);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation1);
+		
+		r->swapWorkStops(iter2, iter3);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation1);
+		
+		r->swapWorkStops(iter4, iter2);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation1);
+		
+		r->swapWorkStops(iter3, iter1);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation3);
+		
+		r->swapWorkStops(iter1, iter1);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation3);
+	}
+	
+	SECTION("Reverse")
+	{
+		r->reverseWorkStops(iter1, end);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation1);
+	
+		r->reverseWorkStops(iter4, end);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation4);
+		
+		r->reverseWorkStops(iter1, iter3);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation4);
+		
+		r->reverseWorkStops(iter3, end);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation3);
+		
+		r->reverseWorkStops(iter1, iter4);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation3);
+		
+		r->reverseWorkStops(iter1, iter1);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation3);
+	}
+	
+	SECTION("Self splice")
+	{
+		r->spliceOwnWorkStops(r->getWorkStops().begin(), iter3, iter4);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation4);
+		
+		r->spliceOwnWorkStops(r->getWorkStops().end(), iter1, iter2);
 
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation1);
+		
+		r->spliceOwnWorkStops(r->getWorkStops().begin(), iter4, end);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation2);
+		
+		r->spliceOwnWorkStops(r->getWorkStops().end(), iter4, iter3);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation1);
+		
+		r->spliceOwnWorkStops(iter2, iter1, end);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation4);
+		
+		r->spliceOwnWorkStops(iter4, iter3, iter2);
+		
+		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation3);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation1);
+		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation4);
+	}
+	
 }

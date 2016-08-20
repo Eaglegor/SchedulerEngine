@@ -166,13 +166,34 @@ TEST_CASE("LinkedPointersList", "[unit][functonal]")
 	{
 		std::copy(pnodes.begin(), pnodes.end(), std::back_inserter(nodes_list));
 		
-		nodes_list.reverse();
-		
-		LinkedPointersList<Node*>::iterator current = nodes_list.begin();
-		for(int i = 0; i < nodes.size(); ++i)
+		SECTION("Full")
 		{
-			REQUIRE((*current)->value() == nodes.size() - 1 - i);
-			++current;
+			nodes_list.reverse();
+			
+			LinkedPointersList<Node*>::iterator current = nodes_list.begin();
+			for(int i = 0; i < nodes.size(); ++i)
+			{
+				REQUIRE((*current)->value() == nodes.size() - 1 - i);
+				++current;
+			}
+		}
+		
+		SECTION("Partial")
+		{
+			nodes_list.reverse(std::next(nodes_list.begin()), std::next(nodes_list.begin(), 4));
+
+			REQUIRE(*std::next(nodes_list.begin(), 0) == pnodes[0]);
+			REQUIRE(*std::next(nodes_list.begin(), 1) == pnodes[3]);
+			REQUIRE(*std::next(nodes_list.begin(), 2) == pnodes[2]);
+			REQUIRE(*std::next(nodes_list.begin(), 3) == pnodes[1]);
+			REQUIRE(*std::next(nodes_list.begin(), 4) == pnodes[4]);
+			
+			LinkedPointersList<Node*>::iterator current = std::next(nodes_list.begin(), 4);
+			for(int i = 4; i < nodes.size(); ++i)
+			{
+				REQUIRE((*current)->value() == i);
+				++current;
+			}
 		}
 	}
 	
@@ -605,14 +626,34 @@ TEST_CASE("LinkedPointersSublist")
 		{
 			std::copy(pnodes.begin(), pnodes.end(), std::back_inserter(sublist));
 		
-			sublist.reverse();
-			
-			auto current = sublist.begin();
-			for(int i = 0; i < pnodes.size(); ++i)
+			SECTION("Full")
 			{
-				Node* n = *(current++);
-				Node* n1 = pnodes[pnodes.size() - 1 - i];
-				REQUIRE(n == n1);
+				sublist.reverse();
+				
+				auto current = sublist.begin();
+				for(int i = 0; i < pnodes.size(); ++i)
+				{
+					Node* n = *(current++);
+					Node* n1 = pnodes[pnodes.size() - 1 - i];
+					REQUIRE(n == n1);
+				}
+			}
+			SECTION("Partial")
+			{
+				nodes_list.reverse(std::next(sublist.begin()), std::next(sublist.begin(), 4));
+
+				REQUIRE(*std::next(sublist.begin(), 0) == pnodes[0]);
+				REQUIRE(*std::next(sublist.begin(), 1) == pnodes[3]);
+				REQUIRE(*std::next(sublist.begin(), 2) == pnodes[2]);
+				REQUIRE(*std::next(sublist.begin(), 3) == pnodes[1]);
+				REQUIRE(*std::next(sublist.begin(), 4) == pnodes[4]);
+				
+				LinkedPointersList<Node*>::iterator current = std::next(sublist.begin(), 4);
+				for(int i = 4; i < nodes.size(); ++i)
+				{
+					REQUIRE((*current)->value() == i);
+					++current;
+				}
 			}
 		}
 		

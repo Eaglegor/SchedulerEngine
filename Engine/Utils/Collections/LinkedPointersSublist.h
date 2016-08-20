@@ -184,11 +184,21 @@ namespace Scheduler
 		{
 			if(&this->parent == &other.parent)
 			{
-				value_type last_value = *std::prev(last);
+				value_type new_head = head;
+				value_type new_tail = tail;
+				value_type pre_first = getPrevValue(first);
+				value_type last_value = getPrevValue(last);
 				value_type first_value = *first;
+				
+				if(first == begin()) new_head = *last;
+				if(last == end()) new_tail = pre_first;
+				if(pos == begin()) new_head = first_value;
+				if(pos == end()) new_tail = last_value;
+				
 				parent.splice(pos, parent, first, last);
-				if(pos == end()) tail = last_value;
-				if(pos == begin()) head = first_value;
+				
+				head = new_head;
+				tail = new_tail;
 			}
 			else
 			{
@@ -230,13 +240,23 @@ namespace Scheduler
 		void reverse(iterator first, iterator last)
 		{
 			value_type first_value = *first;
-			value_type last_value = *std::prev(last);
+			value_type last_value = getPrevValue(last);
 			parent.reverse(first, last);
 			if(first == begin()) head = last_value;
 			if(last == end()) tail = first_value;
 		}
 		
 	private:
+		value_type getPrevValue(iterator iter)
+		{
+			return iter == end() ? *std::prev(iter) : (*iter)->prev();
+		}
+		
+		value_type getNextValue(iterator iter)
+		{
+			return *std::next(iter);
+		}
+		
 		BackendCollection &parent;
 		iterator parent_end;
 		value_type head;

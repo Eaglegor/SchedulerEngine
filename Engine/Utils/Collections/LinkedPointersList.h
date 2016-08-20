@@ -253,7 +253,7 @@ namespace Scheduler
 			else
 			{
 				if(pos == begin()) head = value;
-				value_type prev = (*pos)->prev();
+				value_type prev = getPrevValue(pos);
 				value_type next = *pos;
 				if(prev != nullptr) prev->setNext(value);
 				value->setPrev(prev);
@@ -274,9 +274,9 @@ namespace Scheduler
 		
 		iterator erase(iterator pos)
 		{
-			value_type prev = (*pos)->prev();
+			value_type prev = pos == end() ? *std::prev(pos) : (*pos)->prev();
 			value_type value = *pos;
-			value_type next = (*pos)->next();
+			value_type next = getNextValue(pos);
 			
 			if(value == tail) tail = value->prev();
 			if(value == head) head = value->next();
@@ -325,12 +325,17 @@ namespace Scheduler
 		{
 			if(this == &other)
 			{
-				value_type old_prev = *std::prev(first);
+				value_type old_prev = getPrevValue(first);
 				value_type old_next = *last;
-				value_type new_prev = *std::prev(pos);
+				value_type new_prev = getPrevValue(pos);
 				value_type new_next = *pos;
 				value_type first_value = *first;
-				value_type last_value= *std::prev(last);
+				value_type last_value = getPrevValue(last);
+
+				if(first == begin()) tail = old_next;
+				if(last == end()) tail = old_prev;
+				if(pos == begin()) head = first_value;
+				if(pos == end()) tail = last_value;
 				
 				if(old_prev != nullptr) old_prev->setNext(old_next);
 				if(old_next != nullptr) old_next->setPrev(old_prev);
@@ -340,9 +345,6 @@ namespace Scheduler
 				
 				last_value->setNext(new_next);
 				if(new_next != nullptr) new_next->setPrev(last_value);
-				
-				if(pos == begin()) head = first_value;
-				if(pos == end()) tail = last_value;
 			}
 			else
 			{
@@ -381,9 +383,12 @@ namespace Scheduler
 	
 		void reverse(iterator first, iterator last)
 		{
+			if(first == last) return;
 			iterator iter = first;
+			value_type pre = getPrevValue(first);
+			value_type post = *last;
 			value_type first_value = *first;
-			value_type last_value = *std::prev(last);
+			value_type last_value = getPrevValue(last);
 			while(iter != last)
 			{
 				iterator next_iter = std::next(iter);
@@ -393,11 +398,31 @@ namespace Scheduler
 				(*iter)->setNext(prev);
 				iter = next_iter;
 			}
+			if(pre != nullptr) 
+			{
+				pre->setNext(last_value);
+				last_value->setPrev(pre);
+			}
+			if(post != nullptr) 
+			{
+				post->setPrev(first_value);
+				first_value->setNext(post);
+			}
 			if (first == begin()) head = last_value;
 			if (last == end()) tail = first_value;
 		}
 	
 	private:
+		value_type getPrevValue(iterator iter)
+		{
+			return iter == end() ? *std::prev(iter) : (*iter)->prev();
+		}
+		
+		value_type getNextValue(iterator iter)
+		{
+			return *std::next(iter);
+		}
+		
 		value_type head;
 		value_type tail;
 		
