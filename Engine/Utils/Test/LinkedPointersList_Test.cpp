@@ -436,6 +436,45 @@ TEST_CASE("LinkedPointersList", "[unit][functonal]")
 			REQUIRE(*(current++) == pnodes[4]);
 		}
 		
+		SECTION("Same position self splice")
+		{
+			nodes_list.splice(std::next(nodes_list.begin(), 4), nodes_list, std::next(nodes_list.begin(), 3), std::next(nodes_list.begin(), 4));
+			
+			REQUIRE(nodes_list.size() == 5);
+			REQUIRE_FALSE(nodes_list.empty());
+			auto current = nodes_list.begin();
+			REQUIRE(*(current++) == pnodes[0]);
+			REQUIRE(*(current++) == pnodes[1]);
+			REQUIRE(*(current++) == pnodes[2]);
+			REQUIRE(*(current++) == pnodes[3]);
+			REQUIRE(*(current++) == pnodes[4]);
+			
+			nodes_list.splice(std::next(nodes_list.begin(), 3), nodes_list, std::next(nodes_list.begin(), 3), std::next(nodes_list.begin(), 4));
+			
+			REQUIRE(nodes_list.size() == 5);
+			REQUIRE_FALSE(nodes_list.empty());
+			current = nodes_list.begin();
+			REQUIRE(*(current++) == pnodes[0]);
+			REQUIRE(*(current++) == pnodes[1]);
+			REQUIRE(*(current++) == pnodes[2]);
+			REQUIRE(*(current++) == pnodes[3]);
+			REQUIRE(*(current++) == pnodes[4]);
+		}
+
+		SECTION("Previous position self splice")
+		{
+			nodes_list.splice(std::next(nodes_list.begin(), 2), nodes_list, std::next(nodes_list.begin(), 3), std::next(nodes_list.begin(), 4));
+			
+			REQUIRE(nodes_list.size() == 5);
+			REQUIRE_FALSE(nodes_list.empty());
+			auto current = nodes_list.begin();
+			REQUIRE(*(current++) == pnodes[0]);
+			REQUIRE(*(current++) == pnodes[1]);
+			REQUIRE(*(current++) == pnodes[3]);
+			REQUIRE(*(current++) == pnodes[2]);
+			REQUIRE(*(current++) == pnodes[4]);
+		}
+		
 		SECTION("Multi self splice")
 		{
 			nodes_list.splice(std::next(nodes_list.begin()), nodes_list, std::next(nodes_list.begin(), 2), std::next(nodes_list.begin(), 4));
@@ -943,6 +982,45 @@ TEST_CASE("LinkedPointersSublist")
 				REQUIRE(*(current++) == pnodes[0]);
 				REQUIRE(*(current++) == pnodes[3]);
 				REQUIRE(*(current++) == pnodes[1]);
+				REQUIRE(*(current++) == pnodes[2]);
+				REQUIRE(*(current++) == pnodes[4]);
+			}
+			
+			SECTION("Same position self splice")
+			{
+				sublist.splice(std::next(sublist.begin(), 4), sublist, std::next(sublist.begin(), 3), std::next(sublist.begin(), 4));
+				
+				REQUIRE(sublist.size() == 5);
+				REQUIRE_FALSE(sublist.empty());
+				auto current = sublist.begin();
+				REQUIRE(*(current++) == pnodes[0]);
+				REQUIRE(*(current++) == pnodes[1]);
+				REQUIRE(*(current++) == pnodes[2]);
+				REQUIRE(*(current++) == pnodes[3]);
+				REQUIRE(*(current++) == pnodes[4]);
+				
+				sublist.splice(std::next(sublist.begin(), 3), sublist, std::next(sublist.begin(), 3), std::next(sublist.begin(), 4));
+				
+				REQUIRE(sublist.size() == 5);
+				REQUIRE_FALSE(sublist.empty());
+				current = sublist.begin();
+				REQUIRE(*(current++) == pnodes[0]);
+				REQUIRE(*(current++) == pnodes[1]);
+				REQUIRE(*(current++) == pnodes[2]);
+				REQUIRE(*(current++) == pnodes[3]);
+				REQUIRE(*(current++) == pnodes[4]);
+			}
+
+			SECTION("Previous position self splice")
+			{
+				sublist.splice(std::next(sublist.begin(), 2), sublist, std::next(sublist.begin(), 3), std::next(sublist.begin(), 4));
+				
+				REQUIRE(sublist.size() == 5);
+				REQUIRE_FALSE(sublist.empty());
+				auto current = sublist.begin();
+				REQUIRE(*(current++) == pnodes[0]);
+				REQUIRE(*(current++) == pnodes[1]);
+				REQUIRE(*(current++) == pnodes[3]);
 				REQUIRE(*(current++) == pnodes[2]);
 				REQUIRE(*(current++) == pnodes[4]);
 			}

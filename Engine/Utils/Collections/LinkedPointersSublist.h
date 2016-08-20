@@ -182,6 +182,7 @@ namespace Scheduler
 		
 		void splice(iterator pos, LinkedPointersSublist<value_type, BackendCollection> &other, iterator first, iterator last)
 		{
+			if(pos == first || pos == last) return;
 			if(&this->parent == &other.parent)
 			{
 				value_type new_head = head;

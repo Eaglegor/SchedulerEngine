@@ -217,11 +217,19 @@ namespace Scheduler {
 	
 	void Run::swapWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator second)
 	{
+		if(std::next(first) == second)
+		{
+			work_stops->splice(first, *work_stops, second, std::next(second));
+			return;
+		} 
+		else if(std::next(second) == first)
+		{
+			work_stops->splice(second, *work_stops, first, std::next(first));
+			return;
+		}
 		WorkStopsList::iterator pos = std::next(second);
-		work_stops->erase(second);
-		work_stops->insert(first, *second);
-		work_stops->erase(first);
-		work_stops->insert(pos, *first);
+		work_stops->splice(first, *work_stops, second, std::next(second));
+		work_stops->splice(pos, *work_stops, first, std::next(first));
 	}
 
 	void Run::reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last)

@@ -323,6 +323,7 @@ namespace Scheduler
 		
 		void splice(iterator pos, LinkedPointersList<value_type> &other, iterator first, iterator last)
 		{
+			if(pos == first || pos == last) return;
 			if(this == &other)
 			{
 				value_type old_prev = getPrevValue(first);
@@ -331,7 +332,7 @@ namespace Scheduler
 				value_type new_next = *pos;
 				value_type first_value = *first;
 				value_type last_value = getPrevValue(last);
-
+				
 				if(first == begin()) tail = old_next;
 				if(last == end()) tail = old_prev;
 				if(pos == begin()) head = first_value;
