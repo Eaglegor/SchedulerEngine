@@ -29,7 +29,8 @@ namespace Scheduler
 
 		if(run->getWorkStops().empty()) return;
 		
-		PositionPreservingLinkedPointersListWrapper<Run::WorkStopsList> stops(run->getWorkStops());
+		//PositionPreservingLinkedPointersListWrapper<Run::WorkStopsList> stops(run->getWorkStops());
+		const auto& stops = run->getWorkStops();
 
 		auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
         Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
@@ -39,13 +40,14 @@ namespace Scheduler
             for (auto stop_it1 = stops.begin(); stop_it1 != stops.end(); ++stop_it1) {
                 for (auto stop_it2 = std::next(stop_it1); stop_it2 != stops.end(); ++stop_it2) {
                     SceneEditor editor;
-                    editor.performAction<ReverseWorkStopsSubsequence>(run_iter, *stop_it1, *std::next(stop_it2));
+                    editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stop_it1, std::next(stop_it2));
                     Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
                     if (cost < best_cost) {
                         best_cost = cost;
                         changed = true;
 						editor.commit();
-						stops.update();
+						//stops.update();
+ 						stop_it1 = stop_it2;
                     } else {
                         editor.rollbackAll();
                     }
