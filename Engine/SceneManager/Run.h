@@ -81,10 +81,8 @@ namespace Scheduler
 
 		// == framework internal ====================================
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
-		void setScheduleActualizationModel(ScheduleActualizationModel* model);
+		void setScheduleActualizationModel(ScheduleActualizationModel* model, ArrivalTimeActualizer* arrival_time_actualizer);
 		void setScheduleValidationModel(ScheduleValidationModel* model);
-
-		void invalidateArrivalTimes();
 
 	private:
 		WorkStop* createWorkStop(const Operation* operation);
@@ -102,6 +100,7 @@ namespace Scheduler
 		SceneObjectsFactory<WorkStop> *stops_factory;
 
 		ScheduleActualizationModel* schedule_actualization_model;
+		ArrivalTimeActualizer* arrival_time_actualizer;
 		ScheduleValidationModel* schedule_validation_model;
 
 		std::unique_ptr<StopsList> stops;

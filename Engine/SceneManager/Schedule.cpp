@@ -53,10 +53,10 @@ namespace Scheduler {
 		Run* r = runs_factory->createObject(from, to, this, stops, pos == runs.end() ? stops.end() : (*pos)->getStops().begin());
 
 		r->setStopsFactory(stops_factory);
-		r->setScheduleActualizationModel(schedule_actualization_model);
+		r->setScheduleActualizationModel(schedule_actualization_model, &arrival_time_actualizer);
 		r->setScheduleValidationModel(schedule_validation_model);
 
-		invalidateArrivalTimes();
+		arrival_time_actualizer.setDirty(true);
 
 		if (run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
 
@@ -70,7 +70,7 @@ namespace Scheduler {
 
 		runs.erase(pos);
 		
-		invalidateArrivalTimes();
+		arrival_time_actualizer.setDirty(true);
 	}
 
 	Schedule::~Schedule() {
@@ -84,7 +84,7 @@ namespace Scheduler {
 	void Schedule::setDepotLocation(const Location &depot_location) {
 		this->depot_location = depot_location;
 
-		invalidateArrivalTimes();
+		arrival_time_actualizer.setDirty(true);
 	}
 
     bool Schedule::isValid() const
@@ -96,9 +96,12 @@ namespace Scheduler {
 	void Schedule::setActualizationModel(ScheduleActualizationModel* model)
 	{
 		this->schedule_actualization_model = model;
+		
+		arrival_time_actualizer = model ? ArrivalTimeActualizer(model->getArrivalTimeActualizationAlgorithm(), this) : ArrivalTimeActualizer();
+		
 		for(Run* r : runs)
 		{
-			r->setScheduleActualizationModel(model);
+			r->setScheduleActualizationModel(model, &arrival_time_actualizer);
 		}
 	}
 
@@ -124,7 +127,7 @@ namespace Scheduler {
 	void Schedule::setShift(const TimeWindow &shift)
 	{
 		this->shift = shift;
-		invalidateArrivalTimes();
+		arrival_time_actualizer.setDirty(true);
 	}
 
 	void Schedule::clear()
@@ -137,6 +140,8 @@ namespace Scheduler {
 		}
 
 		runs.clear();
+		
+		arrival_time_actualizer.setDirty(true);
 	}
 
 	Scene* Schedule::getScene()
@@ -166,14 +171,14 @@ namespace Scheduler {
 
 	void Schedule::setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder) {
 		this->run_vehicle_binder = run_vehicle_binder;
-	}
-
-	void Schedule::invalidateArrivalTimes()
-	{
-		for (Run *run : runs)
+		
+		for(Run* r : runs)
 		{
-			run->invalidateArrivalTimes();
+			if(run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
+			else r->setVehicle(nullptr);
 		}
+		
+		arrival_time_actualizer.setDirty(true);
 	}
 	
     ScheduleValidationModel* Schedule::getValidationModel() const{return schedule_validation_model;}

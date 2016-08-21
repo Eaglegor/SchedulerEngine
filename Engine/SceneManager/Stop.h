@@ -56,24 +56,28 @@ namespace Scheduler
 		void setPrev(Stop* stop);
 		
 		// == framework internal ====================================
-		void setScheduleActualizationModel(ScheduleActualizationModel* model);
+		void setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer);
 		void setScheduleValidationModel(ScheduleValidationModel* model);
-
-		void invalidateArrivalTime();
-		void invalidateDuration();
 
 		virtual void acceptVisitor(StopVisitor* visitor) = 0;
 		virtual void acceptVisitor(ConstStopVisitor* visitor) const = 0;
 
 		bool isValid() const;
 
+	protected:
+		DurationActualizer duration_actualizer;
+		RouteActualizer route_actualizer;
+		ArrivalTimeActualizer* arrival_time_actualizer;
+		
 	private:
 		using ActualizableAllocationTime = Actualizable<TimeWindow, ArrivalTimeActualizer>;
 		using ActualizableDuration = Actualizable<Duration, DurationActualizer>;
 		using ActualizableRoute = Actualizable<Route, RouteActualizer>;
 
 		ActualizableAllocationTime allocation_time;
-        ActualizableDuration duration;
+        
+		ActualizableDuration duration;
+		
 		ActualizableRoute next_route;
 
 		Run* run;

@@ -22,7 +22,8 @@ namespace Scheduler {
             end_stop(end_location, this),
             vehicle(nullptr),
             schedule_actualization_model(nullptr),
-			schedule_validation_model(nullptr)
+			schedule_validation_model(nullptr),
+			arrival_time_actualizer(nullptr)
     {
 		auto start = stops_list.insert(pos, &start_stop);
 		auto end = stops_list.insert(pos, &end_stop);
@@ -70,8 +71,6 @@ namespace Scheduler {
 
     RunBoundaryStop *Run::allocateStartOperation(const Operation *operation) {
         start_stop.addOperation(operation);
-		start_stop.invalidateDuration();
-		invalidateArrivalTimes();
         return &start_stop;
     }
 
@@ -81,22 +80,18 @@ namespace Scheduler {
 		WorkStop *stop = createWorkStop(operation);
 		auto iter = work_stops->insert(pos, stop);
 				
-		invalidateArrivalTimes();
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
 
         return iter;
     }
 
     RunBoundaryStop *Run::allocateEndOperation(const Operation *operation) {
         end_stop.addOperation(operation);
-		end_stop.invalidateDuration();
-		invalidateArrivalTimes();
         return &end_stop;
     }
 
     void Run::unallocateStartOperation(const Operation *operation) {
         start_stop.removeOperation(operation);
-		start_stop.invalidateDuration();
-		invalidateArrivalTimes();
     }
 
     Run::WorkStopsList::iterator Run::destroyWorkStop(WorkStopsList::iterator pos) {
@@ -106,15 +101,13 @@ namespace Scheduler {
 
 		auto iter = work_stops->erase(pos);
 		
-		invalidateArrivalTimes();
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
 		
 		return iter;
     }
 
     void Run::unallocateEndOperation(const Operation *operation) {
         end_stop.removeOperation(operation);
-		end_stop.invalidateDuration();
-		invalidateArrivalTimes();
     }
 
 	bool Run::isValid() const
@@ -131,7 +124,7 @@ namespace Scheduler {
         if (vehicle &&
             (this->vehicle == nullptr || vehicle->getRoutingProfile() != this->vehicle->getRoutingProfile())) {
             this->vehicle = vehicle;
-			invalidateArrivalTimes();
+			if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
         }
         else {
             this->vehicle = vehicle;
@@ -149,15 +142,17 @@ namespace Scheduler {
         stops->clear();
     }
 
-    void Run::setScheduleActualizationModel(ScheduleActualizationModel* model) {
+    void Run::setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer) {
         this->schedule_actualization_model = model;
-
-		start_stop.setScheduleActualizationModel(model);
-		end_stop.setScheduleActualizationModel(model);
+		
+		this->arrival_time_actualizer = arrival_time_actualizer;
+		
+		start_stop.setScheduleActualizationModel(model, arrival_time_actualizer);
+		end_stop.setScheduleActualizationModel(model, arrival_time_actualizer);
 
 		for(WorkStop* stop : *work_stops)
 		{
-			stop->setScheduleActualizationModel(model);
+			stop->setScheduleActualizationModel(model, arrival_time_actualizer);
 		}
     }
 
@@ -174,25 +169,15 @@ namespace Scheduler {
 		}
 	}
 
-	void Run::invalidateArrivalTimes()
-	{
-		if (!schedule_actualization_model || !schedule_actualization_model->getArrivalTimeActualizationAlgorithm()) return;
-
-		start_stop.invalidateArrivalTime();
-		end_stop.invalidateArrivalTime();
-		for(WorkStop *stop : *work_stops)
-		{
-			stop->invalidateArrivalTime();
-		}
-	}
-
 	WorkStop* Run::createWorkStop(const Operation * operation)
 	{
 		WorkStop *stop = stops_factory->createObject(this);
-		stop->setScheduleActualizationModel(schedule_actualization_model);
+		stop->setScheduleActualizationModel(schedule_actualization_model, arrival_time_actualizer);
 		stop->setScheduleValidationModel(schedule_validation_model);
 		stop->setOperation(operation);
-		invalidateArrivalTimes();
+		
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		
 		return stop;
 	}
 	
@@ -214,21 +199,21 @@ namespace Scheduler {
 		work_stops->splice(first, *work_stops, second, std::next(second));
 		work_stops->splice(pos, *work_stops, first, std::next(first));
 		
-		invalidateArrivalTimes();
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
 	}
 
 	void Run::reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last)
 	{
 		work_stops->reverse(first, last);
 		
-		invalidateArrivalTimes();
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
 	}
 
 	void Run::spliceOwnWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last)
 	{
 		work_stops->splice(pos, *work_stops, first, last);
 		
-		invalidateArrivalTimes();
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
 	}
 
 	const Run::StopsList& Run::getStops() const

@@ -7,6 +7,7 @@
 #include "SceneObjectsFactory.h"
 #include "Constraints/Schedule/ScheduleConstraints.h"
 #include <Engine/Utils/Collections/LinkedPointersList.h>
+#include "ArrivalTimeActualizer.h"
 
 #include <SceneManager_export.h>
 #include "ScheduleActualizationModel.h"
@@ -78,8 +79,6 @@ namespace Scheduler
 
 		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
 
-		void invalidateArrivalTimes();
-
 	private:
         size_t id;
         std::string name;
@@ -99,6 +98,7 @@ namespace Scheduler
 		TimeWindow shift;
 
 		ScheduleActualizationModel* schedule_actualization_model;
+		ArrivalTimeActualizer arrival_time_actualizer;
 		ScheduleValidationModel* schedule_validation_model;
 
 		RunVehicleBinder* run_vehicle_binder;

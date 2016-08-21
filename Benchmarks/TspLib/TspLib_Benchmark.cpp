@@ -226,7 +226,7 @@ protected:
 		result.dataset_name = datasets[id];
 
 		long long nanoseconds = 0;
-        const size_t number_of_iterations = 1;
+        const size_t number_of_iterations = 5;
 
         for (size_t i = 0; i < number_of_iterations; ++i)
 		{

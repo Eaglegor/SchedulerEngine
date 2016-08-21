@@ -83,7 +83,7 @@ TEST_CASE("LinkedPointersList", "[unit][functonal]")
 
 		REQUIRE(!nodes_list.empty());
 		REQUIRE(nodes_list.size() == 10);
-		
+
 		LinkedPointersList<Node*>::iterator current = nodes_list.begin();
 		for(int i = 0; i < nodes.size(); ++i)
 		{

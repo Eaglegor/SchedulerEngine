@@ -17,7 +17,8 @@ namespace Scheduler
 	nextStop(nullptr),
 	prevStop(nullptr),
 	schedule_actualizaton_model(nullptr),
-	schedule_validation_model(nullptr)
+	schedule_validation_model(nullptr),
+	arrival_time_actualizer(nullptr)
 	{
 	}
 
@@ -59,12 +60,18 @@ namespace Scheduler
 		return prevStop;
 	}
 
-	void Stop::setScheduleActualizationModel(ScheduleActualizationModel* model)
+	void Stop::setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer)
 	{
 		this->schedule_actualizaton_model = model;
-		this->next_route.setActualizer(model ? RouteActualizer(model->getRouteActualizationAlgorithm(), this) : RouteActualizer());
-		this->allocation_time.setActualizer(model ? ArrivalTimeActualizer(model->getArrivalTimeActualizationAlgorithm(), this->getRun()->getSchedule()) : ArrivalTimeActualizer());
-		this->duration.setActualizer(model ? DurationActualizer(model->getDurationActualizationAlgorithm(), this) : DurationActualizer());
+		
+		route_actualizer = model ? RouteActualizer(model->getRouteActualizationAlgorithm(), this) : RouteActualizer();
+		this->next_route.setActualizer(&route_actualizer);
+		
+		this->arrival_time_actualizer = arrival_time_actualizer;
+		this->allocation_time.setActualizer(arrival_time_actualizer);
+		
+		duration_actualizer = model ? DurationActualizer(model->getDurationActualizationAlgorithm(), this) : DurationActualizer();
+		this->duration.setActualizer(&duration_actualizer);
 	}
 
 	void Stop::setScheduleValidationModel(ScheduleValidationModel* model)
@@ -77,25 +84,17 @@ namespace Scheduler
 		return next_route.get();
 	}
 
-	void Stop::invalidateArrivalTime()
-	{
-		allocation_time.setActual(false);
-	}
-
-	void Stop::invalidateDuration()
-	{
-		duration.setActual(false);
-	}
-
 	void Stop::setNext(Stop* stop)
 	{
 		this->nextStop = stop;
-		if(stop == nullptr || stop->getLocation() != getLocation()) next_route.setActual(false);
+		if(stop == nullptr || stop->getLocation() != getLocation()) route_actualizer.setDirty(true);
+		duration_actualizer.setDirty(true);
 	}
 
 	void Stop::setPrev(Stop* stop)
 	{
 		this->prevStop = stop;
+		duration_actualizer.setDirty(true);
 	}
 
 	bool Stop::isValid() const

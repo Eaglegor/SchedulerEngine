@@ -22,6 +22,8 @@ namespace Scheduler
 	void WorkStop::setOperation(const Operation * operation)
 	{
 		this->operation = operation;
+		duration_actualizer.setDirty(true);
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
 	}
 
 	const Location& WorkStop::getLocation() const
