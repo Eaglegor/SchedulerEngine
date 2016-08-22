@@ -88,6 +88,8 @@ if(CPP_SCHEDULER_TESTS)
 	add_executable(SceneManager_Test 
 	
 		Test/SceneManager_Test.cpp
+		Test/SceneManager_Test_RunVehicleSelectors.cpp
+		Test/SceneManager_Test_ScheduleActualizers.cpp
 
 	)
 		

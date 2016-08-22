@@ -7,12 +7,12 @@ namespace Scheduler
 {
 	namespace Units
 	{
-		Speed speedPerHour(const Distance &distance)
+		static Speed speedPerHour(const Distance &distance)
 		{
 			return Speed(Distance(distance) / 3600.0f);
 		}
 
-		Speed speedPerHour(float distance)
+		static Speed speedPerHour(float distance)
 		{
 			return Speed(Distance(distance) / 3600.0f);
 		}

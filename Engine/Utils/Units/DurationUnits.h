@@ -6,37 +6,37 @@ namespace Scheduler
 {
 	namespace Units
 	{
-		Duration seconds(long count)
+		static Duration seconds(long count)
 		{
 			return Duration(count);
 		}
 
-		Duration minutes(long count)
+		static Duration minutes(long count)
 		{
 			return Duration(count * 60);
 		}
 
-		Duration hours(long count)
+		static Duration hours(long count)
 		{
 			return Duration(count * 3600);
 		}
 
-		Duration days(long count)
+		static Duration days(long count)
 		{
 			return Duration(count * 86400);
 		}
 
-		Duration minutes_seconds(long minutes_count, long seconds_count)
+		static Duration minutes_seconds(long minutes_count, long seconds_count)
 		{
 			return minutes(minutes_count) + seconds(seconds_count);
 		}
 
-		Duration hours_minutes(long hours_count, long minutes_count)
+		static Duration hours_minutes(long hours_count, long minutes_count)
 		{
 			return hours(hours_count) + minutes(minutes_count);
 		}
 
-		Duration hours_minutes_seconds(long hours_count, long minutes_count, long seconds_count)
+		static Duration hours_minutes_seconds(long hours_count, long minutes_count, long seconds_count)
 		{
 			return hours(hours_count) + minutes(minutes_count) + seconds(seconds_count);
 		}
