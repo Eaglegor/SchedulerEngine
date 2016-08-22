@@ -81,6 +81,7 @@ namespace Scheduler {
 		auto iter = work_stops->insert(pos, stop);
 				
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
 
         return iter;
     }
@@ -102,6 +103,7 @@ namespace Scheduler {
 		auto iter = work_stops->erase(pos);
 		
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
 		
 		return iter;
     }
@@ -147,12 +149,14 @@ namespace Scheduler {
 		
 		this->arrival_time_actualizer = arrival_time_actualizer;
 		
-		start_stop.setScheduleActualizationModel(model, arrival_time_actualizer);
-		end_stop.setScheduleActualizationModel(model, arrival_time_actualizer);
+		duration_actualizer = model ? DurationActualizer(model->getDurationActualizationAlgorithm(), this) : DurationActualizer();
+		
+		start_stop.setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
+		end_stop.setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
 
 		for(WorkStop* stop : *work_stops)
 		{
-			stop->setScheduleActualizationModel(model, arrival_time_actualizer);
+			stop->setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
 		}
     }
 
@@ -172,11 +176,12 @@ namespace Scheduler {
 	WorkStop* Run::createWorkStop(const Operation * operation)
 	{
 		WorkStop *stop = stops_factory->createObject(this);
-		stop->setScheduleActualizationModel(schedule_actualization_model, arrival_time_actualizer);
+		stop->setScheduleActualizationModel(schedule_actualization_model, arrival_time_actualizer, &duration_actualizer);
 		stop->setScheduleValidationModel(schedule_validation_model);
 		stop->setOperation(operation);
 		
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
 		
 		return stop;
 	}
@@ -200,6 +205,7 @@ namespace Scheduler {
 		work_stops->splice(pos, *work_stops, first, std::next(first));
 		
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
 	}
 
 	void Run::reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last)
@@ -207,6 +213,7 @@ namespace Scheduler {
 		work_stops->reverse(first, last);
 		
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
 	}
 
 	void Run::spliceOwnWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last)
@@ -214,6 +221,7 @@ namespace Scheduler {
 		work_stops->splice(pos, *work_stops, first, last);
 		
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
 	}
 
 	const Run::StopsList& Run::getStops() const

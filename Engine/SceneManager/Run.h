@@ -101,6 +101,7 @@ namespace Scheduler
 
 		ScheduleActualizationModel* schedule_actualization_model;
 		ArrivalTimeActualizer* arrival_time_actualizer;
+		DurationActualizer duration_actualizer;
 		ScheduleValidationModel* schedule_validation_model;
 
 		std::unique_ptr<StopsList> stops;

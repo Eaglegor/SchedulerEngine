@@ -60,7 +60,7 @@ namespace Scheduler
 		return prevStop;
 	}
 
-	void Stop::setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer)
+	void Stop::setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer, Scheduler::DurationActualizer* duration_actualizer)
 	{
 		this->schedule_actualizaton_model = model;
 		
@@ -70,8 +70,8 @@ namespace Scheduler
 		this->arrival_time_actualizer = arrival_time_actualizer;
 		this->allocation_time.setActualizer(arrival_time_actualizer);
 		
-		duration_actualizer = model ? DurationActualizer(model->getDurationActualizationAlgorithm(), this) : DurationActualizer();
-		this->duration.setActualizer(&duration_actualizer);
+		this->duration_actualizer = duration_actualizer;
+		this->duration.setActualizer(duration_actualizer);
 	}
 
 	void Stop::setScheduleValidationModel(ScheduleValidationModel* model)
@@ -88,13 +88,11 @@ namespace Scheduler
 	{
 		this->nextStop = stop;
 		if(stop == nullptr || stop->getLocation() != getLocation()) route_actualizer.setDirty(true);
-		duration_actualizer.setDirty(true);
 	}
 
 	void Stop::setPrev(Stop* stop)
 	{
 		this->prevStop = stop;
-		duration_actualizer.setDirty(true);
 	}
 
 	bool Stop::isValid() const

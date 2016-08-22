@@ -56,7 +56,7 @@ namespace Scheduler
 		void setPrev(Stop* stop);
 		
 		// == framework internal ====================================
-		void setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer);
+		void setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer, Scheduler::DurationActualizer* duration_actualizer);
 		void setScheduleValidationModel(ScheduleValidationModel* model);
 
 		virtual void acceptVisitor(StopVisitor* visitor) = 0;
@@ -65,7 +65,7 @@ namespace Scheduler
 		bool isValid() const;
 
 	protected:
-		DurationActualizer duration_actualizer;
+		DurationActualizer* duration_actualizer;
 		RouteActualizer route_actualizer;
 		ArrivalTimeActualizer* arrival_time_actualizer;
 		

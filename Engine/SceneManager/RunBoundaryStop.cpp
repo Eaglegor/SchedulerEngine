@@ -19,15 +19,15 @@ namespace Scheduler
 	{
 		assert(location == operation->getLocation());
 		operations.emplace(operation);
-		duration_actualizer.setDirty(true);
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		if(duration_actualizer) duration_actualizer->setDirty(true);
 	}
 
 	void RunBoundaryStop::removeOperation(const Operation * operation)
 	{
 		operations.erase(operation);
-		duration_actualizer.setDirty(true);
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		if(duration_actualizer) duration_actualizer->setDirty(true);
 	}
 
 	bool RunBoundaryStop::containsOperation(const Operation * operation) const
