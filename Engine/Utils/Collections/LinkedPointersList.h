@@ -14,10 +14,14 @@ namespace Scheduler
 		
 		static_assert(std::is_pointer<T>::value, "Type must be a pointer");
 	
-		class Iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+		class Iterator : public std::iterator<std::bidirectional_iterator_tag, T, std::ptrdiff_t, T*, T>
 		{
 		public:
+			using difference_type = std::ptrdiff_t;
 			using value_type = T;
+			using pointer = T*;
+			using reference = T;
+			using iterator_category = std::bidirectional_iterator_tag;
 			
 			Iterator():
 				current(nullptr),
@@ -27,7 +31,7 @@ namespace Scheduler
 			{
 			}
 			
-			Iterator(value_type current, const value_type* head, const value_type* tail, value_type end):
+			Iterator(T current, const T* head, const T* tail, T end):
 				current(current),
 				head(head),
 				tail(tail),
@@ -104,38 +108,38 @@ namespace Scheduler
 				return !(*this == rhs);
 			}
 			
-			const value_type& operator*() const
+			T operator*() const
 			{
 				return current;
 			}
 			
-			value_type& operator*()
+			T operator*()
 			{
 				return current;
 			}
 			
-			const value_type* operator->() const
+			const T* operator->() const
 			{
 				return &current;
 			}
 			
-			value_type* operator->()
+			T* operator->()
 			{
 				return &current;
 			}
 			
 		private:
-			value_type current;
-			value_type end;
-			const value_type* head;
-			const value_type* tail;
+			T current;
+			T end;
+			const T* head;
+			const T* tail;
 		};
 
 		using value_type = T;
 		using size_type = std::size_t;
 		using difference_type = std::ptrdiff_t;
-		using reference = value_type&;
-		using const_reference = const value_type&;
+		using reference = value_type;
+		using const_reference = value_type;
 		using pointer = value_type*;
 		using const_pointer = const value_type*;
 		using iterator = Iterator;

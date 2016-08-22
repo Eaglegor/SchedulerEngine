@@ -73,9 +73,9 @@ namespace Scheduler
 				return !(*this == rhs);
 			}
 			
-			const AdoptedType& operator*() const
+			const AdoptedType operator*() const
 			{
-				return static_cast<const AdoptedType&>(*iter);
+				return static_cast<AdoptedType>(*iter);
 			}
 			
 			AdoptedType operator*()
@@ -100,8 +100,8 @@ namespace Scheduler
 		using value_type = AdoptedType;
 		using size_type = std::size_t;
 		using difference_type = std::ptrdiff_t;
-		using reference = value_type&;
-		using const_reference = const value_type&;
+		using reference = value_type;
+		using const_reference = value_type;
 		using pointer = value_type*;
 		using const_pointer = const value_type*;
 		using iterator = Iterator;
