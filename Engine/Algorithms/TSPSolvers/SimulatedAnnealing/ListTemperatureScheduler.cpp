@@ -47,8 +47,9 @@ namespace Scheduler
         i = 0;
     }
 
-    void ListTemperatureScheduler::adapt(float value)
+    void ListTemperatureScheduler::adapt(Cost delta, float random)
     {
+        const float value = -delta.getValue() / std::log(random);
         adapt_sum += value;
         ++adapt_counter;
     }
@@ -60,6 +61,6 @@ namespace Scheduler
 
     bool ListTemperatureScheduler::isFinish() const
     {
-        return i == iterations_count;
+        return i >= iterations_count || getTemperature() == 0.f;
     }
 }

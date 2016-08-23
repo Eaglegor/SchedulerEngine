@@ -106,10 +106,15 @@ void SolutionGenerator::blockInsert()
     const size_t ri = std::min({i, j, k});
     const size_t rk = std::max({i, j, k});
     const size_t rj = i + j + k - ri - rk;
+
+    auto iter_ri = std::next((*run_iter)->getWorkStops().begin(), ri);
+    auto iter_rj = std::next(iter_ri, rj - ri);
+    auto iter_rk = std::next(iter_rj, rk - rj);
+
     scene_editor.performAction<RotateWorkStopsSubsequence>(run_iter,
-                                                           std::next((*run_iter)->getWorkStops().begin(), ri),
-                                                           std::next((*run_iter)->getWorkStops().begin(), rj),
-                                                           std::next((*run_iter)->getWorkStops().begin(), rk));
+                                                           iter_ri,
+                                                           iter_rj,
+                                                           iter_rk);
 }
 
 void SolutionGenerator::blockReverse()
@@ -123,9 +128,12 @@ void SolutionGenerator::blockReverse()
     const size_t ri = std::min(i, j);
     const size_t rj = std::max(i, j);
 
+    auto iter_ri = std::next((*run_iter)->getWorkStops().begin(), ri);
+    auto iter_rj = std::next(iter_ri, rj - ri);
+
     scene_editor.performAction<ReverseWorkStopsSubsequence>(run_iter,
-                                                            std::next((*run_iter)->getWorkStops().begin(), ri),
-                                                            std::next((*run_iter)->getWorkStops().begin(), rj));
+                                                            iter_ri,
+                                                            iter_rj);
 }
 
 void SolutionGenerator::vertexInsert()
@@ -136,9 +144,19 @@ void SolutionGenerator::vertexInsert()
         ++j;
     }
 
+    Run::WorkStopsList::iterator iter_i;
+    Run::WorkStopsList::iterator iter_j;
+    if (j > i) {
+        iter_i = std::next((*run_iter)->getWorkStops().begin(), i);
+        iter_j = std::next(iter_i, j - i);
+    } else {
+        iter_j = std::next((*run_iter)->getWorkStops().begin(), j);
+        iter_i = std::next(iter_j, i - j);
+    }
+
     scene_editor.performAction<MoveRunWorkStop>(run_iter,
-                                                std::next((*run_iter)->getWorkStops().begin(), i),
-                                                std::next((*run_iter)->getWorkStops().begin(), j));
+                                                iter_i,
+                                                iter_j);
 }
 
 void SolutionGenerator::vertexSwap()
@@ -149,8 +167,24 @@ void SolutionGenerator::vertexSwap()
         ++j;
     }
 
+    Run::WorkStopsList::iterator iter_i;
+    Run::WorkStopsList::iterator iter_j;
+    if (j > i) {
+        iter_i = std::next((*run_iter)->getWorkStops().begin(), i);
+        iter_j = std::next(iter_i, j - i);
+    } else {
+        iter_j = std::next((*run_iter)->getWorkStops().begin(), j);
+        iter_i = std::next(iter_j, i - j);
+    }
+
     scene_editor.performAction<SwapRunWorkStops>(run_iter,
-                                                 std::next((*run_iter)->getWorkStops().begin(), i),
-                                                 std::next((*run_iter)->getWorkStops().begin(), j));
+                                                 iter_i,
+                                                 iter_j);
 }
+
+void SolutionGenerator::neighbour()
+{
+    randomMutation();
+}
+
 }
