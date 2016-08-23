@@ -18,7 +18,7 @@ namespace Scheduler
         virtual float getTemperature() const override;
         virtual bool isFinish() const override;
 
-        virtual void adapt(float value) override;
+        virtual void adapt(Cost delta, float random) override;
         virtual void changeTemperature() override;
         virtual void initialize(Run* run, ScheduleCostFunction* cost_function) override;
 

@@ -20,9 +20,9 @@ namespace Scheduler
         virtual bool isFinish() const = 0;
         virtual const char* getName() const = 0;
 
-        virtual void adapt (float value) = 0;
+        virtual void adapt (Cost delta, float random) = 0;
         virtual void changeTemperature() = 0;
-        virtual void initialize(Run* schedule, ScheduleCostFunction* cost_function) = 0;
+        virtual void initialize(Run* run, ScheduleCostFunction* cost_function) = 0;
 
     protected:
         std::vector<Cost> create_initial_costs(Run* run, ScheduleCostFunction* cost_function, size_t length);

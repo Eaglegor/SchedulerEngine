@@ -411,6 +411,9 @@ public:
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
         sa_solver->setMarkovChainLengthScale(1.f);
+        sa_solver->setMutations({SolutionGenerator::MutationType::BlockInsert,
+                                 SolutionGenerator::MutationType::BlockReverse,
+                                 SolutionGenerator::MutationType::VertexInsert});
 
         return sa_solver;
     }
@@ -441,6 +444,9 @@ public:
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperatureScheduler);
         sa_solver->setMarkovChainLengthScale(1.f);
+        sa_solver->setMutations({SolutionGenerator::MutationType::BlockInsert,
+                                 SolutionGenerator::MutationType::BlockReverse,
+                                 SolutionGenerator::MutationType::VertexInsert});
 
         return sa_solver;
     }
@@ -607,10 +613,10 @@ int main(int argc, char **argv)
             test.run();
         }
 		
-		{
+        {
 			SuIntTspLibInstance test(dataset, *publisher);
 			test.run();
-		}
+        }
     }
 	publisher->publish();
 }

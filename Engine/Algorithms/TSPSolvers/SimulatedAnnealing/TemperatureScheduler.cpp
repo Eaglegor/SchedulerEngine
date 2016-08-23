@@ -21,7 +21,7 @@ std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* run, ScheduleC
 
     for (size_t number_of_iterations = 0; number_of_iterations < length; ++number_of_iterations) {
         const size_t checkpoint = solution_generator.checkpoint();
-        solution_generator.randomMutation();
+        solution_generator.neighbour();
         const Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
         if (cost < best_cost) {
             best_cost = cost;

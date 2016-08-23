@@ -26,7 +26,7 @@ public:
 
     void enableMutation (MutationType mutation);
     void disableMutation (MutationType mutation);
-    void randomMutation ();
+    void neighbour ();
     void shuffle ();
     void discard ();
     void store ();
@@ -39,6 +39,7 @@ private:
     typedef index_distr_t::param_type index_param_t;
     typedef float_distr_t::param_type float_param_t;
 
+    void randomMutation ();
     void blockInsert();
     void blockReverse();
     void vertexInsert();
