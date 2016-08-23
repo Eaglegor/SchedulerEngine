@@ -9,11 +9,10 @@ namespace Scheduler
 	{
 		void swapRunWorkStops(Run* r, size_t ia, size_t ib)
 		{
-			const Operation* oa = r->getWorkStops()[ia]->getOperation();
-			const Operation* ob = r->getWorkStops()[ib]->getOperation();
-
-			r->replaceWorkOperationAt(ia, ob);
-			r->replaceWorkOperationAt(ib, oa);
+			auto i1 = std::next(r->getWorkStops().begin(), ia);
+			auto i2 = std::next(r->getWorkStops().begin(), ib);
+			
+			r->swapWorkStops(i1, i2);
 		}
 	}
 }

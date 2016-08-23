@@ -23,7 +23,7 @@ namespace Scheduler
 
 	void DefaultRouteActualizationAlgorithm::actualize(Stop* stop)
 	{
-		if(!stop->getNextStop())
+		if(!stop->next())
 		{
 			stop->setNextRoute(Route(stop->getLocation(), stop->getLocation(), Distance(0), Duration(0)));
 		}
@@ -31,11 +31,11 @@ namespace Scheduler
 		{
 			if(stop->getRun()->getVehicle())
 			{
-				stop->setNextRoute(routing_service->calculateRoute(stop->getLocation(), stop->getNextStop()->getLocation(), stop->getRun()->getVehicle()->getRoutingProfile()));
+				stop->setNextRoute(routing_service->calculateRoute(stop->getLocation(), stop->next()->getLocation(), stop->getRun()->getVehicle()->getRoutingProfile()));
 			}
 			else
 			{
-				stop->setNextRoute(routing_service->calculateRoute(stop->getLocation(), stop->getNextStop()->getLocation(), default_routing_profile));
+				stop->setNextRoute(routing_service->calculateRoute(stop->getLocation(), stop->next()->getLocation(), default_routing_profile));
 			}
 		}
 	}

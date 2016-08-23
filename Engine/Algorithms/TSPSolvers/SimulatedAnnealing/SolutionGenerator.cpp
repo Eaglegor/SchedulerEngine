@@ -107,9 +107,9 @@ void SolutionGenerator::blockInsert()
     const size_t rk = std::max({i, j, k});
     const size_t rj = i + j + k - ri - rk;
     scene_editor.performAction<RotateWorkStopsSubsequence>(run_iter,
-                                                           (*run_iter)->getWorkStops().begin() + ri,
-                                                           (*run_iter)->getWorkStops().begin() + rj,
-                                                           (*run_iter)->getWorkStops().begin() + rk);
+                                                           std::next((*run_iter)->getWorkStops().begin(), ri),
+                                                           std::next((*run_iter)->getWorkStops().begin(), rj),
+                                                           std::next((*run_iter)->getWorkStops().begin(), rk));
 }
 
 void SolutionGenerator::blockReverse()
@@ -124,8 +124,8 @@ void SolutionGenerator::blockReverse()
     const size_t rj = std::max(i, j);
 
     scene_editor.performAction<ReverseWorkStopsSubsequence>(run_iter,
-                                                            (*run_iter)->getWorkStops().begin() + ri,
-                                                            (*run_iter)->getWorkStops().begin() + rj);
+                                                            std::next((*run_iter)->getWorkStops().begin(), ri),
+                                                            std::next((*run_iter)->getWorkStops().begin(), rj));
 }
 
 void SolutionGenerator::vertexInsert()
@@ -137,8 +137,8 @@ void SolutionGenerator::vertexInsert()
     }
 
     scene_editor.performAction<MoveRunWorkStop>(run_iter,
-                                                (*run_iter)->getWorkStops().begin() + i,
-                                                (*run_iter)->getWorkStops().begin() + j);
+                                                std::next((*run_iter)->getWorkStops().begin(), i),
+                                                std::next((*run_iter)->getWorkStops().begin(), j));
 }
 
 void SolutionGenerator::vertexSwap()
@@ -150,7 +150,7 @@ void SolutionGenerator::vertexSwap()
     }
 
     scene_editor.performAction<SwapRunWorkStops>(run_iter,
-                                                 (*run_iter)->getWorkStops().begin() + i,
-                                                 (*run_iter)->getWorkStops().begin() + j);
+                                                 std::next((*run_iter)->getWorkStops().begin(), i),
+                                                 std::next((*run_iter)->getWorkStops().begin(), j));
 }
 }

@@ -9,29 +9,25 @@
 
 namespace Scheduler
 {
-	MoveRunWorkStopsSubsequence::MoveRunWorkStopsSubsequence(RunIterator run_iterator, WorkStopIterator start_stop, WorkStopIterator end_stop, WorkStopIterator new_position) :
+	MoveRunWorkStopsSubsequence::MoveRunWorkStopsSubsequence(ConstRunIterator run_iterator, ConstWorkStopIterator start_stop, ConstWorkStopIterator end_stop, ConstWorkStopIterator new_position) :
 		schedule((*run_iterator)->getSchedule()),
-		irun(std::distance(schedule->getRuns().begin(), run_iterator)),
-		istart_stop(std::distance((*run_iterator)->getWorkStops().begin(), start_stop)),
-		iend_stop(std::distance((*run_iterator)->getWorkStops().begin(), end_stop)),
-		inew_position(std::distance((*run_iterator)->getWorkStops().begin(), new_position)),
-		rotate_command(
-			run_iterator,
-			inew_position < istart_stop ? new_position : start_stop,
-			inew_position <= istart_stop ? start_stop : end_stop,
-			inew_position > iend_stop ? new_position : end_stop
-		)
+		run(run_iterator),
+		first(start_stop),
+		last(end_stop),
+		new_position(new_position),
+		action_needed(end_stop != new_position && std::prev(end_stop) != new_position && new_position != start_stop)
 	{
-		assert(std::distance(new_position, start_stop) >= 0 || std::distance(end_stop, new_position) >= 0);
 	}
 
 	void MoveRunWorkStopsSubsequence::perform()
 	{
-		rotate_command.perform();
+		if(!action_needed) return;
+		(*run)->spliceOwnWorkStops(new_position, first, last);
 	}
 
 	void MoveRunWorkStopsSubsequence::rollback()
 	{
-		rotate_command.rollback();
+		if(!action_needed) return;
+		(*run)->spliceOwnWorkStops(last, first, new_position);
 	}
 }

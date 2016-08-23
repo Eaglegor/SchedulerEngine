@@ -10,6 +10,12 @@
 #include <Engine/SceneManager/Run.h>
 #include <Engine/Algorithms/RunVehicleBinders/PerformerAssigned/PerformerAssignedVehicleBinder.h>
 #include <Engine/Concepts/Test/MakeLocation.h>
+#include <Engine/Utils/Units/DurationUnits.h>
+#include <Engine/Algorithms/ScheduleActualization/ArrivalTime/Default/DefaultArrivalTimeActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/Duration/Default/DefaultDurationActualizationAlgorithm.h>
+#include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
+#include <Engine/Concepts/Test/MakeTimeWindow.h>
+#include <Engine/Concepts/Test/ConceptStreamOperators.h>
 
 TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integration][functional][schedule_actualizers]")
 {
@@ -17,9 +23,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
 
     CrowFlyRoutingService routing_service;
 
-	EngineContext context;
-	context.routing_service = &routing_service;
-	Engine engine(context);
+	Engine engine;
     SceneManager* sm = engine.getSceneManager();
 
     Location start_location = make_location(0, 0);
@@ -32,13 +36,11 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
 
     Scene* s = sm->createScene();
 
-
     Performer* performer = s->createPerformer();
     Vehicle* vehicle = s->createVehicle();
 
     Schedule* schedule = s->createSchedule(performer);
     schedule->setDepotLocation(start_location);
-    schedule->setShiftEndLocation(end_location);
 
 	ScheduleActualizationModel* actualization_model = sm->createScheduleActualizationModel();
 	DefaultRouteActualizationAlgorithm* route_actualization_algorithm = sm->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(&routing_service);
@@ -48,7 +50,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
 	
 	schedule->setActualizationModel(actualization_model);
 
-    Run* r = schedule->createRun(start_location, end_location);
+    Run* r = *schedule->createRun(schedule->getRuns().end(), start_location, end_location);
     r->setVehicle(vehicle);
 
     SECTION("Simple duration check")
@@ -89,10 +91,10 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
         r->allocateEndOperation(eop);
 
         Stop *s1 = r->getStartStop();
-        Stop *s2 = r->allocateWorkOperation(op1, 0);
-        Stop *s3 = r->allocateWorkOperation(op2, 1);
-        Stop *s4 = r->allocateWorkOperation(op3, 2);
-        Stop *s5 = r->allocateWorkOperation(op4, 3);
+        Stop *s2 = *r->createWorkStop(r->getWorkStops().end(), op1);
+        Stop *s3 = *r->createWorkStop(r->getWorkStops().end(), op2);
+        Stop *s4 = *r->createWorkStop(r->getWorkStops().end(), op3);
+        Stop *s5 = *r->createWorkStop(r->getWorkStops().end(), op4);
         Stop *s6 = r->getEndStop();
 
         REQUIRE(s1->getDuration() == dur*2);
@@ -112,9 +114,7 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     CrowFlyRoutingService routing_service;
 
-	EngineContext context;
-	context.routing_service = &routing_service;
-	Engine engine(context);
+	Engine engine;
 	SceneManager* sm = engine.getSceneManager();
 
     Location start_location = make_location(0, 0);
@@ -150,9 +150,8 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     Schedule* schedule = s->createSchedule(performer);
     schedule->setDepotLocation(start_location);
-    schedule->setShiftEndLocation(end_location);
 
-    Run* r = schedule->createRun(start_location, end_location);
+    Run* r = *schedule->createRun(schedule->getRuns().end(), start_location, end_location);
     r->setVehicle(vehicle);
 
     Route r1 = routing_service.calculateRoute(start_location, loc1, vehicle->getRoutingProfile());
@@ -198,10 +197,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     SECTION("Narrow time windows")
     {
-        op1->setTimeWindows({make_time_window(770, 1370)});
-        op2->setTimeWindows({make_time_window(2140, 2740)});
-        op3->setTimeWindows({make_time_window(3510, 4110)});
-        op4->setTimeWindows({make_time_window(4880, 5480)});
+        op1->constraints().timeWindows().set({make_time_window(770, 1370)});
+        op2->constraints().timeWindows().set({make_time_window(2140, 2740)});
+        op3->constraints().timeWindows().set({make_time_window(3510, 4110)});
+        op4->constraints().timeWindows().set({make_time_window(4880, 5480)});
 
         estimated_allocation_1.setStartTime(TimePoint(100));
         estimated_allocation_1.setEndTime(TimePoint(100));
@@ -224,10 +223,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     SECTION("Narrow time windows with budget")
     {
-        op1->setTimeWindows({make_time_window(770, 20000)});
-        op2->setTimeWindows({make_time_window(2140, 20000)});
-        op3->setTimeWindows({make_time_window(3510, 20000)});
-        op4->setTimeWindows({make_time_window(4880, 20000)});
+        op1->constraints().timeWindows().set({make_time_window(770, 20000)});
+        op2->constraints().timeWindows().set({make_time_window(2140, 20000)});
+        op3->constraints().timeWindows().set({make_time_window(3510, 20000)});
+        op4->constraints().timeWindows().set({make_time_window(4880, 20000)});
 
         estimated_allocation_1.setStartTime(TimePoint(400));
         estimated_allocation_1.setEndTime(estimated_allocation_1.getStartTime());
@@ -250,10 +249,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 
     SECTION("Narrow time windows with budget gap")
     {
-        op1->setTimeWindows({make_time_window(770, 20000)});
-        op2->setTimeWindows({make_time_window(2140, 2740)}); // <== This stop can't be shifted to compensate waiting due to its time window
-        op3->setTimeWindows({make_time_window(3510, 20000)});
-        op4->setTimeWindows({make_time_window(4880, 20000)});
+        op1->constraints().timeWindows().set({make_time_window(770, 20000)});
+        op2->constraints().timeWindows().set({make_time_window(2140, 2740)}); // <== This stop can't be shifted to compensate waiting due to its time window
+        op3->constraints().timeWindows().set({make_time_window(3510, 20000)});
+        op4->constraints().timeWindows().set({make_time_window(4880, 20000)});
 
         estimated_allocation_1.setStartTime(TimePoint(200));
         estimated_allocation_1.setEndTime(estimated_allocation_1.getStartTime());
@@ -275,10 +274,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
     }
 
     Stop *s1 = r->getStartStop();
-    Stop *s2 = r->allocateWorkOperation(op1, 0);
-    Stop *s3 = r->allocateWorkOperation(op2, 1);
-    Stop *s4 = r->allocateWorkOperation(op3, 2);
-    Stop *s5 = r->allocateWorkOperation(op4, 3);
+    Stop *s2 = *r->createWorkStop(r->getWorkStops().end(), op1);
+    Stop *s3 = *r->createWorkStop(r->getWorkStops().end(), op2);
+    Stop *s4 = *r->createWorkStop(r->getWorkStops().end(), op3);
+    Stop *s5 = *r->createWorkStop(r->getWorkStops().end(), op4);
     Stop *s6 = r->getEndStop();
 
     CAPTURE(s1->getAllocationTime());

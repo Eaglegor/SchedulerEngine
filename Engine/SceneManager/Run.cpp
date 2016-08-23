@@ -12,7 +12,7 @@
 
 namespace Scheduler {
 
-    Run::Run(size_t id, const Location &start_location, const Location &end_location, Schedule *schedule) :
+    Run::Run(size_t id, const Location &start_location, const Location &end_location, Schedule *schedule, LinkedPointersList<Stop*> &stops_list, LinkedPointersList<Stop*>::iterator pos) :
             id(id),
             start_location(start_location),
             end_location(end_location),
@@ -22,9 +22,14 @@ namespace Scheduler {
             end_stop(end_location, this),
             vehicle(nullptr),
             schedule_actualization_model(nullptr),
-			schedule_validation_model(nullptr)
+			schedule_validation_model(nullptr),
+			arrival_time_actualizer(nullptr)
     {
-		start_stop.setNextStop(&end_stop);
+		auto start = stops_list.insert(pos, &start_stop);
+		auto end = stops_list.insert(pos, &end_stop);
+		stops.reset(new StopsList(stops_list, start, pos));
+		raw_work_stops.reset(new StopsSublist(*stops, std::next(stops->begin()), std::next(stops->begin())));
+		work_stops.reset(new WorkStopsList(*raw_work_stops));
     }
 
     size_t Run::getId() const {
@@ -51,13 +56,10 @@ namespace Scheduler {
         return &start_stop;
     }
 
-    const ImmutableVector<WorkStop*>& Run::getWorkStops() const {
-        return work_stops;
-    }
-
-    ImmutableVector<WorkStop *>& Run::getWorkStops() {
-        return work_stops;
-    }
+	const Run::WorkStopsList& Run::getWorkStops() const
+	{
+		return *work_stops;
+	}
 
     const RunBoundaryStop *Run::getEndStop() const {
         return &end_stop;
@@ -67,143 +69,48 @@ namespace Scheduler {
         return &end_stop;
     }
 
-    const Location &Run::getStartLocation() const {
-        return start_location;
-    }
-
-    const Location &Run::getEndLocation() const {
-        return end_location;
-    }
-
     RunBoundaryStop *Run::allocateStartOperation(const Operation *operation) {
         start_stop.addOperation(operation);
-		start_stop.invalidateDuration();
-		invalidateArrivalTimes();
         return &start_stop;
     }
 
-    WorkStop *Run::allocateWorkOperation(const Operation *operation) {
-        return allocateWorkOperation(operation, work_stops.size());
-    }
-
-    WorkStop *Run::allocateWorkOperation(const Operation *operation, size_t index) {
+    Run::WorkStopsList::iterator Run::createWorkStop(WorkStopsList::iterator pos, const Operation *operation) {
         assert(stops_factory);
-        assert(index >= 0 && index <= work_stops.size());
-        if (!stops_factory) return nullptr;
 
 		WorkStop *stop = createWorkStop(operation);
+		auto iter = work_stops->insert(pos, stop);
+				
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
 
-		Stop* prev_stop = nullptr;
-		Stop* next_stop = nullptr;
-
-		if(index == 0) prev_stop = &start_stop;
-		else prev_stop = work_stops[index - 1];
-		if(index == work_stops.size()) next_stop = &end_stop;
-		else next_stop = work_stops[index];
-
-		prev_stop->setNextStop(stop);
-		stop->setPrevStop(prev_stop);
-		stop->setNextStop(next_stop);
-		next_stop->setPrevStop(stop);
-
-        work_stops.insert(work_stops.begin() + index, stop);
-
-        invalidateWorkStopRoutes(index);
-		invalidateArrivalTimes();
-
-        return stop;
+        return iter;
     }
 
     RunBoundaryStop *Run::allocateEndOperation(const Operation *operation) {
         end_stop.addOperation(operation);
-		end_stop.invalidateDuration();
-		invalidateArrivalTimes();
         return &end_stop;
     }
 
     void Run::unallocateStartOperation(const Operation *operation) {
         start_stop.removeOperation(operation);
-		start_stop.invalidateDuration();
-		invalidateArrivalTimes();
     }
 
-    void Run::unallocateWorkOperation(const Operation *operation, size_t hint) {
-        for (size_t i = hint; i < work_stops.size(); ++i) {
-            if (work_stops[i]->getOperation() == operation) {
-				unallocateWorkOperationAt(i);
-                return;
-            }
-        }
-        for (size_t i = 0; i < hint; ++i) {
-            if (work_stops[i]->getOperation() == operation) {
-				unallocateWorkOperationAt(i);
-				return;
-            }
-        }
-    }
-
-    void Run::unallocateWorkOperationAt(size_t index) {
+    Run::WorkStopsList::iterator Run::destroyWorkStop(WorkStopsList::iterator pos) {
         assert(stops_factory);
-        assert(index >=0 && index < work_stops.size());
 
-		Stop* old_stop = work_stops[index];
-		Stop* prev_stop = old_stop->getPrevStop();
-		Stop* next_stop = old_stop->getNextStop();
+        stops_factory->destroyObject(*pos);
 
-		prev_stop->setNextStop(next_stop);
-		next_stop->setPrevStop(prev_stop);
-
-        stops_factory->destroyObject(work_stops[index]);
-        work_stops.erase(work_stops.begin() + index);
-
-        if(work_stops.empty()) start_stop.invalidateRoute();
-        else invalidateWorkStopRoutes(index > 0 ? index - 1 : 0);
-		invalidateArrivalTimes();
+		auto iter = work_stops->erase(pos);
+		
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
+		
+		return iter;
     }
 
     void Run::unallocateEndOperation(const Operation *operation) {
         end_stop.removeOperation(operation);
-		end_stop.invalidateDuration();
-		invalidateArrivalTimes();
     }
-
-	Stop * Run::replaceWorkOperation(const Operation * old_operation, const Operation * new_operation, size_t hint)
-	{
-		for (size_t i = hint; i < work_stops.size(); ++i)
-		{
-			WorkStop* stop = work_stops[i];
-			if (stop->getOperation() == old_operation)
-			{
-				return replaceWorkOperationAt(i, new_operation);
-			}
-		}
-		for (size_t i = 0; i < hint; ++i)
-		{
-			WorkStop* stop = work_stops[i];
-			if (stop->getOperation() == old_operation)
-			{
-				return replaceWorkOperationAt(i, new_operation);
-			}
-		}
-		return nullptr;
-	}
-
-	Stop * Run::replaceWorkOperationAt(size_t index, const Operation * new_operation)
-	{
-		assert(stops_factory);
-		
-		if (!stops_factory) return nullptr;
-
-		WorkStop* stop = work_stops[index];
-
-		stop->setOperation(new_operation);
-
-		invalidateWorkStopRoutes(index);
-		stop->invalidateDuration();
-		invalidateArrivalTimes();
-
-		return stop;
-	}
 
 	bool Run::isValid() const
 	{
@@ -219,59 +126,37 @@ namespace Scheduler {
         if (vehicle &&
             (this->vehicle == nullptr || vehicle->getRoutingProfile() != this->vehicle->getRoutingProfile())) {
             this->vehicle = vehicle;
-            invalidateRoutes();
-			invalidateArrivalTimes();
+			if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
         }
         else {
             this->vehicle = vehicle;
         }
     }
 
-    void Run::invalidateRoutes() {
-        if (vehicle == nullptr) return;
-
-		if (!schedule_actualization_model || !schedule_actualization_model->getRouteActualizationAlgorithm()) return;
-
-		for (Stop* stop = &start_stop; stop != &end_stop; stop = stop->getNextStop())
-		{
-			stop->invalidateRoute();
-		}
-    }
-
-    void Run::invalidateWorkStopRoutes(size_t index) {
-        assert(index >= 0 && index < work_stops.size());
-
-        if (index > 0) {
-			work_stops[index - 1]->invalidateRoute();
-        } else {
-			start_stop.invalidateRoute();
-        }
-
-        if (index < work_stops.size() - 1) {
-			work_stops[index]->invalidateRoute();
-        } else {
-			work_stops[index]->invalidateRoute();
-        }
-    }
-
     Run::~Run() {
         assert(stops_factory);
 
-        for(WorkStop* stop : work_stops)
+        for(WorkStop* stop : *work_stops)
         {
             stops_factory->destroyObject(stop);
         }
+        
+        stops->clear();
     }
 
-    void Run::setScheduleActualizationModel(ScheduleActualizationModel* model) {
+    void Run::setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer) {
         this->schedule_actualization_model = model;
+		
+		this->arrival_time_actualizer = arrival_time_actualizer;
+		
+		duration_actualizer = model ? DurationActualizer(model->getDurationActualizationAlgorithm(), this) : DurationActualizer();
+		
+		start_stop.setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
+		end_stop.setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
 
-		start_stop.setScheduleActualizationModel(model);
-		end_stop.setScheduleActualizationModel(model);
-
-		for(WorkStop* stop : work_stops)
+		for(WorkStop* stop : *work_stops)
 		{
-			stop->setScheduleActualizationModel(model);
+			stop->setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
 		}
     }
 
@@ -282,31 +167,65 @@ namespace Scheduler {
 		start_stop.setScheduleValidationModel(model);
 		end_stop.setScheduleValidationModel(model);
 
-		for (WorkStop* stop : work_stops)
+		for (WorkStop* stop : *work_stops)
 		{
 			stop->setScheduleValidationModel(model);
-		}
-	}
-
-	void Run::invalidateArrivalTimes()
-	{
-		if (!schedule_actualization_model || !schedule_actualization_model->getArrivalTimeActualizationAlgorithm()) return;
-
-		start_stop.invalidateArrivalTime();
-		end_stop.invalidateArrivalTime();
-		for(WorkStop *stop : work_stops)
-		{
-			stop->invalidateArrivalTime();
 		}
 	}
 
 	WorkStop* Run::createWorkStop(const Operation * operation)
 	{
 		WorkStop *stop = stops_factory->createObject(this);
-		stop->setScheduleActualizationModel(schedule_actualization_model);
+		stop->setScheduleActualizationModel(schedule_actualization_model, arrival_time_actualizer, &duration_actualizer);
 		stop->setScheduleValidationModel(schedule_validation_model);
 		stop->setOperation(operation);
-		invalidateArrivalTimes();
+		
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
+		
 		return stop;
+	}
+	
+	void Run::swapWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator second)
+	{
+		if(first == second) return;
+		
+		if(std::next(first) == second)
+		{
+			work_stops->splice(first, *work_stops, second, std::next(second));
+			return;
+		} 
+		else if(std::next(second) == first)
+		{
+			work_stops->splice(second, *work_stops, first, std::next(first));
+			return;
+		}
+		WorkStopsList::iterator pos = std::next(second);
+		work_stops->splice(first, *work_stops, second, std::next(second));
+		work_stops->splice(pos, *work_stops, first, std::next(first));
+		
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
+	}
+
+	void Run::reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last)
+	{
+		work_stops->reverse(first, last);
+		
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
+	}
+
+	void Run::spliceOwnWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last)
+	{
+		work_stops->splice(pos, *work_stops, first, last);
+		
+		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		duration_actualizer.setDirty(true);
+	}
+
+	const Run::StopsList& Run::getStops() const
+	{
+		return *stops;
 	}
 }

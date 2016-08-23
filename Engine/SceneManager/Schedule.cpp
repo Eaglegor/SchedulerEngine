@@ -5,9 +5,9 @@
 #include "WorkStop.h"
 #include "Vehicle.h"
 #include "Extensions/RunVehicleBinder.h"
-#include "ScheduleStateUtils.h"
 #include "ScheduleValidationModel.h"
 #include "Extensions/ScheduleValidationAlgorithm.h"
+#include <iterator>
 
 namespace Scheduler {
 
@@ -22,23 +22,6 @@ namespace Scheduler {
 			run_vehicle_binder(nullptr)
 	{
     }
-
-	Schedule::Schedule(size_t id, const Schedule* rhs):
-		id(id),
-		name(rhs->name),
-		schedule_actualization_model(rhs->schedule_actualization_model),
-		schedule_validation_model(rhs->schedule_validation_model),
-		performer(rhs->performer),
-		scene(nullptr),
-		runs_factory(rhs->runs_factory),
-		stops_factory(rhs->stops_factory),
-		run_vehicle_binder(rhs->run_vehicle_binder),
-		depot_location(rhs->depot_location),
-		shift(rhs->shift),
-		schedule_constraints(rhs->schedule_constraints)
-	{
-		ScheduleStateUtils::copyState(rhs, this);
-	}
 
     size_t Schedule::getId() const {
         return id;
@@ -56,97 +39,38 @@ namespace Scheduler {
         this->name = name;
     }
 
-	const ImmutableVector<Run*>& Schedule::getRuns() const {
+	const Schedule::RunsList& Schedule::getRuns() const {
 		return runs;
-	}
-
-	ImmutableVector<Run*>& Schedule::getRuns() {
-		return runs;
-	}
-
-	Run *Schedule::createRun(const Location &from, const Location &to) {
-		return createRun(from, to, runs.size());
 	}
 
 	void Schedule::setRunsFactory(SceneObjectsFactory<Run> *factory) {
 		this->runs_factory = factory;
 	}
 
-	Run *Schedule::createRun(const Location &from, const Location &to, size_t index) {
+	Schedule::RunsList::iterator Schedule::createRun(RunsList::const_iterator pos, const Scheduler::Location& from, const Scheduler::Location& to) {
 		assert(runs_factory);
-		assert(index >= 0 && index <= runs.size());
-		if (!runs_factory) return nullptr;
-		if (!(index >= 0 && index <= runs.size())) return nullptr;
 
-		Run* r = runs_factory->createObject(from, to, this);
+		Run* r = runs_factory->createObject(from, to, this, stops, pos == runs.end() ? stops.end() : (*pos)->getStops().begin());
 
 		r->setStopsFactory(stops_factory);
-		r->setScheduleActualizationModel(schedule_actualization_model);
+		r->setScheduleActualizationModel(schedule_actualization_model, &arrival_time_actualizer);
 		r->setScheduleValidationModel(schedule_validation_model);
 
-		if(index > 0)
-		{
-			runs[index - 1]->getEndStop()->invalidateRoute();
-		}
-
-		invalidateArrivalTimes();
+		arrival_time_actualizer.setDirty(true);
 
 		if (run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
 
-		Stop* prev_stop = nullptr;
-		Stop* next_stop = nullptr;
-
-		if (index > 0)
-		{
-			prev_stop = runs[index - 1]->getEndStop();
-		}
-		if (index < runs.size())
-		{
-			next_stop = runs[index]->getStartStop();
-		}
-
-		if (prev_stop)
-		{
-			prev_stop->setNextStop(r->getStartStop());
-			r->getStartStop()->setPrevStop(prev_stop);
-		}
-
-		if (next_stop)
-		{
-			r->getEndStop()->setNextStop(next_stop);
-			next_stop->setPrevStop(r->getEndStop());
-		}
-
-		runs.insert(runs.begin() + index, r);
-
-		return r;
+		return runs.insert(pos, r);
 	}
 
-	void Schedule::destroyRun(Run *run, size_t hint) {
-		auto iter = std::find(runs.begin(), runs.end(), run);
-		if(iter == runs.end()) return;
+	void Schedule::destroyRun(RunsList::iterator pos) {
 
-		destroyRun(std::distance(runs.begin(), iter));
-	}
-
-	void Schedule::destroyRun(size_t index) {
-		Run* r = runs[index];
-
-		Stop* prev_stop = r->getStartStop()->getPrevStop();
-		Stop* next_stop = r->getEndStop()->getNextStop();
-
-		if (prev_stop) prev_stop->setNextStop(next_stop);
-		if (next_stop) next_stop->setPrevStop(prev_stop);
-
-		if(index > 0)
-		{
-			runs[index - 1]->getEndStop()->invalidateRoute();
-		}
-		runs.erase(runs.begin() + index);
 		assert(runs_factory);
-		runs_factory->destroyObject(r);
+		runs_factory->destroyObject(*pos);
 
-		invalidateArrivalTimes();
+		runs.erase(pos);
+		
+		arrival_time_actualizer.setDirty(true);
 	}
 
 	Schedule::~Schedule() {
@@ -160,7 +84,7 @@ namespace Scheduler {
 	void Schedule::setDepotLocation(const Location &depot_location) {
 		this->depot_location = depot_location;
 
-		invalidateArrivalTimes();
+		arrival_time_actualizer.setDirty(true);
 	}
 
     bool Schedule::isValid() const
@@ -172,9 +96,12 @@ namespace Scheduler {
 	void Schedule::setActualizationModel(ScheduleActualizationModel* model)
 	{
 		this->schedule_actualization_model = model;
+		
+		arrival_time_actualizer = model ? ArrivalTimeActualizer(model->getArrivalTimeActualizationAlgorithm(), this) : ArrivalTimeActualizer();
+		
 		for(Run* r : runs)
 		{
-			r->setScheduleActualizationModel(model);
+			r->setScheduleActualizationModel(model, &arrival_time_actualizer);
 		}
 	}
 
@@ -200,7 +127,7 @@ namespace Scheduler {
 	void Schedule::setShift(const TimeWindow &shift)
 	{
 		this->shift = shift;
-		invalidateArrivalTimes();
+		arrival_time_actualizer.setDirty(true);
 	}
 
 	void Schedule::clear()
@@ -213,6 +140,8 @@ namespace Scheduler {
 		}
 
 		runs.clear();
+		
+		arrival_time_actualizer.setDirty(true);
 	}
 
 	Scene* Schedule::getScene()
@@ -242,13 +171,22 @@ namespace Scheduler {
 
 	void Schedule::setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder) {
 		this->run_vehicle_binder = run_vehicle_binder;
+		
+		for(Run* r : runs)
+		{
+			if(run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
+			else r->setVehicle(nullptr);
+		}
+		
+		arrival_time_actualizer.setDirty(true);
+	}
+	
+    ScheduleValidationModel* Schedule::getValidationModel() const{return schedule_validation_model;}
+    ScheduleActualizationModel* Schedule::getActualizationModel() const{return schedule_actualization_model;}
+    
+	const Schedule::StopsList& Schedule::getStops() const
+	{
+		return stops;
 	}
 
-	void Schedule::invalidateArrivalTimes()
-	{
-		for (Run *run : runs)
-		{
-			run->invalidateArrivalTimes();
-		}
-	}
 }

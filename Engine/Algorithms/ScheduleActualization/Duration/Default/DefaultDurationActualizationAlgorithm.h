@@ -13,6 +13,6 @@ namespace Scheduler
 		static constexpr const char* staticGetName() { return "Default"; }
 		virtual const char* getName() const { return staticGetName(); };
 
-		virtual void actualize(Stop* stop) override;
+		virtual void actualize(Run* stop) override;
 	};
 }

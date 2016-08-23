@@ -2,13 +2,13 @@
 
 namespace Scheduler
 {
-    class Stop;
+    class Run;
     
     class DurationActualizationAlgorithm
     {
         public:
             virtual ~DurationActualizationAlgorithm(){}
             
-            virtual void actualize(Stop* stop) = 0;
+            virtual void actualize(Run* run) = 0;
     };
 }

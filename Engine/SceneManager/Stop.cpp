@@ -17,7 +17,8 @@ namespace Scheduler
 	nextStop(nullptr),
 	prevStop(nullptr),
 	schedule_actualizaton_model(nullptr),
-	schedule_validation_model(nullptr)
+	schedule_validation_model(nullptr),
+	arrival_time_actualizer(nullptr)
 	{
 	}
 
@@ -49,22 +50,28 @@ namespace Scheduler
 		return run;
 	}
 
-	Stop* Stop::getNextStop() const
+	Stop* Stop::next() const
 	{
 		return nextStop;
 	}
 
-	Stop* Stop::getPrevStop() const
+	Stop* Stop::prev() const
 	{
 		return prevStop;
 	}
 
-	void Stop::setScheduleActualizationModel(ScheduleActualizationModel* model)
+	void Stop::setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer, Scheduler::DurationActualizer* duration_actualizer)
 	{
 		this->schedule_actualizaton_model = model;
-		this->next_route.setActualizer(model ? RouteActualizer(model->getRouteActualizationAlgorithm(), this) : RouteActualizer());
-		this->allocation_time.setActualizer(model ? ArrivalTimeActualizer(model->getArrivalTimeActualizationAlgorithm(), this->getRun()->getSchedule()) : ArrivalTimeActualizer());
-		this->duration.setActualizer(model ? DurationActualizer(model->getDurationActualizationAlgorithm(), this) : DurationActualizer());
+		
+		route_actualizer = model ? RouteActualizer(model->getRouteActualizationAlgorithm(), this) : RouteActualizer();
+		this->next_route.setActualizer(&route_actualizer);
+		
+		this->arrival_time_actualizer = arrival_time_actualizer;
+		this->allocation_time.setActualizer(arrival_time_actualizer);
+		
+		this->duration_actualizer = duration_actualizer;
+		this->duration.setActualizer(duration_actualizer);
 	}
 
 	void Stop::setScheduleValidationModel(ScheduleValidationModel* model)
@@ -77,27 +84,13 @@ namespace Scheduler
 		return next_route.get();
 	}
 
-	void Stop::invalidateRoute()
-	{
-        next_route.setActual(false);
-	}
-
-	void Stop::invalidateArrivalTime()
-	{
-		allocation_time.setActual(false);
-	}
-
-	void Stop::invalidateDuration()
-	{
-		duration.setActual(false);
-	}
-
-	void Stop::setNextStop(Stop* stop)
+	void Stop::setNext(Stop* stop)
 	{
 		this->nextStop = stop;
+		if(stop == nullptr || stop->getLocation() != getLocation()) route_actualizer.setDirty(true);
 	}
 
-	void Stop::setPrevStop(Stop* stop)
+	void Stop::setPrev(Stop* stop)
 	{
 		this->prevStop = stop;
 	}

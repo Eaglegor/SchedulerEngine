@@ -3,6 +3,7 @@
 #include <Engine/StrategiesManager/TSPSolver.h>
 #include <Engine/Engine/Services/RoutingService.h>
 #include <GreedyTSPSolver_export.h>
+#include <Engine/LoggingManager/LoggingManager.h>
 
 namespace Scheduler
 {
@@ -21,5 +22,6 @@ namespace Scheduler
 
 	private:
         RoutingService* routing_service;
+		Logger* logger;
 	};
 }

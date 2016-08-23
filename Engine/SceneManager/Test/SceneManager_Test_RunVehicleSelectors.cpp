@@ -18,9 +18,7 @@ TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][functional][scene
 
     CrowFlyRoutingService routing_service;
 
-	EngineContext context;
-	context.routing_service = &routing_service;
-	Engine engine(context);
+	Engine engine;
 
     SceneManager* sm = engine.getSceneManager();
 
@@ -46,11 +44,11 @@ TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][functional][scene
         Schedule* sch1 = scene->createSchedule(p1);
         Schedule* sch2 = scene->createSchedule(p2);
 
-        Run* r11 = sch1->createRun(l, l);
-        Run* r12 = sch1->createRun(l, l);
+        Run* r11 = *sch1->createRun(sch1->getRuns().end(), l, l);
+        Run* r12 = *sch1->createRun(sch1->getRuns().end(), l, l);
 
-        Run* r21 = sch2->createRun(l, l);
-        Run* r22 = sch2->createRun(l, l);
+        Run* r21 = *sch2->createRun(sch2->getRuns().end(), l, l);
+        Run* r22 = *sch2->createRun(sch2->getRuns().end(), l, l);
 
         REQUIRE(r11->getVehicle() == v2);
         REQUIRE(r12->getVehicle() == v2);

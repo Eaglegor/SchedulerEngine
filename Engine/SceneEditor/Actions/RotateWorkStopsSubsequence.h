@@ -5,6 +5,8 @@
 #include <cstddef>
 #include <SceneEditor_export.h>
 #include <Engine/Utils/Collections/ImmutableVector.h>
+#include <Engine/SceneManager/Run.h>
+#include "MoveRunWorkStopsSubsequence.h"
 
 namespace Scheduler
 {
@@ -15,21 +17,16 @@ namespace Scheduler
 	class SCENEEDITOR_EXPORT RotateWorkStopsSubsequence : public Action
 	{
 	public:
-		using RunIterator = ImmutableVector<Run*>::const_iterator;
-		using WorkStopIterator = ImmutableVector<WorkStop*>::const_iterator;
+		using ConstRunIterator = ImmutableVector<Run*>::const_iterator;
+		using ConstWorkStopIterator = Run::WorkStopsList::const_iterator;
+		using WorkStopIterator = Run::WorkStopsList::iterator;
 
-        RotateWorkStopsSubsequence(RunIterator run_iterator, WorkStopIterator start_stop, WorkStopIterator middle_stop, WorkStopIterator end_stop);
+        RotateWorkStopsSubsequence(ConstRunIterator run_iterator, ConstWorkStopIterator start_stop, ConstWorkStopIterator middle_stop, ConstWorkStopIterator end_stop);
 
 		virtual void perform() override;
 		virtual void rollback() override;
 
 	private:
-		Schedule* schedule;
-
-		size_t run_index;
-        ptrdiff_t start_index;
-        ptrdiff_t middle_index;
-        ptrdiff_t end_index;
-
+		MoveRunWorkStopsSubsequence backend;
 	};
 }

@@ -33,7 +33,7 @@ TEST_CASE("Engine/SceneEditor/MoveRunWorkStopsSubsequence", "[integration][funct
 	{
 		for (int i = 0; i < run->getWorkStops().size(); ++i)
 		{
-			REQUIRE(std::string("Operation") + std::to_string(expected_order[i] + 1) == run->getWorkStops()[i]->getOperation()->getName());
+			REQUIRE(std::string("Operation") + std::to_string(expected_order[i] + 1) == (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName());
 		}
 	};
 
@@ -45,7 +45,7 @@ TEST_CASE("Engine/SceneEditor/MoveRunWorkStopsSubsequence", "[integration][funct
 
 	auto perform = [&](size_t ia, size_t ib, size_t inew)
 	{
-		editor.performAction<MoveRunWorkStopsSubsequence>(run_iter, run->getWorkStops().begin() + ia, run->getWorkStops().begin() + ib, run->getWorkStops().begin() + inew);
+		editor.performAction<MoveRunWorkStopsSubsequence>(run_iter, std::next(run->getWorkStops().begin(), ia), std::next(run->getWorkStops().begin(), ib), std::next(run->getWorkStops().begin(), inew));
 	};
 	
 
@@ -86,8 +86,20 @@ TEST_CASE("Engine/SceneEditor/MoveRunWorkStopsSubsequence", "[integration][funct
 
 	SECTION("Test6")
 	{
+		for (int i = 0; i < run->getWorkStops().size(); ++i)
+		{
+			std::cout << (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName() << std::endl;
+		}
+		std::cout << std::endl;
+		
 		perform(1, 3, 1);
 
+		for (int i = 0; i < run->getWorkStops().size(); ++i)
+		{
+			std::cout << (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName() << std::endl;
+		}
+		std::cout << std::endl;
+		
 		checkOrder(run, { 0, 1, 2, 3, 4 });
 	}
 

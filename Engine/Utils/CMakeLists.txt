@@ -5,6 +5,10 @@ add_custom_target(Utils SOURCES
 	Collections/Algorithms.h
 	Collections/ImmutableUnorderedSet.h
 	Collections/ImmutableVector.h
+
+        Collections/LinkedPointersList.h
+        Collections/LinkedPointersSublist.h
+        Collections/LinkedPointersListTypeAdapter.h
 	
     Aggregators/DistanceAccumulator.h
     Aggregators/DurationAccumulator.h
@@ -21,7 +25,7 @@ if(CPP_SCHEDULER_TESTS)
 		Test/Collections_Algorithms_Test.cpp
 		Test/DurationUnits_Test.cpp
 		Test/SpeedUnits_Test.cpp
-		
+		Test/LinkedPointersList_Test.cpp
 		)
 		
 	set_property(SOURCE Test/Collections_Algorithms_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")

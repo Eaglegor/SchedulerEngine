@@ -8,22 +8,18 @@
 
 namespace Scheduler
 {
-	MoveRunWorkStop::MoveRunWorkStop(RunIterator run_iterator, WorkStopIterator from, WorkStopIterator to) :
-		schedule((*run_iterator)->getSchedule()),
-		irun(std::distance<ImmutableVector<Run*>::const_iterator>(schedule->getRuns().begin(), run_iterator)),
-		ifrom(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), from)),
-		ito(std::distance<ImmutableVector<WorkStop*>::const_iterator>((*run_iterator)->getWorkStops().begin(), to)),
-		move_command(run_iterator, from, from + 1, to)
+	MoveRunWorkStop::MoveRunWorkStop(ConstRunIterator run_iterator, ConstWorkStopIterator from, ConstWorkStopIterator to) :
+		backend(run_iterator, from, std::next(from), to)
 	{
 	}
 
 	void MoveRunWorkStop::perform()
 	{
-		move_command.perform();
+		backend.perform();
 	}
 
 	void MoveRunWorkStop::rollback()
 	{
-		move_command.rollback();
+		backend.rollback();
 	}
 }

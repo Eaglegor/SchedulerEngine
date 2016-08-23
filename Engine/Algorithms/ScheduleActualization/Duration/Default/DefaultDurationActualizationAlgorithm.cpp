@@ -38,11 +38,14 @@ namespace Scheduler
 		Duration &out_duration;
 	};
 
-	void DefaultDurationActualizationAlgorithm::actualize(Stop* stop)
+	void DefaultDurationActualizationAlgorithm::actualize(Run* run)
 	{
-		Duration operations_duration;
-		TotalOperationDurationGetter duration_getter(operations_duration);
-		stop->acceptVisitor(&duration_getter);
-		stop->setDuration(operations_duration);
+		for(Stop* stop : run->getStops())
+		{
+			Duration operations_duration;
+			TotalOperationDurationGetter duration_getter(operations_duration);
+			stop->acceptVisitor(&duration_getter);
+			stop->setDuration(operations_duration);
+		}
 	}
 }

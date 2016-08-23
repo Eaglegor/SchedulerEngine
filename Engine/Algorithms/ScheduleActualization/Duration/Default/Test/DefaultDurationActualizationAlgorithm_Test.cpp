@@ -50,7 +50,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
 	
 	schedule->setActualizationModel(actualization_model);
 
-    Run* r = schedule->createRun(start_location, end_location);
+    Run* r = *schedule->createRun(schedule->getRuns().end(), start_location, end_location);
     r->setVehicle(vehicle);
 
     SECTION("Simple duration check")
@@ -91,10 +91,10 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
         r->allocateEndOperation(eop);
 
         Stop *s1 = r->getStartStop();
-        Stop *s2 = r->allocateWorkOperation(op1, 0);
-        Stop *s3 = r->allocateWorkOperation(op2, 1);
-        Stop *s4 = r->allocateWorkOperation(op3, 2);
-        Stop *s5 = r->allocateWorkOperation(op4, 3);
+        Stop *s2 = *r->createWorkStop(std::next(r->getWorkStops().begin(), 0), op1);
+        Stop *s3 = *r->createWorkStop(std::next(r->getWorkStops().begin(), 1), op2);
+        Stop *s4 = *r->createWorkStop(std::next(r->getWorkStops().begin(), 2), op3);
+        Stop *s5 = *r->createWorkStop(std::next(r->getWorkStops().begin(), 3), op4);
         Stop *s6 = r->getEndStop();
 
         REQUIRE(s1->getDuration() == dur*2);

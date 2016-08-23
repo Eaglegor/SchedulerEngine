@@ -12,30 +12,48 @@ namespace Scheduler
 	public:
 		DurationActualizer() :
 			algorithm(nullptr),
-			stop(nullptr)
+			run(nullptr),
+			is_dirty(true),
+			actualization_in_progress(false)
 		{
 		}
 
 		DurationActualizer& operator=(const DurationActualizer& rhs)
 		{
 			this->algorithm = rhs.algorithm;
-			this->stop = rhs.stop;
+			this->run = rhs.run;
+			actualization_in_progress = false;
+			is_dirty = true;
 			return *this;
 		}
 
-		DurationActualizer(DurationActualizationAlgorithm* algorithm, Stop* stop) :
+		DurationActualizer(DurationActualizationAlgorithm* algorithm, Run* run) :
 			algorithm(algorithm),
-			stop(stop)
+			run(run),
+			is_dirty(true),
+			actualization_in_progress(false)
 		{
 		}
 
 		void actualize() const
 		{
-			if(algorithm) algorithm->actualize(stop);
+			if(is_dirty && !actualization_in_progress && algorithm) {
+				actualization_in_progress = true;
+				algorithm->actualize(run);
+				actualization_in_progress = false;
+				is_dirty = false;
+			}
 		}
 
+		void setDirty(bool dirty)
+		{
+			is_dirty = dirty;
+		}
+		
 	private:
-		Stop* stop;
+		Run* run;
+		mutable bool is_dirty;
+		mutable bool actualization_in_progress;
 		DurationActualizationAlgorithm* algorithm;
 	};
 }

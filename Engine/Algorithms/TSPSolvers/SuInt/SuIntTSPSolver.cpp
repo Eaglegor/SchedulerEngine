@@ -26,7 +26,7 @@ namespace Scheduler
 	SuIntTSPSolver::SuIntTSPSolver():
 		routing_service(nullptr),
 		cost_function(nullptr),
-		logger(LoggingManager::getLogger("GCBITSPSolver"))
+		logger(LoggingManager::getLogger("SuIntTSPSolver"))
 	{
 	}
 

@@ -11,7 +11,8 @@ namespace Scheduler
 	public:
 		RouteActualizer() :
 			algorithm(nullptr),
-			stop(nullptr)
+			stop(nullptr),
+			is_dirty(true)
 		{
 		}
 
@@ -19,22 +20,33 @@ namespace Scheduler
 		{
 			this->algorithm = rhs.algorithm;
 			this->stop = rhs.stop;
+			is_dirty = true;
 			return *this;
 		}
 
 		RouteActualizer(RouteActualizationAlgorithm* algorithm, Stop* stop) :
 			algorithm(algorithm),
-			stop(stop)
+			stop(stop),
+			is_dirty(true)
 		{
 		}
 
 		void actualize() const
 		{
-			if(algorithm) algorithm->actualize(stop);
+			if(is_dirty && algorithm) {
+				algorithm->actualize(stop);
+				is_dirty = false;
+			}
 		}
 
+		void setDirty(bool dirty)
+		{
+			is_dirty = dirty;
+		}
+		
 	private:
 		Stop* stop;
+		mutable bool is_dirty;
 		RouteActualizationAlgorithm* algorithm;
 	};
 }
