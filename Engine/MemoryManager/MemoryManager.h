@@ -13,7 +13,7 @@ namespace Scheduler
 	{
 	public:
 		MallocMemoryStore* createMallocMemoryStore();
-		PoolMemoryStore* createPoolMemoryStore(size_t chunk_size, size_t initial_capacity);
+		PoolMemoryStore* createPoolMemoryStore(size_t chunk_size, size_t initial_capacity, bool thread_safety_required = false);
 		
 		void destroyMemoryStore(MallocMemoryStore* memory_store);
 		void destroyMemoryStore(PoolMemoryStore* memory_store);

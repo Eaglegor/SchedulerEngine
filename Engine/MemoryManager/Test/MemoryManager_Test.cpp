@@ -8,6 +8,7 @@
 #include <new>
 #include <cstdlib>
 #include <iostream>
+#include <thread>
 
 using namespace Scheduler;
 
@@ -264,7 +265,7 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 			
 			REQUIRE(false);
 		}
-		/*
+		
 		SECTION("Thread safety [debug only - no asserts]")
 		{
 			
@@ -341,7 +342,7 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 			
 			REQUIRE(false);
 		}
-		*/
+		
 	}
 
 	
