@@ -4,7 +4,7 @@ add_library(TheBestTSPSolver SHARED
 	TheBestTSPSolver.cpp
 )
 
-set_target_properties(TheBestTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/TheBest")
+set_target_properties(TheBestTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/Utilitary")
 
 target_link_libraries(TheBestTSPSolver SceneManager SceneEditor LoggingManager)
 

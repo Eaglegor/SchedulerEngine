@@ -42,6 +42,8 @@ target_link_libraries(Engine
 	TheBestTSPSolver
 	HybridOptTSPSolver
 	SuIntTSPSolver
+	TransparentTSPSolver
+	ReverseTSPSolver
 	
 	TotalDistanceCostFunctions
     )

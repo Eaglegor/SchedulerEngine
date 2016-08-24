@@ -4,7 +4,7 @@ add_library(ChainTSPSolver SHARED
 	ChainTSPSolver.cpp
 )
 
-set_target_properties(ChainTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/Chain")
+set_target_properties(ChainTSPSolver PROPERTIES FOLDER "Engine/Algorithms/TSPSolvers/Utilitary")
 
 target_link_libraries(ChainTSPSolver SceneManager SceneEditor)
 

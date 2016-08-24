@@ -16,12 +16,14 @@
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/StrategiesManager/Strategy.h>
 #include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
-#include <Engine/Algorithms/TSPSolvers/Chain/ChainTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/Chain/ChainTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/HybridOpt/HybridOptTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/ListTemperatureScheduler.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
-#include <Engine/Algorithms/TSPSolvers/TheBest/TheBestTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/TheBest/TheBestTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/Transparent/TransparentTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/Reverse/ReverseTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/OneRelocate/OneRelocateTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SuInt/SuIntTSPSolver.h>
 
@@ -561,6 +563,53 @@ public:
 	}
 };
 
+class DoubleSuIntTspLibInstance : public TspLibTestInstance
+{
+public:
+	DoubleSuIntTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+		: TspLibTestInstance(datasets, publisher)
+	{
+	}
+
+	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	{
+		ChainTSPSolver *main_solver = strategy->createTSPSolver<ChainTSPSolver>();
+
+		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
+		greedy_solver->setRoutingService(&routing_service);
+
+		SuIntTSPSolver *suint_solver = strategy->createTSPSolver<SuIntTSPSolver>();
+		suint_solver->setCostFunction(cost_function);
+		suint_solver->setRoutingService(&routing_service);
+		suint_solver->setEdgeSuggestor(EdgeSuggestorType::BETTER_EDGE);
+		suint_solver->addEdgeIntroducer(EdgeIntroducerType::REVERSE);
+		suint_solver->addEdgeIntroducer(EdgeIntroducerType::DIRECT);
+		suint_solver->addEdgeIntroducer(EdgeIntroducerType::CIRCULAR);
+		
+		ReverseTSPSolver* reverse_solver = strategy->createTSPSolver<ReverseTSPSolver>();
+		ChainTSPSolver* second_suint_solver = strategy->createTSPSolver<ChainTSPSolver>();
+		second_suint_solver->addTSPSolver(reverse_solver);
+		second_suint_solver->addTSPSolver(suint_solver);
+
+		TransparentTSPSolver* transparent_solver = strategy->createTSPSolver<TransparentTSPSolver>();
+		TheBestTSPSolver *best_of_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+		best_of_solver->addTSPSolver(transparent_solver);
+		best_of_solver->addTSPSolver(second_suint_solver);
+		best_of_solver->setScheduleCostFunction(cost_function);
+		
+		main_solver->addTSPSolver(greedy_solver);
+		main_solver->addTSPSolver(suint_solver);
+		main_solver->addTSPSolver(best_of_solver);
+
+		return main_solver;
+	}
+
+	virtual const char* getAlgorithmName() override
+	{
+		return "Greedy >> SuInt >> Reverse >> SuInt";
+	}
+};
+
 int main(int argc, char **argv)
 {
 	LoggingManager::configure("logging.cfg");
@@ -617,6 +666,11 @@ int main(int argc, char **argv)
 			SuIntTspLibInstance test(dataset, *publisher);
 			test.run();
         }
+        
+        {
+			DoubleSuIntTspLibInstance test(dataset, *publisher);
+			test.run();
+		}
     }
 	publisher->publish();
 }
