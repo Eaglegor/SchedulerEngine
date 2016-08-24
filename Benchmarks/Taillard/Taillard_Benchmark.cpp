@@ -22,7 +22,7 @@
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
 #include <Engine/CostFunctions/TotalDistance/TotalDistanceScheduleCostFunction.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/ListTemperatureScheduler.h>
-#include <Engine/Algorithms/TSPSolvers/Chain/ChainTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/Chain/ChainTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
 
