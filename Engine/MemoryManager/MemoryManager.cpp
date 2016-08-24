@@ -15,7 +15,7 @@ namespace Scheduler
 	PoolMemoryStore* MemoryManager::createPoolMemoryStore(size_t chunk_size, size_t initial_capacity)
 	{
 		void* mem = internal_malloc_memory_store.allocate(sizeof(PoolMemoryStore));
-		PoolMemoryStore* store = new(mem) PoolMemoryStore(&internal_malloc_memory_store, chunk_size, initial_capacity);
+		PoolMemoryStore* store = new(mem) PoolMemoryStore(chunk_size, initial_capacity);
 		return store;
 	}
 

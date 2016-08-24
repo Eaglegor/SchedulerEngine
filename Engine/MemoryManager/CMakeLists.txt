@@ -11,6 +11,9 @@ set_target_properties(MemoryManager PROPERTIES FOLDER "Engine")
 
 cotire(MemoryManager)
 
+find_package(Boost REQUIRED COMPONENTS system)
+target_link_libraries(MemoryManager ${Boost_LIBRARIES})
+
 include(GenerateExportHeader)
 generate_export_header(MemoryManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/MemoryManager_export.h)
 
