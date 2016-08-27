@@ -86,20 +86,8 @@ TEST_CASE("Engine/SceneEditor/MoveRunWorkStopsSubsequence", "[integration][funct
 
 	SECTION("Test6")
 	{
-		for (int i = 0; i < run->getWorkStops().size(); ++i)
-		{
-			std::cout << (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName() << std::endl;
-		}
-		std::cout << std::endl;
-		
 		perform(1, 3, 1);
 
-		for (int i = 0; i < run->getWorkStops().size(); ++i)
-		{
-			std::cout << (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName() << std::endl;
-		}
-		std::cout << std::endl;
-		
 		checkOrder(run, { 0, 1, 2, 3, 4 });
 	}
 

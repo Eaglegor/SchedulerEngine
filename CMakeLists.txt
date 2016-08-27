@@ -45,8 +45,13 @@ if(CPP_SCHEDULER_BUILD_ENABLE_CONAN)
         message(STATUS "Conanfile has changed. Dependencies update is scheduled")
         set(CONAN_UPDATE_NEEDED TRUE)
     endif()
-
+	if(NOT CMAKE_BUILD_TYPE STREQUAL CPP_SCHEDULER_LAST_BUILD_TYPE)
+        message(STATUS "Build type has changed. Dependencies update is scheduled")
+        set(CONAN_UPDATE_NEEDED TRUE)
+    endif()
+    
     set(CPP_SCHEDULER_LAST_CONAN_FILE_UPDATE ${LAST_CONAN_UPDATE} CACHE INTERNAL "")
+    set(CPP_SCHEDULER_LAST_BUILD_TYPE ${LAST_BUILD_TYPE} CACHE INTERNAL "")
 endif()
 
 set(__CONAN_ARGS "install")
