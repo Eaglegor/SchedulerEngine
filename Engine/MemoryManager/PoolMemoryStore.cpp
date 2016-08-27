@@ -20,7 +20,7 @@ namespace Scheduler
 
 	void* PoolMemoryStore::allocate(size_t memory_size)
 	{
-		assert(memory_size <= chunk_size);
+		//assert(memory_size <= chunk_size);
 		if(memory_size > chunk_size) return nullptr;
 		if(enable_mutex) mutex.lock();
 		void* mem = storage.malloc();
