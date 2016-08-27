@@ -284,9 +284,9 @@ TEST_CASE("Performance", "[!mayfail]")
 		INFO("Average new allocation time: " << average_new_allocation_time << " ns");
 		INFO("Average delete deallocation time: " << average_delete_deallocation_time << " ns");
 
-		REQUIRE(false);
+		//REQUIRE(false);
 	}
-
+/*
 	SECTION("Thread safety [debug only - no asserts]")
 	{
 
@@ -363,4 +363,5 @@ TEST_CASE("Performance", "[!mayfail]")
 
 		REQUIRE(false);
 	}
+	*/
 }
