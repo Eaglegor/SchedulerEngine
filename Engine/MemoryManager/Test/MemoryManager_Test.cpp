@@ -8,6 +8,7 @@
 #include <new>
 #include <cstdlib>
 #include <iostream>
+#include <thread>
 
 using namespace Scheduler;
 
@@ -38,19 +39,19 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 
 	SECTION("Raw allocation")
 	{
-		PoolMemoryStore* pool_memory_store = memory_manager.createPoolMemoryStore(50, 10);
+		PoolMemoryStore* pool_memory_store = memory_manager.createPoolMemoryStore(56, 10);
 	
 		SECTION("Allocation within initial capacity")
 		{
 			void* ptrs[10];
 			for (size_t i = 0; i < 10; ++i)
 			{
-				ptrs[i] = pool_memory_store->allocate(std::rand() % 49 + 1);
+				ptrs[i] = pool_memory_store->allocate(std::rand() % 55 + 1);
 			}
 
 			for (size_t i = 0; i < 9; ++i)
 			{
-				REQUIRE(reinterpret_cast<char*>(ptrs[i + 1]) - reinterpret_cast<char*>(ptrs[i]) == 50);
+				REQUIRE(reinterpret_cast<char*>(ptrs[i + 1]) - reinterpret_cast<char*>(ptrs[i]) == 56);
 			}
 
 			for (size_t i = 0; i < 10; ++i)
@@ -64,7 +65,7 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 			void* ptrs[100];
 			for (size_t i = 0; i < 100; ++i)
 			{
-				ptrs[i] = pool_memory_store->allocate(std::rand() % 49 + 1);
+				ptrs[i] = pool_memory_store->allocate(std::rand() % 55 + 1);
 			}
 
 			for (size_t i = 0; i < 100; ++i)
@@ -78,7 +79,7 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 			void* ptrs[10];
 			for (size_t i = 0; i < 10; ++i)
 			{
-				ptrs[i] = pool_memory_store->allocate(std::rand() % 49 + 1);
+				ptrs[i] = pool_memory_store->allocate(std::rand() % 55 + 1);
 			}
 
 			for (size_t i = 9; i >= 5; --i)
@@ -88,12 +89,12 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 
 			for (size_t i = 5; i < 10; ++i)
 			{
-				ptrs[i] = pool_memory_store->allocate(std::rand() % 49 + 1);
+				ptrs[i] = pool_memory_store->allocate(std::rand() % 55 + 1);
 			}
 
 			for (size_t i = 0; i < 9; ++i)
 			{
-				REQUIRE(reinterpret_cast<char*>(ptrs[i + 1]) - reinterpret_cast<char*>(ptrs[i]) == 50);
+				REQUIRE(reinterpret_cast<char*>(ptrs[i + 1]) - reinterpret_cast<char*>(ptrs[i]) == 56);
 			}
 
 			for (size_t i = 0; i < 10; ++i)
@@ -104,7 +105,7 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 
 		SECTION("Allocation outside chunk size")
 		{
-			REQUIRE(pool_memory_store->allocate(51) == nullptr);
+			REQUIRE(pool_memory_store->allocate(57) == nullptr);
 		}
 
 		memory_manager.destroyMemoryStore(pool_memory_store);
@@ -156,7 +157,7 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 
 		SECTION("Covering size")
 		{
-			PoolMemoryStore* pool_memory_store = memory_manager.createPoolMemoryStore(150, 10);
+			PoolMemoryStore* pool_memory_store = memory_manager.createPoolMemoryStore(152, 10);
 
 			TestStruct* ptrs[10];
 			for (size_t i = 0; i < 10; ++i)
@@ -167,7 +168,7 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 
 			for (size_t i = 0; i < 9; ++i)
 			{
-				REQUIRE(reinterpret_cast<char*>(ptrs[i + 1]) - reinterpret_cast<char*>(ptrs[i]) == 150);
+				REQUIRE(reinterpret_cast<char*>(ptrs[i + 1]) - reinterpret_cast<char*>(ptrs[i]) == 152);
 			}
 
 			for (size_t i = 0; i < 10; ++i)
@@ -202,18 +203,109 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 			}
 		}
 
-		SECTION("Performance [debug only - no asserts]")
+	}
+
+	
+}
+
+TEST_CASE("Performance", "[!mayfail]")
+{
+	MemoryManager memory_manager;
+
+	struct TestStruct
+	{
+		int a;
+		float b;
+		double c;
+
+		TestStruct() :
+			a(5), b(8), c(3.14)
 		{
-			Factory<TestStruct> test_struct_factory(&memory_manager, sizeof(TestStruct), 10001);
+		}
+	};
 
-			TestStruct* ptrs[10000];
+	SECTION("Performance [debug only - no asserts]")
+	{
+		Factory<TestStruct> test_struct_factory(&memory_manager, sizeof(TestStruct), 10001);
 
-			size_t total_pool_allocations_time = 0;
-			size_t total_pool_deallocations_time = 0;
+		TestStruct* ptrs[10000];
+
+		size_t total_pool_allocations_time = 0;
+		size_t total_pool_deallocations_time = 0;
+		for (size_t i = 0; i < 100; ++i)
+		{
+			auto start = std::chrono::high_resolution_clock::now();
+			for (size_t j = 0; j < 10000; ++j)
+			{
+				ptrs[j] = test_struct_factory.createObject<TestStruct>();
+			}
+			auto end = std::chrono::high_resolution_clock::now();
+			total_pool_allocations_time += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
+			start = std::chrono::high_resolution_clock::now();
+			for (size_t j = 0; j < 10000; ++j)
+			{
+				test_struct_factory.destroyObject(ptrs[j]);
+			}
+			end = std::chrono::high_resolution_clock::now();
+			total_pool_deallocations_time += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+		}
+
+		float average_pool_allocation_time = total_pool_allocations_time / 100.0f / 10000.0f;
+		float average_pool_deallocation_time = total_pool_deallocations_time / 100.0f / 10000.0f;
+
+		INFO("Average pool allocation time: " << average_pool_allocation_time << " ns");
+		INFO("Average pool deallocation time: " << average_pool_deallocation_time << " ns");
+
+		size_t total_new_allocations_time = 0;
+		size_t total_delete_deallocations_time = 0;
+		for (size_t i = 0; i < 100; ++i)
+		{
+			auto start = std::chrono::high_resolution_clock::now();
+			for (size_t j = 0; j < 10000; ++j)
+			{
+				ptrs[j] = new TestStruct();
+			}
+			auto end = std::chrono::high_resolution_clock::now();
+			total_new_allocations_time += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
+			start = std::chrono::high_resolution_clock::now();
+			for (size_t j = 0; j < 10000; ++j)
+			{
+				delete ptrs[j];
+			}
+			end = std::chrono::high_resolution_clock::now();
+			total_delete_deallocations_time += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+		}
+
+		float average_new_allocation_time = total_new_allocations_time / 100.0f / 10000.0f;
+		float average_delete_deallocation_time = total_delete_deallocations_time / 100.0f / 10000.0f;
+
+		INFO("Average new allocation time: " << average_new_allocation_time << " ns");
+		INFO("Average delete deallocation time: " << average_delete_deallocation_time << " ns");
+
+		//REQUIRE(false);
+	}
+/*
+	SECTION("Thread safety [debug only - no asserts]")
+	{
+
+		Factory<TestStruct> test_struct_factory(&memory_manager, sizeof(TestStruct), 10001);
+
+		TestStruct* ptrs[10000];
+
+
+		size_t total_pool_allocations_time = 0;
+		size_t total_pool_deallocations_time = 0;
+
+		#pragma omp parallel for
+		for (int k = 0; k < 4; ++k)
+		{
+
 			for (size_t i = 0; i < 100; ++i)
 			{
 				auto start = std::chrono::high_resolution_clock::now();
-				for (size_t j = 0; j < 10000; ++j)
+				for (size_t j = k * 2500; j < (k + 1) * 2500; ++j)
 				{
 					ptrs[j] = test_struct_factory.createObject<TestStruct>();
 				}
@@ -221,26 +313,32 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 				total_pool_allocations_time += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
 				start = std::chrono::high_resolution_clock::now();
-				for (size_t j = 0; j < 10000; ++j)
+				for (size_t j = k * 2500; j < (k + 1) * 2500; ++j)
 				{
 					test_struct_factory.destroyObject(ptrs[j]);
 				}
 				end = std::chrono::high_resolution_clock::now();
 				total_pool_deallocations_time += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 			}
+		}
 
-			float average_pool_allocation_time = total_pool_allocations_time / 100.0f / 10000.0f;
-			float average_pool_deallocation_time = total_pool_deallocations_time / 100.0f / 10000.0f;
+		float average_pool_allocation_time = total_pool_allocations_time / 100.0f / 10000.0f;
+		float average_pool_deallocation_time = total_pool_deallocations_time / 100.0f / 10000.0f;
 
-			INFO("Average pool allocation time: " << average_pool_allocation_time << " ns");
-			INFO("Average pool deallocation time: " << average_pool_deallocation_time << " ns");
+		INFO("Average pool allocation time: " << average_pool_allocation_time << " ns");
+		INFO("Average pool deallocation time: " << average_pool_deallocation_time << " ns");
 
-			size_t total_new_allocations_time = 0;
-			size_t total_delete_deallocations_time = 0;
+
+		size_t total_new_allocations_time = 0;
+		size_t total_delete_deallocations_time = 0;
+
+		#pragma omp parallel for
+		for (int k = 0; k < 4; ++k)
+		{
 			for (size_t i = 0; i < 100; ++i)
 			{
 				auto start = std::chrono::high_resolution_clock::now();
-				for (size_t j = 0; j < 10000; ++j)
+				for (size_t j = k * 2500; j < (k + 1) * 2500; ++j)
 				{
 					ptrs[j] = new TestStruct();
 				}
@@ -248,21 +346,22 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 				total_new_allocations_time += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 
 				start = std::chrono::high_resolution_clock::now();
-				for (size_t j = 0; j < 10000; ++j)
+				for (size_t j = k * 2500; j < (k + 1) * 2500; ++j)
 				{
 					delete ptrs[j];
 				}
 				end = std::chrono::high_resolution_clock::now();
 				total_delete_deallocations_time += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
 			}
-
-			float average_new_allocation_time = total_new_allocations_time / 100.0f / 10000.0f;
-			float average_delete_deallocation_time = total_delete_deallocations_time / 100.0f / 10000.0f;
-
-			INFO("Average new allocation time: " << average_new_allocation_time << " ns");
-			INFO("Average delete deallocation time: " << average_delete_deallocation_time << " ns");
 		}
-	}
 
-	
+		float average_new_allocation_time = total_new_allocations_time / 100.0f / 10000.0f;
+		float average_delete_deallocation_time = total_delete_deallocations_time / 100.0f / 10000.0f;
+
+		INFO("Average new allocation time: " << average_new_allocation_time << " ns");
+		INFO("Average delete deallocation time: " << average_delete_deallocation_time << " ns");
+
+		REQUIRE(false);
+	}
+	*/
 }

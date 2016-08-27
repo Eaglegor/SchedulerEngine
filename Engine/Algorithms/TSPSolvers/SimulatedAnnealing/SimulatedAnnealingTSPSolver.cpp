@@ -106,7 +106,7 @@ namespace Scheduler
     size_t SimulatedAnnealingTSPSolver::markovChainLength(size_t stopsCount) const
     {
         const size_t M = std::nearbyint(stopsCount * std::log(stopsCount) * markov_chain_length_scale);
-        return std::max(1ul, M);
+        return std::max(size_t(1), M);
     }
 
 }

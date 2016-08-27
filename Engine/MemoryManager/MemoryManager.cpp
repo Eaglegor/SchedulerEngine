@@ -12,10 +12,10 @@ namespace Scheduler
 		return &internal_malloc_memory_store;
 	}
 
-	PoolMemoryStore* MemoryManager::createPoolMemoryStore(size_t chunk_size, size_t initial_capacity)
+	PoolMemoryStore* MemoryManager::createPoolMemoryStore(size_t chunk_size, size_t initial_capacity, bool thread_safety_required)
 	{
 		void* mem = internal_malloc_memory_store.allocate(sizeof(PoolMemoryStore));
-		PoolMemoryStore* store = new(mem) PoolMemoryStore(&internal_malloc_memory_store, chunk_size, initial_capacity);
+		PoolMemoryStore* store = new(mem) PoolMemoryStore(chunk_size, initial_capacity, thread_safety_required);
 		return store;
 	}
 

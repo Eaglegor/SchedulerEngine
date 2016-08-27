@@ -1,8 +1,9 @@
 #pragma once
 
 #include "MemoryStore.h"
-#include "MallocMemoryStore.h"
 #include <list>
+#include <boost/pool/pool.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include <MemoryManager_export.h>
 
@@ -11,24 +12,16 @@ namespace Scheduler
 	class MEMORYMANAGER_EXPORT PoolMemoryStore : public MemoryStore
 	{
 	public:
-		PoolMemoryStore(MallocMemoryStore* backend_memory_store, size_t chunk_size, size_t initial_capacity);
-		~PoolMemoryStore();
-
+		PoolMemoryStore(std::size_t chunk_size, std::size_t initial_capacity, bool enable_mutex);
+		virtual ~PoolMemoryStore();
+		
 		virtual void* allocate(size_t memory_size) override;
 		virtual void deallocate(void* ptr) override;
 
 	private:
-		void* allocateNewBlock(size_t capacity);
-		void initFreeList(void* list_start, size_t capacity);
-		size_t calculateNewBlockCapacity() const;
-
-		MallocMemoryStore* backend_memory_store;
-		void** free_list;
-
-		size_t chunk_size;
-		size_t current_capacity;
-		size_t capacity_left;
-
-		std::list<void*> allocated_blocks;
+		const std::size_t chunk_size;
+		const bool enable_mutex;
+		boost::pool<boost::default_user_allocator_malloc_free> storage;
+		boost::mutex mutex;
 	};
 }
