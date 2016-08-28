@@ -303,6 +303,36 @@ TEST_CASE("Scene editor patches", "[integration][functional][scene_editor]")
 			checkOrder(run, {1, 2, 3, 0, 4});
 			REQUIRE(editor.getCurrentVersion() == 3);
 		}
+		SECTION("Incorrect base version")
+		{
+			REQUIRE(editor.getCurrentVersion() == 0);
+
+			perform(0,1);
+
+			checkOrder(run, {1, 0, 2, 3, 4});
+			
+			REQUIRE(editor.getCurrentVersion() == 1);
+			
+			Patch p = editor.createPatch();
+			
+			patchPerform(p, 1, 2);
+			
+			checkOrder(run, {1, 2, 0, 3, 4});
+			
+			editor.abortPatching();
+			
+			perform(2,3);
+			
+			checkOrder(run, {1, 2, 3, 0, 4});
+			
+			REQUIRE(editor.getCurrentVersion() == 2);
+			
+			Patch p2 = editor.createPatch();
+			editor.applyPatch(std::move(p)); // This action will have no effect because scene editor has different base version
+			
+			REQUIRE(editor.getCurrentVersion() == 2);
+			checkOrder(run, {1, 2, 3, 0, 4});
+		}
 	}
 	
 }

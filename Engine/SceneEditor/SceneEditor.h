@@ -34,6 +34,7 @@ namespace Scheduler
 
 		Patch createPatch();
 		std::size_t applyPatch(Patch &&patch);
+		void abortPatching();
 
 		std::size_t getCurrentVersion();
 		

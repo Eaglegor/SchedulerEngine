@@ -116,4 +116,10 @@ namespace Scheduler
 		return current_version;
 	}
 
+	void SceneEditor::abortPatching()
+	{
+		state = State::OPEN;
+	}
+
+	
 }
