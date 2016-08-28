@@ -39,7 +39,12 @@ namespace Scheduler
 		
 		if(patch.getState() == Patch::State::HELD) patch.recall();
 		
-		std::move_backward(patch.actions.begin(), patch.actions.end(), actions.end());
+		std::copy(patch.actions.begin(), patch.actions.end(), std::back_inserter(actions));
+		patch.actions.clear();
+		
 		current_version = patch.getCurrentVersion();
+		
+		Patch p;
+		patch = std::move(p);
 	}
 }
