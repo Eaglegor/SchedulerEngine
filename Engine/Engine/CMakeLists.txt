@@ -39,7 +39,7 @@ target_link_libraries(Engine
 	GreedyTSPSolver
 	ChainTSPSolver
 	OneRelocateTSPSolver
-	TheBestTSPSolver
+	BestOfTSPSolver
 	HybridOptTSPSolver
 	SuIntTSPSolver
 	TransparentTSPSolver

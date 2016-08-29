@@ -9,7 +9,7 @@ namespace Scheduler
 	
 	const char* TransparentTSPSolver::staticGetName()
 	{
-		return "TransparentTSPSolver";
+		return "Transparent";
 	}
 
 	void TransparentTSPSolver::optimize(Schedule* schedule) const

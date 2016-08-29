@@ -21,7 +21,7 @@
 #include <Engine/Algorithms/TSPSolvers/HybridOpt/HybridOptTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/ListTemperatureScheduler.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
-#include <Engine/Algorithms/TSPSolvers/Utilitary/TheBest/TheBestTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/BestOf/BestOfTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Transparent/TransparentTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Reverse/ReverseTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/OneRelocate/OneRelocateTSPSolver.h>
@@ -455,7 +455,7 @@ public:
 
     virtual TSPSolver* createTSPSolver(Strategy* strategy) override
     {
-        TheBestTSPSolver* best_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+        BestOfTSPSolver* best_solver = strategy->createTSPSolver<BestOfTSPSolver>();
         best_solver->setScheduleCostFunction(cost_function);
         for (auto& ts : temperature_schedulers) {
             best_solver->addTSPSolver(createSATSPSolver(strategy, ts.get()));
@@ -592,7 +592,7 @@ public:
 		second_suint_solver->addTSPSolver(suint_solver);
 
 		TransparentTSPSolver* transparent_solver = strategy->createTSPSolver<TransparentTSPSolver>();
-		TheBestTSPSolver *best_of_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+		BestOfTSPSolver *best_of_solver = strategy->createTSPSolver<BestOfTSPSolver>();
 		best_of_solver->addTSPSolver(transparent_solver);
 		best_of_solver->addTSPSolver(second_suint_solver);
 		best_of_solver->setScheduleCostFunction(cost_function);

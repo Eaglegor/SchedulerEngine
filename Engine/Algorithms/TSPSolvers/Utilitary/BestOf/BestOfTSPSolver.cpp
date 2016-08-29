@@ -1,4 +1,4 @@
-#include "TheBestTSPSolver.h"
+#include "BestOfTSPSolver.h"
 #include <thread>
 #include <mutex>
 #include <map>
@@ -15,37 +15,37 @@
 
 namespace Scheduler
 {
-    TheBestTSPSolver::TheBestTSPSolver():
+    BestOfTSPSolver::BestOfTSPSolver():
     concurrency_enabled(true),
-    logger(LoggingManager::getLogger("TheBestTSPSolver"))
+    logger(LoggingManager::getLogger("BestOfTSPSolver"))
 	{
 	}
 
-    void TheBestTSPSolver::optimize(Schedule* schedule) const
+    void BestOfTSPSolver::optimize(Schedule* schedule) const
 	{
         if (!schedule_cost_function) return;
 		if(concurrency_enabled) concurrentOptimize(schedule);
 		else sequentialOptimize(schedule);
 	}
 
-	void TheBestTSPSolver::optimize(Run* run) const
+	void BestOfTSPSolver::optimize(Run* run) const
 	{
         if (!schedule_cost_function) return;
         if(concurrency_enabled) concurrentOptimize(run);
 		else sequentialOptimize(run);
 	}
 
-    void TheBestTSPSolver::addTSPSolver(TSPSolver* aTSPSolver)
+    void BestOfTSPSolver::addTSPSolver(TSPSolver* aTSPSolver)
 	{
         this->tsp_solvers.push_back(aTSPSolver);
 	}
 
-    void TheBestTSPSolver::setScheduleCostFunction(ScheduleCostFunction *cost_function)
+    void BestOfTSPSolver::setScheduleCostFunction(ScheduleCostFunction *cost_function)
     {
         schedule_cost_function = cost_function;
     }
 
-    void TheBestTSPSolver::sequentialOptimize(Schedule* schedule) const
+    void BestOfTSPSolver::sequentialOptimize(Schedule* schedule) const
     {
 		SIMPLE_LOG_TRACE(logger, "Starting sequential schedule optimization");
 		
@@ -66,7 +66,7 @@ namespace Scheduler
         best_variant.apply();
     }
 
-    void TheBestTSPSolver::sequentialOptimize(Run* run) const
+    void BestOfTSPSolver::sequentialOptimize(Run* run) const
     {
 		SIMPLE_LOG_TRACE(logger, "Starting sequential run optimization");
 		
@@ -89,7 +89,7 @@ namespace Scheduler
         best_variant.apply();
     }
 
-    void TheBestTSPSolver::concurrentOptimize(Schedule* schedule) const
+    void BestOfTSPSolver::concurrentOptimize(Schedule* schedule) const
     {
         SIMPLE_LOG_TRACE(logger, "Starting concurrent schedule optimization");
 		
@@ -127,7 +127,7 @@ namespace Scheduler
         best_variant.apply();
     }
 
-    void TheBestTSPSolver::concurrentOptimize(Run* run) const
+    void BestOfTSPSolver::concurrentOptimize(Run* run) const
     {
 		SIMPLE_LOG_TRACE(logger, "Starting concurrent run optimization");
 		
@@ -164,7 +164,7 @@ namespace Scheduler
         best_variant.apply();
     }
     
-    void TheBestTSPSolver::setConcurrencyEnabled(bool value)
+    void BestOfTSPSolver::setConcurrencyEnabled(bool value)
 	{
 		this->concurrency_enabled = value;
 	}

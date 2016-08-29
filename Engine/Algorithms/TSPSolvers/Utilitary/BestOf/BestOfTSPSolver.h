@@ -2,16 +2,16 @@
 
 #include <Engine/StrategiesManager/TSPSolver.h>
 #include <vector>
-#include <TheBestTSPSolver_export.h>
+#include <BestOfTSPSolver_export.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/LoggingManager/LoggingManager.h>
 
 namespace Scheduler
 {
-    class THEBESTTSPSOLVER_EXPORT TheBestTSPSolver : public TSPSolver
+    class BESTOFTSPSOLVER_EXPORT BestOfTSPSolver : public TSPSolver
 	{
 	public:
-		TheBestTSPSolver();
+		BestOfTSPSolver();
 
 		virtual void optimize(Schedule* schedule) const override;
 		virtual void optimize(Run* schedule) const override;
@@ -21,7 +21,7 @@ namespace Scheduler
 		
 		void setConcurrencyEnabled(bool value);
 
-        static constexpr const char* staticGetName() { return "TheBest"; }
+        static constexpr const char* staticGetName() { return "BestOf"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:
