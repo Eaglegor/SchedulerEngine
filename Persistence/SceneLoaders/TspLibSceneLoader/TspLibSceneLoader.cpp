@@ -16,6 +16,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
 
 namespace Scheduler
@@ -39,14 +40,30 @@ namespace Scheduler
 			loadXmlMatrix(stream, nodes_count, routing_service, out_known_optimum);
 		}
 
-		Scene* scene = scene_manager->createScene();
-
-		Vehicle* vehicle = scene->createVehicle();
+		SceneContext* scene_context = scene_manager->createSceneContext();
+		
+		Vehicle* vehicle = scene_context->createVehicle();
 		vehicle->setName("Vehicle");
 
-		Performer* performer = scene->createPerformer();
+		Performer* performer = scene_context->createPerformer();
 		performer->setName("Performer");
 
+		std::vector<Operation*> operations;
+		
+		for (std::size_t i = 1; i < nodes_count; ++i)
+		{
+			Location* location = scene_context->createLocation(Site(Coordinate(i), Coordinate(0)));
+			
+			Operation* operation = scene_context->createFreeOperation(*location);
+			operation->setName((std::string("Operation") + std::to_string(i)).c_str());
+			operation->setDuration(Duration(0));
+			operations.push_back(operation);
+		}
+		
+		Location* location = scene_context->createLocation(Site());
+		
+		Scene* scene = scene_manager->createScene(*scene_context);
+		
 		Schedule* schedule = scene->createSchedule(performer);
 
 		ScheduleActualizationModel* actualization_model = scene_manager->createScheduleActualizationModel();
@@ -55,16 +72,12 @@ namespace Scheduler
 
 		schedule->setActualizationModel(actualization_model);
 
-		Run *run = *schedule->createRun(schedule->getRuns().end(), Location(), Location()); // Creating run (0,0) -> (0,0)
+		Run *run = *schedule->createRun(schedule->getRuns().end(), *location, *location); // Creating run (0,0) -> (0,0)
 		run->setVehicle(vehicle);
 
-		for (size_t i = 1; i < nodes_count; ++i)
+		for (std::size_t i = 0; i < operations.size(); ++i)
 		{
-			Operation* operation = scene->createFreeOperation();
-			operation->setName((std::string("Operation") + std::to_string(i)).c_str());
-			operation->setDuration(Duration(0));
-			operation->setLocation(Location(Coordinate(i), Coordinate(0))); // Index is encoded in the latitude. The longitude will be unused.
-			run->createWorkStop(run->getWorkStops().end(), operation);
+			run->createWorkStop(run->getWorkStops().end(), operations[i]);
 		}
 
 		return scene;

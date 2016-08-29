@@ -4,7 +4,7 @@
 
 namespace Scheduler
 {
-    PerformerAssignedVehicleBinder::PerformerAssignedVehicleBinder(Scene *scene)
+    PerformerAssignedVehicleBinder::PerformerAssignedVehicleBinder()
     {
     }
 

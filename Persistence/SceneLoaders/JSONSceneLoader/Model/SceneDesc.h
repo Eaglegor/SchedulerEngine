@@ -12,7 +12,7 @@ namespace Scheduler
 	struct SceneDesc
 	{
 		boost::optional<LoaderSettings> settings;
-		std::vector<LocationDesc> locations;
+		std::vector<SiteDesc> locations;
 		std::vector<OrderDesc> orders;
 		std::vector<OperationDesc> free_operations;
 		FleetDesc fleet;

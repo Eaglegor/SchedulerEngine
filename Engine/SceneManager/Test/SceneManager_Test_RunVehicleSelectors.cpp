@@ -11,7 +11,7 @@
 #include <Engine/Algorithms/RunVehicleBinders/PerformerAssigned/PerformerAssignedVehicleBinder.h>
 #include <Engine/Concepts/Test/MakeLocation.h>
 
-
+/*
 TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][functional][scene_manager]")
 {
     using namespace Scheduler;
@@ -30,7 +30,7 @@ TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][functional][scene
     Performer* p1 = scene->createPerformer();
     Performer* p2 = scene->createPerformer();
 
-    Location l = make_location(0, 0);
+    Site l = make_location(0, 0);
 
     SECTION("PerformerAssignedVehicleBinder")
     {
@@ -57,3 +57,4 @@ TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][functional][scene
         REQUIRE(r22->getVehicle() == v1);
     }
 }
+*/

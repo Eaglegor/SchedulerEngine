@@ -4,7 +4,7 @@
 
 #include <Engine/Concepts/RoutingProfile.h>
 #include <Engine/Concepts/SpeedDurationDistanceOperations.h>
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 
 #include <cmath>
 
@@ -12,7 +12,7 @@
 namespace Scheduler
 {
 
-	Route EuclideanRoutingService::calculateRoute(const Location &from, const Location &to,
+	Route EuclideanRoutingService::calculateRoute(const Site &from, const Site &to,
 														const RoutingProfile &routing_profile) {
 		
 		auto x1 = from.getLatitude().getValue();

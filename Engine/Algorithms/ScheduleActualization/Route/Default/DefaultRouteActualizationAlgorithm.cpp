@@ -6,6 +6,7 @@
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/Location.h>
 #include <Engine/Engine/Services/RoutingService.h>
 
 namespace Scheduler
@@ -25,17 +26,17 @@ namespace Scheduler
 	{
 		if(!stop->next())
 		{
-			stop->setNextRoute(Route(stop->getLocation(), stop->getLocation(), Distance(0), Duration(0)));
+			stop->setNextRoute(Route(stop->getLocation().getSite(), stop->getLocation().getSite(), Distance(0), Duration(0)));
 		}
 		else
 		{
 			if(stop->getRun()->getVehicle())
 			{
-				stop->setNextRoute(routing_service->calculateRoute(stop->getLocation(), stop->next()->getLocation(), stop->getRun()->getVehicle()->getRoutingProfile()));
+				stop->setNextRoute(routing_service->calculateRoute(stop->getLocation().getSite(), stop->next()->getLocation().getSite(), stop->getRun()->getVehicle()->getRoutingProfile()));
 			}
 			else
 			{
-				stop->setNextRoute(routing_service->calculateRoute(stop->getLocation(), stop->next()->getLocation(), default_routing_profile));
+				stop->setNextRoute(routing_service->calculateRoute(stop->getLocation().getSite(), stop->next()->getLocation().getSite(), default_routing_profile));
 			}
 		}
 	}

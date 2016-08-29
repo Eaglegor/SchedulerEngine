@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "SceneObjectsFactory.h"
 #include "Operation.h"
@@ -41,10 +41,10 @@ namespace Scheduler
 		using StopsSublist = LinkedPointersSublist<Stop*, StopsList>;
 		using WorkStopsList = LinkedPointersListTypeAdapter< StopsSublist, WorkStop* >;
 		
-		Run(size_t id, const Location& start_location, const Location& end_location, Schedule* schedule, LinkedPointersList<Stop*> &stops_list, LinkedPointersList<Stop*>::iterator pos);
+		Run(std::size_t id, const Location& start_location, const Location& end_location, Schedule* schedule, LinkedPointersList<Stop*> &stops_list, LinkedPointersList<Stop*>::iterator pos);
 		~Run();
 
-		size_t getId() const;
+		std::size_t getId() const;
 
 		const Schedule* getSchedule() const;
 		Schedule* getSchedule();
@@ -69,9 +69,6 @@ namespace Scheduler
 		void unallocateStartOperation(const Operation *operation);
 		WorkStopsList::iterator destroyWorkStop(WorkStopsList::iterator pos);
 		void unallocateEndOperation(const Operation *operation);
-
-		/*Stop* replaceWorkOperation(const Operation *old_operation, const Operation *new_operation, size_t hint = 0);
-		Stop* replaceWorkOperationAt(size_t index, const Operation* new_operation);*/
 		
 		void swapWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator second);
 		void reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last);
@@ -87,12 +84,9 @@ namespace Scheduler
 	private:
 		WorkStop* createWorkStop(const Operation* operation);
 
-		size_t id;
+		std::size_t id;
 		Schedule* schedule;
 		const Vehicle* vehicle;
-
-		Location start_location;
-		Location end_location;
 
 		RunBoundaryStop start_stop;
 		RunBoundaryStop end_stop;

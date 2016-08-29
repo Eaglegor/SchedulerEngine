@@ -1,5 +1,12 @@
 #pragma once
 
+#include <cstddef>
+#include <unordered_map>
+
+#include "Constraints/Scene/SceneConstraints.h"
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include "SceneObjectsFactory.h"
+
 namespace Scheduler
 {
 	class Operation;
@@ -7,34 +14,40 @@ namespace Scheduler
 	class Performer;
 	class Vehicle;
 	class Attribute;
-	class Location;
 	class Site;
+	class Location;
+	class Depot;
 	
 	class SCENEMANAGER_EXPORT SceneContext
 	{
 		public:
-			SceneContext(size_t id);
+			SceneContext(std::size_t id);
 			~SceneContext();
 			
-			size_t getId() const;
+			std::size_t getId() const;
 			
 			const ImmutableVector<Operation*>& getFreeOperations() const;
 			const ImmutableVector<Order*>& getOrders() const;
 			const ImmutableVector<Performer*>& getPerformers() const;
 			const ImmutableVector<Vehicle*>& getVehicles() const;
 			const ImmutableVector<Location*>& getLocations() const;
+			const ImmutableVector<Depot*>& getDepots() const;
+			const Attribute* getAttribute(const char* name) const;
 			
 			ImmutableVector<Operation*>& getFreeOperations();
 			ImmutableVector<Order*>& getOrders();
 			ImmutableVector<Performer*>& getPerformers();
 			ImmutableVector<Vehicle*>& getVehicles();
 			ImmutableVector<Location*>& getLocations();
-			
-			Operation* createFreeOperation();
+			ImmutableVector<Depot*>& getDepots();
+
+			Operation* createFreeOperation(const Location &location);
 			Order* createOrder();
 			Performer* createPerformer();
 			Vehicle* createVehicle();
 			Location* createLocation(const Site& site);
+			Depot* createDepot(const Location &location);
+			const Attribute* createAttribute(const char* name);
 			
 			const SceneConstraints& constraints() const;
 			SceneConstraints& constraints();
@@ -48,6 +61,7 @@ namespace Scheduler
 
 			std::vector<Performer*> performers;
 			std::vector<Vehicle*> vehicles;
+			std::vector<Depot*> depots;
 
 			std::unordered_map<std::string, Attribute*> attributes;
 			
@@ -57,6 +71,7 @@ namespace Scheduler
 			SceneObjectsFactory<Performer> performers_factory;
 			SceneObjectsFactory<Attribute> attributes_factory;
 			SceneObjectsFactory<Location> locations_factory;
+			SceneObjectsFactory<Depot> depots_factory;
 			
 			SceneConstraints scene_constraints;
 	};

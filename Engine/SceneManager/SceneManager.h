@@ -34,21 +34,23 @@ namespace Scheduler
 	class ScheduleValidationAlgorithm;
 	class RunValidationAlgorithm;
 	class StopValidationAlgorithm;
+	class SceneContext;
 
     class SCENEMANAGER_EXPORT SceneManager
     {
     public:
-		SceneManager(MemoryManager* memory_manager);
+		SceneManager();
         ~SceneManager();
 
+		SceneContext* createSceneContext();
+		
+		void destroySceneContext(SceneContext* scene_context);
+		
 		/// Creates an empty scene
-        Scene* createScene();
+        Scene* createScene(const SceneContext& context);
 
 		/// Destroys the scene recursively destroying all it's content
         void destroyScene(Scene *scene);
-
-		/// Creates or retrieves an existing attribute assignable to vehicles, performers and orders
-        const Attribute*createAttribute(const char *name);
 
 		ScheduleActualizationModel* createScheduleActualizationModel();
 		void destroyScheduleActualizationModel(ScheduleActualizationModel* model);
@@ -125,7 +127,7 @@ namespace Scheduler
 		template<typename T, typename... Args>
 		T* createRunVehicleBinder(Args &&... args)
 		{
-			T* new_binder = run_vehicle_binders_factory.createObject<T>(this, std::forward<Args>(args)...);
+			T* new_binder = run_vehicle_binders_factory.createObject<T>(std::forward<Args>(args)...);
 
 			if (!new_binder) return nullptr;
 
@@ -138,6 +140,7 @@ namespace Scheduler
 		
     private:
 		SceneObjectsFactory<Scene> scenes_factory;
+		SceneObjectsFactory<SceneContext> scene_contexts_factory;
 
 		Factory<ScheduleActualizationModel> schedule_actualization_models_factory;
 		Factory<RouteActualizationAlgorithm> route_actualization_algorithms_factory;
@@ -163,6 +166,7 @@ namespace Scheduler
 		
 		std::unordered_set<RunVehicleBinder*> run_vehicle_binders;
 
+		std::unordered_set<SceneContext*> scene_contexts;
         std::unordered_set<Scene*> scenes;
     };
 }

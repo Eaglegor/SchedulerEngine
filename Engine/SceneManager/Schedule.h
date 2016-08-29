@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 #include "Performer.h"
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "SceneObjectsFactory.h"
@@ -22,6 +22,7 @@ namespace Scheduler
 	class LoggingService;
 	class RunVehicleBinder;
 	class ScheduleValidationModel;
+	class Location;
 
 	/**
 		Class representing single performer's work shift.
@@ -48,10 +49,6 @@ namespace Scheduler
 		const StopsList& getStops() const;
 		
 		void destroyRun(RunsList::iterator pos);
-
-		const Location& getDepotLocation() const;
-		
-		void setDepotLocation(const Location &depot_location);
 
         bool isValid() const;
 
@@ -92,8 +89,6 @@ namespace Scheduler
 
 		SceneObjectsFactory<Run> *runs_factory;
 		SceneObjectsFactory<WorkStop> *stops_factory;
-
-		Location depot_location;
 
 		TimeWindow shift;
 

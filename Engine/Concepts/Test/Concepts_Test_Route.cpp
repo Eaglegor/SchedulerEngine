@@ -11,8 +11,8 @@ TEST_CASE("Concepts - Basic - Route", "[unit][functional][concepts]")
 	{
 		Route r;
 		
-		REQUIRE(r.getFrom() == Location());
-		REQUIRE(r.getTo() == Location());
+		REQUIRE(r.getFrom() == Site());
+		REQUIRE(r.getTo() == Site());
 		REQUIRE(r.getDistance() == Distance());
 		REQUIRE(r.getDuration() == Duration());
 	}

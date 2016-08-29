@@ -17,7 +17,7 @@ TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][functional][vrp_so
 
     SceneManager *sm = engine.getSceneManager();
 
-    Scene* scene = sm->createScene();
+    Scene* scene = sm->createScene(*sm->createSceneContext());
 
 	StrategiesManager *strategies_manager = engine.getStrategiesManager();
 

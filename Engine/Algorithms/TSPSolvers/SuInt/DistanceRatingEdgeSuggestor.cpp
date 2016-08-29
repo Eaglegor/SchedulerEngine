@@ -5,6 +5,7 @@
 #include <Engine/Utils/CallableVisitorProxy.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/Location.h>
 #include <Engine/SceneManager/Run.h>
 
 namespace Scheduler
@@ -41,10 +42,10 @@ namespace Scheduler
 			rating_entry.distance.getValue()
 			);
 
-		std::vector<size_t> from_locations = findStopsByLocation(rating_entry.from);
+		std::vector<size_t> from_locations = findStopsBySite(rating_entry.from);
 		LOG_TRACE(logger, "Matching 'from' stops count: {}", from_locations.size());
 
-		std::vector<size_t> to_locations = findStopsByLocation(rating_entry.to);
+		std::vector<size_t> to_locations = findStopsBySite(rating_entry.to);
 		LOG_TRACE(logger, "Matching 'to' stops count: {}", to_locations.size());
 
 		for(size_t from_index : from_locations)
@@ -97,20 +98,20 @@ namespace Scheduler
 		max_run_distance = max_distance;
 	}
 
-	std::vector<size_t> DistanceRatingEdgeSuggestor::findStopsByLocation(const Location& location) const
+	std::vector<size_t> DistanceRatingEdgeSuggestor::findStopsBySite(const Site& location) const
 	{
 		std::vector<size_t> result;
 		
-		if (run->getStartStop()->getLocation() == location) result.push_back(0);
+		if (run->getStartStop()->getLocation().getSite() == location) result.push_back(0);
 
 		size_t index = 1;
 		for (const WorkStop* stop : run->getWorkStops())
 		{
-			if (stop->getLocation() == location) result.push_back(index);
+			if (stop->getLocation().getSite() == location) result.push_back(index);
 			++index;
 		}
 
-		if (run->getEndStop()->getLocation() == location) result.push_back(index);
+		if (run->getEndStop()->getLocation().getSite() == location) result.push_back(index);
 
 		return result;
 	}
@@ -119,18 +120,18 @@ namespace Scheduler
 	{
 		rating.clear();
 
-		std::vector<Location> locations;
+		std::vector<Site> locations;
 
 		for (Stop* stop = run->getStartStop(); stop != run->getEndStop()->next(); stop = stop->next())
 		{
-			locations.push_back(stop->getLocation());
+			locations.push_back(stop->getLocation().getSite());
 		}
 
 		locations.erase(std::unique(locations.begin(), locations.end()), locations.end());
 
-		for(const Location& l1 : locations)
+		for(const Site& l1 : locations)
 		{
-			for (const Location& l2 : locations)
+			for (const Site& l2 : locations)
 			{
 				Entry edge;
 				edge.from = l1;

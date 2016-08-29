@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 #include <Engine/Concepts/Duration.h>
 #include <Engine/Concepts/TimeWindow.h>
 #include <Engine/Concepts/Capacity.h>
@@ -17,11 +17,11 @@ namespace Scheduler
     class SCENEMANAGER_EXPORT Operation
     {
     public:
-        Operation(size_t id);
+        Operation(size_t id, const Location& location);
 
         const char* getName() const;
 
-        size_t getId() const;
+        std::size_t getId() const;
 
         const Location& getLocation() const;
 
@@ -30,8 +30,6 @@ namespace Scheduler
         const Order* getOrder() const;
 
         void setName(const char* name);
-
-        void setLocation(const Location &location);
 
         void setDuration(const Duration &duration);
 
@@ -44,7 +42,7 @@ namespace Scheduler
         size_t id;
         std::string name;
 
-        Location location;
+        const Location& location;
         Duration duration;
 
         const Order* order;

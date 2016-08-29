@@ -5,7 +5,7 @@
 #include <Engine/Concepts/Duration.h>
 
 #include <SceneManager_export.h>
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 #include "../ConstraintHolder.h"
 
 namespace Scheduler
@@ -22,8 +22,8 @@ namespace Scheduler
 			using ScheduleWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
 			using RunWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
 
-			using ScheduleShiftStartLocationConstraint = ConstraintHolder<Location>;
-			using ScheduleShiftEndLocationConstraint = ConstraintHolder<Location>;
+			using ScheduleShiftStartSiteConstraint = ConstraintHolder<Site>;
+			using ScheduleShiftEndSiteConstraint = ConstraintHolder<Site>;
 
 			const ScheduleDistanceLimitConstraint& scheduleDistanceLimit() const;
 			ScheduleDistanceLimitConstraint& scheduleDistanceLimit();
@@ -43,11 +43,11 @@ namespace Scheduler
 			const RunWorkingTimeLimitConstraint& runWorkingTimeLimit() const;
 			RunWorkingTimeLimitConstraint& runWorkingTimeLimit();
 
-			const ScheduleShiftStartLocationConstraint& shiftStartLocation() const;
-			ScheduleShiftStartLocationConstraint& shiftStartLocation();
+			const ScheduleShiftStartSiteConstraint& shiftStartSite() const;
+			ScheduleShiftStartSiteConstraint& shiftStartSite();
 
-			const ScheduleShiftEndLocationConstraint& shiftEndLocation() const;
-			ScheduleShiftEndLocationConstraint& shiftEndLocation();
+			const ScheduleShiftEndSiteConstraint& shiftEndSite() const;
+			ScheduleShiftEndSiteConstraint& shiftEndSite();
 
 		private:
 			ScheduleDistanceLimitConstraint schedule_distance_limit_constraint;
@@ -59,7 +59,7 @@ namespace Scheduler
 			ScheduleWorkingTimeLimitConstraint schedule_working_time_limit_constraint;
 			RunWorkingTimeLimitConstraint run_working_time_limit_constraint;
 
-			ScheduleShiftStartLocationConstraint schedule_shift_start_location_constraint;
-			ScheduleShiftEndLocationConstraint schedule_shift_end_location_constraint;
+			ScheduleShiftStartSiteConstraint schedule_shift_start_location_constraint;
+			ScheduleShiftEndSiteConstraint schedule_shift_end_location_constraint;
 	};
 }

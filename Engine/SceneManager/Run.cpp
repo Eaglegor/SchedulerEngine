@@ -12,10 +12,8 @@
 
 namespace Scheduler {
 
-    Run::Run(size_t id, const Location &start_location, const Location &end_location, Schedule *schedule, LinkedPointersList<Stop*> &stops_list, LinkedPointersList<Stop*>::iterator pos) :
+    Run::Run(std::size_t id, const Location &start_location, const Location &end_location, Schedule *schedule, LinkedPointersList<Stop*> &stops_list, LinkedPointersList<Stop*>::iterator pos) :
             id(id),
-            start_location(start_location),
-            end_location(end_location),
             schedule(schedule),
             stops_factory(nullptr),
             start_stop(start_location, this),
@@ -32,7 +30,7 @@ namespace Scheduler {
 		work_stops.reset(new WorkStopsList(*raw_work_stops));
     }
 
-    size_t Run::getId() const {
+    std::size_t Run::getId() const {
         return id;
     }
 

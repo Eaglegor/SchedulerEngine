@@ -12,19 +12,19 @@ namespace Scheduler
 									 duration(rhs.duration)
 	{ }
 
-	Route::Route(const Location &from, const Location &to, const Distance &distance, const Duration &duration)
+	Route::Route(const Site &from, const Site &to, const Distance &distance, const Duration &duration)
 			: from(from),
 			  to(to),
 			  distance(distance),
 			  duration(duration)
 	{ }
 
-	const Location& Route::getFrom() const
+	const Site& Route::getFrom() const
 	{
 		return from;
 	}
 
-	const Location& Route::getTo() const
+	const Site& Route::getTo() const
 	{
 		return to;
 	}
@@ -39,12 +39,12 @@ namespace Scheduler
 		return duration;
 	}
 
-	void Route::setFrom(const Location &from)
+	void Route::setFrom(const Site &from)
 	{
 		this->from = from;
 	}
 
-	void Route::setTo(const Location &to)
+	void Route::setTo(const Site &to)
 	{
 		this->to = to;
 	}

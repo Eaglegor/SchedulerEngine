@@ -15,9 +15,8 @@ namespace Scheduler
     class Factory
     {
     public:
-		Factory(MemoryManager* memory_manager, size_t max_object_size, size_t initial_capacity) :
-			memory_manager(memory_manager),
-			memory_store(memory_manager->createPoolMemoryStore(max_object_size, initial_capacity)),
+		Factory(size_t max_object_size, size_t initial_capacity = 10) :
+			memory_store(MemoryManager::createPoolMemoryStore(max_object_size, initial_capacity)),
 			max_object_size(max_object_size)
 		{
 			assert(initial_capacity > 0);
@@ -25,7 +24,7 @@ namespace Scheduler
 
 		~Factory()
 		{
-			memory_manager->destroyMemoryStore(memory_store);
+			MemoryManager::destroyMemoryStore(memory_store);
 		}
 
         template<typename DerivedClass, typename... Args>
@@ -48,7 +47,6 @@ namespace Scheduler
 		size_t max_object_size;
 
 		PoolMemoryStore* memory_store;
-		MemoryManager* memory_manager;
     };
 
 }

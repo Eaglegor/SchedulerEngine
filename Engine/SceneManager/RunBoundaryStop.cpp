@@ -9,7 +9,7 @@
 
 namespace Scheduler
 {
-	RunBoundaryStop::RunBoundaryStop(const Location & location, Run * run):
+	RunBoundaryStop::RunBoundaryStop(const Location& location, Run * run):
 		Stop(run),
 		location(location)
 	{

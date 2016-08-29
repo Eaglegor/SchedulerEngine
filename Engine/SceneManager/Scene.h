@@ -21,29 +21,38 @@ namespace Scheduler
 	class Run;
 	class WorkStop;
 	class SceneContext;
+	class Performer;
+	class SceneManager;
 
     class SCENEMANAGER_EXPORT Scene
     {
     public:
-        Scene(size_t id, SceneContext* context);
+        Scene(std::size_t id, const SceneContext &context);
         ~Scene();
 
-        size_t getId() const;
+        std::size_t getId() const;
 
 		const ImmutableVector<Schedule*>& getSchedules() const;
         ImmutableVector<Schedule*>& getSchedules();
 
         Schedule* createSchedule(const Performer *performer);
+		
+		const SceneContext& getContext() const;
 
+		void setSceneManager(SceneManager* scene_manager);
+		SceneManager* getSceneManager() const;
+		
     private:
-        size_t id;
+        std::size_t id;
 
-		SceneContext* context;
+		const SceneContext &context;
 		
         std::vector<Schedule*> schedules;
 
 		SceneObjectsFactory<Schedule> schedules_factory;
 		SceneObjectsFactory<Run> runs_factory;
 		SceneObjectsFactory<WorkStop> stops_factory;
+		
+		SceneManager* scene_manager;
     };
 }

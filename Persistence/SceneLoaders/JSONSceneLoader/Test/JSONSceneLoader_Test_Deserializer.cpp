@@ -20,7 +20,7 @@ void checkTimeWindow(const boost::property_tree::ptree &tree, const Scheduler::T
 	INFO("Time window check complete");
 }
 
-void checkLocation(const boost::property_tree::ptree &tree, const Scheduler::LocationDesc &location)
+void checkSite(const boost::property_tree::ptree &tree, const Scheduler::SiteDesc &location)
 {
 	INFO("Checking location");
 
@@ -32,7 +32,7 @@ void checkLocation(const boost::property_tree::ptree &tree, const Scheduler::Loc
 	REQUIRE(latitude == location.latitude);
 	REQUIRE(longitude == location.longitude);
 
-	INFO("Location check complete");
+	INFO("Site check complete");
 }
 
 void checkFleet(const boost::property_tree::ptree &tree, const Scheduler::FleetDesc &fleet)
@@ -382,7 +382,7 @@ void checkScene(const boost::property_tree::ptree &tree, const Scheduler::SceneD
 		for (const auto &iter : locations)
 		{
 			REQUIRE(iter.first.empty());
-			checkLocation(iter.second, scene.locations[i]);
+			checkSite(iter.second, scene.locations[i]);
 			++i;
 		}
 	}

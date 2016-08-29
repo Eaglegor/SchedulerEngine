@@ -6,6 +6,7 @@
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Run.h>
+#include <Engine/SceneManager/Location.h>
 
 namespace Scheduler
 {
@@ -37,7 +38,7 @@ namespace Scheduler
 			if (i == run->getWorkStops().size() + 1) new_next_stop = run->getEndStop();
 			else new_next_stop = *std::next(run->getWorkStops().begin(), i - 1);
 
-			Distance new_distance = routing_service->calculateRoute(current_stop->getLocation(), new_next_stop->getLocation(), run->getVehicle()->getRoutingProfile()).getDistance();
+			Distance new_distance = routing_service->calculateRoute(current_stop->getLocation().getSite(), new_next_stop->getLocation().getSite(), run->getVehicle()->getRoutingProfile()).getDistance();
 			if(new_distance < current_distance)
 			{
 				Entry entry;

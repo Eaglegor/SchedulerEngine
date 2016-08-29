@@ -4,6 +4,8 @@
 #include <Persistence/SceneLoaders/TspLibSceneLoader/TspLibSceneLoader.h>
 #include <Engine/Engine/Engine.h>
 #include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/Location.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
@@ -36,19 +38,19 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 	
 
 	REQUIRE(scene);
-	REQUIRE(scene->getVehicles().size() == 1);
-	REQUIRE(scene->getPerformers().size() == 1);
-	REQUIRE(scene->getFreeOperations().size() == 16);
+	REQUIRE(scene->getContext().getVehicles().size() == 1);
+	REQUIRE(scene->getContext().getPerformers().size() == 1);
+	REQUIRE(scene->getContext().getFreeOperations().size() == 16);
 	for (size_t i = 0; i < 16; ++i)
 	{
-		REQUIRE(scene->getFreeOperations()[i]->getLocation().getLatitude() == Coordinate(i + 1));
-		REQUIRE(scene->getFreeOperations()[i]->getLocation().getLongitude() == Coordinate(0));
+		REQUIRE(scene->getContext().getFreeOperations()[i]->getLocation().getSite().getLatitude() == Coordinate(i + 1));
+		REQUIRE(scene->getContext().getFreeOperations()[i]->getLocation().getSite().getLongitude() == Coordinate(0));
 	}
 	REQUIRE(scene->getSchedules().size() == 1);
 	REQUIRE(scene->getSchedules()[0]->getRuns().size() == 1);
 	REQUIRE(scene->getSchedules()[0]->getRuns()[0]->getWorkStops().size() == 16);
 	for (size_t i = 0; i < 16; ++i)
 	{
-		REQUIRE((*std::next(scene->getSchedules()[0]->getRuns()[0]->getWorkStops().begin(), i))->getOperation() == scene->getFreeOperations()[i]);
+		REQUIRE((*std::next(scene->getSchedules()[0]->getRuns()[0]->getWorkStops().begin(), i))->getOperation() == scene->getContext().getFreeOperations()[i]);
 	}
 }

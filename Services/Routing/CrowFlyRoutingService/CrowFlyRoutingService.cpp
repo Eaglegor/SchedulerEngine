@@ -4,7 +4,7 @@
 
 #include <Engine/Concepts/RoutingProfile.h>
 #include <Engine/Concepts/SpeedDurationDistanceOperations.h>
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 
 #include <cmath>
 
@@ -12,7 +12,7 @@
 namespace Scheduler
 {
 
-	Route CrowFlyRoutingService::calculateRoute(const Location &from, const Location &to,
+	Route CrowFlyRoutingService::calculateRoute(const Site &from, const Site &to,
 														const RoutingProfile &routing_profile) {
 		const float EARTH_RADIUS = 6399.0f;
 

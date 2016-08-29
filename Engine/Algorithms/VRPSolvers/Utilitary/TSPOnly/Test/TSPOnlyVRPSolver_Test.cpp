@@ -4,6 +4,7 @@
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Performer.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/StrategiesManager/StrategiesManager.h>
 #include <Engine/StrategiesManager/Strategy.h>
@@ -48,10 +49,12 @@ TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][functional][vrp_so
 
     SceneManager* sm = engine.getSceneManager();
 
-    Scene* scene = sm->createScene();
-	Performer* performer = scene->createPerformer();
-	Schedule* schedule = scene->createSchedule(performer);
+	SceneContext* scene_context = sm->createSceneContext();
+	Performer* performer = scene_context->createPerformer();
 
+	Scene* scene = sm->createScene(*scene_context);
+	Schedule* schedule = scene->createSchedule(performer);
+	
 	StrategiesManager* strategies_manager = engine.getStrategiesManager();
 
 	Strategy* strategy = strategies_manager->createStrategy();

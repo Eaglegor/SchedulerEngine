@@ -1,8 +1,10 @@
 #include "Performer.h"
 
 namespace Scheduler {
-    Performer::Performer(size_t id) : id(id) {
-
+    Performer::Performer(size_t id):
+    id(id),
+    depot(nullptr)
+	{
     }
 
     size_t Performer::getId() const {
@@ -47,6 +49,16 @@ namespace Scheduler {
 	PerformerConstraints & Performer::constraints()
 	{
 		return performer_constraints;
+	}
+	
+	const Depot* Performer::getDepot() const
+	{
+		return depot;
+	}
+	
+	void Performer::setDepot(const Depot* depot)
+	{
+		this->depot = depot;
 	}
 }
 

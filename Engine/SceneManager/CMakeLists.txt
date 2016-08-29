@@ -15,16 +15,19 @@ add_library(SceneManager SHARED
 	Run.h
 	Run.cpp
 	
-	Scene.h
-	Scene.cpp
+	Scene.h Scene.cpp
+	SceneContext.h SceneContext.cpp
 	
 	SceneManager.h
 	SceneManager.cpp
 	
 	Schedule.h
 	Schedule.cpp
+	
+	Depot.h Depot.cpp
+	Location.h Location.cpp
 
-	TemporarySchedule.h TemporarySchedule.cpp
+	ScheduleVariant.h ScheduleVariant.cpp
 	
     Actualizable.h
     ScheduleActualizationModel.h ScheduleActualizationModel.cpp
@@ -89,7 +92,6 @@ if(CPP_SCHEDULER_TESTS)
 	
 		Test/SceneManager_Test.cpp
 		Test/SceneManager_Test_RunVehicleSelectors.cpp
-		Test/SceneManager_Test_ScheduleActualizers.cpp
 
 	)
 		

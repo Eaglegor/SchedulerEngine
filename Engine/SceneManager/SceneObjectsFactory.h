@@ -9,9 +9,9 @@ namespace Scheduler
     class SceneObjectsFactory
     {
     public:
-		SceneObjectsFactory(MemoryManager* memory_manager, size_t initial_capacity = 100): 
+		SceneObjectsFactory(std::size_t initial_capacity = 10): 
 			counter(0),
-			backend_factory(memory_manager, sizeof(T), initial_capacity)
+			backend_factory(sizeof(T), initial_capacity)
 		{}
 
         template<typename... Args>
@@ -26,7 +26,7 @@ namespace Scheduler
         }
 
     private:
-        size_t counter;
+        std::size_t counter;
 
 		Factory<T> backend_factory;
     };

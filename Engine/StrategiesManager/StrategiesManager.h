@@ -18,7 +18,7 @@ namespace Scheduler
 	class STRATEGIESMANAGER_EXPORT StrategiesManager
 	{
 	public:
-		explicit StrategiesManager(MemoryManager* memory_manager);
+		StrategiesManager();
 		~StrategiesManager();
 
 		Strategy* createStrategy();

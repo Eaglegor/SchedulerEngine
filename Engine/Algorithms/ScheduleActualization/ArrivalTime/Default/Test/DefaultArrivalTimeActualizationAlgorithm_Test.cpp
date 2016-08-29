@@ -7,6 +7,8 @@
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/SceneManager/Schedule.h>
+#include <Engine/SceneManager/Location.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/Algorithms/RunVehicleBinders/PerformerAssigned/PerformerAssignedVehicleBinder.h>
@@ -26,49 +28,46 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 	Engine engine;
 	SceneManager* sm = engine.getSceneManager();
 
-    Location start_location = make_location(0, 0);
-    Location end_location = make_location(0, 0.5);
+	SceneContext* scene_context = sm->createSceneContext();
+	
+    const Location& start_location = *scene_context->createLocation(make_location(0, 0));
+    const Location& end_location = *scene_context->createLocation(make_location(0, 0.5));
 
-    Location loc1 = make_location(0, 0.1);
-    Location loc2 = make_location(0, 0.2);
-    Location loc3 = make_location(0, 0.3);
-    Location loc4 = make_location(0, 0.4);
+    const Location& loc1 = *scene_context->createLocation(make_location(0, 0.1));
+    const Location& loc2 = *scene_context->createLocation(make_location(0, 0.2));
+    const Location& loc3 = *scene_context->createLocation(make_location(0, 0.3));
+    const Location& loc4 = *scene_context->createLocation(make_location(0, 0.4));
 
-    Scene* s = sm->createScene();
+    Scene* s = sm->createScene(*scene_context);
 
     Duration dur = Units::minutes(10);
 
-    Operation* op1 = s->createFreeOperation();
+    Operation* op1 = scene_context->createFreeOperation(loc1);
     op1->setDuration(dur);
-    op1->setLocation(loc1);
 
-    Operation* op2 = s->createFreeOperation();
+    Operation* op2 = scene_context->createFreeOperation(loc2);
     op2->setDuration(dur);
-    op2->setLocation(loc2);
 
-    Operation* op3 = s->createFreeOperation();
+    Operation* op3 = scene_context->createFreeOperation(loc3);
     op3->setDuration(dur);
-    op3->setLocation(loc3);
 
-    Operation* op4 = s->createFreeOperation();
+    Operation* op4 = scene_context->createFreeOperation(loc4);
     op4->setDuration(dur);
-    op4->setLocation(loc4);
 
-    Performer* performer = s->createPerformer();
-    Vehicle* vehicle = s->createVehicle();
+    Performer* performer = scene_context->createPerformer();
+	performer->setDepot(scene_context->createDepot(start_location));
+    Vehicle* vehicle = scene_context->createVehicle();
 
     Schedule* schedule = s->createSchedule(performer);
-    schedule->setDepotLocation(start_location);
-    schedule->constraints().shiftEndLocation().set(end_location);
 
     Run* r = *schedule->createRun(schedule->getRuns().end(), start_location, end_location);
     r->setVehicle(vehicle);
 
-    Route r1 = routing_service.calculateRoute(start_location, loc1, vehicle->getRoutingProfile());
-    Route r2 = routing_service.calculateRoute(loc1, loc2, vehicle->getRoutingProfile());
-    Route r3 = routing_service.calculateRoute(loc2, loc3, vehicle->getRoutingProfile());
-    Route r4 = routing_service.calculateRoute(loc3, loc4, vehicle->getRoutingProfile());
-    Route r5 = routing_service.calculateRoute(loc4, end_location, vehicle->getRoutingProfile());
+    Route r1 = routing_service.calculateRoute(start_location.getSite(), loc1.getSite(), vehicle->getRoutingProfile());
+    Route r2 = routing_service.calculateRoute(loc1.getSite(), loc2.getSite(), vehicle->getRoutingProfile());
+    Route r3 = routing_service.calculateRoute(loc2.getSite(), loc3.getSite(), vehicle->getRoutingProfile());
+    Route r4 = routing_service.calculateRoute(loc3.getSite(), loc4.getSite(), vehicle->getRoutingProfile());
+    Route r5 = routing_service.calculateRoute(loc4.getSite(), end_location.getSite(), vehicle->getRoutingProfile());
 
 	ScheduleActualizationModel* actualization_model = sm->createScheduleActualizationModel();
 	DefaultRouteActualizationAlgorithm* route_actualization_algorithm = sm->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(&routing_service);
@@ -184,10 +183,10 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
     }
 
     Stop *s1 = r->getStartStop();
-    Stop *s2 = *r->createWorkStop(r->getWorkStops().begin(), op1);
-    Stop *s3 = *r->createWorkStop(std::next(r->getWorkStops().begin()), op2);
-    Stop *s4 = *r->createWorkStop(std::next(r->getWorkStops().begin(), 2), op3);
-    Stop *s5 = *r->createWorkStop(std::next(r->getWorkStops().begin(), 3), op4);
+    Stop *s2 = *r->createWorkStop(r->getWorkStops().end(), op1);
+    Stop *s3 = *r->createWorkStop(r->getWorkStops().end(), op2);
+    Stop *s4 = *r->createWorkStop(r->getWorkStops().end(), op3);
+    Stop *s5 = *r->createWorkStop(r->getWorkStops().end(), op4);
     Stop *s6 = r->getEndStop();
 
     CAPTURE(s1->getAllocationTime());

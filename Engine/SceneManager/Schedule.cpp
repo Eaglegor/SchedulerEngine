@@ -47,7 +47,7 @@ namespace Scheduler {
 		this->runs_factory = factory;
 	}
 
-	Schedule::RunsList::iterator Schedule::createRun(RunsList::const_iterator pos, const Scheduler::Location& from, const Scheduler::Location& to) {
+	Schedule::RunsList::iterator Schedule::createRun(RunsList::const_iterator pos, const Location& from, const Location& to) {
 		assert(runs_factory);
 
 		Run* r = runs_factory->createObject(from, to, this, stops, pos == runs.end() ? stops.end() : (*pos)->getStops().begin());
@@ -75,16 +75,6 @@ namespace Scheduler {
 
 	Schedule::~Schedule() {
 		clear();
-	}
-
-	const Location& Schedule::getDepotLocation() const {
-		return depot_location;
-	}
-
-	void Schedule::setDepotLocation(const Location &depot_location) {
-		this->depot_location = depot_location;
-
-		arrival_time_actualizer.setDirty(true);
 	}
 
     bool Schedule::isValid() const

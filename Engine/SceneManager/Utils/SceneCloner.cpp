@@ -22,7 +22,6 @@ namespace Scheduler {
 			to->setActualizationModel(from->getActualizationModel());
 			to->setValidationModel(from->getValidationModel());
 			to->setName(from->getName());
-			to->setDepotLocation(from->getDepotLocation());
 			to->setShift(from->getShift());
 			to->constraints() = from->constraints();
 			
