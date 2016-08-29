@@ -133,6 +133,13 @@ namespace Scheduler
 		stop_validation_algorithms_factory.destroyObject(algorithm);
 	}
 
+	void SceneManager::destroyRunVehicleBinder(RunVehicleBinder* binder)
+	{
+		assert(run_vehicle_binders.find(binder) != run_vehicle_binders.end());
+		run_vehicle_binders.erase(binder);
+		run_vehicle_binders_factory.destroyObject(binder);
+	}
+	
 	void SceneManager::destroyScene(Scene *scene)
 	{
 		scenes.erase(scene);
@@ -197,6 +204,11 @@ namespace Scheduler
 			stop_validation_algorithms_factory.destroyObject(algorithm);
 		}
 
+		for (RunVehicleBinder* binder : run_vehicle_binders)
+		{
+			run_vehicle_binders_factory.destroyObject(binder);
+		}
+		
 		for (auto &iter : attributes)
 		{
 			attributes_factory.destroyObject(iter.second);

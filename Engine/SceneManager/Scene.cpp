@@ -9,15 +9,9 @@
 
 namespace Scheduler {
 
-    Scene::Scene(size_t id) :
+    Scene::Scene(size_t id, SceneContext* context):
             id(id),
-            operations_factory(nullptr),
-            orders_factory(nullptr),
-            performers_factory(nullptr),
-            vehicles_factory(nullptr),
-            schedules_factory(nullptr),
-            run_vehicle_binders_factory(nullptr),
-            run_vehicle_binder(nullptr)
+			context(context)
     {
     }
 

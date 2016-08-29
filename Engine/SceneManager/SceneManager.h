@@ -122,16 +122,22 @@ namespace Scheduler
 
 		void destroyStopValidationAlgorithm(StopValidationAlgorithm* algorithm);
 
+		template<typename T, typename... Args>
+		T* createRunVehicleBinder(Args &&... args)
+		{
+			T* new_binder = run_vehicle_binders_factory.createObject<T>(this, std::forward<Args>(args)...);
+
+			if (!new_binder) return nullptr;
+
+			run_vehicle_binders.emplace(new_binder);
+
+			return new_binder;
+		}
+		
+		void destroyRunVehicleBinder(RunVehicleBinder* binder);
+		
     private:
 		SceneObjectsFactory<Scene> scenes_factory;
-		SceneObjectsFactory<Operation> operations_factory;
-		SceneObjectsFactory<Order> orders_factory;
-		SceneObjectsFactory<Vehicle> vehicles_factory;
-		SceneObjectsFactory<Performer> performers_factory;
-		SceneObjectsFactory<Schedule> schedules_factory;
-		SceneObjectsFactory<Attribute> attributes_factory;
-		SceneObjectsFactory<Run> runs_factory;
-		SceneObjectsFactory<WorkStop> stops_factory;
 
 		Factory<ScheduleActualizationModel> schedule_actualization_models_factory;
 		Factory<RouteActualizationAlgorithm> route_actualization_algorithms_factory;
@@ -143,7 +149,7 @@ namespace Scheduler
 		Factory<RunValidationAlgorithm> run_validation_algorithms_factory;
 		Factory<StopValidationAlgorithm> stop_validation_algorithms_factory;
 
-		Factory<RunVehicleBinder> run_vehicle_selectors_factory;
+		Factory<RunVehicleBinder> run_vehicle_binders_factory;
 
 		std::unordered_set<ScheduleActualizationModel*> schedule_actualization_models;
 		std::unordered_set<RouteActualizationAlgorithm*> route_actualization_algorithms;
@@ -154,8 +160,9 @@ namespace Scheduler
 		std::unordered_set<ScheduleValidationAlgorithm*> schedule_validation_algorithms;
 		std::unordered_set<RunValidationAlgorithm*> run_validation_algorithms;
 		std::unordered_set<StopValidationAlgorithm*> stop_validation_algorithms;
+		
+		std::unordered_set<RunVehicleBinder*> run_vehicle_binders;
 
         std::unordered_set<Scene*> scenes;
-        std::unordered_map<std::string, Attribute*> attributes;
     };
 }
