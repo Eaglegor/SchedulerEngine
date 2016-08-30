@@ -21,7 +21,6 @@ namespace Scheduler {
     std::size_t Scene::getId() const {
         return id;
     }
-
     
 	const ImmutableVector<Schedule*>& Scene::getSchedules() const {
         return schedules;
