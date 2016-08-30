@@ -24,6 +24,8 @@ namespace Scheduler
 		 - cost per distance unit (e.g. based on fuel price)
 		 - activation cost
 	*/
+	class Depot;
+	
     class SCENEMANAGER_EXPORT Vehicle
     {
     public:
@@ -48,6 +50,9 @@ namespace Scheduler
 		const ImmutableUnorderedSet <const Attribute *>& getAttributes() const;
 		void setAttributes(const ImmutableUnorderedSet<const Attribute *> &attributes);
 
+		void setDepot(const Depot* depot);
+		const Depot* getDepot() const;
+		
 		const VehicleConstraints& constraints() const;
 		VehicleConstraints& constraints();
 
@@ -64,5 +69,7 @@ namespace Scheduler
 		std::unordered_set<const Attribute*> attributes;
 
 		VehicleConstraints vehicle_constraints;
+		
+		const Depot* depot;
     };
 }

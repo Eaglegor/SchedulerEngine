@@ -16,4 +16,15 @@ namespace Scheduler
 	{
 		return location;
 	}
+	
+	const char* Depot::getName() const
+	{
+		return name.c_str();
+	}
+
+	void Depot::setName(const char* name)
+	{
+		this->name = name;
+	}
+
 }

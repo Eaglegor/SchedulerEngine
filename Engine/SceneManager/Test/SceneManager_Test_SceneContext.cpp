@@ -7,6 +7,9 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/SceneManager/Order.h>
 #include <Engine/SceneManager/Location.h>
+#include <Engine/SceneManager/Performer.h>
+#include <Engine/SceneManager/Vehicle.h>
+#include <Engine/SceneManager/Depot.h>
 #include <string>
 
 using namespace Scheduler;
@@ -256,3 +259,146 @@ TEST_CASE("SceneManager - SceneContext - Order - Operations")
 	REQUIRE(order->getEndOperation() == end_operation2);
 }
 
+TEST_CASE("SceneManager - SceneContext - Depot")
+{
+	Engine engine;
+	SceneManager* sm = engine.getSceneManager();
+	SceneContext* scene_context = sm->createSceneContext();
+	
+	Site depot_site(Coordinate(5), Coordinate(5));
+	const Location& location = *scene_context->createLocation(depot_site);
+	
+	Depot* depot = scene_context->createDepot(location);
+
+	REQUIRE(depot != nullptr);
+	REQUIRE(depot->getLocation() == location);
+	REQUIRE(std::string(depot->getName()) == "");
+	
+	depot->setName("Depot1");
+	
+	REQUIRE(std::string(depot->getName()) == "Depot1");
+}
+
+TEST_CASE("SceneManager - SceneContext - Performer")
+{
+	Engine engine;
+	SceneManager* sm = engine.getSceneManager();
+	SceneContext* scene_context = sm->createSceneContext();
+	
+	Site depot_site(Coordinate(5), Coordinate(5));
+	const Location& location = *scene_context->createLocation(depot_site);
+	
+	Depot* depot = scene_context->createDepot(location);
+	
+	Performer* performer = scene_context->createPerformer();
+	
+	REQUIRE(performer != nullptr);
+	REQUIRE(std::string(performer->getName()) == "");
+	REQUIRE(performer->getDurationUnitCost() == Cost(0));
+	REQUIRE(performer->getActivationCost() == Cost(0));
+	REQUIRE(performer->getSkills().empty());
+	REQUIRE(performer->getDepot() == nullptr);
+	
+	const Attribute* skill = scene_context->createAttribute("skill");
+	
+	performer->setName("Performer1");
+	performer->setDurationUnitCost(Cost(1));
+	performer->setActivationCost(Cost(2));
+	performer->setSkills({skill});
+	performer->setDepot(depot);
+	
+	REQUIRE(std::string(performer->getName()) == "Performer1");
+	REQUIRE(performer->getDurationUnitCost() == Cost(1));
+	REQUIRE(performer->getActivationCost() == Cost(2));
+	REQUIRE(performer->getSkills().size() == 1);
+	REQUIRE(*performer->getSkills().begin() == skill);
+	REQUIRE(performer->getDepot() == depot);
+	
+	const Performer* cperformer = performer;
+	
+	REQUIRE(&cperformer->constraints() == &performer->constraints());
+}
+
+TEST_CASE("SceneManager - SceneContext - Performer - Constraints")
+{
+	Engine engine;
+	SceneManager* sm = engine.getSceneManager();
+	SceneContext* scene_context = sm->createSceneContext();
+	
+	Performer* performer = scene_context->createPerformer();
+	
+	REQUIRE_FALSE(performer->constraints().availabilityWindows().isSet());
+	
+	performer->constraints().availabilityWindows().set({make_time_window(0, 15)});
+	
+	REQUIRE(performer->constraints().availabilityWindows().get().size() == 1);
+	REQUIRE(performer->constraints().availabilityWindows().get()[0] == make_time_window(0, 15));
+}
+
+TEST_CASE("SceneManager - SceneContext - Vehicle")
+{
+	Engine engine;
+	SceneManager* sm = engine.getSceneManager();
+	SceneContext* scene_context = sm->createSceneContext();
+	
+	Site depot_site(Coordinate(5), Coordinate(5));
+	const Location& location = *scene_context->createLocation(depot_site);
+	
+	Depot* depot = scene_context->createDepot(location);
+	
+	Vehicle* vehicle = scene_context->createVehicle();
+	
+	REQUIRE(vehicle != nullptr);
+	REQUIRE(std::string(vehicle->getName()) == "");
+	REQUIRE(vehicle->getDurationUnitCost() == Cost(0));
+	REQUIRE(vehicle->getDistanceUnitCost() == Cost(0));
+	REQUIRE(vehicle->getActivationCost() == Cost(0));
+	REQUIRE(vehicle->getAttributes().empty());
+	REQUIRE(vehicle->getDepot() == nullptr);
+	REQUIRE(vehicle->getRoutingProfile() == RoutingProfile());
+	
+	const Attribute* truck = scene_context->createAttribute("truck");
+	
+	vehicle->setName("Vehicle1");
+	vehicle->setDurationUnitCost(Cost(1));
+	vehicle->setDistanceUnitCost(Cost(2));
+	vehicle->setActivationCost(Cost(3));
+	vehicle->setAttributes({truck});
+	vehicle->setDepot(depot);
+	
+	RoutingProfile rp;
+	rp.setAverageSpeed(Speed(Distance(5)));
+	vehicle->setRoutingProfile(rp);
+	
+	REQUIRE(std::string(vehicle->getName()) == "Vehicle1");
+	REQUIRE(vehicle->getDurationUnitCost() == Cost(1));
+	REQUIRE(vehicle->getDistanceUnitCost() == Cost(2));
+	REQUIRE(vehicle->getActivationCost() == Cost(3));
+	REQUIRE(vehicle->getAttributes().size() == 1);
+	REQUIRE(*vehicle->getAttributes().begin() == truck);
+	REQUIRE(vehicle->getDepot() == depot);
+	REQUIRE(vehicle->getRoutingProfile() == rp);
+	
+	const Vehicle* cvehicle = vehicle;
+	
+	REQUIRE(&cvehicle->constraints() == &vehicle->constraints());
+}
+
+TEST_CASE("SceneManager - SceneContext - Vehicle - Constraints")
+{
+	Engine engine;
+	SceneManager* sm = engine.getSceneManager();
+	SceneContext* scene_context = sm->createSceneContext();
+	
+	Vehicle* vehicle = scene_context->createVehicle();
+	
+	REQUIRE_FALSE(vehicle->constraints().capacity().isSet());
+	REQUIRE_FALSE(vehicle->constraints().availabilityWindows().isSet());
+	
+	vehicle->constraints().capacity().set(Capacity(5));
+	vehicle->constraints().availabilityWindows().set({make_time_window(0, 15)});
+	
+	REQUIRE(vehicle->constraints().capacity().get() == Capacity(5));
+	REQUIRE(vehicle->constraints().availabilityWindows().get().size() == 1);
+	REQUIRE(vehicle->constraints().availabilityWindows().get()[0] == make_time_window(0, 15));
+}

@@ -2,8 +2,10 @@
 
 namespace Scheduler
 {
-	Vehicle::Vehicle(size_t id): id(id) {
-
+	Vehicle::Vehicle(size_t id): 
+	id(id),
+	depot(nullptr)
+	{
 	}
 
 	size_t Vehicle::getId() const{
@@ -64,6 +66,14 @@ namespace Scheduler
 	VehicleConstraints & Vehicle::constraints()
 	{
 		return vehicle_constraints;
+	}
+	const Depot* Vehicle::getDepot() const
+	{
+		return depot;
+	}
+	void Vehicle::setDepot(const Depot* depot)
+	{
+		this->depot = depot;
 	}
 }
 

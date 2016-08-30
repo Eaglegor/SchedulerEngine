@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <string>
 #include <SceneManager_export.h>
 
 namespace Scheduler
@@ -15,8 +16,12 @@ namespace Scheduler
 		std::size_t getId() const;
 		const Location& getLocation() const;
 		
+		void setName(const char* name);
+		const char* getName() const;
+		
 	private:
 		std::size_t id;
+		std::string name;
 		const Location& location;
 	};
 }
