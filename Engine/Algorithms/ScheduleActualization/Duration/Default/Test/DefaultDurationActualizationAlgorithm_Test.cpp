@@ -42,7 +42,7 @@ TEST_CASE("ScheduleActualizers - StopDurationActualizationAlgorithm", "[integrat
 
 	Scene* s = sm->createScene(*scene_context);
 	
-    Schedule* schedule = s->createSchedule(performer);
+    Schedule* schedule = s->createSchedule(*performer);
 
 	ScheduleActualizationModel* actualization_model = sm->createScheduleActualizationModel();
 	DefaultRouteActualizationAlgorithm* route_actualization_algorithm = sm->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(&routing_service);

@@ -35,7 +35,7 @@ namespace Scheduler
 		const ImmutableVector<Schedule*>& getSchedules() const;
         ImmutableVector<Schedule*>& getSchedules();
 
-        Schedule* createSchedule(const Performer *performer);
+        Schedule* createSchedule(const Performer &performer);
 		
 		const SceneContext& getContext() const;
 

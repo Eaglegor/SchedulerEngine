@@ -41,8 +41,8 @@ TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][functional][scene
 
 	Scene* scene = sm->createScene(*scene_context);
 	
-	Schedule* sch1 = scene->createSchedule(p1);
-	Schedule* sch2 = scene->createSchedule(p2);
+	Schedule* sch1 = scene->createSchedule(*p1);
+	Schedule* sch2 = scene->createSchedule(*p2);
 	
 	sch1->setRunVehicleBinder(binder);
 	sch2->setRunVehicleBinder(binder);

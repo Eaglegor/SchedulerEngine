@@ -33,7 +33,7 @@ namespace Scheduler
 		using RunsList = ImmutableVector<Run*>;
 		using StopsList = LinkedPointersList<Stop*>;
 		
-        Schedule(size_t id, const Performer *performer);
+        Schedule(size_t id, const Performer &performer);
 		~Schedule();
 
         size_t getId() const;
@@ -69,18 +69,19 @@ namespace Scheduler
 		const ScheduleConstraints& constraints() const;
 		ScheduleConstraints& constraints();
 
+		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
+		RunVehicleBinder* getRunVehicleBinder() const;
+		
 		// == framework internal ====================================
 		void setScene(Scene* scene);
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 
-		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
-
 	private:
         size_t id;
         std::string name;
 
-        const Performer* performer;
+        const Performer& performer;
 
 		std::vector<Run*> runs;
 		StopsList stops;

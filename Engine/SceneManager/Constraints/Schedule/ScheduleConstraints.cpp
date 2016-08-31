@@ -58,22 +58,22 @@ namespace Scheduler
 		return run_working_time_limit_constraint;
 	}
 
-	const ScheduleConstraints::ScheduleShiftStartSiteConstraint& ScheduleConstraints::shiftStartSite() const
+	const ScheduleConstraints::ScheduleShiftStartLocationConstraint& ScheduleConstraints::shiftStartLocation() const
 	{
 		return schedule_shift_start_location_constraint;
 	}
 
-	ScheduleConstraints::ScheduleShiftStartSiteConstraint& ScheduleConstraints::shiftStartSite()
+	ScheduleConstraints::ScheduleShiftStartLocationConstraint& ScheduleConstraints::shiftStartLocation()
 	{
 		return schedule_shift_start_location_constraint;
 	}
 
-	const ScheduleConstraints::ScheduleShiftEndSiteConstraint& ScheduleConstraints::shiftEndSite() const
+	const ScheduleConstraints::ScheduleShiftEndLocationConstraint& ScheduleConstraints::shiftEndLocation() const
 	{
 		return schedule_shift_end_location_constraint;
 	}
 
-	ScheduleConstraints::ScheduleShiftEndSiteConstraint& ScheduleConstraints::shiftEndSite()
+	ScheduleConstraints::ScheduleShiftEndLocationConstraint& ScheduleConstraints::shiftEndLocation()
 	{
 		return schedule_shift_end_location_constraint;
 	}

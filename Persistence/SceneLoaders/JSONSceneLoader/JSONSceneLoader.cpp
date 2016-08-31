@@ -263,7 +263,7 @@ namespace Scheduler
 		for(const ScheduleDesc &schedule_desc : scene_desc.schedules)
 		{
 			Performer* performer = performers.at(schedule_desc.performer);
-			Schedule* schedule = scene->createSchedule(performer);
+			Schedule* schedule = scene->createSchedule(*performer);
 			//if (schedule_desc.shift.start_location) schedule->setShiftStartSite(locations.at(schedule_desc.shift.start_location.get()));
 			//if (schedule_desc.shift.end_location) schedule->setShiftEndSite(locations.at(schedule_desc.shift.end_location.get()));
 

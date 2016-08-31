@@ -58,7 +58,7 @@ TEST_CASE("ScheduleActualizers - StopArrivalTimeActualizationAlgorithm", "[integ
 	performer->setDepot(scene_context->createDepot(start_location));
     Vehicle* vehicle = scene_context->createVehicle();
 
-    Schedule* schedule = s->createSchedule(performer);
+    Schedule* schedule = s->createSchedule(*performer);
 
     Run* r = *schedule->createRun(schedule->getRuns().end(), start_location, end_location);
     r->setVehicle(vehicle);

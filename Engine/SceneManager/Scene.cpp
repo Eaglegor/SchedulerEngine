@@ -30,7 +30,7 @@ namespace Scheduler {
 		return schedules;
 	}
 
-    Schedule *Scene::createSchedule(const Performer* performer) {
+    Schedule *Scene::createSchedule(const Performer& performer) {
         Schedule* schedule = schedules_factory.createObject(performer);
 		schedule->setScene(this);
 		schedule->setRunsFactory(&runs_factory);

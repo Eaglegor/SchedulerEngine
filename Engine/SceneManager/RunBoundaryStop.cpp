@@ -6,6 +6,7 @@
 #include <Engine/Utils/Collections/Algorithms.h>
 #include "StopVisitor.h"
 #include "ConstStopVisitor.h"
+#include <Engine/SceneManager/Location.h>
 
 namespace Scheduler
 {

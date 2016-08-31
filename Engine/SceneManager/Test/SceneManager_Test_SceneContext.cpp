@@ -331,6 +331,7 @@ TEST_CASE("SceneManager - SceneContext - Performer - Constraints")
 	
 	performer->constraints().availabilityWindows().set({make_time_window(0, 15)});
 	
+	REQUIRE(performer->constraints().availabilityWindows().isSet());
 	REQUIRE(performer->constraints().availabilityWindows().get().size() == 1);
 	REQUIRE(performer->constraints().availabilityWindows().get()[0] == make_time_window(0, 15));
 }
@@ -398,7 +399,9 @@ TEST_CASE("SceneManager - SceneContext - Vehicle - Constraints")
 	vehicle->constraints().capacity().set(Capacity(5));
 	vehicle->constraints().availabilityWindows().set({make_time_window(0, 15)});
 	
+	REQUIRE(vehicle->constraints().capacity().isSet());
 	REQUIRE(vehicle->constraints().capacity().get() == Capacity(5));
+	REQUIRE(vehicle->constraints().availabilityWindows().isSet());
 	REQUIRE(vehicle->constraints().availabilityWindows().get().size() == 1);
 	REQUIRE(vehicle->constraints().availabilityWindows().get()[0] == make_time_window(0, 15));
 }

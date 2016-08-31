@@ -11,7 +11,7 @@
 
 namespace Scheduler {
 
-    Schedule::Schedule(size_t id, const Performer* performer) :
+    Schedule::Schedule(size_t id, const Performer& performer) :
             id(id),
             performer(performer),
 			scene(nullptr),
@@ -32,7 +32,7 @@ namespace Scheduler {
     }
 
     const Performer* Schedule::getPerformer() const {
-        return performer;
+        return &performer;
     }
 
     void Schedule::setName(const char *name) {
@@ -169,6 +169,11 @@ namespace Scheduler {
 		}
 		
 		arrival_time_actualizer.setDirty(true);
+	}
+	
+	RunVehicleBinder* Schedule::getRunVehicleBinder() const
+	{
+		return run_vehicle_binder;
 	}
 	
     ScheduleValidationModel* Schedule::getValidationModel() const{return schedule_validation_model;}

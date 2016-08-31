@@ -100,7 +100,7 @@ namespace Scheduler
 		for(const Performer* performer : scene->getContext().getPerformers())
 		{
 			std::string name = "Schedule of " + std::string(performer->getName());
-			Schedule* schedule = scene->createSchedule(performer);
+			Schedule* schedule = scene->createSchedule(*performer);
 			schedule->setName(name.c_str());
 
 			schedule->setRunVehicleBinder(vehicle_binder);

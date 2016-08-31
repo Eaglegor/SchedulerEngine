@@ -12,7 +12,7 @@ namespace Scheduler {
 		{
 			for(Schedule* schedule : from->getSchedules())
 			{
-				Schedule* new_schedule = to->createSchedule(schedule->getPerformer());
+				Schedule* new_schedule = to->createSchedule(*schedule->getPerformer());
 				cloneScheduleState(schedule, new_schedule);
 			}
 		}

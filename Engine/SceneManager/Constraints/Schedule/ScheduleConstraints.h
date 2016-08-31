@@ -7,12 +7,38 @@
 #include <SceneManager_export.h>
 #include <Engine/Concepts/Site.h>
 #include "../ConstraintHolder.h"
+#include <Engine/SceneManager/Location.h>
 
 namespace Scheduler
 {
 	class SCENEMANAGER_EXPORT ScheduleConstraints
 	{
 		public:
+			class LocationConstraint
+			{
+			public:
+				LocationConstraint(const Location& location):location(location){};
+				LocationConstraint(const LocationConstraint &rhs):location(rhs.location){}
+				
+				operator const Location&() const
+				{
+					return location;
+				}
+				
+				const Location& get() const
+				{
+					return location;
+				}
+				
+				bool operator==(const LocationConstraint& rhs) const
+				{
+					return location == rhs.location;
+				}
+				
+			private:
+				const Location& location;
+			};
+			
 			using ScheduleDistanceLimitConstraint = ConstraintHolder<Distance>;
 			using RunDistanceLimitConstraint = ConstraintHolder<Distance>;
 
@@ -22,8 +48,8 @@ namespace Scheduler
 			using ScheduleWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
 			using RunWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
 
-			using ScheduleShiftStartSiteConstraint = ConstraintHolder<Site>;
-			using ScheduleShiftEndSiteConstraint = ConstraintHolder<Site>;
+			using ScheduleShiftStartLocationConstraint = ConstraintHolder<LocationConstraint>;
+			using ScheduleShiftEndLocationConstraint = ConstraintHolder<LocationConstraint>;
 
 			const ScheduleDistanceLimitConstraint& scheduleDistanceLimit() const;
 			ScheduleDistanceLimitConstraint& scheduleDistanceLimit();
@@ -43,11 +69,11 @@ namespace Scheduler
 			const RunWorkingTimeLimitConstraint& runWorkingTimeLimit() const;
 			RunWorkingTimeLimitConstraint& runWorkingTimeLimit();
 
-			const ScheduleShiftStartSiteConstraint& shiftStartSite() const;
-			ScheduleShiftStartSiteConstraint& shiftStartSite();
+			const ScheduleShiftStartLocationConstraint& shiftStartLocation() const;
+			ScheduleShiftStartLocationConstraint& shiftStartLocation();
 
-			const ScheduleShiftEndSiteConstraint& shiftEndSite() const;
-			ScheduleShiftEndSiteConstraint& shiftEndSite();
+			const ScheduleShiftEndLocationConstraint& shiftEndLocation() const;
+			ScheduleShiftEndLocationConstraint& shiftEndLocation();
 
 		private:
 			ScheduleDistanceLimitConstraint schedule_distance_limit_constraint;
@@ -59,7 +85,7 @@ namespace Scheduler
 			ScheduleWorkingTimeLimitConstraint schedule_working_time_limit_constraint;
 			RunWorkingTimeLimitConstraint run_working_time_limit_constraint;
 
-			ScheduleShiftStartSiteConstraint schedule_shift_start_location_constraint;
-			ScheduleShiftEndSiteConstraint schedule_shift_end_location_constraint;
+			ScheduleShiftStartLocationConstraint schedule_shift_start_location_constraint;
+			ScheduleShiftEndLocationConstraint schedule_shift_end_location_constraint;
 	};
 }

@@ -64,7 +64,7 @@ namespace Scheduler
 		
 		Scene* scene = scene_manager->createScene(*scene_context);
 		
-		Schedule* schedule = scene->createSchedule(performer);
+		Schedule* schedule = scene->createSchedule(*performer);
 
 		ScheduleActualizationModel* actualization_model = scene_manager->createScheduleActualizationModel();
 		DefaultRouteActualizationAlgorithm* route_actualization_algorithm = scene_manager->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(routing_service);

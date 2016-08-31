@@ -91,6 +91,7 @@ if(CPP_SCHEDULER_TESTS)
 	add_executable(SceneManager_Test 
 
 		Test/SceneManager_Test_SceneContext.cpp
+		Test/SceneManager_Test_Scene.cpp
 
 	)
 		

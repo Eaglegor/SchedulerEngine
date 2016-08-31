@@ -53,7 +53,7 @@ TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][functional][vrp_so
 	Performer* performer = scene_context->createPerformer();
 
 	Scene* scene = sm->createScene(*scene_context);
-	Schedule* schedule = scene->createSchedule(performer);
+	Schedule* schedule = scene->createSchedule(*performer);
 	
 	StrategiesManager* strategies_manager = engine.getStrategiesManager();
 

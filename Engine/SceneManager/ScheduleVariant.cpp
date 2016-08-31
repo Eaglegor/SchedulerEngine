@@ -16,7 +16,7 @@ namespace Scheduler
 	{
 		SceneManager* scene_manager = original_schedule->getScene()->getSceneManager();
 		Scene* scene = scene_manager->createScene(original_schedule->getScene()->getContext());
-		new_schedule = scene->createSchedule(original_schedule->getPerformer());
+		new_schedule = scene->createSchedule(*original_schedule->getPerformer());
 		SceneCloner::cloneScheduleState(original_schedule, new_schedule);
 	}
 	
