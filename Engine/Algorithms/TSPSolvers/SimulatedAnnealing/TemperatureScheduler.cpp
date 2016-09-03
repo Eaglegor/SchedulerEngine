@@ -13,7 +13,7 @@ std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* run, ScheduleC
 {
     std::vector<Cost> costs;
     Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
-    SolutionGenerator solution_generator(run);
+    SolutionGeneratorClassic solution_generator(run);
     solution_generator.enableMutation(SolutionGenerator::MutationType::BlockInsert);
     solution_generator.enableMutation(SolutionGenerator::MutationType::BlockReverse);
     solution_generator.enableMutation(SolutionGenerator::MutationType::VertexInsert);
