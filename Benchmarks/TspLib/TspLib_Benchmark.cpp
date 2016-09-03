@@ -66,12 +66,6 @@ std::vector<std::string> light_datasets
 	"Light/ulysses22"
 };
 
-/*std::vector<std::string> light_datasets
-{
-    "Light/ulysses16"
-};*/
-
-
 std::vector<std::string> medium_datasets
 {
     "Medium/a280",
