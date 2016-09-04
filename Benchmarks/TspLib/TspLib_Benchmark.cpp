@@ -413,7 +413,8 @@ public:
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
         sa_solver->setMarkovChainLengthScale(1.f);
-        sa_solver->setPopulationSize(8);
+        sa_solver->setPopulationScale(2);
+        sa_solver->setThreadsNumber(4);
         sa_solver->setMutations({
                                     SolutionGenerator::MutationType::VertexSwap,
                                     SolutionGenerator::MutationType::BlockReverse,
@@ -426,7 +427,7 @@ public:
 
     virtual const char* getAlgorithmName() override
     {
-        return "MASA";
+        return "MTASA";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
