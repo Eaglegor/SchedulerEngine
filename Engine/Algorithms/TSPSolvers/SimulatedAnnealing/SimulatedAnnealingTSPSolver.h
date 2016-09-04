@@ -43,11 +43,15 @@ namespace Scheduler
     public:
         MultiAgentSimulatedAnnealingTSPSolver();
         virtual void optimize(Run* run) const override;
-        void setPopulationSize(size_t populationSize);
+
+        void setThreadsNumber(size_t threadsNumber);
+        void setPopulationScale(size_t populationScale);
 
         static constexpr const char* staticGetName() { return "Multi Agent Simulated Annealing"; }
         virtual const char* getName() const override { return staticGetName(); };
     private:
-        size_t population_size;
+
+        size_t population_scale;
+        size_t threads_number;
     };
 }
