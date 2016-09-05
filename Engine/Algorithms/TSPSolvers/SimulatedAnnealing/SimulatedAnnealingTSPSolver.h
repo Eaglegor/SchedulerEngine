@@ -27,13 +27,31 @@ namespace Scheduler
         static constexpr const char* staticGetName() { return "Simulated Annealing"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
-	private:
+    protected:
         bool acceptance(Cost delta, float random) const;
         size_t markovChainLength (size_t stopsCount) const;
 
 		ScheduleCostFunction* schedule_cost_function;
         TemperatureScheduler* temperature_scheduler;
         float markov_chain_length_scale;
+
         std::set<SolutionGenerator::MutationType> allowed_mutations;
 	};
+
+    class SIMULATEDANNEALINGTSPSOLVER_EXPORT MultiAgentSimulatedAnnealingTSPSolver : public SimulatedAnnealingTSPSolver
+    {
+    public:
+        MultiAgentSimulatedAnnealingTSPSolver();
+        virtual void optimize(Run* run) const override;
+
+        void setThreadsNumber(size_t threadsNumber);
+        void setPopulationScale(size_t populationScale);
+
+        static constexpr const char* staticGetName() { return "Multi Agent Simulated Annealing"; }
+        virtual const char* getName() const override { return staticGetName(); };
+    private:
+
+        size_t population_scale;
+        size_t threads_number;
+    };
 }

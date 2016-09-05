@@ -228,7 +228,7 @@ protected:
 		result.dataset_name = datasets[id];
 
 		long long nanoseconds = 0;
-        const size_t number_of_iterations = 5;
+        const size_t number_of_iterations = 10;
 
         for (size_t i = 0; i < number_of_iterations; ++i)
 		{
@@ -398,10 +398,10 @@ public:
     }
 };
 
-class SATspLibInstance : public TspLibTestInstance
+class MASATspLibInstance : public TspLibTestInstance
 {
 public:
-    SATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+    MASATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
         temperature_scheduler.reset(new ListTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000));
@@ -409,20 +409,25 @@ public:
 
     virtual TSPSolver* createTSPSolver(Strategy* strategy) override
     {
-        SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
+        MultiAgentSimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<MultiAgentSimulatedAnnealingTSPSolver>();
         sa_solver->setScheduleCostFunction(cost_function);
         sa_solver->setTemperatureScheduler(temperature_scheduler.get());
         sa_solver->setMarkovChainLengthScale(1.f);
-        sa_solver->setMutations({SolutionGenerator::MutationType::BlockInsert,
-                                 SolutionGenerator::MutationType::BlockReverse,
-                                 SolutionGenerator::MutationType::VertexInsert});
+        sa_solver->setPopulationScale(2);
+        sa_solver->setThreadsNumber(4);
+        sa_solver->setMutations({
+                                    SolutionGenerator::MutationType::VertexSwap,
+                                    SolutionGenerator::MutationType::BlockReverse,
+                                    SolutionGenerator::MutationType::VertexInsert,
+                                    SolutionGenerator::MutationType::BlockInsert
+                                });
 
         return sa_solver;
     }
 
     virtual const char* getAlgorithmName() override
     {
-        return "SA";
+        return "MTASA";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
@@ -653,12 +658,7 @@ int main(int argc, char **argv)
         }
 
         {
-            SATspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
-            MTSATspLibInstance test(dataset, *publisher);
+            MASATspLibInstance test(dataset, *publisher);
             test.run();
         }
 		
@@ -670,7 +670,7 @@ int main(int argc, char **argv)
         {
 			DoubleSuIntTspLibInstance test(dataset, *publisher);
 			test.run();
-		}
+        }
     }
 	publisher->publish();
 }
