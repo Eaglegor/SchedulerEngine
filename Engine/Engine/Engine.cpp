@@ -4,8 +4,8 @@ namespace Scheduler
 {
 	Engine::Engine() :
 		memory_manager(new MemoryManager()),
-		scene_manager(new SceneManager(memory_manager.get())),
-		strategies_manager(new StrategiesManager(memory_manager.get()))
+		scene_manager(new SceneManager()),
+		strategies_manager(new StrategiesManager())
 	{
 	}
 

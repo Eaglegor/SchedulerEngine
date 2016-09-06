@@ -6,7 +6,11 @@
 #include <vector>
 #include <algorithm>
 #include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Schedule.h>
+#include <Engine/SceneManager/Performer.h>
+#include <Engine/SceneManager/Depot.h>
+#include <Engine/SceneManager/Location.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Order.h>
 
@@ -23,7 +27,7 @@ namespace Scheduler
 	{
         struct ByAngle
         {
-            ByAngle (const Location& center) : center_location(center)
+            ByAngle (const Site& center) : center_location(center)
             {}
             bool operator () (Operation* lhs, Operation* rhs) const
             {
@@ -31,9 +35,9 @@ namespace Scheduler
             }
             float angle (Operation* operation) const
             {
-                return angle(operation->getLocation());
+                return angle(operation->getLocation().getSite());
             }
-            float angle (const Location& location) const
+            float angle (const Site& location) const
             {
                 const float x = (location.getLatitude() - center_location.getLatitude()).getValue();
                 const float y = (location.getLongitude() - center_location.getLongitude()).getValue();
@@ -41,18 +45,18 @@ namespace Scheduler
                 const float angle = std::acos(y / hypot);
                 return x > 0.f ? angle : 2* M_PI - angle;
             }
-            float degreeAngle(const Location& location) const
+            float degreeAngle(const Site& location) const
             {
                 return angle(location) * 180.f / M_PI;
             }
 
-            Location center_location;
+            Site center_location;
         };
 
         assert(scene);
 
         auto& schedules = scene->getSchedules();
-        auto& orders = scene->getOrders();
+        auto& orders = scene->getContext().getOrders();
         std::vector<Operation*> operations;
         for (auto order : orders) {
             auto& order_operations = order->getWorkOperations();
@@ -66,8 +70,8 @@ namespace Scheduler
         }
 
         for (auto schedule : schedules) {
-            Location depot_location = schedule->getDepotLocation();
-            ByAngle by_angle(depot_location);
+            const Location &depot_location = schedule->getPerformer()->getDepot()->getLocation();
+            ByAngle by_angle(depot_location.getSite());
             std::sort(operations.begin(), operations.end(), by_angle);
             Run* run = *schedule->createRun(schedule->getRuns().end(), depot_location, depot_location);
             while (!operations.empty() && schedule->isValid()) {

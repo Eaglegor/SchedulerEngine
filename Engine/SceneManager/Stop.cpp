@@ -1,5 +1,6 @@
 #include "Stop.h"
 #include "Run.h"
+#include "Location.h"
 #include <Engine/Utils/Collections/Algorithms.h>
 #include "ScheduleActualizationModel.h"
 #include "RouteActualizer.h"

@@ -3,6 +3,7 @@
 #include <Engine/Engine/Engine.h>
 #include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
 #include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/SceneManager.h>
@@ -21,25 +22,30 @@ TEST_CASE("SceneManager - RunVehicleSelectors", "[integration][functional][scene
 
     SceneManager* sm = engine.getSceneManager();
 
-    Scene* scene = sm->createScene();
+    SceneContext* scene_context = sm->createSceneContext();
 
-    Vehicle* v1 = scene->createVehicle();
-    Vehicle* v2 = scene->createVehicle();
+    Vehicle* v1 = scene_context->createVehicle();
+    Vehicle* v2 = scene_context->createVehicle();
 
-    Performer* p1 = scene->createPerformer();
-    Performer* p2 = scene->createPerformer();
+    Performer* p1 = scene_context->createPerformer();
+    Performer* p2 = scene_context->createPerformer();
 
-    Location l = make_location(0, 0);
+    const Location& l = *scene_context->createLocation(make_location(0, 0));
 
-	PerformerAssignedVehicleBinder* binder = scene->createRunVehicleBinder<PerformerAssignedVehicleBinder>();
+	PerformerAssignedVehicleBinder* binder = sm->createRunVehicleBinder<PerformerAssignedVehicleBinder>();
 
 	REQUIRE(binder);
 
 	binder->assign(p1, v2);
 	binder->assign(p2, v1);
 
-	Schedule* sch1 = scene->createSchedule(p1);
-	Schedule* sch2 = scene->createSchedule(p2);
+	Scene* scene = sm->createScene(*scene_context);
+	
+	Schedule* sch1 = scene->createSchedule(*p1);
+	Schedule* sch2 = scene->createSchedule(*p2);
+	
+	sch1->setRunVehicleBinder(binder);
+	sch2->setRunVehicleBinder(binder);
 
 	Run* r11 = *sch1->createRun(sch1->getRuns().end(), l, l);
 	Run* r12 = *sch1->createRun(sch1->getRuns().end(), l, l);

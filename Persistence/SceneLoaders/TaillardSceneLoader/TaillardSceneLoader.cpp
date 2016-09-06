@@ -5,6 +5,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <Engine/SceneManager/SceneManager.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/Vehicle.h>
@@ -31,23 +32,23 @@ namespace Scheduler
 
 	Scene* TaillardSceneLoader::loadScene(std::istream& stream)
 	{
-		Scene* scene = scene_manager->createScene();
+		SceneContext* scene_context = scene_manager->createSceneContext();
 
-		size_t customers_number;
+		std::size_t customers_number;
 		float best_solution;
 		float vehicle_capacity;
 		float xdepot, ydepot;
 
-		size_t customer_number;
+		std::size_t customer_number;
 		float x, y, demand;
 
 		stream >> customers_number >> best_solution >> vehicle_capacity >> xdepot >> ydepot;
 
-		Location depot_location;
+		Site depot_location;
 		depot_location.setLatitude(Coordinate::createFromFloat(xdepot));
 		depot_location.setLongitude(Coordinate::createFromFloat(ydepot));
 
-		PerformerAssignedVehicleBinder* vehicle_binder = scene->createRunVehicleBinder<PerformerAssignedVehicleBinder>();
+		PerformerAssignedVehicleBinder* vehicle_binder = scene_manager->createRunVehicleBinder<PerformerAssignedVehicleBinder>();
 
 		ScheduleActualizationModel* actualization_model = scene_manager->createScheduleActualizationModel();
 		DefaultRouteActualizationAlgorithm* route_actualization_algorithm = scene_manager->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(rs);
@@ -59,48 +60,54 @@ namespace Scheduler
 		validation_model->setScheduleValidationAlgorithm(valid_runs_algorithm);
 		validation_model->setRunValidationAlgorithm(overload_check_algorithm);
 
+		Depot* depot = scene_context->createDepot(*scene_context->createLocation(depot_location));
+		
 		for (size_t i = 0; i < customers_number; ++i)
 		{
-			Vehicle* vehicle = scene->createVehicle();
+			Vehicle* vehicle = scene_context->createVehicle();
 			{
 				std::string name = "Vehicle" + std::to_string(i);
 				vehicle->setName(name.c_str());
 				vehicle->constraints().capacity().set(Capacity(vehicle_capacity, 0, 0, 0));
 			}
-			Performer* performer = scene->createPerformer();
+			Performer* performer = scene_context->createPerformer();
 			{
 				std::string name = "Driver" + std::to_string(i);
 				performer->setName(name.c_str());
+				performer->setDepot(depot);
 			}
 			vehicle_binder->assign(performer, vehicle);
 			
-			Schedule* schedule = scene->createSchedule(performer);
-			{
-				std::string name = "Schedule of Driver" + std::to_string(i);
-				schedule->setName(name.c_str());
-				schedule->setDepotLocation(depot_location);
-
-				schedule->setActualizationModel(actualization_model);
-				schedule->setValidationModel(validation_model);
-			}
-
-			Order* order = scene->createOrder();
+			Order* order = scene_context->createOrder();
 			{
 				std::string name = "Order" + std::to_string(i);
 				order->setName(name.c_str());
 				
 				stream >> customer_number >> x >> y >> demand;
 
-				Operation* work_operation = order->createWorkOperation();
+				Location* location = scene_context->createLocation(Site(Coordinate::createFromFloat(x), Coordinate::createFromFloat(y)));
+				Operation* work_operation = order->createWorkOperation(*location);
 				{
 					std::string op_name = name + ".Work";
 					work_operation->setName(op_name.c_str());
 					work_operation->constraints().demand().set(Capacity(demand, 0, 0, 0));
-					work_operation->setLocation(Location(Coordinate::createFromFloat(x), Coordinate::createFromFloat(y)));
 				}
 			}
 		}
 
+		Scene* scene = scene_manager->createScene(*scene_context);
+		
+		for(const Performer* performer : scene->getContext().getPerformers())
+		{
+			std::string name = "Schedule of " + std::string(performer->getName());
+			Schedule* schedule = scene->createSchedule(*performer);
+			schedule->setName(name.c_str());
+
+			schedule->setRunVehicleBinder(vehicle_binder);
+			schedule->setActualizationModel(actualization_model);
+			schedule->setValidationModel(validation_model);
+		}
+		
 		return scene;
 	}
 

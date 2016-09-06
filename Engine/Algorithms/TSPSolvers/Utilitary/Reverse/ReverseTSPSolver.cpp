@@ -11,7 +11,7 @@ namespace Scheduler
 	
 	const char* ReverseTSPSolver::staticGetName()
 	{
-		return "ReverseTSPSolver";
+		return "Reverse";
 	}
 
 	void ReverseTSPSolver::optimize(Schedule* schedule) const

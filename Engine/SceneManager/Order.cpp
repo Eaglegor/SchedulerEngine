@@ -63,36 +63,36 @@ namespace Scheduler {
         this->operations_factory = factory;
     }
 
-    Operation *Order::createStartOperation() {
+    Operation *Order::createStartOperation(const Location& location) {
         assert(operations_factory);
         if(!operations_factory) return nullptr;
 
         if(this->start_operation) operations_factory->destroyObject(this->start_operation);
 
-		Operation* operation = operations_factory->createObject();
+		Operation* operation = operations_factory->createObject(location);
 		operation->setOrder(this);
         this->start_operation = operation;
         return operation;
     }
 
-    Operation *Order::createWorkOperation() {
+    Operation *Order::createWorkOperation(const Location& location) {
         assert(operations_factory);
         if(!operations_factory) return nullptr;
 
-        Operation* operation = operations_factory->createObject();
+        Operation* operation = operations_factory->createObject(location);
 		operation->setOrder(this);
         this->work_operations.push_back(operation);
 
         return operation;
     }
 
-    Operation *Order::createEndOperation() {
+    Operation *Order::createEndOperation(const Location& location) {
         assert(operations_factory);
         if(!operations_factory) return nullptr;
 
         if(this->end_operation) operations_factory->destroyObject(this->end_operation);
 
-		Operation* operation = operations_factory->createObject();
+		Operation* operation = operations_factory->createObject(location);
 		operation->setOrder(this);
         this->end_operation = operation;
         return operation;

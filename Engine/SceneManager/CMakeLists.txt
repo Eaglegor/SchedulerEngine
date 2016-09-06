@@ -15,16 +15,19 @@ add_library(SceneManager SHARED
 	Run.h
 	Run.cpp
 	
-	Scene.h
-	Scene.cpp
+	Scene.h Scene.cpp
+	SceneContext.h SceneContext.cpp
 	
 	SceneManager.h
 	SceneManager.cpp
 	
 	Schedule.h
 	Schedule.cpp
+	
+	Depot.h Depot.cpp
+	Location.h Location.cpp
 
-	TemporarySchedule.h TemporarySchedule.cpp
+	ScheduleVariant.h ScheduleVariant.cpp
 	
     Actualizable.h
     ScheduleActualizationModel.h ScheduleActualizationModel.cpp
@@ -86,14 +89,14 @@ generate_export_header(SceneManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}
 
 if(CPP_SCHEDULER_TESTS)
 	add_executable(SceneManager_Test 
-	
-		Test/SceneManager_Test.cpp
-		Test/SceneManager_Test_RunVehicleSelectors.cpp
-		Test/SceneManager_Test_ScheduleActualizers.cpp
+
+		Test/SceneManager_Test_SceneContext.cpp
+		Test/SceneManager_Test_Scene.cpp
+		Test/SceneManager_Test_ScheduleVariant.cpp
 
 	)
 		
-	set_property(SOURCE Test/SceneManager_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")		
+	set_property(SOURCE Test/SceneManager_Test_SceneContext.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")		
 		
 	add_test(NAME SceneManager_Test COMMAND $<TARGET_FILE:SceneManager_Test>)
 	target_link_libraries(SceneManager_Test SceneManager CrowFlyRoutingService)

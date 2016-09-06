@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 
 namespace Scheduler
 {
-	static Location make_location(float a, float b)
+	static Site make_location(float a, float b)
 	{
-		return Location(Coordinate::createFromFloat(a), Coordinate::createFromFloat(b));
+		return Site(Coordinate::createFromFloat(a), Coordinate::createFromFloat(b));
 	}
 }

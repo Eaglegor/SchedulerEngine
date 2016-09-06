@@ -41,20 +41,28 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SceneEditor editor;
 
+	REQUIRE(editor.getCurrentVersion() == 0);
+
 	auto run_iter = scene->getSchedules()[0]->getRuns().begin();
 
 	SECTION("Direct action")
 	{
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		checkOrder(run, {1, 4, 3, 2, 5});
 
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
 
+		REQUIRE(editor.getCurrentVersion() == 3);
+		
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 	}
 
@@ -62,18 +70,26 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 	{
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
 
+		REQUIRE(editor.getCurrentVersion() == 3);
+		
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 
 		editor.rollbackAll();
 
+		REQUIRE(editor.getCurrentVersion() == 0);
+		
 		checkOrder(run, { 1, 2, 3, 4, 5 });
 	}
 
@@ -81,26 +97,40 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 	{
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
 		editor.checkpoint();
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.checkpoint();
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
 
+		REQUIRE(editor.getCurrentVersion() == 3);
+		
 		checkOrder(run, { 3, 4, 5, 2, 1 });
-
+		
 		editor.rollbackToLastCheckpoint();
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.rollbackToLastCheckpoint();
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 	}
 
@@ -108,30 +138,46 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 	{
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
 		editor.checkpoint(); // 1
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.checkpoint(); // 2
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
 
+		REQUIRE(editor.getCurrentVersion() == 3);
+		
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 
 		editor.rollbackToCheckpoint(1);
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		checkOrder(run, {1, 4, 3, 2, 5});
 
 		editor.rollbackToLastCheckpoint();
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
 		editor.rollbackToCheckpoint(0);
 
+		REQUIRE(editor.getCurrentVersion() == 0);
+		
 		checkOrder(run, { 1, 2, 3, 4, 5 });
 
 	}
@@ -140,24 +186,38 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 	{
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
 		editor.checkpoint(); // 1
 
+		REQUIRE(editor.getCurrentVersion() == 1);
+		
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
 
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
 		editor.checkpoint(); // 2
-
+		
+		REQUIRE(editor.getCurrentVersion() == 2);
+		
 		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
 
+		REQUIRE(editor.getCurrentVersion() == 3);
+		
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 
 		editor.commit();
 
+		REQUIRE(editor.getCurrentVersion() == 3);
+		
 		editor.rollbackToLastCheckpoint();
 
+		REQUIRE(editor.getCurrentVersion() == 3);
+		
 		checkOrder(run, { 3, 4, 5, 2, 1 });
 	}
 

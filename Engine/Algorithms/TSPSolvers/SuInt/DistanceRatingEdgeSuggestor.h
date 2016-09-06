@@ -25,14 +25,14 @@ namespace Scheduler
 	private:
 		struct Entry
 		{
-			Location from;
-			Location to;
+			Site from;
+			Site to;
 			Distance distance;
 		};
 
 		using Rating = std::vector<Entry>;
 
-		std::vector<size_t> findStopsByLocation(const Location& location) const;
+		std::vector<size_t> findStopsBySite(const Site& location) const;
 
 		void generateRating();
 

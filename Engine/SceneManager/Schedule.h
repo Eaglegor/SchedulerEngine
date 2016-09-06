@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 #include "Performer.h"
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "SceneObjectsFactory.h"
@@ -22,6 +22,7 @@ namespace Scheduler
 	class LoggingService;
 	class RunVehicleBinder;
 	class ScheduleValidationModel;
+	class Location;
 
 	/**
 		Class representing single performer's work shift.
@@ -32,7 +33,7 @@ namespace Scheduler
 		using RunsList = ImmutableVector<Run*>;
 		using StopsList = LinkedPointersList<Stop*>;
 		
-        Schedule(size_t id, const Performer *performer);
+        Schedule(size_t id, const Performer &performer);
 		~Schedule();
 
         size_t getId() const;
@@ -48,10 +49,6 @@ namespace Scheduler
 		const StopsList& getStops() const;
 		
 		void destroyRun(RunsList::iterator pos);
-
-		const Location& getDepotLocation() const;
-		
-		void setDepotLocation(const Location &depot_location);
 
         bool isValid() const;
 
@@ -72,18 +69,19 @@ namespace Scheduler
 		const ScheduleConstraints& constraints() const;
 		ScheduleConstraints& constraints();
 
+		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
+		RunVehicleBinder* getRunVehicleBinder() const;
+		
 		// == framework internal ====================================
 		void setScene(Scene* scene);
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 
-		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
-
 	private:
         size_t id;
         std::string name;
 
-        const Performer* performer;
+        const Performer& performer;
 
 		std::vector<Run*> runs;
 		StopsList stops;
@@ -92,8 +90,6 @@ namespace Scheduler
 
 		SceneObjectsFactory<Run> *runs_factory;
 		SceneObjectsFactory<WorkStop> *stops_factory;
-
-		Location depot_location;
 
 		TimeWindow shift;
 

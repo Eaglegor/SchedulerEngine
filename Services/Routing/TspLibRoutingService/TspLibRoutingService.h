@@ -16,7 +16,7 @@ namespace Scheduler
 		
 		void init(size_t nodes_count);
 
-		virtual Route calculateRoute(const Location& from, const Location& to, const RoutingProfile& routing_profile) override;
+		virtual Route calculateRoute(const Site& from, const Site& to, const RoutingProfile& routing_profile) override;
 
 		void insertRoute(size_t ia, size_t ib, float distance);
 

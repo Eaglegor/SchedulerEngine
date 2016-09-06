@@ -186,7 +186,7 @@ TEST_CASE("Engine - MemoryManager - Pool store", "[unit][functional][memory_mana
 
 		SECTION("Using factory")
 		{
-			Factory<TestStruct> test_struct_factory(&memory_manager, sizeof(TestStruct), 10);
+			Factory<TestStruct> test_struct_factory(sizeof(TestStruct), 10);
 
 			for (size_t j = 0; j < 500; ++j)
 			{
@@ -226,7 +226,7 @@ TEST_CASE("Performance", "[!mayfail]")
 
 	SECTION("Performance [debug only - no asserts]")
 	{
-		Factory<TestStruct> test_struct_factory(&memory_manager, sizeof(TestStruct), 10001);
+		Factory<TestStruct> test_struct_factory(sizeof(TestStruct), 10001);
 
 		TestStruct* ptrs[10000];
 

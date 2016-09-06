@@ -15,7 +15,7 @@ namespace Scheduler
     class PERFORMERASSIGNEDVEHICLEBINDER_EXPORT PerformerAssignedVehicleBinder : public RunVehicleBinder
     {
     public:
-        PerformerAssignedVehicleBinder(Scene* scene);
+        PerformerAssignedVehicleBinder();
 
         virtual bool bindVehicle(Run *run) override;
 

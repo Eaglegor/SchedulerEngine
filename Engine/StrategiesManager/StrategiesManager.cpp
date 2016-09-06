@@ -6,13 +6,13 @@
 
 namespace Scheduler
 {
-	StrategiesManager::StrategiesManager(MemoryManager* memory_manager):
-		vrp_solvers_factory(memory_manager, Pool::MEDIUM_OBJECT, 10),
-		tsp_solvers_factory(memory_manager, Pool::MEDIUM_OBJECT, 10),
-		run_cost_functions_factory(memory_manager, Pool::SMALL_OBJECT, 5),
-		schedule_cost_functions_factory(memory_manager, Pool::SMALL_OBJECT, 5),
-		scene_cost_functions_factory(memory_manager, Pool::SMALL_OBJECT, 5),
-		strategies_factory(memory_manager, Pool::HUGE_OBJECT, 5)
+	StrategiesManager::StrategiesManager():
+		vrp_solvers_factory( Pool::MEDIUM_OBJECT, 10),
+		tsp_solvers_factory(Pool::MEDIUM_OBJECT, 10),
+		run_cost_functions_factory(Pool::SMALL_OBJECT, 5),
+		schedule_cost_functions_factory(Pool::SMALL_OBJECT, 5),
+		scene_cost_functions_factory(Pool::SMALL_OBJECT, 5),
+		strategies_factory(Pool::HUGE_OBJECT, 5)
 	{
 	}
 
@@ -44,7 +44,7 @@ namespace Scheduler
 
 	void StrategiesManager::destroyStrategy(Strategy* strategy)
 	{
-		assert(std::contains_key(strategies, strategy));
+		assert(util::contains_key(strategies, strategy));
 
 		strategies_factory.destroyObject(strategy);
 

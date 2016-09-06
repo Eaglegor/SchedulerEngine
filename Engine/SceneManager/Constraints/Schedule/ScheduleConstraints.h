@@ -5,14 +5,40 @@
 #include <Engine/Concepts/Duration.h>
 
 #include <SceneManager_export.h>
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 #include "../ConstraintHolder.h"
+#include <Engine/SceneManager/Location.h>
 
 namespace Scheduler
 {
 	class SCENEMANAGER_EXPORT ScheduleConstraints
 	{
 		public:
+			class LocationConstraint
+			{
+			public:
+				LocationConstraint(const Location& location):location(location){};
+				LocationConstraint(const LocationConstraint &rhs):location(rhs.location){}
+				
+				operator const Location&() const
+				{
+					return location;
+				}
+				
+				const Location& get() const
+				{
+					return location;
+				}
+				
+				bool operator==(const LocationConstraint& rhs) const
+				{
+					return location == rhs.location;
+				}
+				
+			private:
+				const Location& location;
+			};
+			
 			using ScheduleDistanceLimitConstraint = ConstraintHolder<Distance>;
 			using RunDistanceLimitConstraint = ConstraintHolder<Distance>;
 
@@ -22,8 +48,8 @@ namespace Scheduler
 			using ScheduleWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
 			using RunWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
 
-			using ScheduleShiftStartLocationConstraint = ConstraintHolder<Location>;
-			using ScheduleShiftEndLocationConstraint = ConstraintHolder<Location>;
+			using ScheduleShiftStartLocationConstraint = ConstraintHolder<LocationConstraint>;
+			using ScheduleShiftEndLocationConstraint = ConstraintHolder<LocationConstraint>;
 
 			const ScheduleDistanceLimitConstraint& scheduleDistanceLimit() const;
 			ScheduleDistanceLimitConstraint& scheduleDistanceLimit();

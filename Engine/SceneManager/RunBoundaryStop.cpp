@@ -6,10 +6,11 @@
 #include <Engine/Utils/Collections/Algorithms.h>
 #include "StopVisitor.h"
 #include "ConstStopVisitor.h"
+#include <Engine/SceneManager/Location.h>
 
 namespace Scheduler
 {
-	RunBoundaryStop::RunBoundaryStop(const Location & location, Run * run):
+	RunBoundaryStop::RunBoundaryStop(const Location& location, Run * run):
 		Stop(run),
 		location(location)
 	{
@@ -32,7 +33,7 @@ namespace Scheduler
 
 	bool RunBoundaryStop::containsOperation(const Operation * operation) const
 	{
-		return std::contains_key(operations, operation);
+		return util::contains_key(operations, operation);
 	}
 
 	const Location& RunBoundaryStop::getLocation() const

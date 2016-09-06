@@ -24,15 +24,15 @@ TEST_CASE("Utils - Collections - Algorithms", "[unit][functional][utils]")
                                         {1, 1},
                                         {2, 2}};
 
-        REQUIRE(std::contains_key(s, 1));
-        REQUIRE(std::contains_key(us, 1));
-        REQUIRE(std::contains_key(m, 1));
-        REQUIRE(std::contains_key(um, 1));
+        REQUIRE(util::contains_key(s, 1));
+        REQUIRE(util::contains_key(us, 1));
+        REQUIRE(util::contains_key(m, 1));
+        REQUIRE(util::contains_key(um, 1));
 
-        REQUIRE_FALSE(std::contains_key(s, 5));
-        REQUIRE_FALSE(std::contains_key(us, 5));
-        REQUIRE_FALSE(std::contains_key(m, 5));
-        REQUIRE_FALSE(std::contains_key(um, 5));
+        REQUIRE_FALSE(util::contains_key(s, 5));
+        REQUIRE_FALSE(util::contains_key(us, 5));
+        REQUIRE_FALSE(util::contains_key(m, 5));
+        REQUIRE_FALSE(util::contains_key(um, 5));
     }
 
     SECTION("std::contains")
@@ -41,10 +41,10 @@ TEST_CASE("Utils - Collections - Algorithms", "[unit][functional][utils]")
 
         std::list<int> l{0, 1, 2};
 
-        REQUIRE(std::contains(v, 1));
-        REQUIRE(std::contains(l, 1));
+        REQUIRE(util::contains(v, 1));
+        REQUIRE(util::contains(l, 1));
 
-        REQUIRE_FALSE(std::contains(v, 5));
-        REQUIRE_FALSE(std::contains(l, 5));
+        REQUIRE_FALSE(util::contains(v, 5));
+        REQUIRE_FALSE(util::contains(l, 5));
     }
 }

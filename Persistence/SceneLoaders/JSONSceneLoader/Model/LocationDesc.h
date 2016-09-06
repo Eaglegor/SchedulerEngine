@@ -4,7 +4,7 @@
 
 namespace Scheduler
 {
-	struct LocationDesc
+	struct SiteDesc
 	{
 		std::string name;
 		float latitude;
@@ -12,11 +12,11 @@ namespace Scheduler
 	};
 
 	template<>
-	struct PtreeDeserializer<LocationDesc>
+	struct PtreeDeserializer<SiteDesc>
 	{
-		LocationDesc operator()(const boost::property_tree::ptree &tree)
+		SiteDesc operator()(const boost::property_tree::ptree &tree)
 		{
-			LocationDesc desc;
+			SiteDesc desc;
 			REQUIRED_SET(tree, desc, name);
 			REQUIRED_SET(tree, desc, latitude);
 			REQUIRED_SET(tree, desc, longitude);

@@ -4,6 +4,7 @@
 #include "Model/SceneDesc.h"
 
 #include <Engine/SceneManager/SceneManager.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/Vehicle.h>
@@ -17,7 +18,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 #include <Engine/Utils/Units/DurationUnits.h>
 
 #include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
@@ -90,10 +91,9 @@ namespace Scheduler
 		return time_windows;
 	}
 
-	void parseOperation(const OperationDesc& operation_desc, Operation* out_operation, const LoaderSettings &settings, const std::unordered_map<std::string, Location> &locations)
+	void parseOperation(const OperationDesc& operation_desc, Operation* out_operation, const LoaderSettings &settings)
 	{
 		out_operation->setName(operation_desc.name.c_str());
-		out_operation->setLocation(locations.at(operation_desc.location));
 
 		Capacity load;
 		for (size_t i = 0; i < std::min(operation_desc.load.size(), settings.load_dimensions ? settings.load_dimensions.get() : 4); ++i)
@@ -126,7 +126,7 @@ namespace Scheduler
 	{
 		assert(scene_manager);
 
-		Scene* scene = scene_manager->createScene();
+		SceneContext* scene_context = scene_manager->createSceneContext();
 
 		boost::property_tree::ptree scene_tree;
 		boost::property_tree::json_parser::read_json(stream, scene_tree);
@@ -136,19 +136,19 @@ namespace Scheduler
 		LoaderSettings settings;
 		if (scene_desc.settings) settings = scene_desc.settings.get();
 
-		std::unordered_map<std::string, Location> locations;
-		for (const LocationDesc& location_desc : scene_desc.locations)
+		std::unordered_map<std::string, Location*> locations;
+		for (const SiteDesc& location_desc : scene_desc.locations)
 		{
-			Location location;
+			Site location;
 			location.setLatitude(Coordinate::createFromFloat(location_desc.latitude));
 			location.setLongitude(Coordinate::createFromFloat(location_desc.longitude));
-			locations.emplace(location_desc.name, location);
+			locations.emplace(location_desc.name, scene_context->createLocation(location));
 		}
 
 		std::unordered_map<std::string, Performer*> performers;
 		for (const PerformerDesc &performer_desc: scene_desc.fleet.performers)
 		{
-			Performer* performer = scene->createPerformer();
+			Performer* performer = scene_context->createPerformer();
 			performer->setName(performer_desc.name.c_str());
 			if (performer_desc.activation_cost) performer->setActivationCost(Cost(performer_desc.activation_cost.get()));
 			if (performer_desc.hour_cost) performer->setDurationUnitCost(Cost(performer_desc.hour_cost.get() / Units::hours(1).getValue()));
@@ -157,7 +157,7 @@ namespace Scheduler
 			std::unordered_set<const Attribute*> skills;
 			for (const std::string &skill : performer_desc.skills)
 			{
-				const Attribute* attribute = scene_manager->createAttribute(skill.c_str());
+				const Attribute* attribute = scene_context->createAttribute(skill.c_str());
 				skills.emplace(attribute);
 			}
 
@@ -169,7 +169,7 @@ namespace Scheduler
 		std::unordered_map<std::string, Vehicle*> vehicles;
 		for (const VehicleDesc &vehicle_desc : scene_desc.fleet.vehicles)
 		{
-			Vehicle* vehicle = scene->createVehicle();
+			Vehicle* vehicle = scene_context->createVehicle();
 			vehicle->setName(vehicle_desc.name.c_str());
 			if (vehicle_desc.activation_cost) vehicle->setActivationCost(Cost(vehicle_desc.activation_cost.get()));
 			if (vehicle_desc.hour_cost) vehicle->setDurationUnitCost(Cost(vehicle_desc.hour_cost.get() / Units::hours(1).getValue()));
@@ -180,7 +180,7 @@ namespace Scheduler
 			std::unordered_set<const Attribute*> attributes;
 			for (const std::string &attr : vehicle_desc.attributes)
 			{
-				const Attribute* attribute = scene_manager->createAttribute(attr.c_str());
+				const Attribute* attribute = scene_context->createAttribute(attr.c_str());
 				attributes.emplace(attribute);
 			}
 
@@ -205,22 +205,22 @@ namespace Scheduler
 		std::unordered_map<std::string, Operation*> operations;
 		for (const OperationDesc &operation_desc: scene_desc.free_operations)
 		{
-			Operation* operation = scene->createFreeOperation();
-			parseOperation(operation_desc, operation, settings, locations);
+			Operation* operation = scene_context->createFreeOperation(*locations.at(operation_desc.location));
+			parseOperation(operation_desc, operation, settings);
 			operations.emplace(operation_desc.name, operation);
 		}
 
 		std::unordered_map<std::string, Order*> orders;
 		for(const OrderDesc &order_desc : scene_desc.orders)
 		{
-			Order* order = scene->createOrder();
+			Order* order = scene_context->createOrder();
 
 			order->setName(order_desc.name.c_str());
 			
 			std::unordered_set<const Attribute*> vehicle_requirements;
 			for(const std::string &vehicle_requirement : order_desc.vehicle_requirements)
 			{
-				const Attribute* attribute = scene_manager->createAttribute(vehicle_requirement.c_str());
+				const Attribute* attribute = scene_context->createAttribute(vehicle_requirement.c_str());
 				vehicle_requirements.emplace(attribute);
 			}
 			//order->setVehicleRequirements(vehicle_requirements);
@@ -228,43 +228,44 @@ namespace Scheduler
 			std::unordered_set<const Attribute*> performer_skill_requirements;
 			for (const std::string &performer_skill_requirement : order_desc.performer_skill_requirements)
 			{
-				const Attribute* attribute = scene_manager->createAttribute(performer_skill_requirement.c_str());
+				const Attribute* attribute = scene_context->createAttribute(performer_skill_requirement.c_str());
 				performer_skill_requirements.emplace(attribute);
 			}
 			//order->setPerformerSkillsRequirements(performer_skill_requirements);
 
 			if(order_desc.start_operation)
 			{
-				Operation* operation = order->createStartOperation();
-				parseOperation(order_desc.start_operation.get(), operation, settings, locations);
+				Operation* operation = order->createStartOperation(*locations.at(order_desc.start_operation.get().location));
+				parseOperation(order_desc.start_operation.get(), operation, settings);
 				operation->setName((std::string(order->getName()) + "." + std::string(operation->getName())).c_str());
 				operations.emplace(operation->getName(), operation);
 			}
 
 			for (const OperationDesc &operation_desc : order_desc.work_operations)
 			{
-				Operation* operation = order->createWorkOperation();
-				parseOperation(operation_desc, operation, settings, locations);
+				Operation* operation = order->createWorkOperation(*locations.at(operation_desc.location));
+				parseOperation(operation_desc, operation, settings);
 				operation->setName((std::string(order->getName()) + "." + std::string(operation->getName())).c_str());
 				operations.emplace(operation->getName(), operation);
 			}
 			
 			if (order_desc.end_operation)
 			{
-				Operation* operation = order->createEndOperation();
-				parseOperation(order_desc.end_operation.get(), operation, settings, locations);
+				Operation* operation = order->createEndOperation(*locations.at(order_desc.end_operation.get().location));
+				parseOperation(order_desc.end_operation.get(), operation, settings);
 				operation->setName((std::string(order->getName()) + "." + std::string(operation->getName())).c_str());
 				operations.emplace(operation->getName(), operation);
 			}
 		}
 
+		Scene* scene = scene_manager->createScene(*scene_context);
+		
 		for(const ScheduleDesc &schedule_desc : scene_desc.schedules)
 		{
 			Performer* performer = performers.at(schedule_desc.performer);
-			Schedule* schedule = scene->createSchedule(performer);
-			//if (schedule_desc.shift.start_location) schedule->setShiftStartLocation(locations.at(schedule_desc.shift.start_location.get()));
-			schedule->setDepotLocation(locations.at(schedule_desc.shift.depot_location));
-			//if (schedule_desc.shift.end_location) schedule->setShiftEndLocation(locations.at(schedule_desc.shift.end_location.get()));
+			Schedule* schedule = scene->createSchedule(*performer);
+			//if (schedule_desc.shift.start_location) schedule->setShiftStartSite(locations.at(schedule_desc.shift.start_location.get()));
+			//if (schedule_desc.shift.end_location) schedule->setShiftEndSite(locations.at(schedule_desc.shift.end_location.get()));
 
 			schedule->setShift(createTimeWindow(schedule_desc.shift.time_window, settings));
 
@@ -280,8 +281,8 @@ namespace Scheduler
 
 			for(const RunDesc &run_desc : schedule_desc.runs)
 			{
-				Location start_location = locations.at(run_desc.start_location);
-				Location end_location = locations.at(run_desc.end_location);
+				const Location& start_location = *locations.at(run_desc.start_location);
+				const Location& end_location = *locations.at(run_desc.end_location);
 				Run* run = *schedule->createRun(schedule->getRuns().end(), start_location, end_location);
 				
 				Vehicle* vehicle = vehicles.at(run_desc.vehicle);

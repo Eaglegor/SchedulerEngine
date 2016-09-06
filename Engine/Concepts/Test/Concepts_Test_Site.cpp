@@ -1,14 +1,14 @@
 #include <catch.hpp>
 
-#include <Engine/Concepts/Location.h>
+#include <Engine/Concepts/Site.h>
 
-TEST_CASE("Concepts - Basic - Location", "[unit][functional][concepts]")
+TEST_CASE("Concepts - Basic - Site", "[unit][functional][concepts]")
 {
 	using namespace Scheduler;
 
 	SECTION("Default constructor")
 	{
-		Location l;
+		Site l;
 		
 		REQUIRE(l.getLatitude() == Coordinate(0));
 		REQUIRE(l.getLongitude() == Coordinate(0));
@@ -16,10 +16,10 @@ TEST_CASE("Concepts - Basic - Location", "[unit][functional][concepts]")
 	
 	SECTION("Copy constructor")
 	{
-		Location l(Coordinate(5), Coordinate(5));
+		Site l(Coordinate(5), Coordinate(5));
 		
-		Location l2(l);
-		Location l3 = l;
+		Site l2(l);
+		Site l3 = l;
 		
 		REQUIRE(l.getLatitude() == l2.getLatitude());
 		REQUIRE(l.getLongitude() == l2.getLongitude());
@@ -30,7 +30,7 @@ TEST_CASE("Concepts - Basic - Location", "[unit][functional][concepts]")
 	
 	SECTION("Values constructor")
 	{
-		Location l(Coordinate(1), Coordinate(5));
+		Site l(Coordinate(1), Coordinate(5));
 		
 		REQUIRE(l.getLatitude() == Coordinate(1));
 		REQUIRE(l.getLongitude() == Coordinate(5));
@@ -38,7 +38,7 @@ TEST_CASE("Concepts - Basic - Location", "[unit][functional][concepts]")
 
 	SECTION("Getters and setters")
 	{
-		Location l;
+		Site l;
 		
 		l.setLatitude(Coordinate(1));
 		l.setLongitude(Coordinate(5));
@@ -49,9 +49,9 @@ TEST_CASE("Concepts - Basic - Location", "[unit][functional][concepts]")
 
 	SECTION("Comparison operators")
 	{
-		Location l1(Coordinate(1), Coordinate(2));
-		Location l2(Coordinate(4), Coordinate(3));
-		Location l3(Coordinate(1), Coordinate(2));
+		Site l1(Coordinate(1), Coordinate(2));
+		Site l2(Coordinate(4), Coordinate(3));
+		Site l3(Coordinate(1), Coordinate(2));
 		
 		REQUIRE(l1 == l3);
 		REQUIRE(l1 != l2);
@@ -59,9 +59,9 @@ TEST_CASE("Concepts - Basic - Location", "[unit][functional][concepts]")
 
 	SECTION("Assignment operator")
 	{
-		Location l1(Coordinate(4), Coordinate(6));
+		Site l1(Coordinate(4), Coordinate(6));
 		
-		Location l2;
+		Site l2;
 		
 		l2 = l1;
 		

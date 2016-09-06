@@ -29,7 +29,7 @@ namespace Scheduler
 		memset(this->routes, 0, sizeof(*routes) * nodes_count * nodes_count);
 	}
 
-	Route TspLibRoutingService::calculateRoute(const Location& from, const Location& to, const RoutingProfile& routing_profile)
+	Route TspLibRoutingService::calculateRoute(const Site& from, const Site& to, const RoutingProfile& routing_profile)
 	{
 		size_t from_index = from.getLatitude().getValue();
 		size_t to_index = to.getLatitude().getValue();

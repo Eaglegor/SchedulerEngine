@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 
+#include "SceneContext.h"
 #include "Scene.h"
 #include "Operation.h"
 #include "Order.h"
@@ -23,42 +24,36 @@
 
 namespace Scheduler
 {
-	SceneManager::SceneManager(MemoryManager* memory_manager) :
-		scenes_factory(memory_manager, 5),
-		operations_factory(memory_manager),
-		orders_factory(memory_manager),
-		vehicles_factory(memory_manager),
-		performers_factory(memory_manager),
-		schedules_factory(memory_manager),
-		attributes_factory(memory_manager),
-		runs_factory(memory_manager),
-		stops_factory(memory_manager),
-		schedule_actualization_models_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-		route_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-		duration_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-		arrival_time_actualization_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-		schedule_validation_models_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-		schedule_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-		run_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-		stop_validation_algorithms_factory(memory_manager, Pool::MEDIUM_OBJECT, 5),
-		run_vehicle_selectors_factory(memory_manager, Pool::MEDIUM_OBJECT, 100)
+	SceneManager::SceneManager() :
+		schedule_actualization_models_factory(Pool::MEDIUM_OBJECT),
+		route_actualization_algorithms_factory(Pool::MEDIUM_OBJECT),
+		duration_actualization_algorithms_factory(Pool::MEDIUM_OBJECT),
+		arrival_time_actualization_algorithms_factory(Pool::MEDIUM_OBJECT),
+		schedule_validation_models_factory(Pool::MEDIUM_OBJECT),
+		schedule_validation_algorithms_factory(Pool::MEDIUM_OBJECT),
+		run_validation_algorithms_factory(Pool::MEDIUM_OBJECT),
+		stop_validation_algorithms_factory(Pool::MEDIUM_OBJECT),
+		run_vehicle_binders_factory(Pool::MEDIUM_OBJECT)
 	{
 	}
-
-	Scene* SceneManager::createScene()
+	
+	SceneContext* SceneManager::createSceneContext()
 	{
-		Scene *scene = scenes_factory.createObject();
+		SceneContext* scene_context = scene_contexts_factory.createObject();
+		scene_contexts.insert(scene_context);
+		return scene_context;
+	}
+	
+	void SceneManager::destroySceneContext(SceneContext* scene_context)
+	{
+		scene_contexts.erase(scene_context);
+		scene_contexts_factory.destroyObject(scene_context);
+	}
 
-		scene->setOperationsfactory(&operations_factory);
-		scene->setOrdersFactory(&orders_factory);
-		scene->setPerformersFactory(&performers_factory);
-		scene->setSchedulesFactory(&schedules_factory);
-		scene->setVehiclesFactory(&vehicles_factory);
-		scene->setRunsFactory(&runs_factory);
-		scene->setStopsFactory(&stops_factory);
-
-		scene->setRunVehicleSelectorsFactory(&run_vehicle_selectors_factory);
-
+	Scene* SceneManager::createScene(const SceneContext& context)
+	{
+		Scene *scene = scenes_factory.createObject(context);
+		scene->setSceneManager(this);
 		scenes.insert(scene);
 		return scene;
 	}
@@ -133,21 +128,17 @@ namespace Scheduler
 		stop_validation_algorithms_factory.destroyObject(algorithm);
 	}
 
+	void SceneManager::destroyRunVehicleBinder(RunVehicleBinder* binder)
+	{
+		assert(run_vehicle_binders.find(binder) != run_vehicle_binders.end());
+		run_vehicle_binders.erase(binder);
+		run_vehicle_binders_factory.destroyObject(binder);
+	}
+	
 	void SceneManager::destroyScene(Scene *scene)
 	{
 		scenes.erase(scene);
 		scenes_factory.destroyObject(scene);
-	}
-
-	const Attribute* SceneManager::createAttribute(const char *name)
-	{
-		auto iter = attributes.find(name);
-		if (iter != attributes.end()) return iter->second;
-
-		Attribute* attribute = attributes_factory.createObject(name);
-		attributes.emplace(name, attribute);
-
-		return attribute;
 	}
 
 	SceneManager::~SceneManager()
@@ -197,9 +188,9 @@ namespace Scheduler
 			stop_validation_algorithms_factory.destroyObject(algorithm);
 		}
 
-		for (auto &iter : attributes)
+		for (RunVehicleBinder* binder : run_vehicle_binders)
 		{
-			attributes_factory.destroyObject(iter.second);
+			run_vehicle_binders_factory.destroyObject(binder);
 		}
 	}
 }

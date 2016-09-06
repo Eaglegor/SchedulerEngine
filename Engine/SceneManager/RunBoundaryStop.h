@@ -25,7 +25,7 @@ namespace Scheduler
 		void acceptVisitor(ConstStopVisitor* visitor) const override;
 
 	private:
-		Location location;
+		const Location& location;
 		std::unordered_set<const Operation*> operations;
 	};
 }

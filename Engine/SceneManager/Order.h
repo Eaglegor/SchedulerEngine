@@ -14,6 +14,7 @@ namespace Scheduler
 {
 	class Operation;
 	class Attribute;
+	class Location;
 
 	/** 
 		Class representing single order. All order operations must be planned to a single vehicle run.
@@ -34,7 +35,7 @@ namespace Scheduler
 		Order(size_t id);
 		~Order();
 
-        size_t getId() const;
+        std::size_t getId() const;
 
         const char* getName() const;
 		Operation* getStartOperation();
@@ -46,9 +47,9 @@ namespace Scheduler
 
 		void setName(const char* name);
 
-		Operation* createStartOperation();
-		Operation* createWorkOperation();
-		Operation* createEndOperation();
+		Operation* createStartOperation(const Location& location);
+		Operation* createWorkOperation(const Location& location);
+		Operation* createEndOperation(const Location& location);
 
 		const OrderConstraints& constraints() const;
 		OrderConstraints& constraints();

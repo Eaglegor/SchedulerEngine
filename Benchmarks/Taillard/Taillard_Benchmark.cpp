@@ -15,6 +15,7 @@
 #include <Engine/CostFunctions/TotalDistance/TotalDistanceSceneCostFunction.h>
 #include <Engine/StrategiesManager/Strategy.h>
 #include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Order.h>
 #include <Engine/SceneManager/WorkStop.h>
@@ -153,7 +154,7 @@ protected:
 		{
 			Scene* scene = scene_loader.loadScene(std::string(TAILLARD_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".dat");
 
-			total_orders = scene->getOrders().size();
+			total_orders = scene->getContext().getOrders().size();
 
 			std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
 			solver->optimize(scene);
@@ -175,7 +176,7 @@ protected:
 			}
 			
 			scheduled_orders = 0;
-			for(Order* order : scene->getOrders())
+			for(Order* order : scene->getContext().getOrders())
 			{
 				Operation* operation = order->getWorkOperations()[0];
 

@@ -5,6 +5,7 @@
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/Concepts/Route.h>
 #include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/Location.h>
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/Utils/Collections/PositionPreservingLinkedPointersListWrapper.h>
 #include <algorithm>
@@ -49,21 +50,21 @@ namespace Scheduler
 
 		auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
         const RoutingProfile &routing_profile = run->getVehicle()->getRoutingProfile();
-        auto location = run->getStartStop()->getLocation();
+        auto location = run->getStartStop()->getLocation().getSite();
         SceneEditor scene_editor;
 		
         for (auto stop_i = stops.begin(); stop_i != std::prev(stops.end()); ++stop_i) {
             auto nearest_element_iter = stop_i;
-            auto min_distance = routing_service->calculateRoute(location, (*(*nearest_element_iter))->getLocation(), routing_profile).getDistance();
+            auto min_distance = routing_service->calculateRoute(location, (*(*nearest_element_iter))->getLocation().getSite(), routing_profile).getDistance();
             for (auto stop_j = std::next(stop_i); stop_j != stops.end(); ++stop_j) {
-                const auto distance = routing_service->calculateRoute(location, (*(*stop_j))->getLocation(), routing_profile).getDistance();
+                const auto distance = routing_service->calculateRoute(location, (*(*stop_j))->getLocation().getSite(), routing_profile).getDistance();
                 if (distance < min_distance) {
                     min_distance = distance;
 					nearest_element_iter = stop_j;
                 }
             }
 
-            location = (*(*nearest_element_iter))->getLocation();
+            location = (*(*nearest_element_iter))->getLocation().getSite();
             scene_editor.performAction<SwapRunWorkStops>(run_iter, *stop_i, *nearest_element_iter);
 			scene_editor.commit();
 			stops.update();

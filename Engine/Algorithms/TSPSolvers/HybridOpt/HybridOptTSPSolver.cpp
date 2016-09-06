@@ -40,34 +40,52 @@ namespace Scheduler
             changed = false;
             for (auto stop_it1 = stops.begin(); stop_it1 != stops.end(); ++stop_it1) {
                 for (auto stop_it2 = std::next(stop_it1); stop_it2 != stops.end(); ++stop_it2) {
-                    editor.performAction<ReverseWorkStopsSubsequence>(run_iter, *stop_it1, *std::next(stop_it2));
-                    const Cost reverse_cost = schedule_cost_function->calculateCost(run->getSchedule());
-                    editor.rollbackAll();
+					
+					Patch best_patch;
+					Cost current_best_cost(std::numeric_limits<Cost::value_type>::max());
+					
+					Patch reverse_patch = editor.createPatch();
+                    reverse_patch.performAction<ReverseWorkStopsSubsequence>(run_iter, *stop_it1, *std::next(stop_it2));
+                    Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
+					reverse_patch.hold();
+					if(cost < current_best_cost)
+					{
+						current_best_cost = cost;
+						best_patch = std::move(reverse_patch);
+					}
 
-                    editor.performAction<SwapRunWorkStops>(run_iter, *stop_it1, *stop_it2);
-                    const Cost swap_cost = schedule_cost_function->calculateCost(run->getSchedule());
-                    editor.rollbackAll();
+					Patch swap_patch = editor.createPatch();
+                    swap_patch.performAction<SwapRunWorkStops>(run_iter, *stop_it1, *stop_it2);
+                    cost = schedule_cost_function->calculateCost(run->getSchedule());
+					swap_patch.hold();
+					if(cost < current_best_cost)
+					{
+						current_best_cost = cost;
+						best_patch = std::move(swap_patch);
+					}
 
-                    editor.performAction<MoveRunWorkStop>(run_iter, *stop_it1, *stop_it2);
-                    const Cost move_cost = schedule_cost_function->calculateCost(run->getSchedule());
-                    editor.rollbackAll();
+					Patch move_patch = editor.createPatch();
+                    move_patch.performAction<MoveRunWorkStop>(run_iter, *stop_it1, *stop_it2);
+                    cost = schedule_cost_function->calculateCost(run->getSchedule());
+					move_patch.hold();
+					if(cost < current_best_cost)
+					{
+						current_best_cost = cost;
+						best_patch = std::move(move_patch);
+					}
 
-                    Cost cost = std::min(reverse_cost, swap_cost);
-                    cost = std::min(cost, move_cost);
-
-                    if (cost < best_cost) {
-                        best_cost = cost;
+                    if (current_best_cost < best_cost) {
+                        best_cost = current_best_cost;
                         changed = true;
-                        if (cost == reverse_cost) {
-                            editor.performAction<ReverseWorkStopsSubsequence>(run_iter, *stop_it1, *std::next(stop_it2));
-                        } else if (cost == swap_cost) {
-                            editor.performAction<SwapRunWorkStops>(run_iter, *stop_it1, *stop_it2);
-                        } else {
-                            editor.performAction<MoveRunWorkStop>(run_iter, *stop_it1, *stop_it2);
-                        }
-                        editor.commit();
+						
+						editor.applyPatch(std::move(best_patch));
+						editor.commit();
 						stops.update();
                     }
+                    else
+					{
+						editor.abortPatching();
+					}
                 }
             }
         }

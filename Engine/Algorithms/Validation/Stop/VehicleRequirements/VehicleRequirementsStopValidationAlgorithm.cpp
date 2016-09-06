@@ -29,7 +29,7 @@ public:
 		{
 			for(const Scheduler::Attribute* requirement : operation->constraints().vehicleAttributesRequirements().get())
 			{
-				is_valid = is_valid && std::contains_key(vehicle->getAttributes(), requirement);
+				is_valid = is_valid && util::contains_key(vehicle->getAttributes(), requirement);
 				if (!is_valid) break;
 			}
 		}
@@ -45,7 +45,7 @@ public:
 			{
 				for (const Scheduler::Attribute* requirement : operation->constraints().vehicleAttributesRequirements().get())
 				{
-					is_valid = is_valid && std::contains_key(vehicle->getAttributes(), requirement);
+					is_valid = is_valid && util::contains_key(vehicle->getAttributes(), requirement);
 					if (!is_valid) break;
 				}
 			}

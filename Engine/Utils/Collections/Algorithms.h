@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <functional>
 
-namespace std
+namespace util
 {
     template<typename T>
     bool contains_key(const T& collection, const typename T::key_type &key)

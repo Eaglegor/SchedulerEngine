@@ -15,8 +15,8 @@ add_library(Concepts SHARED
 	Duration.h
 	Duration.cpp
 	
-	Location.h
-	Location.cpp
+	Site.h
+	Site.cpp
 	
 	Route.h
 	Route.cpp
@@ -53,7 +53,7 @@ if(CPP_SCHEDULER_TESTS)
 		Test/Concepts_Test_Cost.cpp
 		Test/Concepts_Test_Distance.cpp
 		Test/Concepts_Test_Duration.cpp
-		Test/Concepts_Test_Location.cpp
+		Test/Concepts_Test_Site.cpp
 		Test/Concepts_Test_Route.cpp
 		Test/Concepts_Test_TimePoint.cpp
 		Test/Concepts_Test_RoutingProfile.cpp

@@ -3,6 +3,7 @@ add_library(SceneEditor SHARED
 	SceneEditor.h SceneEditor.cpp
     Action.h
     Checkpoint.h Checkpoint.cpp
+    Patch.h Patch.cpp
     
     Actions/ActionsImpl.h Actions/ActionsImpl.cpp
     Actions/SwapRunWorkStops.h Actions/SwapRunWorkStops.cpp
@@ -15,7 +16,7 @@ add_library(SceneEditor SHARED
 
 set_target_properties(SceneEditor PROPERTIES FOLDER "Engine")
 
-target_link_libraries(SceneEditor SceneManager)
+target_link_libraries(SceneEditor SceneManager LoggingManager)
 
 cotire(SceneEditor)
 
@@ -28,6 +29,7 @@ if(CPP_SCHEDULER_TESTS)
 		Test/SceneEditor_Test_MoveRunWorkStop.cpp
 		Test/SceneEditor_Test_MoveRunWorkStopsSubsequence.cpp
 		Test/SceneEditor_Test_ReverseRunWorkStopsSubsequence.cpp
+		Test/SceneEditor_Test_Patches.cpp
 	)
 		
 	set_property(SOURCE Test/SceneEditor_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")

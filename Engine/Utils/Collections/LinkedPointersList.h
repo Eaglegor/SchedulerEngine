@@ -298,7 +298,7 @@ namespace Scheduler
 		iterator erase(iterator first, iterator last)
 		{
 			iterator current = first;
-			while(current != last)
+			while(current != last && current != end())
 			{
 				current = erase(current);
 			}

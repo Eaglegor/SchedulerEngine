@@ -2,7 +2,7 @@
 
 #include "Distance.h"
 #include "Duration.h"
-#include "Location.h"
+#include "Site.h"
 
 #include <Concepts_export.h>
 
@@ -13,13 +13,13 @@ namespace Scheduler
 	public:
 		Route();
 		Route(const Route &rhs);
-		Route(const Location &from, const Location &to, const Distance &distance, const Duration &duration);
+		Route(const Site &from, const Site &to, const Distance &distance, const Duration &duration);
 
-		const Location& getFrom() const;
-		const Location& getTo() const;
+		const Site& getFrom() const;
+		const Site& getTo() const;
 
-		void setFrom(const Location &from);
-		void setTo(const Location &to);
+		void setFrom(const Site &from);
+		void setTo(const Site &to);
 
 		const Distance& getDistance() const;
 		void setDistance(const Distance &distance);
@@ -33,8 +33,8 @@ namespace Scheduler
 		Route& operator=(const Route &rhs);
 
 	private:
-		Location from;
-		Location to;
+		Site from;
+		Site to;
 	
 		Distance distance;
 		Duration duration;

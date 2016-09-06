@@ -2,18 +2,18 @@
 
 namespace Scheduler
 {
-    Operation::Operation(size_t id) :
+    Operation::Operation(size_t id, const Location& location) :
             id(id),
-            order(nullptr)
+            order(nullptr),
+            location(location)
     {
-        
     }
 
     const char* Operation::getName() const {
         return name.c_str();
     }
 
-    size_t Operation::getId() const {
+    std::size_t Operation::getId() const {
         return id;
     }
 
@@ -31,10 +31,6 @@ namespace Scheduler
 
     void Operation::setName(const char *name) {
         this->name = name;
-    }
-
-    void Operation::setLocation(const Location &location) {
-        this->location = location;
     }
 
     void Operation::setDuration(const Duration &duration) {

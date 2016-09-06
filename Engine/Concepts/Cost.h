@@ -10,6 +10,8 @@ namespace Scheduler
 	class CONCEPTS_EXPORT Cost
 	{
 	public:
+		using value_type = float;
+		
 		Cost();
 		explicit Cost(float value);
 		Cost(const Cost &cost);

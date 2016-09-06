@@ -11,7 +11,7 @@
 
 namespace Scheduler {
 
-    Schedule::Schedule(size_t id, const Performer* performer) :
+    Schedule::Schedule(size_t id, const Performer& performer) :
             id(id),
             performer(performer),
 			scene(nullptr),
@@ -32,7 +32,7 @@ namespace Scheduler {
     }
 
     const Performer* Schedule::getPerformer() const {
-        return performer;
+        return &performer;
     }
 
     void Schedule::setName(const char *name) {
@@ -47,7 +47,7 @@ namespace Scheduler {
 		this->runs_factory = factory;
 	}
 
-	Schedule::RunsList::iterator Schedule::createRun(RunsList::const_iterator pos, const Scheduler::Location& from, const Scheduler::Location& to) {
+	Schedule::RunsList::iterator Schedule::createRun(RunsList::const_iterator pos, const Location& from, const Location& to) {
 		assert(runs_factory);
 
 		Run* r = runs_factory->createObject(from, to, this, stops, pos == runs.end() ? stops.end() : (*pos)->getStops().begin());
@@ -60,14 +60,27 @@ namespace Scheduler {
 
 		if (run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
 
+		if(pos != runs.begin()) 
+		{
+			Run* prev_run = *std::prev(pos);
+			prev_run->adjustStopsRange(prev_run->getStops().begin(), r->getStops().begin());
+		}
+		
 		return runs.insert(pos, r);
 	}
 
 	void Schedule::destroyRun(RunsList::iterator pos) {
 
 		assert(runs_factory);
+		
+		if(pos != runs.begin()) 
+		{
+			Run* prev_run = *std::prev(pos);
+			prev_run->adjustStopsRange(prev_run->getStops().begin(), (*pos)->getStops().end());
+		}
+		
 		runs_factory->destroyObject(*pos);
-
+		
 		runs.erase(pos);
 		
 		arrival_time_actualizer.setDirty(true);
@@ -75,16 +88,6 @@ namespace Scheduler {
 
 	Schedule::~Schedule() {
 		clear();
-	}
-
-	const Location& Schedule::getDepotLocation() const {
-		return depot_location;
-	}
-
-	void Schedule::setDepotLocation(const Location &depot_location) {
-		this->depot_location = depot_location;
-
-		arrival_time_actualizer.setDirty(true);
 	}
 
     bool Schedule::isValid() const
@@ -179,6 +182,11 @@ namespace Scheduler {
 		}
 		
 		arrival_time_actualizer.setDirty(true);
+	}
+	
+	RunVehicleBinder* Schedule::getRunVehicleBinder() const
+	{
+		return run_vehicle_binder;
 	}
 	
     ScheduleValidationModel* Schedule::getValidationModel() const{return schedule_validation_model;}

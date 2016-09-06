@@ -21,7 +21,7 @@
 #include <Engine/Algorithms/TSPSolvers/HybridOpt/HybridOptTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/ListTemperatureScheduler.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
-#include <Engine/Algorithms/TSPSolvers/Utilitary/TheBest/TheBestTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/BestOf/BestOfTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Transparent/TransparentTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Reverse/ReverseTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/OneRelocate/OneRelocateTSPSolver.h>
@@ -433,6 +433,50 @@ private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
 };
 
+class MTSATspLibInstance : public TspLibTestInstance
+{
+public:
+    MTSATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -18)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -13)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -8)), 1000));
+        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -3)), 1000));
+    }
+
+    TSPSolver* createSATSPSolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
+    {
+        SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
+        sa_solver->setScheduleCostFunction(cost_function);
+        sa_solver->setTemperatureScheduler(temperatureScheduler);
+        sa_solver->setMarkovChainLengthScale(1.f);
+        sa_solver->setMutations({SolutionGenerator::MutationType::BlockInsert,
+                                 SolutionGenerator::MutationType::BlockReverse,
+                                 SolutionGenerator::MutationType::VertexInsert});
+
+        return sa_solver;
+    }
+
+    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    {
+        BestOfTSPSolver* best_solver = strategy->createTSPSolver<BestOfTSPSolver>();
+        best_solver->setScheduleCostFunction(cost_function);
+        for (auto& ts : temperature_schedulers) {
+            best_solver->addTSPSolver(createSATSPSolver(strategy, ts.get()));
+        }
+
+        return best_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "MTSA";
+    }
+private:
+    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
+};
+
 class OneRelocate_TspLibInstance : public TspLibTestInstance
 {
 public:
@@ -553,7 +597,7 @@ public:
 		second_suint_solver->addTSPSolver(suint_solver);
 
 		TransparentTSPSolver* transparent_solver = strategy->createTSPSolver<TransparentTSPSolver>();
-		TheBestTSPSolver *best_of_solver = strategy->createTSPSolver<TheBestTSPSolver>();
+		BestOfTSPSolver *best_of_solver = strategy->createTSPSolver<BestOfTSPSolver>();
 		best_of_solver->addTSPSolver(transparent_solver);
 		best_of_solver->addTSPSolver(second_suint_solver);
 		best_of_solver->setScheduleCostFunction(cost_function);

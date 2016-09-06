@@ -12,7 +12,7 @@ namespace Scheduler
 	public:
 		WorkStop(size_t id, Run* run);
 
-		size_t getId();
+		std::size_t getId();
 
 		const Operation* getOperation() const;
 		void setOperation(const Operation* operation);

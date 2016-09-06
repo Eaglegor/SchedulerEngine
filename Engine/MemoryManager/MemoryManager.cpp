@@ -7,6 +7,8 @@
 
 namespace Scheduler
 {
+	MallocMemoryStore MemoryManager::internal_malloc_memory_store;
+	
 	MallocMemoryStore* MemoryManager::createMallocMemoryStore()
 	{
 		return &internal_malloc_memory_store;

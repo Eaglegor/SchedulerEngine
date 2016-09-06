@@ -12,7 +12,7 @@ namespace Scheduler
 	{
 	public:
 		Capacity();
-		Capacity(float d1, float d2, float d3, float d4);
+		Capacity(float d1, float d2 = 0, float d3 = 0, float d4 = 0);
 		Capacity(const Capacity &rhs);
 
 		const float& operator[](size_t index) const;
@@ -20,7 +20,7 @@ namespace Scheduler
 
 		float getValue(size_t dimension_index) const;
 		void setValue(size_t dimension_index, float value);
-		void setValues(float d1, float d2, float d3, float d4);
+		void setValues(float d1, float d2 = 0, float d3 = 0, float d4 = 0);
 
 		bool operator==(const Capacity &rhs) const;
 		bool operator!=(const Capacity &rhs) const;

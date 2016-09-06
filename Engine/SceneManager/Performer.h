@@ -15,6 +15,8 @@
 
 namespace Scheduler
 {
+	class Depot;
+	
 	/**
 		Class representing a human performer (e.g. driver of a vehicle).
 
@@ -41,6 +43,9 @@ namespace Scheduler
 		const ImmutableUnorderedSet<const Attribute*>& getSkills() const;
 		void setSkills(const ImmutableUnorderedSet<const Attribute*> &skills);
 
+		const Depot* getDepot() const;
+		void setDepot(const Depot* depot);
+		
 		const PerformerConstraints& constraints() const;
 		PerformerConstraints& constraints();
 
@@ -52,6 +57,8 @@ namespace Scheduler
 
 		std::unordered_set<const Attribute*> skills;
 
+		const Depot* depot;
+		
 		PerformerConstraints performer_constraints;
 	};
 }

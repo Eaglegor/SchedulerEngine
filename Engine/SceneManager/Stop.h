@@ -19,6 +19,7 @@ namespace Scheduler
 	class RouteActualizationAlgorithm;
 	class ArrivalTimeActualizationAlgorithm;
 	class DurationActualizationAlgorithm;
+	class Location;
 
 	class StopVisitor;
 	class ConstStopVisitor;

@@ -8,7 +8,7 @@ namespace Scheduler {
 	
 	class EUCLIDEANROUTINGSERVICE_EXPORT EuclideanRoutingService : public RoutingService {
 	public:
-		virtual Route calculateRoute(const Location &from, const Location &to,
+		virtual Route calculateRoute(const Site &from, const Site &to,
 									 const RoutingProfile &routing_profile) override;
 	};
 }

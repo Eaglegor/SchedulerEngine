@@ -10,6 +10,5 @@ namespace Scheduler
 	{
 	public:
 		static void cloneScheduleState(const Schedule* from, Schedule* to);
-		static void cloneSceneState(Scene* from, Scene* to);
 	};
 }
