@@ -246,7 +246,8 @@ void SolutionGeneratorClassic::vertexSwap()
 
 
 
-InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run *run, ScheduleCostFunction* scheduleCostFunction) : SolutionGenerator(run), schedule_cost_function(scheduleCostFunction)
+InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run *run) :
+    SolutionGenerator(run)
 {}
 
 void InstanceBasedSolutionGenerator::neighbour()
@@ -276,7 +277,7 @@ void InstanceBasedSolutionGenerator::neighbour (Run* anotherRun)
             }
         }
         if (operation_b_found) {
-            neighbour(0, operation_b_idx);
+            neighbour(0, operation_b_idx, false);
         } else {
             std::cout << "oops!";
         }
@@ -297,7 +298,7 @@ void InstanceBasedSolutionGenerator::neighbour (Run* anotherRun)
             }
         }
         if (operation_a_found) {
-            neighbour(operation_a_idx, N - 1);
+            neighbour(operation_a_idx, N - 1, true);
         } else {
             std::cout << "oops!";
         }
@@ -325,8 +326,18 @@ void InstanceBasedSolutionGenerator::neighbour (Run* anotherRun)
             }
         }
         if (operation_a_found && operation_b_found) {
-            if ((operation_a_idx + 1) < N) {
-                neighbour(operation_a_idx + 1, operation_b_idx);
+            if (operation_a_idx < (N - 1) &&
+                operation_b_idx > 0) {
+                const float random_value = float_distribution(random_engine, float_param_t(0.f, 1.f));
+                if (random_value < 0.5f) {
+                    neighbour(operation_a_idx + 1, operation_b_idx, false);
+                } else {
+                    neighbour(operation_a_idx, operation_b_idx - 1, true);
+                }
+            } else if (operation_a_idx < (N - 1)) {
+                neighbour(operation_a_idx + 1, operation_b_idx, false);
+            } else if (operation_b_idx > 0) {
+                neighbour(operation_a_idx, operation_b_idx - 1, true);
             }
         } else {
             std::cout << "oops!";
@@ -334,9 +345,13 @@ void InstanceBasedSolutionGenerator::neighbour (Run* anotherRun)
     }
 }
 
-void InstanceBasedSolutionGenerator::neighbour(size_t a, size_t b)
+void InstanceBasedSolutionGenerator::neighbour(size_t a, size_t b, bool alternative)
 {
-    if (a == b || ((a + 1) == b)) {
+    if (a == b) {
+        return;
+    }
+    if ((a + 1) == b) {
+        addEdgeWithVertexSwap(a, b);
         return;
     }
     switch (selectRandomMutation()) {
@@ -344,13 +359,21 @@ void InstanceBasedSolutionGenerator::neighbour(size_t a, size_t b)
         addEdgeWithBlockReverse(a, b);
         break;
     case MutationType::VertexInsert:
-        addEdgeWithVertexInsert(a, b);
+        if (alternative) {
+            addEdgeWithVertexInsert(b + 1, a);
+        } else {
+            addEdgeWithVertexInsert(a, b);
+        }
         break;
     case MutationType::VertexSwap:
         addEdgeWithVertexSwap(a, b);
         break;
     case MutationType::BlockInsert:
-        addEdgeWithBlockInsert(a, b);
+        if (alternative) {
+            addEdgeWithBlockInsert(a + 1, b + 1);
+        } else {
+            addEdgeWithBlockInsert(a, b);
+        }
         break;
     default:
         break;
@@ -361,6 +384,8 @@ void InstanceBasedSolutionGenerator::addEdgeWithBlockReverse(size_t a, size_t b)
 {
     if (a < b) {
         blockReverse(a, b + 1);
+    } else {
+        vertexSwap(a, b);
     }
 }
 
@@ -399,40 +424,6 @@ void InstanceBasedSolutionGenerator::setPopulations(std::vector<Run *> populatio
             this->populations.push_back(runPtr);
         }
     }
-}
-
-SolutionGenerator::MutationType InstanceBasedSolutionGenerator::selectBestMutation(long a, long b)
-{
-    MutationType result = MutationType::None;
-    Cost best_cost;
-    addEdgeWithBlockReverse(a, b);
-    {
-        const Cost cost = schedule_cost_function->calculateCost((*run_iter)->getSchedule());
-        discard();
-        if (result == MutationType::None || cost < best_cost) {
-            best_cost = cost;
-            result = MutationType::BlockReverse;
-        }
-    }
-    addEdgeWithVertexInsert(a, b);
-    {
-        const Cost cost = schedule_cost_function->calculateCost((*run_iter)->getSchedule());
-        discard();
-        if (result == MutationType::None || cost < best_cost) {
-            best_cost = cost;
-            result = MutationType::VertexInsert;
-        }
-    }
-    addEdgeWithVertexSwap(a, b);
-    {
-        const Cost cost = schedule_cost_function->calculateCost((*run_iter)->getSchedule());
-        discard();
-        if (result == MutationType::None || cost < best_cost) {
-            best_cost = cost;
-            result = MutationType::VertexSwap;
-        }
-    }
-    return result;
 }
 
 }

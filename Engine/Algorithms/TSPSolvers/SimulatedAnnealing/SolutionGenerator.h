@@ -79,23 +79,20 @@ private:
 class InstanceBasedSolutionGenerator : public SolutionGenerator
 {
 public:
-    InstanceBasedSolutionGenerator (Run* run, ScheduleCostFunction* schedule_cost_function);
+    InstanceBasedSolutionGenerator (Run* run);
 
     virtual void neighbour () override;
     void setPopulations(std::vector<Run*> populations);
 
 protected:
     void neighbour (Run* anotherRun);
-    void neighbour (size_t a, size_t b);
+    void neighbour (size_t a, size_t b, bool alternative);
     void addEdgeWithBlockReverse(size_t a, size_t b);
     void addEdgeWithVertexInsert(size_t a, size_t b);
     void addEdgeWithVertexSwap(size_t a, size_t b);
     void addEdgeWithBlockInsert(size_t a, size_t b);
 
-    MutationType selectBestMutation(long a, long b);
-
     std::vector<Run*> populations;
-    ScheduleCostFunction* schedule_cost_function;
 };
 
 }

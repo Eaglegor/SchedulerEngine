@@ -148,10 +148,11 @@ namespace Scheduler
             Run* temporaryRun = temporarySchedule.getSchedule()->getRuns().at(runIdx);
             runs.push_back(temporaryRun);
 
-            auto solution_generator = std::make_shared<InstanceBasedSolutionGenerator>(temporaryRun, schedule_cost_function);
+            auto solution_generator = std::make_shared<InstanceBasedSolutionGenerator>(temporaryRun);
             for (const auto mutation : allowed_mutations) {
                 solution_generator->enableMutation(mutation);
             }
+
             solution_generator->shuffle();
             solution_generator->store();
             generators.push_back(solution_generator);
