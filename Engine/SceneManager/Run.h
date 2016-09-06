@@ -80,6 +80,7 @@ namespace Scheduler
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
 		void setScheduleActualizationModel(ScheduleActualizationModel* model, ArrivalTimeActualizer* arrival_time_actualizer);
 		void setScheduleValidationModel(ScheduleValidationModel* model);
+		void adjustStopsRange(StopsList::iterator begin, StopsList::iterator end);
 
 	private:
 		WorkStop* createWorkStop(const Operation* operation);

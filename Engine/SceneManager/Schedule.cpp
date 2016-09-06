@@ -60,14 +60,27 @@ namespace Scheduler {
 
 		if (run_vehicle_binder) run_vehicle_binder->bindVehicle(r);
 
+		if(pos != runs.begin()) 
+		{
+			Run* prev_run = *std::prev(pos);
+			prev_run->adjustStopsRange(prev_run->getStops().begin(), r->getStops().begin());
+		}
+		
 		return runs.insert(pos, r);
 	}
 
 	void Schedule::destroyRun(RunsList::iterator pos) {
 
 		assert(runs_factory);
+		
+		if(pos != runs.begin()) 
+		{
+			Run* prev_run = *std::prev(pos);
+			prev_run->adjustStopsRange(prev_run->getStops().begin(), (*pos)->getStops().end());
+		}
+		
 		runs_factory->destroyObject(*pos);
-
+		
 		runs.erase(pos);
 		
 		arrival_time_actualizer.setDirty(true);

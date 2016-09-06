@@ -92,6 +92,7 @@ if(CPP_SCHEDULER_TESTS)
 
 		Test/SceneManager_Test_SceneContext.cpp
 		Test/SceneManager_Test_Scene.cpp
+		Test/SceneManager_Test_ScheduleVariant.cpp
 
 	)
 		

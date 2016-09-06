@@ -247,6 +247,18 @@ namespace Scheduler
 			if(last == end()) tail = first_value;
 		}
 		
+		void adjustRange(iterator begin, iterator end)
+		{
+			adjustRange(begin, end, std::distance(begin, end));
+		}
+		
+		void adjustRange(iterator begin, iterator end, size_t new_size)
+		{
+			head = *begin;
+			tail = *std::prev(end);
+			parent_end = end;
+		}
+		
 	private:
 		value_type getPrevValue(iterator iter)
 		{

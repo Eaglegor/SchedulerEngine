@@ -33,7 +33,7 @@ namespace Scheduler
 
 	bool RunBoundaryStop::containsOperation(const Operation * operation) const
 	{
-		return std::contains_key(operations, operation);
+		return util::contains_key(operations, operation);
 	}
 
 	const Location& RunBoundaryStop::getLocation() const

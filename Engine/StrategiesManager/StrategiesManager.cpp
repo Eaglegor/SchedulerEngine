@@ -44,7 +44,7 @@ namespace Scheduler
 
 	void StrategiesManager::destroyStrategy(Strategy* strategy)
 	{
-		assert(std::contains_key(strategies, strategy));
+		assert(util::contains_key(strategies, strategy));
 
 		strategies_factory.destroyObject(strategy);
 

@@ -7,6 +7,8 @@
 #include "ScheduleValidationModel.h"
 #include "Extensions/RunValidationAlgorithm.h"
 #include "WorkStop.h"
+#include "Schedule.h"
+#include <iostream>
 
 #include <iostream>
 
@@ -96,9 +98,9 @@ namespace Scheduler {
     Run::WorkStopsList::iterator Run::destroyWorkStop(WorkStopsList::iterator pos) {
         assert(stops_factory);
 
-        stops_factory->destroyObject(*pos);
-
 		auto iter = work_stops->erase(pos);
+		
+        stops_factory->destroyObject(*pos);
 		
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
 		duration_actualizer.setDirty(true);
@@ -134,11 +136,13 @@ namespace Scheduler {
     Run::~Run() {
         assert(stops_factory);
 
-        for(WorkStop* stop : *work_stops)
-        {
-            stops_factory->destroyObject(stop);
-        }
-        
+		auto iter = work_stops->begin();
+		while(iter != work_stops->end())
+		{
+			auto next = std::next(iter);
+			destroyWorkStop(iter);
+			iter = next;
+		}
         stops->clear();
     }
 
@@ -225,5 +229,10 @@ namespace Scheduler {
 	const Run::StopsList& Run::getStops() const
 	{
 		return *stops;
+	}
+	
+	void Run::adjustStopsRange(StopsList::iterator begin, StopsList::iterator end)
+	{
+		stops->adjustRange(begin, end, stops->size());
 	}
 }

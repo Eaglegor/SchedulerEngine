@@ -6,6 +6,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/TemporarySchedule.h>
 #include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
+#include <Engine/SceneManager/ScheduleVariant.h>
 #include "SolutionGenerator.h"
 #include "TemperatureScheduler.h"
 
@@ -135,16 +136,16 @@ namespace Scheduler
 
         auto runIter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
         const size_t runIdx = std::distance(run->getSchedule()->getRuns().begin(), runIter);
-        std::vector<TemporarySchedule> schedules;
+        std::vector<ScheduleVariant> schedules;
         std::vector<Run*> runs;
         std::vector<Cost> costs;
         std::vector<std::shared_ptr<InstanceBasedSolutionGenerator>> generators;
         const size_t population_size = threads_number * population_scale;
         for (size_t idx = 0; idx < population_size; ++idx) {
-            schedules.push_back(run->getSchedule()->getScene()->createTemporaryScheduleCopy(run->getSchedule()));
-            TemporarySchedule& temporarySchedule = schedules.back();
+            schedules.push_back(std::move(ScheduleVariant(run->getSchedule())));
+            ScheduleVariant& temporarySchedule = schedules.back();
 
-            Run* temporaryRun = temporarySchedule->getRuns().at(runIdx);
+            Run* temporaryRun = temporarySchedule.getSchedule()->getRuns().at(runIdx);
             runs.push_back(temporaryRun);
 
             auto solution_generator = std::make_shared<InstanceBasedSolutionGenerator>(temporaryRun, schedule_cost_function);

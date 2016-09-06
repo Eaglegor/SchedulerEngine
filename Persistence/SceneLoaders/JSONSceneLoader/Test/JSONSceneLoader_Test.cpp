@@ -155,7 +155,7 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 		Performer* Driver1 = scene->getContext().getPerformers()[0];
 		REQUIRE(strcmp(Driver1->getName(), "Driver1") == 0);
 		REQUIRE(Driver1->getSkills().size() == 1);
-		REQUIRE(std::contains_key(Driver1->getSkills(), scene->getContext().getAttribute("Driving")));
+		REQUIRE(util::contains_key(Driver1->getSkills(), scene->getContext().getAttribute("Driving")));
 		REQUIRE(Driver1->getDurationUnitCost() == Cost(0));
 		REQUIRE(Driver1->getActivationCost() == Cost(0));
 		REQUIRE(Driver1->constraints().availabilityWindows().get().size() == 1);
@@ -170,8 +170,8 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 		Vehicle* Vehicle1 = scene->getContext().getVehicles()[0];
 		REQUIRE(strcmp(Vehicle1->getName(), "Vehicle1") == 0);
 		REQUIRE(Vehicle1->getAttributes().size() == 2);
-		REQUIRE(std::contains_key(Vehicle1->getAttributes(), scene->getContext().getAttribute("Attr1")));
-		REQUIRE(std::contains_key(Vehicle1->getAttributes(), scene->getContext().getAttribute("Attr2")));
+		REQUIRE(util::contains_key(Vehicle1->getAttributes(), scene->getContext().getAttribute("Attr1")));
+		REQUIRE(util::contains_key(Vehicle1->getAttributes(), scene->getContext().getAttribute("Attr2")));
 		REQUIRE(Vehicle1->getDurationUnitCost() == Cost(0));
 		REQUIRE(Vehicle1->getDistanceUnitCost() == Cost(1));
 		REQUIRE(Vehicle1->getActivationCost() == Cost(0));

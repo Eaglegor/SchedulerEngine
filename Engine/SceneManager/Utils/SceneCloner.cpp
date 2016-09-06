@@ -7,16 +7,6 @@
 #include <unordered_map>
 
 namespace Scheduler {
-	
-		void SceneCloner::cloneSceneState(Scene* from, Scene* to)
-		{
-			for(Schedule* schedule : from->getSchedules())
-			{
-				Schedule* new_schedule = to->createSchedule(*schedule->getPerformer());
-				cloneScheduleState(schedule, new_schedule);
-			}
-		}
-		
 		void SceneCloner::cloneScheduleState(const Schedule* from, Schedule* to) 
 		{
 			to->setActualizationModel(from->getActualizationModel());

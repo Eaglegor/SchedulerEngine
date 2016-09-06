@@ -28,7 +28,7 @@ public:
 		{
 			for(const Scheduler::Attribute* requirement : operaton->constraints().performerSkillsRequirements().get())
 			{
-				is_valid = is_valid && std::contains_key(performer->getSkills(), requirement);
+				is_valid = is_valid && util::contains_key(performer->getSkills(), requirement);
 				if (!is_valid) break;
 			}
 		}
@@ -44,7 +44,7 @@ public:
 			{
 				for (const Scheduler::Attribute* requirement : operation->constraints().performerSkillsRequirements().get())
 				{
-					is_valid = is_valid && std::contains_key(performer->getSkills(), requirement);
+					is_valid = is_valid && util::contains_key(performer->getSkills(), requirement);
 					if (!is_valid) break;
 				}
 			}
