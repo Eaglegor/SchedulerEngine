@@ -27,7 +27,7 @@ namespace Scheduler
 		Patch(Patch &&rhs);
 		~Patch();
 		
-		bool operator=(Patch &&rhs);
+		Patch& operator=(Patch &&rhs);
 		
 		template<typename ActionType, typename... Args>
 		void performAction(Args&& ...args)

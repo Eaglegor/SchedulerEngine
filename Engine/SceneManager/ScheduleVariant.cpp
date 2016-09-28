@@ -44,6 +44,8 @@ namespace Scheduler
 		
 		rhs.original_schedule = nullptr;
 		rhs.new_schedule = nullptr;
+
+		return *this;
 	}
 	
 	void ScheduleVariant::apply() const

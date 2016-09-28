@@ -74,7 +74,7 @@ namespace Scheduler
 		state = State::OPEN;
 	}
 	
-	bool Patch::operator=(Patch&& rhs)
+	Patch& Patch::operator=(Patch&& rhs)
 	{
 		this->state = rhs.state;
 		this->base_version = rhs.base_version;
@@ -86,6 +86,8 @@ namespace Scheduler
 		rhs.base_version = 0;
 		rhs.current_version = 0;
 		rhs.memory_manager = nullptr;
+
+		return *this;
 	}
 
 	
