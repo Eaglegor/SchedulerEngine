@@ -1,0 +1,10 @@
+add_library(TaillardRoutingService SHARED TaillardRoutingService.h TaillardRoutingService.cpp)
+
+target_link_libraries(TaillardRoutingService Engine)
+
+set_target_properties(TaillardRoutingService PROPERTIES FOLDER "Services/Routing")
+
+cotire(TaillardRoutingService)
+
+include(GenerateExportHeader)
+generate_export_header(TaillardRoutingService EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TaillardRoutingService_export.h)

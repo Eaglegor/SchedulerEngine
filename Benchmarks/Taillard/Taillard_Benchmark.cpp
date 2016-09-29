@@ -1,4 +1,4 @@
-#include <Services/Routing/EuclideanRoutingService/EuclideanRoutingService.h>
+#include <Services/Routing/TaillardRoutingService/TaillardRoutingService.h>
 #include <Persistence/SceneLoaders/TaillardSceneLoader/TaillardSceneLoader.h>
 #include <chrono>
 
@@ -220,7 +220,7 @@ protected:
 	size_t total_used_vehicles;
 	float total_time;
 
-	Scheduler::EuclideanRoutingService routing_service;
+	Scheduler::TaillardRoutingService routing_service;
 	Scheduler::BenchmarkPublisher& publisher;
 	std::unique_ptr<Scheduler::Engine> engine;
 	Scheduler::Strategy* strategy;

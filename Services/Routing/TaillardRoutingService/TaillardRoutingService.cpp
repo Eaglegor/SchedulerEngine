@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 
-#include "EuclideanRoutingService.h"
+#include "TaillardRoutingService.h"
 
 #include <Engine/Concepts/RoutingProfile.h>
 #include <Engine/Concepts/SpeedDurationDistanceOperations.h>
@@ -12,7 +12,7 @@
 namespace Scheduler
 {
 
-	Route EuclideanRoutingService::calculateRoute(const Site &from, const Site &to,
+	Route TaillardRoutingService::calculateRoute(const Site &from, const Site &to,
 														const RoutingProfile &routing_profile) {
 		
 		auto x1 = from.getLatitude().getValue();

@@ -1,3 +1,3 @@
 add_subdirectory(CrowFlyRoutingService)
-add_subdirectory(EuclideanRoutingService)
+add_subdirectory(TaillardRoutingService)
 add_subdirectory(TspLibRoutingService)
