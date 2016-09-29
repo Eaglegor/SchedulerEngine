@@ -75,11 +75,11 @@ namespace Scheduler
             std::sort(operations.begin(), operations.end(), by_angle);
             Run* run = *schedule->createRun(schedule->getRuns().end(), depot_location, depot_location);
             while (!operations.empty() && schedule->isValid()) {
-                run->createWorkStop(run->getWorkStops().end(), operations.back());
+                auto iter = run->createWorkStop(run->getWorkStops().end(), operations.back());
                 if (schedule->isValid()) {
                     operations.pop_back();
                 } else {
-                    run->createWorkStop(run->getWorkStops().end(), operations.back());
+                    run->destroyWorkStop(iter);
                     break;
                 }
             }

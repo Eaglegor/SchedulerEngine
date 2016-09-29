@@ -6,9 +6,11 @@
 #include "Action.h"
 #include "Patch.h"
 
+#include <SceneEditor_export.h>
+
 namespace Scheduler
 {
-	class Checkpoint
+	class SCENEEDITOR_EXPORT Checkpoint
 	{
 	public:
 		Checkpoint(MemoryManager* memory_manager, std::size_t base_version) :
