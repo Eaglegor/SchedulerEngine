@@ -1,5 +1,6 @@
 #include "TotalDistanceRunCostFunction.h"
 
+#include <algorithm>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/Utils/Aggregators/DistanceAccumulator.h>

@@ -207,7 +207,7 @@ protected:
 		result.kpi.emplace(SCHEDULED_ORDERS_KPI_NAME, std::to_string(scheduled_orders) + " / " + std::to_string(total_orders));
 		result.kpi.emplace(COST_KPI_NAME, std::to_string(cost.getValue()) + " (" + std::to_string(deviation * 100) + "%) ");
 		result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(nanoseconds / 10000000.0f));
-		result.kpi.emplace(USED_VEHICLES_KPI_NAME, std::to_string(used_vehicles) + (used_vehicles != optimal_used_vehicles ? ( "("+ std::to_string(used_vehicles - optimal_used_vehicles) +")" ) : ""));
+		result.kpi.emplace(USED_VEHICLES_KPI_NAME, std::to_string(used_vehicles) + (used_vehicles != optimal_used_vehicles ? ( " ("+ (used_vehicles > optimal_used_vehicles ? std::string("+") : std::string("")) + std::to_string(used_vehicles - optimal_used_vehicles) +")" ) : ""));
 
 		total_cost += cost.getValue();
 		total_time += nanoseconds / 10000000.0f;
