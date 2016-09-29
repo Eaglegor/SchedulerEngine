@@ -37,16 +37,17 @@ namespace Scheduler
 		std::size_t customers_number;
 		float best_solution;
 		float vehicle_capacity;
-		float xdepot, ydepot;
+		std::int32_t xdepot, ydepot;
 
 		std::size_t customer_number;
-		float x, y, demand;
+		std::int32_t x, y;
+		float demand;
 
 		stream >> customers_number >> best_solution >> vehicle_capacity >> xdepot >> ydepot;
 
 		Site depot_location;
-		depot_location.setLatitude(Coordinate::createFromFloat(xdepot));
-		depot_location.setLongitude(Coordinate::createFromFloat(ydepot));
+		depot_location.setLatitude(Coordinate(xdepot));
+		depot_location.setLongitude(Coordinate(ydepot));
 
 		PerformerAssignedVehicleBinder* vehicle_binder = scene_manager->createRunVehicleBinder<PerformerAssignedVehicleBinder>();
 
@@ -85,7 +86,7 @@ namespace Scheduler
 				
 				stream >> customer_number >> x >> y >> demand;
 
-				Location* location = scene_context->createLocation(Site(Coordinate::createFromFloat(x), Coordinate::createFromFloat(y)));
+				Location* location = scene_context->createLocation(Site(Coordinate(x), Coordinate(y)));
 				Operation* work_operation = order->createWorkOperation(*location);
 				{
 					std::string op_name = name + ".Work";

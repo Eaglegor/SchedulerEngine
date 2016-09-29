@@ -15,10 +15,10 @@ namespace Scheduler
 	Route EuclideanRoutingService::calculateRoute(const Site &from, const Site &to,
 														const RoutingProfile &routing_profile) {
 		
-		auto x1 = fromFixedPoint<Coordinate::PRECISION>(from.getLatitude().getValue());
-		auto y1 = fromFixedPoint<Coordinate::PRECISION>(from.getLongitude().getValue());
-		auto x2 = fromFixedPoint<Coordinate::PRECISION>(to.getLatitude().getValue());
-		auto y2 = fromFixedPoint<Coordinate::PRECISION>(to.getLongitude().getValue());
+		auto x1 = from.getLatitude().getValue();
+		auto y1 = from.getLongitude().getValue();
+		auto x2 = to.getLatitude().getValue();
+		auto y2 = to.getLongitude().getValue();
 		
 		auto dx = x2 - x1;
 		auto dy = y2 - y1;
