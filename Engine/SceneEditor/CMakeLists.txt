@@ -12,6 +12,8 @@ add_library(SceneEditor SHARED
     Actions/ScrambleWorkStopsSubsequence.h Actions/ScrambleWorkStopsSubsequence.cpp
     Actions/RotateWorkStopsSubsequence.h Actions/RotateWorkStopsSubsequence.cpp
 	Actions/MoveRunWorkStopsSubsequence.h Actions/MoveRunWorkStopsSubsequence.cpp
+	Actions/AllocateOrder.h Actions/AllocateOrder.cpp
+	Actions/CreateRun.h Actions/CreateRun.cpp
 )
 
 set_target_properties(SceneEditor PROPERTIES FOLDER "Engine")

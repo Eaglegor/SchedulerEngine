@@ -20,12 +20,13 @@ namespace Scheduler
 		{}
 
 		template<typename ActionType, typename... Args>
-		void performAction(Args&& ...args)
+		const ActionType& performAction(Args&& ...args)
 		{
 			auto action = std::allocate_shared<ActionType>(MallocAllocator<ActionType>(memory_manager), std::forward<Args>(args)...);
 			action->perform();
 			actions.emplace_back(action);
 			++current_version;
+			return *action;
 		}
 
 		void applyPatch(Patch&& patch);

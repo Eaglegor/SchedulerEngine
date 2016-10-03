@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <utility>
+#include <exception>
 #include "Action.h"
 #include "Checkpoint.h"
 #include <Engine/MemoryManager/MemoryManager.h>
@@ -39,16 +40,17 @@ namespace Scheduler
 		std::size_t getCurrentVersion();
 		
 		template<typename ActionType, typename... Args>
-		void performAction(Args&& ...args)
+		const ActionType& performAction(Args&& ...args)
 		{
 			if(state != SceneEditor::State::OPEN)
 			{
 				STATIC_SIMPLE_LOG_ERROR("SceneEditor", "Trying to perform an action when in patching state");
-				return;
+				throw std::logic_error("Trying to perform an action when in patching state");
 			}
 			Checkpoint* current_checkpoint = getCurrentCheckpoint();
-			current_checkpoint->performAction<ActionType>(std::forward<Args>(args)...);
+			const ActionType& action = current_checkpoint->performAction<ActionType>(std::forward<Args>(args)...);
 			current_version = current_checkpoint->getCurrentVersion();
+			return action;
 		}
 
 	private:

@@ -22,4 +22,10 @@ namespace util
     {
         return std::find_if(collection.begin(), collection.end(), std::forward<UnaryPredicate>(predicate)) != collection.end();
     }
+    
+    template<typename T>
+    typename T::const_iterator find_iterator(T& collection, const typename T::value_type &value)
+	{
+		return std::find(collection.begin(), collection.end(), value);
+	}
 }

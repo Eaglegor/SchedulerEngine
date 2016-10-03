@@ -33,6 +33,7 @@ target_link_libraries(Engine
     ChainVRPSolver
     TSPOnlyVRPSolver
 	SweepVRPSolver
+	CWSavingsVRPSolver
     
 	SimpleTwoOptTSPSolver
 	SimulatedAnnealingTSPSolver

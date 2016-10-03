@@ -30,17 +30,18 @@ namespace Scheduler
 		Patch& operator=(Patch &&rhs);
 		
 		template<typename ActionType, typename... Args>
-		void performAction(Args&& ...args)
+		const ActionType& performAction(Args&& ...args)
 		{
 			assert(state == State::OPEN);
 			if(state != State::OPEN) {
 				STATIC_LOG_ERROR("Patch", "Trying to perform action while patch is in invalid state: {} instead of {}", static_cast<int>(state), static_cast<int>(State::OPEN));
-				return;
+				throw std::logic_error("Trying to perform an action when patch is in invalid state");
 			}
 			auto action = std::allocate_shared<ActionType>(MallocAllocator<ActionType>(memory_manager), std::forward<Args>(args)...);
 			action->perform();
 			actions.emplace_back(action);
 			++current_version;
+			return *action;
 		}
 		
 		std::size_t getBaseVersion();

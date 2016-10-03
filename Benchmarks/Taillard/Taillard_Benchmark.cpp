@@ -26,6 +26,7 @@
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Chain/ChainTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
+#include <Engine/Algorithms/VRPSolvers/CWSavings/CWSavingsVRPSolver.h>
 
 std::vector<std::string> datasets
 {
@@ -347,6 +348,48 @@ private:
     }
 };
 
+class CWSavings_TaillardTestInstance : public TaillardTestInstance
+{
+public:
+    CWSavings_TaillardTestInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TaillardTestInstance(datasets, publisher)
+    {
+    }
+
+    virtual VRPSolver* createVRPSolver(Strategy* strategy) override
+    {
+        ChainVRPSolver* chain_solver = strategy->createVRPSolver<ChainVRPSolver>();
+
+        CWSavingsVRPSolver* cw_savings_solver = strategy->createVRPSolver<CWSavingsVRPSolver>();
+		cw_savings_solver->setRoutingService(&routing_service);
+        chain_solver->appendSolver(cw_savings_solver);
+
+        TSPOnlyVRPSolver* tsponly_solver = strategy->createVRPSolver<TSPOnlyVRPSolver>(createTSPSolver(strategy));
+        chain_solver->appendSolver(tsponly_solver);
+
+        return chain_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "CWSavings";
+    }
+private:
+    TSPSolver* createTSPSolverSA (Strategy* strategy)
+    {
+        SimulatedAnnealingTSPSolver* tsp_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
+        tsp_solver->setScheduleCostFunction(strategy->createScheduleCostFunction<TotalDistanceScheduleCostFunction>());
+        tsp_solver->setTemperatureScheduler(new ListTemperatureScheduler(120, std::log(std::pow(10, -3)), 1000));
+        tsp_solver->setMarkovChainLengthScale(2.f);
+        return tsp_solver;
+    }
+
+    TSPSolver* createTSPSolver (Strategy* strategy)
+    {
+        return createTSPSolverSA(strategy);
+    }
+};
+
 int main(int argc, char **argv)
 {
 	std::unique_ptr<Scheduler::BenchmarkPublisher> publisher;
@@ -371,6 +414,11 @@ int main(int argc, char **argv)
 
     {
         Sweep_TaillardTestInstance test(datasets, *publisher);
+        test.run();
+    }
+    
+    {
+        CWSavings_TaillardTestInstance test(datasets, *publisher);
         test.run();
     }
 	

@@ -13,6 +13,9 @@
 #include <Engine/SceneManager/Location.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Order.h>
+#include <Engine/SceneEditor/SceneEditor.h>
+#include <Engine/SceneEditor/Actions/AllocateOrder.h>
+#include <Engine/SceneEditor/Actions/CreateRun.h>
 
 namespace Scheduler
 {
@@ -29,13 +32,13 @@ namespace Scheduler
         {
             ByAngle (const Site& center) : center_location(center)
             {}
-            bool operator () (Operation* lhs, Operation* rhs) const
+            bool operator () (Order* lhs, Order* rhs) const
             {
                 return angle(lhs) < angle(rhs);
             }
-            float angle (Operation* operation) const
+            float angle (Order* order) const
             {
-                return angle(operation->getLocation().getSite());
+                return angle(order->getWorkOperation()->getLocation().getSite());
             }
             float angle (const Site& location) const
             {
@@ -57,31 +60,41 @@ namespace Scheduler
 
         auto& schedules = scene->getSchedules();
         auto& orders = scene->getContext().getOrders();
-        std::vector<Operation*> operations;
+		
+        std::vector<Order*> sorted_orders;
+		
         for (auto order : orders) {
-			operations.push_back(order->getWorkOperation());
+			if(order->getWorkOperation())
+			{
+				sorted_orders.push_back(order);
+			}
         }
 
-        if (operations.empty()) {
+        if (sorted_orders.empty()) {
             return;
         }
 
+        SceneEditor scene_editor;
+        
         for (auto schedule : schedules) {
             const Location &depot_location = schedule->getPerformer()->getDepot()->getLocation();
             ByAngle by_angle(depot_location.getSite());
-            std::sort(operations.begin(), operations.end(), by_angle);
-            Run* run = *schedule->createRun(schedule->getRuns().end(), depot_location, depot_location);
-            while (!operations.empty() && schedule->isValid()) {
-                auto iter = run->createWorkStop(run->getWorkStops().end(), operations.back());
+            std::sort(sorted_orders.begin(), sorted_orders.end(), by_angle);
+            Schedule::RunsList::iterator run_iter = schedule->createRun(schedule->getRuns().end(), depot_location, depot_location);
+            while (!sorted_orders.empty()) {
+				int checkpoint = scene_editor.checkpoint();
+				scene_editor.performAction<AllocateOrder>(run_iter, (*run_iter)->getWorkStops().end(), sorted_orders.back());
                 if (schedule->isValid()) {
-                    operations.pop_back();
+					sorted_orders.pop_back();
+					scene_editor.commit();
                 } else {
-                    run->destroyWorkStop(iter);
+                    scene_editor.rollbackToCheckpoint(checkpoint);
                     break;
                 }
             }
+            scene_editor.commit();
 
-            if (operations.empty()) {
+            if (sorted_orders.empty()) {
                 break;
             }
         }

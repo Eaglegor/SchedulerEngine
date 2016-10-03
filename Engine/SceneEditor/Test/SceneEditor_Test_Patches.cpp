@@ -287,7 +287,7 @@ TEST_CASE("Scene editor patches", "[integration][functional][scene_editor]")
 			
 			checkOrder(run, {1, 2, 0, 3, 4});
 			
-			perform(2,3); // This action will have no effect because scene editor is in patching state
+			REQUIRE_THROWS(perform(2,3)); // This action will throw an exception because scene editor is in patching state
 			
 			checkOrder(run, {1, 2, 0, 3, 4});
 			
