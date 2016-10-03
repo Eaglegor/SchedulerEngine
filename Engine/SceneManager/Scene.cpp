@@ -35,6 +35,7 @@ namespace Scheduler {
 		schedule->setScene(this);
 		schedule->setRunsFactory(&runs_factory);
 		schedule->setStopsFactory(&stops_factory);
+		schedule->setStructuralChangesObserver(&structural_changes_observer);
 
         schedules.push_back(schedule);
 
@@ -56,6 +57,24 @@ namespace Scheduler {
 		this->scene_manager = scene_manager;
 	}
 
+	bool Scene::isValid() const
+	{
+		for(Schedule* schedule : schedules)
+		{
+			if(!schedule->isValid()) return false;
+		}
+		return true;
+	}
+
+	void Scene::addStructuralChangesListener(StructuralChangesListener* listener)
+	{
+		structural_changes_observer.addListener(listener);
+	}
+	
+	void Scene::removeStructuralChangesListener(StructuralChangesListener* listener)
+	{
+		structural_changes_observer.removeListener(listener);
+	}
 	
     Scene::~Scene() {
         for(Schedule* schedule : schedules)
@@ -63,5 +82,12 @@ namespace Scheduler {
             schedules_factory.destroyObject(schedule);
         }
     }
+    
+	SceneQueries& Scene::query()
+	{
+		if(!scene_queries) scene_queries.emplace(this);
+		return scene_queries.get();
+	}
+
 }
 

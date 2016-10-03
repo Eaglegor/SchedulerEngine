@@ -75,6 +75,13 @@ add_library(SceneManager SHARED
 	Extensions/StopValidationAlgorithm.h
 	Extensions/RunValidationAlgorithm.h
 	Extensions/ScheduleValidationAlgorithm.h
+	
+	Listeners/StructuralChangesListener.h
+	Listeners/StructuralChangesObserver.h Listeners/StructuralChangesObserver.cpp
+	
+	Queries/SceneQueries.h Queries/SceneQueries.cpp
+	Queries/OperationStopMappingQuery.h Queries/OperationStopMappingQuery.cpp
+	
 )
 
 set_target_properties(SceneManager PROPERTIES FOLDER "Engine")

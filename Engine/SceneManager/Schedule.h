@@ -23,6 +23,7 @@ namespace Scheduler
 	class RunVehicleBinder;
 	class ScheduleValidationModel;
 	class Location;
+	class StructuralChangesObserver;
 
 	/**
 		Class representing single performer's work shift.
@@ -76,6 +77,7 @@ namespace Scheduler
 		void setScene(Scene* scene);
 		void setRunsFactory(SceneObjectsFactory<Run> *factory);
 		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
+		void setStructuralChangesObserver(StructuralChangesObserver* observer);
 
 	private:
         size_t id;
@@ -98,7 +100,9 @@ namespace Scheduler
 		ScheduleValidationModel* schedule_validation_model;
 
 		RunVehicleBinder* run_vehicle_binder;
-
+		
 		ScheduleConstraints schedule_constraints;
+		
+		StructuralChangesObserver* structural_changes_observer;
     };
 }

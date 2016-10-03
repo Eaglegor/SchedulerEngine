@@ -186,7 +186,7 @@ TEST_CASE("SceneManager - SceneContext - Order")
 	REQUIRE(order != nullptr);
 	REQUIRE(std::string(order->getName()) == "");
 	REQUIRE(order->getStartOperation() == nullptr);
-	REQUIRE(order->getWorkOperations().empty());
+	REQUIRE(order->getWorkOperation() == nullptr);
 	REQUIRE(order->getEndOperation() == nullptr);
 	
 	order->setName("Order1");
@@ -219,43 +219,40 @@ TEST_CASE("SceneManager - SceneContext - Order - Operations")
 	
 	REQUIRE(start_operation->getLocation() == start_location);
 	REQUIRE(order->getStartOperation() == start_operation);
-	REQUIRE(order->getWorkOperations().empty());
+	REQUIRE(order->getWorkOperation() == nullptr);
 	REQUIRE(order->getEndOperation() == nullptr);
 	
 	Operation* start_operation2 = order->createStartOperation(start_location);
 	
 	REQUIRE(order->getStartOperation() == start_operation2);
-	REQUIRE(order->getWorkOperations().empty());
+	REQUIRE(order->getWorkOperation() == nullptr);
 	REQUIRE(order->getEndOperation() == nullptr);
 	
 	Operation* end_operation = order->createEndOperation(end_location);
 	
 	REQUIRE(end_operation->getLocation() == end_location);	
 	REQUIRE(order->getStartOperation() == start_operation2);
-	REQUIRE(order->getWorkOperations().empty());
+	REQUIRE(order->getWorkOperation() == nullptr);
 	REQUIRE(order->getEndOperation() == end_operation);
 	
 	Operation* end_operation2 = order->createEndOperation(end_location);
 
 	REQUIRE(order->getStartOperation() == start_operation2);
-	REQUIRE(order->getWorkOperations().empty());
+	REQUIRE(order->getWorkOperation() == nullptr);
 	REQUIRE(order->getEndOperation() == end_operation2);
 	
 	Operation* work_operation1 = order->createWorkOperation(work1_location);	
 	
 	REQUIRE(work_operation1->getLocation() == work1_location);	
 	REQUIRE(order->getStartOperation() == start_operation2);
-	REQUIRE(order->getWorkOperations().size() == 1);
-	REQUIRE(order->getWorkOperations()[0] == work_operation1);
+	REQUIRE(order->getWorkOperation() == work_operation1);
 	REQUIRE(order->getEndOperation() == end_operation2);
 	
 	Operation* work_operation2 = order->createWorkOperation(work2_location);	
 	
 	REQUIRE(work_operation2->getLocation() == work2_location);	
 	REQUIRE(order->getStartOperation() == start_operation2);
-	REQUIRE(order->getWorkOperations().size() == 2);
-	REQUIRE(order->getWorkOperations()[0] == work_operation1);
-	REQUIRE(order->getWorkOperations()[1] == work_operation2);
+	REQUIRE(order->getWorkOperation() == work_operation2);
 	REQUIRE(order->getEndOperation() == end_operation2);
 }
 

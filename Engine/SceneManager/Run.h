@@ -21,6 +21,7 @@ namespace Scheduler
 	class RoutingProfile;
 	class ScheduleActualizationModel;
 	class ScheduleValidationModel;
+	class StructuralChangesObserver;
 
 	/**
 		Class representing single performer trip which starts and ends in the specified locations.
@@ -81,6 +82,7 @@ namespace Scheduler
 		void setScheduleActualizationModel(ScheduleActualizationModel* model, ArrivalTimeActualizer* arrival_time_actualizer);
 		void setScheduleValidationModel(ScheduleValidationModel* model);
 		void adjustStopsRange(StopsList::iterator begin, StopsList::iterator end);
+		void setStructuralChangesObserver(StructuralChangesObserver* observer);
 
 	private:
 		WorkStop* createWorkStop(const Operation* operation);
@@ -103,8 +105,6 @@ namespace Scheduler
 		std::unique_ptr<StopsSublist> raw_work_stops;
 		std::unique_ptr<WorkStopsList> work_stops;
 		
-	private:
-		void invalidateRoutes();
-		void invalidateWorkStopRoutes(WorkStopsList::iterator iter);
+		StructuralChangesObserver* structural_changes_observer;
 	};
 }

@@ -14,6 +14,10 @@
 #include "ScheduleActualizationModel.h"
 
 #include "Constraints/Scene/SceneConstraints.h"
+#include <boost/optional.hpp>
+#include "Queries/SceneQueries.h"
+
+#include "Listeners/StructuralChangesObserver.h"
 
 namespace Scheduler
 {
@@ -23,6 +27,7 @@ namespace Scheduler
 	class SceneContext;
 	class Performer;
 	class SceneManager;
+	class SceneQueries;
 
     class SCENEMANAGER_EXPORT Scene
     {
@@ -42,6 +47,13 @@ namespace Scheduler
 		void setSceneManager(SceneManager* scene_manager);
 		SceneManager* getSceneManager() const;
 		
+		bool isValid() const;
+		
+		void addStructuralChangesListener(StructuralChangesListener* listener);
+		void removeStructuralChangesListener(StructuralChangesListener* listener);
+		
+		SceneQueries& query();
+		
     private:
         std::size_t id;
 
@@ -53,6 +65,10 @@ namespace Scheduler
 		SceneObjectsFactory<Run> runs_factory;
 		SceneObjectsFactory<WorkStop> stops_factory;
 		
+		StructuralChangesObserver structural_changes_observer;
+		
 		SceneManager* scene_manager;
+		
+		boost::optional<SceneQueries> scene_queries;
     };
 }

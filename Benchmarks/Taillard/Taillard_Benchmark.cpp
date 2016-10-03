@@ -178,7 +178,7 @@ protected:
 			scheduled_orders = 0;
 			for(Order* order : scene->getContext().getOrders())
 			{
-				Operation* operation = order->getWorkOperations()[0];
+				Operation* operation = order->getWorkOperation();
 
 				size_t occurances = 0;
 

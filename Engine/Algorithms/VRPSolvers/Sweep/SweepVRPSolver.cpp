@@ -59,10 +59,7 @@ namespace Scheduler
         auto& orders = scene->getContext().getOrders();
         std::vector<Operation*> operations;
         for (auto order : orders) {
-            auto& order_operations = order->getWorkOperations();
-            for (auto operation : order_operations) {
-                operations.push_back(operation);
-            }
+			operations.push_back(order->getWorkOperation());
         }
 
         if (operations.empty()) {

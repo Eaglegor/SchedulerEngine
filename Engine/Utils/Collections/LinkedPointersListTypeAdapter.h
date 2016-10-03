@@ -93,6 +93,11 @@ namespace Scheduler
 				return static_cast<AdoptedType*>(&*iter);
 			}
 			
+			typename CollectionType::iterator base() const
+			{
+				return iter;
+			}
+			
 		private:
 			typename CollectionType::iterator iter;
 		};

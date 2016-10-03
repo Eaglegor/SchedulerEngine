@@ -8,9 +8,8 @@
 #include "Extensions/RunValidationAlgorithm.h"
 #include "WorkStop.h"
 #include "Schedule.h"
-#include <iostream>
+#include "Listeners/StructuralChangesObserver.h"
 
-#include <iostream>
 
 namespace Scheduler {
 
@@ -23,7 +22,8 @@ namespace Scheduler {
             vehicle(nullptr),
             schedule_actualization_model(nullptr),
 			schedule_validation_model(nullptr),
-			arrival_time_actualizer(nullptr)
+			arrival_time_actualizer(nullptr),
+			structural_changes_observer(nullptr)
     {
 		auto start = stops_list.insert(pos, &start_stop);
 		auto end = stops_list.insert(pos, &end_stop);
@@ -71,6 +71,9 @@ namespace Scheduler {
 
     RunBoundaryStop *Run::allocateStartOperation(const Operation *operation) {
         start_stop.addOperation(operation);
+		
+		structural_changes_observer->afterStartOperationAdded(stops->begin(), operation);
+		
         return &start_stop;
     }
 
@@ -83,21 +86,31 @@ namespace Scheduler {
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
 		duration_actualizer.setDirty(true);
 
+		structural_changes_observer->afterWorkStopCreated(iter);
+		
         return iter;
     }
 
     RunBoundaryStop *Run::allocateEndOperation(const Operation *operation) {
         end_stop.addOperation(operation);
+		
+		structural_changes_observer->afterEndOperationAdded(std::prev(stops->end()), operation);
+		
         return &end_stop;
     }
 
     void Run::unallocateStartOperation(const Operation *operation) {
+		
+		structural_changes_observer->beforeStartOperationRemoved(stops->begin(), operation);
+		
         start_stop.removeOperation(operation);
     }
 
     Run::WorkStopsList::iterator Run::destroyWorkStop(WorkStopsList::iterator pos) {
         assert(stops_factory);
 
+		structural_changes_observer->beforeWorkStopDestroyed(pos);
+		
 		auto iter = work_stops->erase(pos);
 		
         stops_factory->destroyObject(*pos);
@@ -109,6 +122,9 @@ namespace Scheduler {
     }
 
     void Run::unallocateEndOperation(const Operation *operation) {
+		
+		structural_changes_observer->beforeEndOperationRemoved(std::prev(stops->end()), operation);
+		
         end_stop.removeOperation(operation);
     }
 
@@ -191,6 +207,8 @@ namespace Scheduler {
 	void Run::swapWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator second)
 	{
 		if(first == second) return;
+
+		structural_changes_observer->beforeWorkStopsSwapped(first, second);
 		
 		if(std::next(first) == second)
 		{
@@ -212,6 +230,8 @@ namespace Scheduler {
 
 	void Run::reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last)
 	{
+		structural_changes_observer->beforeWorkStopsReversed(first, last);
+		
 		work_stops->reverse(first, last);
 		
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
@@ -220,6 +240,8 @@ namespace Scheduler {
 
 	void Run::spliceOwnWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last)
 	{
+		structural_changes_observer->beforeWorkStopsSpliced(pos, first, last);
+		
 		work_stops->splice(pos, *work_stops, first, last);
 		
 		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
@@ -235,4 +257,10 @@ namespace Scheduler {
 	{
 		stops->adjustRange(begin, end, stops->size());
 	}
+	
+	void Run::setStructuralChangesObserver(StructuralChangesObserver* observer)
+	{
+		this->structural_changes_observer = observer;
+	}
+
 }

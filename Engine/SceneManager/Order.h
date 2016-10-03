@@ -40,8 +40,8 @@ namespace Scheduler
         const char* getName() const;
 		Operation* getStartOperation();
         const Operation* getStartOperation() const;
-        ImmutableVector<Operation*>& getWorkOperations();
-		const ImmutableVector<Operation*>& getWorkOperations() const;
+        Operation* getWorkOperation();
+		const Operation* getWorkOperation() const;
 		Operation* getEndOperation();
         const Operation* getEndOperation() const;
 
@@ -62,7 +62,7 @@ namespace Scheduler
         std::string name;
 
         Operation* start_operation;
-        std::vector<Operation*> work_operations;
+        Operation* work_operation;
         Operation* end_operation;
 
 		SceneObjectsFactory<Operation> *operations_factory;

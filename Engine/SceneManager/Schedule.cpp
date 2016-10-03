@@ -8,6 +8,7 @@
 #include "ScheduleValidationModel.h"
 #include "Extensions/ScheduleValidationAlgorithm.h"
 #include <iterator>
+#include "Listeners/StructuralChangesObserver.h"
 
 namespace Scheduler {
 
@@ -19,7 +20,8 @@ namespace Scheduler {
 			stops_factory(nullptr),
 			schedule_actualization_model(nullptr),
 			schedule_validation_model(nullptr),
-			run_vehicle_binder(nullptr)
+			run_vehicle_binder(nullptr),
+			structural_changes_observer(nullptr)
 	{
     }
 
@@ -55,6 +57,7 @@ namespace Scheduler {
 		r->setStopsFactory(stops_factory);
 		r->setScheduleActualizationModel(schedule_actualization_model, &arrival_time_actualizer);
 		r->setScheduleValidationModel(schedule_validation_model);
+		r->setStructuralChangesObserver(structural_changes_observer);
 
 		arrival_time_actualizer.setDirty(true);
 
@@ -66,12 +69,18 @@ namespace Scheduler {
 			prev_run->adjustStopsRange(prev_run->getStops().begin(), r->getStops().begin());
 		}
 		
-		return runs.insert(pos, r);
+		auto iter = runs.insert(pos, r);
+		
+		structural_changes_observer->afterRunCreated(iter);
+		
+		return iter;
 	}
 
 	void Schedule::destroyRun(RunsList::iterator pos) {
 
 		assert(runs_factory);
+		
+		structural_changes_observer->beforeRunDestroyed(pos);
 		
 		if(pos != runs.begin()) 
 		{
@@ -196,5 +205,9 @@ namespace Scheduler {
 	{
 		return stops;
 	}
-
+	
+	void Schedule::setStructuralChangesObserver(StructuralChangesObserver* observer)
+	{
+		this->structural_changes_observer = observer;
+	}
 }

@@ -7,6 +7,7 @@ namespace Scheduler {
     Order::Order(size_t id) :
             id(id),
             start_operation(nullptr),
+            work_operation(nullptr),
             end_operation(nullptr),
             operations_factory(nullptr)
     {
@@ -25,12 +26,12 @@ namespace Scheduler {
         return start_operation;
     }
 
-    ImmutableVector<Operation*>& Order::getWorkOperations() {
-        return work_operations;
+    Operation* Order::getWorkOperation() {
+        return work_operation;
     }
 
-	const ImmutableVector<Operation*>& Order::getWorkOperations() const {
-		return work_operations;
+	const Operation* Order::getWorkOperation() const {
+		return work_operation;
 	}
 
 	Operation* Order::getEndOperation() {
@@ -79,11 +80,12 @@ namespace Scheduler {
         assert(operations_factory);
         if(!operations_factory) return nullptr;
 
-        Operation* operation = operations_factory->createObject(location);
-		operation->setOrder(this);
-        this->work_operations.push_back(operation);
+		if(this->work_operation) operations_factory->destroyObject(this->work_operation);
+		
+        work_operation = operations_factory->createObject(location);
+		work_operation->setOrder(this);
 
-        return operation;
+        return work_operation;
     }
 
     Operation *Order::createEndOperation(const Location& location) {
@@ -100,10 +102,7 @@ namespace Scheduler {
 
     Order::~Order() {
         if(start_operation) operations_factory->destroyObject(start_operation);
+		if(work_operation) operations_factory->destroyObject(work_operation);
         if(end_operation) operations_factory->destroyObject(end_operation);
-        for(Operation* operation : work_operations)
-        {
-            operations_factory->destroyObject(operation);
-        }
     }
 }

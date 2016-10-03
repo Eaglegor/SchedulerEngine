@@ -85,9 +85,9 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(Order1_start->constraints().timeWindows().get()[0].getStartTime() - Units::hours_minutes(04, 0) == TimePoint(0));
 			REQUIRE(Order1_start->constraints().timeWindows().get()[0].getEndTime() - Units::hours_minutes(18, 0) == TimePoint(0));
 		}
-		REQUIRE(Order1->getWorkOperations().size() == 1);
+		REQUIRE(Order1->getWorkOperation() != nullptr);
 		{
-			Operation* Order1_work0 = Order1->getWorkOperations()[0];
+			Operation* Order1_work0 = Order1->getWorkOperation();
 			REQUIRE(strcmp(Order1_work0->getName(), "Order1.drop") == 0);
 			REQUIRE(Order1_work0->getLocation().getSite() == Order1_Site);
 			REQUIRE(Order1_work0->getDuration() == Units::minutes(10));
@@ -104,9 +104,9 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 		//REQUIRE(Order2->getVehicleRequirements().empty());
 		//REQUIRE(Order2->getPerformerSkillsRequirements().empty());
 		REQUIRE(Order2->getStartOperation() == nullptr);
-		REQUIRE(Order2->getWorkOperations().size() == 2);
+		REQUIRE(Order2->getWorkOperation() != nullptr);
 		{
-			Operation* Order2_work0 = Order2->getWorkOperations()[0];
+			Operation* Order2_work0 = Order2->getWorkOperation();
 			REQUIRE(strcmp(Order2_work0->getName(), "Order2.collection") == 0);
 			REQUIRE(Order2_work0->getLocation().getSite() == Order2_Pickup);
 			REQUIRE(Order2_work0->getDuration() == Units::minutes(10));
@@ -115,16 +115,6 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(Order2_work0->constraints().timeWindows().get().size() == 1);
 			REQUIRE(Order2_work0->constraints().timeWindows().get()[0].getStartTime() - Units::hours_minutes(10, 0) == TimePoint(0));
 			REQUIRE(Order2_work0->constraints().timeWindows().get()[0].getEndTime() - Units::hours_minutes(12, 0) == TimePoint(0));
-
-			Operation* Order2_work1 = Order2->getWorkOperations()[1];
-			REQUIRE(strcmp(Order2_work1->getName(), "Order2.delivery") == 0);
-			REQUIRE(Order2_work1->getLocation().getSite() == Order2_Drop);
-			REQUIRE(Order2_work1->getDuration() == Units::minutes(10));
-			REQUIRE(Order2_work1->getOrder() == Order2);
-			REQUIRE(Order2_work1->constraints().demand().get() == Capacity(-2, 0, 0, 0));
-			REQUIRE(Order2_work1->constraints().timeWindows().get().size() == 1);
-			REQUIRE(Order2_work1->constraints().timeWindows().get()[0].getStartTime() - Units::hours_minutes(12, 0) == TimePoint(0));
-			REQUIRE(Order2_work1->constraints().timeWindows().get()[0].getEndTime() - Units::hours_minutes(15, 0) == TimePoint(0));
 		}
 		REQUIRE(Order2->getEndOperation() == nullptr);
 
@@ -133,9 +123,9 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 		//REQUIRE(Order3->getVehicleRequirements().empty());
 		//REQUIRE(Order3->getPerformerSkillsRequirements().empty());
 		REQUIRE(Order3->getStartOperation() == nullptr);
-		REQUIRE(Order3->getWorkOperations().size() == 1);
+		REQUIRE(Order3->getWorkOperation() != nullptr);
 		{
-			Operation* Order3_work0 = Order3->getWorkOperations()[0];
+			Operation* Order3_work0 = Order3->getWorkOperation();
 			REQUIRE(strcmp(Order3_work0->getName(), "Order3.work") == 0);
 			REQUIRE(Order3_work0->getLocation().getSite() == Order3_Site);
 			REQUIRE(Order3_work0->getDuration() == Units::minutes(10));
@@ -204,19 +194,19 @@ TEST_CASE("Persistence - SceneLoaders - JSONSceneLoader", "[integration][functio
 			REQUIRE(run1->getWorkStops().size() == 3);
 			{
 				WorkStop* stop1 = *std::next(run1->getWorkStops().begin(), 0);
-				REQUIRE(stop1->getOperation() == scene->getContext().getOrders()[0]->getWorkOperations()[0]);
+				REQUIRE(stop1->getOperation() == scene->getContext().getOrders()[0]->getWorkOperation());
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop1->getAllocationTime().getStartTime() - Units::hours_minutes(8, 0) == TimePoint(0));
 				//REQUIRE(stop1->getAllocationTime().getEndTime() - Units::hours_minutes(8, 3) == TimePoint(0));
 
 				WorkStop* stop2 = *std::next(run1->getWorkStops().begin(), 1);
-				REQUIRE(stop2->getOperation() == scene->getContext().getOrders()[1]->getWorkOperations()[0]);
+				REQUIRE(stop2->getOperation() == scene->getContext().getOrders()[1]->getWorkOperation());
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop2->getAllocationTime().getStartTime() - Units::hours_minutes(9, 0) == TimePoint(0));
 				//REQUIRE(stop2->getAllocationTime().getEndTime() - Units::hours_minutes(9, 10) == TimePoint(0));
 
 				WorkStop* stop3 = *std::next(run1->getWorkStops().begin(), 2);
-				REQUIRE(stop3->getOperation() == scene->getContext().getOrders()[1]->getWorkOperations()[1]);
+				REQUIRE(stop3->getOperation() == scene->getContext().getOrders()[2]->getWorkOperation());
 				// Values after actualization don't match initial values in json
 				//REQUIRE(stop3->getAllocationTime().getStartTime() - Units::hours_minutes(10, 0) == TimePoint(0));
 				//REQUIRE(stop3->getAllocationTime().getEndTime() - Units::hours_minutes(11, 10) == TimePoint(0));
