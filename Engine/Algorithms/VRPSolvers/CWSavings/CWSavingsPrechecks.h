@@ -22,6 +22,7 @@ namespace Scheduler
 			
 			static bool isValidSaving(boost::optional<Run::WorkStopsList::iterator> from, boost::optional<Run::WorkStopsList::iterator> to)
 			{
+				if(from && to && (*from.value())->getRun() == (*to.value())->getRun()) return false;
 				return (!from || isLastWorkStop(from.value())) && (!to || isFirstWorkStop(to.value()));
 			}
 	};

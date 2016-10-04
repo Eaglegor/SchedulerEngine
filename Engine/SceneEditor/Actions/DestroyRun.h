@@ -7,10 +7,11 @@
 
 namespace Scheduler
 {
-	class SCENEEDITOR_EXPORT CreateRun : public Action
+	class SCENEEDITOR_EXPORT DestroyRun : public Action
 	{
 	public:
-		CreateRun(Schedule* schedule, Schedule::RunsList::const_iterator pos, const Location& from, const Location& to);
+		DestroyRun(Schedule* schedule, Schedule::RunsList::const_iterator pos);
+		virtual ~DestroyRun();
 		
 		virtual void perform();
 		virtual void rollback();
@@ -20,9 +21,7 @@ namespace Scheduler
 	private:
 		Schedule* schedule;
 		Schedule::RunsList::const_iterator pos;
-		const Location& from;
-		const Location& to;
-		
-		boost::optional<Schedule::RunsList::iterator> resulting_run;
+		Run* detached_run;
+		boost::optional<Schedule::RunsList::iterator> next_iterator;
 	};
 }

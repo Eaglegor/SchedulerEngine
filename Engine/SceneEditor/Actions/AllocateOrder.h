@@ -4,10 +4,11 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 #include <boost/optional.hpp>
+#include <SceneEditor_export.h>
 
 namespace Scheduler
 {
-	class AllocateOrder : public Action
+	class SCENEEDITOR_EXPORT AllocateOrder : public Action
 	{
 	public:
 		AllocateOrder(Schedule::RunsList::const_iterator run, Run::WorkStopsList::iterator pos, const Order* order);

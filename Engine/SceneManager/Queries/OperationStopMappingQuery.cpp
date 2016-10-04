@@ -75,7 +75,7 @@ namespace Scheduler
 		
 		stops.erase(operation);
 	}
-
+	
 	void OperationStopMappingQuery::beforeRunDestroyed(Schedule::RunsList::const_iterator iter)
 	{
 		if(dirty) return;

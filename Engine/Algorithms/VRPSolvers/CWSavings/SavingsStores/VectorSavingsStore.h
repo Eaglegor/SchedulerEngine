@@ -17,7 +17,7 @@ namespace Scheduler
 		using value_type = Saving;
 		
 		VectorSavingsStore():
-		less_function(std::less<Saving>()),
+		less_function(std::greater<Saving>()),
 		sorted(false)
 		{
 		}

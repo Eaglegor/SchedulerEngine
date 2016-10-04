@@ -92,11 +92,11 @@ namespace Scheduler
 		}
 	}
 	
-	void StructuralChangesObserver::beforeWorkStopsSpliced(Run::WorkStopsList::const_iterator pos, Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end)
+	void StructuralChangesObserver::beforeWorkStopsSpliced(Run* to_run, Run::WorkStopsList::const_iterator pos, Run* from_run, Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end)
 	{
 		for(StructuralChangesListener* listener : listeners)
 		{
-			listener->beforeWorkStopsSpliced(pos, range_begin, range_end);
+			listener->beforeWorkStopsSpliced(to_run, pos, from_run, range_begin, range_end);
 		}
 	}
 

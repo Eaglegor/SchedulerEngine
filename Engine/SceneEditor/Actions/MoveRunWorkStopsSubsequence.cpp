@@ -12,6 +12,7 @@ namespace Scheduler
 	MoveRunWorkStopsSubsequence::MoveRunWorkStopsSubsequence(ConstRunIterator run_iterator, ConstWorkStopIterator start_stop, ConstWorkStopIterator end_stop, ConstWorkStopIterator new_position) :
 		schedule((*run_iterator)->getSchedule()),
 		run(run_iterator),
+		from_run((*start_stop)->getRun()),
 		first(start_stop),
 		last(end_stop),
 		new_position(new_position),
@@ -22,12 +23,12 @@ namespace Scheduler
 	void MoveRunWorkStopsSubsequence::perform()
 	{
 		if(!action_needed) return;
-		(*run)->spliceOwnWorkStops(new_position, first, last);
+		(*run)->spliceWorkStops(new_position, first, last);
 	}
 
 	void MoveRunWorkStopsSubsequence::rollback()
 	{
 		if(!action_needed) return;
-		(*run)->spliceOwnWorkStops(last, first, new_position);
+		from_run->spliceWorkStops(last, first, new_position);
 	}
 }

@@ -8,6 +8,7 @@
 #include "Constraints/Schedule/ScheduleConstraints.h"
 #include <Engine/Utils/Collections/LinkedPointersList.h>
 #include "ArrivalTimeActualizer.h"
+#include <memory>
 
 #include <SceneManager_export.h>
 #include "ScheduleActualizationModel.h"
@@ -49,7 +50,11 @@ namespace Scheduler
 
 		const StopsList& getStops() const;
 		
-		void destroyRun(RunsList::iterator pos);
+		RunsList::iterator destroyRun(RunsList::iterator pos);
+		
+		RunsList::iterator detachRun(RunsList::const_iterator pos);
+		RunsList::iterator attachRun(RunsList::iterator pos, Run* run);
+		void destroyDetachedRun(Run* run);
 
         bool isValid() const;
 
@@ -72,6 +77,8 @@ namespace Scheduler
 
 		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
 		RunVehicleBinder* getRunVehicleBinder() const;
+		
+		
 		
 		// == framework internal ====================================
 		void setScene(Scene* scene);

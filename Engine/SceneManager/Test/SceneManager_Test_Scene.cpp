@@ -509,42 +509,42 @@ TEST_CASE("SceneManager - Scene - Run - Mutations")
 	
 	SECTION("Self splice")
 	{
-		r->spliceOwnWorkStops(r->getWorkStops().begin(), iter3, iter4);
+		r->spliceWorkStops(r->getWorkStops().begin(), iter3, iter4);
 		
 		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation3);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation2);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation4);
 		
-		r->spliceOwnWorkStops(r->getWorkStops().end(), iter1, iter2);
+		r->spliceWorkStops(r->getWorkStops().end(), iter1, iter2);
 
 		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation3);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation2);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation1);
 		
-		r->spliceOwnWorkStops(r->getWorkStops().begin(), iter4, end);
+		r->spliceWorkStops(r->getWorkStops().begin(), iter4, end);
 		
 		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation4);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation3);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation2);
 		
-		r->spliceOwnWorkStops(r->getWorkStops().end(), iter4, iter3);
+		r->spliceWorkStops(r->getWorkStops().end(), iter4, iter3);
 		
 		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation3);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation2);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation4);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation1);
 		
-		r->spliceOwnWorkStops(iter2, iter1, end);
+		r->spliceWorkStops(iter2, iter1, end);
 		
 		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation3);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation1);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 2))->getOperation() == operation2);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 3))->getOperation() == operation4);
 		
-		r->spliceOwnWorkStops(iter4, iter3, iter2);
+		r->spliceWorkStops(iter4, iter3, iter2);
 		
 		REQUIRE((*std::next(r->getWorkStops().begin(), 0))->getOperation() == operation2);
 		REQUIRE((*std::next(r->getWorkStops().begin(), 1))->getOperation() == operation3);

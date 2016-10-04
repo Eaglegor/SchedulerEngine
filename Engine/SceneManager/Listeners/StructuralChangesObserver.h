@@ -26,7 +26,7 @@ namespace Scheduler
 		
 		virtual void beforeWorkStopsSwapped(Run::WorkStopsList::const_iterator first, Run::WorkStopsList::const_iterator second);
 		virtual void beforeWorkStopsReversed(Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end);
-		virtual void beforeWorkStopsSpliced(Run::WorkStopsList::const_iterator pos, Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end);
+		virtual void beforeWorkStopsSpliced(Run* to_run, Run::WorkStopsList::const_iterator pos, Run* from_run, Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end);
 		
 	private:
 		std::unordered_set<StructuralChangesListener*> listeners;

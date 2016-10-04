@@ -81,7 +81,6 @@ add_library(SceneManager SHARED
 	
 	Queries/SceneQueries.h Queries/SceneQueries.cpp
 	Queries/OperationStopMappingQuery.h Queries/OperationStopMappingQuery.cpp
-	
 )
 
 set_target_properties(SceneManager PROPERTIES FOLDER "Engine")

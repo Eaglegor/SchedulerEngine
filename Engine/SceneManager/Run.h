@@ -73,7 +73,7 @@ namespace Scheduler
 		
 		void swapWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator second);
 		void reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last);
-		void spliceOwnWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last);
+		void spliceWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last);
 
 		bool isValid() const;
 
@@ -106,5 +106,9 @@ namespace Scheduler
 		std::unique_ptr<WorkStopsList> work_stops;
 		
 		StructuralChangesObserver* structural_changes_observer;
+		
+		bool is_detached;
+		
+		friend class Schedule;
 	};
 }

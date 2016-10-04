@@ -28,6 +28,7 @@ namespace Scheduler
 	private:
 		Schedule* schedule;
 		ConstRunIterator run;
+		Run* from_run;
 		WorkStopIterator new_position;
 		WorkStopIterator first;
 		WorkStopIterator last;

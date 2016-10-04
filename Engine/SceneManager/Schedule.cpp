@@ -76,25 +76,6 @@ namespace Scheduler {
 		return iter;
 	}
 
-	void Schedule::destroyRun(RunsList::iterator pos) {
-
-		assert(runs_factory);
-		
-		structural_changes_observer->beforeRunDestroyed(pos);
-		
-		if(pos != runs.begin()) 
-		{
-			Run* prev_run = *std::prev(pos);
-			prev_run->adjustStopsRange(prev_run->getStops().begin(), (*pos)->getStops().end());
-		}
-		
-		runs_factory->destroyObject(*pos);
-		
-		runs.erase(pos);
-		
-		arrival_time_actualizer.setDirty(true);
-	}
-
 	Schedule::~Schedule() {
 		clear();
 	}
@@ -209,5 +190,59 @@ namespace Scheduler {
 	void Schedule::setStructuralChangesObserver(StructuralChangesObserver* observer)
 	{
 		this->structural_changes_observer = observer;
+	}
+	
+	Schedule::RunsList::iterator Schedule::detachRun(RunsList::const_iterator pos)
+	{
+		Run* const r = *pos;
+		
+		structural_changes_observer->beforeRunDestroyed(pos);
+		
+		if(pos != runs.begin()) 
+		{
+			Run* prev_run = *std::prev(pos);
+			prev_run->adjustStopsRange(prev_run->getStops().begin(), (*pos)->getStops().end());
+		}
+		
+		auto iter = runs.erase(pos);
+		
+		r->is_detached = true;
+		
+		arrival_time_actualizer.setDirty(true);
+		
+		return iter;
+	}
+	
+	Schedule::RunsList::iterator Schedule::attachRun(RunsList::iterator pos, Run* run)
+	{
+		assert(run->is_detached && run->schedule == this);
+		
+		if(pos != runs.begin()) 
+		{
+			Run* prev_run = *std::prev(pos);
+			prev_run->adjustStopsRange(prev_run->getStops().begin(), run->getStops().begin());
+		}
+		
+		auto iter = runs.insert(pos, run);
+		run->is_detached = false;
+		
+		arrival_time_actualizer.setDirty(true);
+		structural_changes_observer->afterRunCreated(iter);
+		
+		return iter;
+	}
+	
+	void Schedule::destroyDetachedRun(Run* run)
+	{
+		assert(run->is_detached);
+		assert(run->schedule == this);
+		assert(runs_factory);
+		if(run->schedule == this && run->is_detached) runs_factory->destroyObject(run);
+	}
+	
+	Schedule::RunsList::iterator Schedule::destroyRun(RunsList::iterator pos) {
+		auto iter = detachRun(pos);
+		destroyDetachedRun(*pos);				
+		return iter;
 	}
 }

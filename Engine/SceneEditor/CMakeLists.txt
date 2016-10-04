@@ -14,6 +14,7 @@ add_library(SceneEditor SHARED
 	Actions/MoveRunWorkStopsSubsequence.h Actions/MoveRunWorkStopsSubsequence.cpp
 	Actions/AllocateOrder.h Actions/AllocateOrder.cpp
 	Actions/CreateRun.h Actions/CreateRun.cpp
+	Actions/DestroyRun.h Actions/DestroyRun.cpp
 )
 
 set_target_properties(SceneEditor PROPERTIES FOLDER "Engine")

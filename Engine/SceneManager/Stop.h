@@ -88,5 +88,7 @@ namespace Scheduler
 
 		ScheduleActualizationModel* schedule_actualizaton_model;
 		ScheduleValidationModel* schedule_validation_model;
+		
+		friend class Run;
 	};
 }
