@@ -40,26 +40,27 @@ namespace Scheduler
 		std::size_t getCurrentVersion();
 		
 		template<typename ActionType, typename... Args>
-		const ActionType& performAction(Args&& ...args)
+		typename ActionType::return_type performAction(Args&& ...args)
 		{
+			static_assert(std::is_base_of<ActionBase, ActionType>::value, "Incorrect action type");
+			
 			if(state != SceneEditor::State::OPEN)
 			{
-				STATIC_SIMPLE_LOG_ERROR("SceneEditor", "Trying to perform an action when in patching state");
+				logger.error("Trying to perform an action when in patching state");
 				throw std::logic_error("Trying to perform an action when in patching state");
 			}
 			Checkpoint* current_checkpoint = getCurrentCheckpoint();
-			const ActionType& action = current_checkpoint->performAction<ActionType>(std::forward<Args>(args)...);
-			current_version = current_checkpoint->getCurrentVersion();
-			return action;
+			return current_checkpoint->performAction<ActionType>(current_version, std::forward<Args>(args)...);
 		}
 
 	private:
 		std::size_t current_version;
 		Checkpoint* getCurrentCheckpoint();
 
-		MemoryManager memory_manager;
 		std::deque<std::shared_ptr<Checkpoint>> checkpoints;
 		
 		State state;
+		
+		Logger& logger;
 	};
 }

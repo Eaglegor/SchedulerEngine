@@ -8,6 +8,7 @@
 #include <Engine/SceneManager/RunBoundaryStop.h>
 #include <Engine/SceneManager/ConstStopVisitor.h>
 #include <Engine/Utils/Collections/Algorithms.h>
+#include <Engine/Utils/Optional.h>
 #include <Engine/Utils/CallableVisitorProxy.h>
 
 class RequirementsChecker : public Scheduler::ConstStopVisitor
@@ -20,14 +21,14 @@ public:
 	{
 	}
 
-	virtual void dispatch(const Scheduler::WorkStop* work_stop) override
+	virtual void dispatch(const Scheduler::WorkStop& work_stop) override
 	{
 		is_valid = true;
-		const Scheduler::Operation* operation = work_stop->getOperation();
-		const Scheduler::Vehicle* vehicle = work_stop->getRun()->getVehicle();
-		if (vehicle != nullptr && operation->constraints().vehicleAttributesRequirements().isSet())
+		const Scheduler::Operation& operation = work_stop.getOperation();
+		Scheduler::Optional<const Scheduler::Vehicle&> vehicle = work_stop.getRun().getVehicle();
+		if (vehicle && operation.constraints().vehicleAttributesRequirements().isSet())
 		{
-			for(const Scheduler::Attribute* requirement : operation->constraints().vehicleAttributesRequirements().get())
+			for(const Scheduler::Vehicle::Attribute& requirement : operation.constraints().vehicleAttributesRequirements().get())
 			{
 				is_valid = is_valid && util::contains_key(vehicle->getAttributes(), requirement);
 				if (!is_valid) break;
@@ -35,15 +36,15 @@ public:
 		}
 	}
 
-	virtual void dispatch(const Scheduler::RunBoundaryStop* run_boundary_stop) override
+	virtual void dispatch(const Scheduler::RunBoundaryStop& run_boundary_stop) override
 	{
 		is_valid = true;
-		for (const Scheduler::Operation* operation : run_boundary_stop->getOperations())
+		for (const Scheduler::Operation& operation : run_boundary_stop.getOperations())
 		{
-			const Scheduler::Vehicle* vehicle = run_boundary_stop->getRun()->getVehicle();
-			if (vehicle != nullptr && operation->constraints().vehicleAttributesRequirements().isSet())
+			Scheduler::Optional<const Scheduler::Vehicle&> vehicle = run_boundary_stop.getRun().getVehicle();
+			if (vehicle && operation.constraints().vehicleAttributesRequirements().isSet())
 			{
-				for (const Scheduler::Attribute* requirement : operation->constraints().vehicleAttributesRequirements().get())
+				for (const Scheduler::Vehicle::Attribute& requirement : operation.constraints().vehicleAttributesRequirements().get())
 				{
 					is_valid = is_valid && util::contains_key(vehicle->getAttributes(), requirement);
 					if (!is_valid) break;
@@ -62,7 +63,7 @@ private:
 	bool is_valid;
 };
 
-bool Scheduler::VehicleRequirementsStopValidationAlgorithm::isValid(const Stop * stop) const
+bool Scheduler::VehicleRequirementsStopValidationAlgorithm::isValid(const Stop& stop) const
 {
 	return CallableVisitorProxy().call<RequirementsChecker>(stop);
 }

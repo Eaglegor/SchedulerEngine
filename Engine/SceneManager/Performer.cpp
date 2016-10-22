@@ -1,64 +1,91 @@
 #include "Performer.h"
 
 namespace Scheduler {
-    Performer::Performer(size_t id):
+    Performer::Performer(std::size_t id, Optional<const Depot&> depot):
     id(id),
-    depot(nullptr)
+    depot(depot)
 	{
     }
 
-    size_t Performer::getId() const {
+    std::size_t Performer::getId() const 
+    {
         return id;
     }
 
-    const char* Performer::getName() const {
-        return name.c_str();
+    const String& Performer::getName() const 
+    {
+        return name;
     }
 
-	void Performer::setName(const char *name) {
+	void Performer::setName(const String& name) 
+	{
         this->name = name;
     }
 
-	const Cost& Performer::getDurationUnitCost() const {
+	const Cost& Performer::getDurationUnitCost() const 
+	{
 		return duration_unit_cost;
 	}
 
-	const Cost& Performer::getActivationCost() const {
+	const Cost& Performer::getActivationCost() const 
+	{
 		return activation_cost;
 	}
 
-	void Performer::setDurationUnitCost(const Cost &cost) {
+	void Performer::setDurationUnitCost(const Cost &cost) 
+	{
 		duration_unit_cost = cost;
 	}
 
-	void Performer::setActivationCost(const Cost &cost) {
+	void Performer::setActivationCost(const Cost &cost) 
+	{
 		activation_cost = cost;
 	}
 
-	const ImmutableUnorderedSet<const Attribute*> & Performer::getSkills() const{
+	const Performer::SkillsSet& Performer::getSkills() const
+	{
 		return skills;
 	}
 
-	void Performer::setSkills(const ImmutableUnorderedSet<const Attribute *> &skills) {
-		this->skills = skills;
+	void Performer::addSkill(const Performer::Skill& skill)
+	{
+		skills.emplace(skill);
 	}
+	
+	void Performer::removeSkill(const Performer::Skill& skill)
+	{
+		skills.erase(skill);
+	}
+	
+	void Performer::clearSkills()
+	{
+		skills.clear();
+	}
+	
 	const PerformerConstraints & Performer::constraints() const
 	{
 		return performer_constraints;
 	}
+	
 	PerformerConstraints & Performer::constraints()
 	{
 		return performer_constraints;
 	}
 	
-	const Depot* Performer::getDepot() const
+	Optional<const Depot&> Performer::getDepot() const
 	{
 		return depot;
 	}
 	
-	void Performer::setDepot(const Depot* depot)
+	bool Performer::operator==(const Performer& rhs) const
 	{
-		this->depot = depot;
+		return id == rhs.id && this == &rhs;
 	}
+	
+	bool Performer::operator!=(const Performer& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
 }
 

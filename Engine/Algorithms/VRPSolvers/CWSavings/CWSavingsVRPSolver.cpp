@@ -13,7 +13,7 @@
 #include <Engine/SceneManager/Depot.h>
 #include <Engine/SceneEditor/Actions/CreateRun.h>
 #include <Engine/SceneEditor/Actions/DestroyRun.h>
-#include <Engine/SceneEditor/Actions/MoveRunWorkStopsSubsequence.h>
+#include <Engine/SceneEditor/Actions/MoveWorkStops.h>
 #include <Engine/SceneEditor/Actions/AllocateOrder.h>
 #include <Engine/Utils/Collections/Algorithms.h>
 #include "CWSavingsPrechecks.h"
@@ -25,21 +25,20 @@ namespace Scheduler
 	using SavingsStore = VectorSavingsStore<ClassicSaving>;
 	using SavingsGenerator = ClassicSavingsGenerator;
 	
-	void CWSavingsVRPSolver::optimize(Scene* scene) const
+	void CWSavingsVRPSolver::optimize(Scene& scene) const
 	{
-		if(!routing_service) return; // We can't calculate routes - so we can't optimize scene
+		if(!routing_service) return;
 		
 		SavingsStore savings_list;
-		SavingsGenerator generator(routing_service);
+		SavingsGenerator generator(routing_service.get());
 		generator.generateSavings(scene, savings_list);
 		
 		SceneEditor scene_editor;
 		
-		size_t index = 0;
 		for(SavingsStore::value_type saving : savings_list)
 		{
-			Order* i = saving.i;
-			Order* j = saving.j;
+			const Order& i = saving.i;
+			const Order& j = saving.j;
 			
 			int checkpoint = scene_editor.checkpoint();
 			
@@ -47,7 +46,7 @@ namespace Scheduler
 			
 			if(success)
 			{
-				if(scene->isValid()){
+				if(scene.isValid()){
 					scene_editor.commit();
 				}
 				else 
@@ -58,61 +57,52 @@ namespace Scheduler
 		};
 	}
 
-	bool CWSavingsVRPSolver::performAction(Scene* scene, SceneEditor& editor, Order* i, Order* j) const
+	bool CWSavingsVRPSolver::performAction(Scene& scene, SceneEditor& editor, const Order& i, const Order& j) const
 	{
-		auto i_stop_iter = scene->query().operationStopMapping().findWorkStop(i->getWorkOperation());
-		auto j_stop_iter = scene->query().operationStopMapping().findWorkStop(j->getWorkOperation());
-		
-		Run* ir = i_stop_iter ? (*i_stop_iter.value())->getRun() : nullptr;
-		Run* jr = j_stop_iter ? (*j_stop_iter.value())->getRun() : nullptr;
+		auto i_stop_iter = scene.query().operationStopMapping().findWorkStop(i.getWorkOperation().get());
+		auto j_stop_iter = scene.query().operationStopMapping().findWorkStop(j.getWorkOperation().get());
 		
 		if(!CWSavingsPrechecks::isValidSaving(i_stop_iter, j_stop_iter)) 
 		{
 			return false;
 		}
 		
-		WorkStop* i_stop = i_stop_iter ? *i_stop_iter.value() : nullptr;
-		WorkStop* j_stop = j_stop_iter ? *j_stop_iter.value() : nullptr;
-		
-		if(!i_stop && !j_stop )
+		if(!i_stop_iter && !j_stop_iter )
 		{
-			for(Schedule* schedule : scene->getSchedules())
+			for(Schedule& schedule : scene.getSchedules())
 			{
-				if(schedule->getRuns().empty())
+				if(schedule.getRuns().empty())
 				{
-					Schedule::RunsList::iterator run_iter = editor.performAction<CreateRun>(schedule, schedule->getRuns().end(), schedule->getPerformer()->getDepot()->getLocation(), schedule->getPerformer()->getDepot()->getLocation()).result().value();
-					editor.performAction<AllocateOrder>(run_iter, (*run_iter)->getWorkStops().end(), i);
-					if(i != j) editor.performAction<AllocateOrder>(run_iter, (*run_iter)->getWorkStops().end(), j);
+					Run& run = *editor.performAction<CreateRun>(schedule, schedule.getRuns().end(), schedule.getPerformer().getDepot()->getLocation(), schedule.getPerformer().getDepot()->getLocation());
+					editor.performAction<AllocateOrder>(run, run.getWorkStops().end(), i);
+					if(i != j) editor.performAction<AllocateOrder>(run, run.getWorkStops().end(), j);
 					break;
 				}
 			}
 		}
-		if(!i_stop && j_stop )
+		if(!i_stop_iter && j_stop_iter )
 		{
-			Schedule::RunsList::const_iterator run_iter = util::find_iterator(j_stop->getRun()->getSchedule()->getRuns(), j_stop->getRun());
-			editor.performAction<AllocateOrder>(run_iter, (*run_iter)->getWorkStops().begin(), i);
+			Run& run = *j_stop_iter.get()->getRun().getSchedule().findRun(j_stop_iter.get()->getRun());
+			editor.performAction<AllocateOrder>(run, run.getWorkStops().begin(), i);
 		}
-		if(i_stop && !j_stop)
+		if(i_stop_iter && !j_stop_iter)
 		{
-			Schedule::RunsList::const_iterator run_iter = util::find_iterator(i_stop->getRun()->getSchedule()->getRuns(), i_stop->getRun());
-			editor.performAction<AllocateOrder>(run_iter, (*run_iter)->getWorkStops().end(), j);
+			Run& run = *i_stop_iter.get()->getRun().getSchedule().findRun(i_stop_iter.get()->getRun());
+			editor.performAction<AllocateOrder>(run, run.getWorkStops().end(), j);
 		}
-		if(i_stop && j_stop )
+		if(i_stop_iter && j_stop_iter )
 		{
-			Run* i_run = i_stop->getRun();
-			auto i_run_iter = std::find(i_run->getSchedule()->getRuns().begin(), i_run->getSchedule()->getRuns().end(), i_run);
+			Run& i_run = *i_stop_iter.get()->getRun().getSchedule().findRun(i_stop_iter.get()->getRun());
+			Run& j_run = *j_stop_iter.get()->getRun().getSchedule().findRun(j_stop_iter.get()->getRun());
 			
-			Run* j_run = j_stop->getRun();
-			auto j_run_iter = std::find(j_run->getSchedule()->getRuns().begin(), j_run->getSchedule()->getRuns().end(), j_run);
-			
-			editor.performAction<MoveRunWorkStopsSubsequence>(i_run_iter, j_run->getWorkStops().begin(), j_run->getWorkStops().end(), i_run->getWorkStops().end());
-			editor.performAction<DestroyRun>(j_run->getSchedule(), j_run_iter);
+			editor.performAction<MoveWorkStops>(j_run, j_run.getWorkStops().begin(), j_run.getWorkStops().end(), i_run, i_run.getWorkStops().end());
+			editor.performAction<DestroyRun>(j_run.getSchedule(), j_run.getSchedule().findRun(j_run));
 		}
 		
 		return true;
 	}
 	
-	void CWSavingsVRPSolver::setRoutingService(RoutingService* routing_service)
+	void CWSavingsVRPSolver::setRoutingService(const RoutingService& routing_service)
 	{
 		this->routing_service = routing_service;
 	}

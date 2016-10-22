@@ -10,7 +10,7 @@
 
 namespace Scheduler
 {
-	class Action;
+	class ActionBase;
 	
 	class SCENEEDITOR_EXPORT Patch
 	{
@@ -30,25 +30,24 @@ namespace Scheduler
 		Patch& operator=(Patch &&rhs);
 		
 		template<typename ActionType, typename... Args>
-		const ActionType& performAction(Args&& ...args)
+		typename ActionType::return_type performAction(Args&& ...args)
 		{
 			assert(state == State::OPEN);
 			if(state != State::OPEN) {
-				STATIC_LOG_ERROR("Patch", "Trying to perform action while patch is in invalid state: {} instead of {}", static_cast<int>(state), static_cast<int>(State::OPEN));
+				logger.error("Trying to perform action while patch is in invalid state: {} instead of {}", static_cast<int>(state), static_cast<int>(State::OPEN));
 				throw std::logic_error("Trying to perform an action when patch is in invalid state");
 			}
-			auto action = std::allocate_shared<ActionType>(MallocAllocator<ActionType>(memory_manager), std::forward<Args>(args)...);
-			action->perform();
+			auto action = std::allocate_shared<ActionType>(MallocAllocator<ActionType>(), std::forward<Args>(args)...);
 			actions.emplace_back(action);
 			++current_version;
-			return *action;
+			return action->perform();
 		}
 		
 		std::size_t getBaseVersion();
 		std::size_t getCurrentVersion();
 		State getState();
 		
-		void initialize(MemoryManager* memory_manager, std::size_t base_version);
+		void initialize(std::size_t base_version);
 
 		void hold();
 		void recall();
@@ -59,7 +58,7 @@ namespace Scheduler
 		State state;
 		std::size_t base_version;
 		std::size_t current_version;
-		MemoryManager* memory_manager;
-		std::deque<std::shared_ptr<Action>> actions;
+		std::deque<std::shared_ptr<ActionBase>> actions;
+		Logger& logger;
 	};
 }

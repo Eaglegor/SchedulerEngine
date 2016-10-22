@@ -9,6 +9,20 @@ endif()
 
 set(CPP_SCHEDULER_BUILD_ENABLE_CONAN TRUE CACHE BOOL "If enabled, conan will be responsible for updating dependencies")
 set(CPP_SCHEDULER_BUILD_ENABLE_COTIRE FALSE CACHE BOOL "If enabled, precompiled headers and unity builds will be enabled (provided by Cotire)")
+
+set(CPP_SCHEDULER_BUILD_ENABLE_IWYU FALSE CACHE BOOL "If enabled, google include-what-you-use (if present) will be used during the build to suggest includes optimizations")
+
+if(CPP_SCHEDULER_BUILD_ENABLE_IWYU)
+	find_program(iwyu_path NAMES include-what-you-use iwyu)
+	if(iwyu_path)
+		message(STATUS "IWYU found")
+		set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+	elseif()
+		message(WARNING "IWYU not found. Disabling it...")
+		set(CPP_SCHEDULER_BUILD_ENABLE_IWYU FALSE)
+	endif()
+endif()
+
 set(CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY CACHE PATH "Path to the benchmark data directory")
 
 set(CPP_SCHEDULER_ENGINE TRUE CACHE BOOL "If enabled, engine will be built")

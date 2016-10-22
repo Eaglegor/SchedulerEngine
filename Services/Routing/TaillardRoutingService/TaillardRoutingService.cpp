@@ -13,7 +13,7 @@ namespace Scheduler
 {
 
 	Route TaillardRoutingService::calculateRoute(const Site &from, const Site &to,
-														const RoutingProfile &routing_profile) {
+														const RoutingProfile &routing_profile) const {
 		
 		auto x1 = from.getLatitude().getValue();
 		auto y1 = from.getLongitude().getValue();

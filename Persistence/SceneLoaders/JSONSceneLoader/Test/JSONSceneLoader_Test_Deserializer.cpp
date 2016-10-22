@@ -288,8 +288,6 @@ void checkVehicle(const boost::property_tree::ptree &tree, const Scheduler::Vehi
 {
 	INFO("Checking vehicle");
 
-	std::string name = tree.get<std::string>("name");
-
 	const boost::property_tree::ptree &availability_windows = tree.get_child("availability_windows");
 	const boost::property_tree::ptree &attributes = tree.get_child("attributes");
 	const boost::property_tree::ptree &capacity = tree.get_child("capacity");

@@ -2,32 +2,25 @@
 
 namespace Scheduler
 {
-	AllocateOrder::AllocateOrder(Schedule::RunsList::const_iterator run, Run::WorkStopsList::iterator pos, const Order* order):
+	AllocateOrder::AllocateOrder(Run& run, Run::ConstWorkStopIterator pos, const Order& order):
 	run(run),
 	pos(pos),
 	order(order)
 	{}
 	
-	void AllocateOrder::perform()
+	Optional<Run::WorkStopIterator> AllocateOrder::perform()
 	{
-		Run* r = *run;
-		if(order->getStartOperation()) r->allocateStartOperation(order->getStartOperation());
-		if(order->getWorkOperation()) result_work_stop = r->createWorkStop(pos, order->getWorkOperation());
-		if(order->getEndOperation()) r->allocateEndOperation(order->getEndOperation());
+		if(order.getStartOperation()) run.allocateStartOperation(order.getStartOperation().get());
+		if(order.getWorkOperation()) result_work_stop = run.createWorkStop(pos, order.getWorkOperation().get());
+		if(order.getEndOperation()) run.allocateEndOperation(order.getEndOperation().get());
+		return result_work_stop;
 	}
 	
 	void AllocateOrder::rollback()
 	{
-		Run* r = *run;
-		if(order->getStartOperation()) r->unallocateStartOperation(order->getStartOperation());
-		if(order->getWorkOperation()) r->destroyWorkStop(result_work_stop.value());
-		if(order->getEndOperation()) r->unallocateEndOperation(order->getEndOperation());
-		result_work_stop = boost::none;
+		if(order.getStartOperation()) run.unallocateStartOperation(order.getStartOperation().get());
+		if(order.getWorkOperation()) run.destroyWorkStop(result_work_stop.get());
+		if(order.getEndOperation()) run.unallocateEndOperation(order.getEndOperation().get());
+		result_work_stop = None;
 	}
-	
-	boost::optional<Run::WorkStopsList::iterator> AllocateOrder::getResultWorkStop() const
-	{
-		return result_work_stop;
-	}
-
 }

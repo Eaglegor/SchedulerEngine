@@ -17,14 +17,23 @@ namespace Scheduler
 		return location;
 	}
 	
-	const char* Depot::getName() const
+	const String& Depot::getName() const
 	{
-		return name.c_str();
+		return name;
 	}
 
-	void Depot::setName(const char* name)
+	void Depot::setName(const String& name)
 	{
 		this->name = name;
 	}
-
+	
+	bool Depot::operator==(const Depot& rhs) const
+	{
+		return id == rhs.id && this == &rhs;
+	}
+	
+	bool Depot::operator!=(const Depot& rhs) const
+	{
+		return !(*this == rhs);
+	}
 }

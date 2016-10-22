@@ -8,22 +8,22 @@ namespace Scheduler
 	{
 	}
 
-    void ChainTSPSolver::optimize(Schedule* schedule) const
+    void ChainTSPSolver::optimize(Schedule& schedule) const
 	{
-        for (auto solver : this->tsp_solvers) {
-            solver->optimize(schedule);
+        for (const TSPSolver& solver : tsp_solvers) {
+            solver.optimize(schedule);
         }
 	}
 
-	void ChainTSPSolver::optimize(Run* run) const
+	void ChainTSPSolver::optimize(Run& run) const
 	{
-        for (auto solver : this->tsp_solvers) {
-            solver->optimize(run);
+        for (const TSPSolver& solver : this->tsp_solvers) {
+            solver.optimize(run);
         }
 	}
 
-    void ChainTSPSolver::addTSPSolver(TSPSolver* aTSPSolver)
+    void ChainTSPSolver::addTSPSolver(const TSPSolver& aTSPSolver)
 	{
-        this->tsp_solvers.push_back(aTSPSolver);
+        tsp_solvers.emplace_back(aTSPSolver);
 	}
 }

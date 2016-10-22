@@ -2,28 +2,23 @@
 
 namespace Scheduler
 {
-	CreateRun::CreateRun(Schedule* schedule, Schedule::RunsList::const_iterator pos, const Location& from, const Location& to):
+	CreateRun::CreateRun(Schedule& schedule, Schedule::ConstRunIterator pos, const Location& from, const Location& to):
 	schedule(schedule),
 	pos(pos),
 	from(from),
 	to(to)
 	{}
 	
-	void CreateRun::perform()
+	Schedule::RunIterator CreateRun::perform()
 	{
-		resulting_run = schedule->createRun(pos, from, to);
+		resulting_run = schedule.createRun(pos, from, to);
+		return resulting_run.value();
 	}
 	
 	void CreateRun::rollback()
 	{
-		schedule->destroyRun(resulting_run.value());
-		resulting_run = boost::none;
+		if(resulting_run) schedule.destroyRun(resulting_run.value());
+		resulting_run = None;
 	}
-	
-	boost::optional<Schedule::RunsList::iterator> CreateRun::result() const
-	{
-		return resulting_run;
-	}
-
 
 }

@@ -1,8 +1,7 @@
 #include "JSONStrategyLoader.h"
 
 #include <assert.h>
-#include <Engine/StrategiesManager/StrategiesManager.h>
-#include <Engine/StrategiesManager/Strategy.h>
+#include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <fstream>
 
 #include "LoaderImpl.h"
@@ -12,39 +11,32 @@
 
 namespace Scheduler
 {
-	JSONStrategyLoader::JSONStrategyLoader(StrategiesManager * strategies_manager):
-	strategies_manager(strategies_manager)
+	JSONStrategyLoader::JSONStrategyLoader(AlgorithmsManager& algorithms_manager):
+	algorithms_manager(algorithms_manager)
 	{
 	}
 
-	Strategy * JSONStrategyLoader::loadStrategy(std::istream & stream) const
+	const VRPSolver& JSONStrategyLoader::loadVRPStrategy(std::istream& stream) const
 	{
-		assert(strategies_manager);
 		assert(stream.good());
-
-		Strategy* strategy = strategies_manager->createStrategy();
-
-		LoaderImpl loader_impl(strategy);
+		
+		LoaderImpl loader_impl(algorithms_manager);
 
 		boost::property_tree::ptree desc;
 		boost::property_tree::read_json(stream, desc);
 
 		const boost::property_tree::ptree& child = desc.get_child("root_vrp_solver");
 
-		VRPSolver* root_solver = loader_impl.loadVRPSolver(child);
-
-		strategy->setRootVRPSolver(root_solver);
-
-		return strategy;
+		return loader_impl.loadVRPSolver(child);
 	}
 
-	Strategy * JSONStrategyLoader::loadStrategy(const std::string & filename) const
+	const VRPSolver& JSONStrategyLoader::loadVRPStrategy(const String& filename) const
 	{
 		std::ifstream file;
 		file.open(filename);
 
 		assert(file.is_open());
 
-		return loadStrategy(file);
+		return loadVRPStrategy(file);
 	}
 }

@@ -12,31 +12,39 @@
 
 namespace Scheduler {
 
-    Scene::Scene(size_t id, const SceneContext &context):
+    Scene::Scene(size_t id, const SceneContext &context, SceneManager& scene_manager):
 	id(id),
 	context(context),
-	scene_manager(nullptr)
-	{}
+	scene_manager(scene_manager)
+	{
+	}
 
-    std::size_t Scene::getId() const {
+    std::size_t Scene::getId() const 
+    {
         return id;
     }
     
-	const ImmutableVector<Schedule*>& Scene::getSchedules() const {
+	const Scene::SchedulesList& Scene::getSchedules() const 
+	{
         return schedules;
     }
 
-	ImmutableVector<Schedule*>& Scene::getSchedules(){
+	Scene::SchedulesList& Scene::getSchedules()
+	{
 		return schedules;
 	}
 
-    Schedule *Scene::createSchedule(const Performer& performer) {
-        Schedule* schedule = schedules_factory.createObject(performer);
-		schedule->setScene(this);
-		schedule->setRunsFactory(&runs_factory);
-		schedule->setStopsFactory(&stops_factory);
-		schedule->setStructuralChangesObserver(&structural_changes_observer);
-
+    Schedule& Scene::createSchedule(const Performer& performer) 
+	{
+		Schedule::Context context
+		{
+			runs_factory,
+			stops_factory,
+			structural_changes_observer
+		};
+		
+        Schedule& schedule = *schedules_factory.createObject(context, performer, *this);
+		
         schedules.push_back(schedule);
 
         return schedule;
@@ -47,46 +55,52 @@ namespace Scheduler {
 		return context;
 	}
 
-	SceneManager* Scene::getSceneManager() const
+	SceneManager& Scene::getSceneManager() const
 	{
 		return scene_manager;
-	}
-	
-	void Scene::setSceneManager(SceneManager* scene_manager)
-	{
-		this->scene_manager = scene_manager;
 	}
 
 	bool Scene::isValid() const
 	{
-		for(Schedule* schedule : schedules)
+		for(Schedule& schedule : schedules)
 		{
-			if(!schedule->isValid()) return false;
+			if(!schedule.isValid()) return false;
 		}
 		return true;
 	}
 
-	void Scene::addStructuralChangesListener(StructuralChangesListener* listener)
+	void Scene::addStructuralChangesListener(StructuralChangesListener& listener)
 	{
 		structural_changes_observer.addListener(listener);
 	}
 	
-	void Scene::removeStructuralChangesListener(StructuralChangesListener* listener)
+	void Scene::removeStructuralChangesListener(StructuralChangesListener& listener)
 	{
 		structural_changes_observer.removeListener(listener);
 	}
 	
-    Scene::~Scene() {
-        for(Schedule* schedule : schedules)
+    Scene::~Scene() 
+	{
+        for(Schedule& schedule : schedules)
         {
-            schedules_factory.destroyObject(schedule);
+            schedules_factory.destroyObject(&schedule);
         }
     }
     
-	SceneQueries& Scene::query()
+	const SceneQueries& Scene::query() const
 	{
-		if(!scene_queries) scene_queries.emplace(this);
+		if(!scene_queries) scene_queries.emplace(const_cast<Scene&>(*this));
 		return scene_queries.get();
+	}
+	
+	bool Scene::operator==(const Scene& rhs) const
+	{
+		return id == rhs.id && this == &rhs;
+	}
+
+	bool Scene::operator!=(const Scene& rhs) const
+	{
+		return !(*this == rhs);
 	}
 
 }

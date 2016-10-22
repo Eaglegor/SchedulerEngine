@@ -2,16 +2,16 @@
 
 namespace Scheduler
 {
-	void ChainVRPSolver::optimize(Scene* scene) const
+	void ChainVRPSolver::optimize(Scene& scene) const
 	{
-		for(VRPSolver* solver : solvers_chain)
+		for(const VRPSolver& solver : solvers_chain)
 		{
-			solver->optimize(scene);
+			solver.optimize(scene);
 		}
 	}
 
-	void ChainVRPSolver::appendSolver(VRPSolver* solver)
+	void ChainVRPSolver::appendSolver(const VRPSolver& solver)
 	{
-		solvers_chain.push_back(solver);
+		solvers_chain.emplace_back(solver);
 	}
 }

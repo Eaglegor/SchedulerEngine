@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SceneManager_export.h>
+#include <Engine/Utils/ReferenceWrapper.h>
 
 namespace Scheduler
 {
@@ -11,23 +12,19 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT ScheduleValidationModel
 	{
 		public:
-			ScheduleValidationModel():
-			stop_validation_algorithm(nullptr),
-			run_validation_algorithm(nullptr),
-			schedule_validation_algorithm(nullptr)
-			{}
+			ScheduleValidationModel();
 		
-			StopValidationAlgorithm* getStopValidationAlgorithm() const;
-			RunValidationAlgorithm* getRunValidationAlgorithm() const;
-			ScheduleValidationAlgorithm* getScheduleValidationAlgorithm() const;
+			const StopValidationAlgorithm& getStopValidationAlgorithm() const;
+			const RunValidationAlgorithm& getRunValidationAlgorithm() const;
+			const ScheduleValidationAlgorithm& getScheduleValidationAlgorithm() const;
 		
-			void setStopValidationAlgorithm(StopValidationAlgorithm* algorithm);
-			void setRunValidationAlgorithm(RunValidationAlgorithm* algorithm);
-			void setScheduleValidationAlgorithm(ScheduleValidationAlgorithm* algorithm);
+			void setStopValidationAlgorithm(const StopValidationAlgorithm& algorithm);
+			void setRunValidationAlgorithm(const RunValidationAlgorithm& algorithm);
+			void setScheduleValidationAlgorithm(const ScheduleValidationAlgorithm& algorithm);
 		
 		private:
-			StopValidationAlgorithm* stop_validation_algorithm;
-			RunValidationAlgorithm* run_validation_algorithm;
-			ScheduleValidationAlgorithm* schedule_validation_algorithm;
+			ReferenceWrapper<const StopValidationAlgorithm> stop_validation_algorithm;
+			ReferenceWrapper<const RunValidationAlgorithm> run_validation_algorithm;
+			ReferenceWrapper<const ScheduleValidationAlgorithm> schedule_validation_algorithm;
 	};
 }

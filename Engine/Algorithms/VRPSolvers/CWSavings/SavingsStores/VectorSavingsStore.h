@@ -3,6 +3,7 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include <utility>
 #include <CWSavingsVRPSolver_export.h>
 
 namespace Scheduler
@@ -20,6 +21,13 @@ namespace Scheduler
 		less_function(std::greater<Saving>()),
 		sorted(false)
 		{
+		}
+		
+		template<typename... Args>
+		void emplace_back(Args&& ...args)
+		{
+			sorted = false;
+			savings.emplace_back(std::forward<Args>(args)...);
 		}
 		
 		void push_back(const Saving& s)

@@ -26,19 +26,19 @@ namespace Scheduler
     {
     }
 
-	void SweepVRPSolver::optimize(Scene* scene) const
+	void SweepVRPSolver::optimize(Scene& scene) const
 	{
         struct ByAngle
         {
-            ByAngle (const Site& center) : center_location(center)
+            explicit ByAngle (const Site& center) : center_location(center)
             {}
-            bool operator () (Order* lhs, Order* rhs) const
+            bool operator () (const Order& lhs, const Order& rhs) const
             {
                 return angle(lhs) < angle(rhs);
             }
-            float angle (Order* order) const
+            float angle (const Order& order) const
             {
-                return angle(order->getWorkOperation()->getLocation().getSite());
+                return angle(order.getWorkOperation()->getLocation().getSite());
             }
             float angle (const Site& location) const
             {
@@ -56,17 +56,15 @@ namespace Scheduler
             Site center_location;
         };
 
-        assert(scene);
-
-        auto& schedules = scene->getSchedules();
-        auto& orders = scene->getContext().getOrders();
+        auto& schedules = scene.getSchedules();
+        auto& orders = scene.getContext().getOrders();
 		
-        std::vector<Order*> sorted_orders;
+        std::vector<ReferenceWrapper<const Order>> sorted_orders;
 		
-        for (auto order : orders) {
-			if(order->getWorkOperation())
+        for (const Order& order : orders) {
+			if(order.getWorkOperation())
 			{
-				sorted_orders.push_back(order);
+				sorted_orders.emplace_back(order);
 			}
         }
 
@@ -76,15 +74,15 @@ namespace Scheduler
 
         SceneEditor scene_editor;
         
-        for (auto schedule : schedules) {
-            const Location &depot_location = schedule->getPerformer()->getDepot()->getLocation();
+        for (Schedule& schedule : schedules) {
+            const Location &depot_location = schedule.getPerformer().getDepot()->getLocation();
             ByAngle by_angle(depot_location.getSite());
             std::sort(sorted_orders.begin(), sorted_orders.end(), by_angle);
-            Schedule::RunsList::iterator run_iter = schedule->createRun(schedule->getRuns().end(), depot_location, depot_location);
+            Run& run = *schedule.createRun(schedule.getRuns().end(), depot_location, depot_location);
             while (!sorted_orders.empty()) {
 				int checkpoint = scene_editor.checkpoint();
-				scene_editor.performAction<AllocateOrder>(run_iter, (*run_iter)->getWorkStops().end(), sorted_orders.back());
-                if (schedule->isValid()) {
+				scene_editor.performAction<AllocateOrder>(run, run.getWorkStops().end(), sorted_orders.back());
+                if (schedule.isValid()) {
 					sorted_orders.pop_back();
 					scene_editor.commit();
                 } else {

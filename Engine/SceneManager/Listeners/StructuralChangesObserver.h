@@ -2,6 +2,7 @@
 
 #include <unordered_set>
 #include "StructuralChangesListener.h"
+#include <Engine/Utils/ReferenceWrapper.h>
 #include <SceneManager_export.h>
 
 namespace Scheduler
@@ -9,26 +10,26 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT StructuralChangesObserver : public StructuralChangesListener
 	{
 	public:
-		void addListener(StructuralChangesListener* listener);
-		void removeListener(StructuralChangesListener* listener);
+		void addListener(StructuralChangesListener& listener);
+		void removeListener(StructuralChangesListener& listener);
 		
-		virtual void afterWorkStopCreated(Run::WorkStopsList::const_iterator iter);
-		virtual void beforeWorkStopDestroyed(Run::WorkStopsList::const_iterator iter);
+		virtual void afterWorkStopCreated(Run::ConstWorkStopIterator iter);
+		virtual void beforeWorkStopDestroyed(Run::ConstWorkStopIterator iter);
 		
-		virtual void afterRunCreated(Schedule::RunsList::const_iterator iter);
-		virtual void beforeRunDestroyed(Schedule::RunsList::const_iterator iter);
+		virtual void afterRunCreated(Schedule::ConstRunIterator iter);
+		virtual void beforeRunDestroyed(Schedule::ConstRunIterator iter);
 		
-		virtual void afterStartOperationAdded(Schedule::StopsList::const_iterator iter, const Operation* operation);
-		virtual void beforeStartOperationRemoved(Schedule::StopsList::const_iterator iter, const Operation* operation);
+		virtual void afterStartOperationAdded(Run::ConstStopIterator iter, const Operation& operation);
+		virtual void beforeStartOperationRemoved(Run::ConstStopIterator iter, const Operation& operation);
 		
-		virtual void afterEndOperationAdded(Schedule::StopsList::const_iterator iter, const Operation* operation);
-		virtual void beforeEndOperationRemoved(Schedule::StopsList::const_iterator iter, const Operation* operation);
+		virtual void afterEndOperationAdded(Run::ConstStopIterator iter, const Operation& operation);
+		virtual void beforeEndOperationRemoved(Run::ConstStopIterator iter, const Operation& operation);
 		
-		virtual void beforeWorkStopsSwapped(Run::WorkStopsList::const_iterator first, Run::WorkStopsList::const_iterator second);
-		virtual void beforeWorkStopsReversed(Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end);
-		virtual void beforeWorkStopsSpliced(Run* to_run, Run::WorkStopsList::const_iterator pos, Run* from_run, Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end);
+		virtual void beforeWorkStopsSwapped(Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator second);
+		virtual void beforeWorkStopsReversed(Run::ConstWorkStopIterator range_begin, Run::ConstWorkStopIterator range_end);
+		virtual void beforeWorkStopsSpliced(const Run& to_run, Run::ConstWorkStopIterator pos, const Run& from_run, Run::ConstWorkStopIterator range_begin, Run::ConstWorkStopIterator range_end);
 		
 	private:
-		std::unordered_set<StructuralChangesListener*> listeners;
+		std::unordered_set<ReferenceWrapper<StructuralChangesListener>> listeners;
 	};
 }

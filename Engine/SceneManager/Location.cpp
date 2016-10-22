@@ -12,9 +12,9 @@ namespace Scheduler
 		return id;
 	}
 	
-	const char* Location::getName() const
+	const String& Location::getName() const
 	{
-		return name.c_str();
+		return name;
 	}
 	
 	const Site& Location::getSite() const
@@ -22,14 +22,14 @@ namespace Scheduler
 		return site;
 	}
 	
-	void Location::setName(const char* name)
+	void Location::setName(const String& name)
 	{
 		this->name = name;
 	}
 	
 	bool Location::operator==(const Location& rhs) const
 	{
-		return site == rhs.site;
+		return id == rhs.id && this == &rhs;
 	}
 	
 	bool Location::operator!=(const Location& rhs) const

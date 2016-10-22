@@ -3,25 +3,23 @@
 #include "../Action.h"
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
-#include <boost/optional.hpp>
+#include <Engine/Utils/Optional.h>
 #include <SceneEditor_export.h>
 
 namespace Scheduler
 {
-	class SCENEEDITOR_EXPORT AllocateOrder : public Action
+	class SCENEEDITOR_EXPORT AllocateOrder : public Action<Optional<Run::WorkStopIterator>>
 	{
 	public:
-		AllocateOrder(Schedule::RunsList::const_iterator run, Run::WorkStopsList::iterator pos, const Order* order);
+		AllocateOrder(Run& run, Run::ConstWorkStopIterator pos, const Order& order);
 		
-		virtual void perform();
-		virtual void rollback();
-		
-		boost::optional<Run::WorkStopsList::iterator> getResultWorkStop() const;
+		virtual Optional<Run::WorkStopIterator> perform() override;
+		virtual void rollback() override;
 		
 	private:
-		Schedule::RunsList::const_iterator run;
-		Run::WorkStopsList::iterator pos;
-		const Order* order;
-		boost::optional<Run::WorkStopsList::iterator> result_work_stop;
+		Run& run;
+		Run::ConstWorkStopIterator pos;
+		const Order& order;
+		Optional<Run::WorkStopIterator> result_work_stop;
 	};
 }

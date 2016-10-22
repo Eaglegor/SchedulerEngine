@@ -2,35 +2,35 @@
 
 namespace Scheduler
 {
-	DestroyRun::DestroyRun(Schedule* schedule, Schedule::RunsList::const_iterator pos):
+	DestroyRun::DestroyRun(Schedule& schedule, Schedule::ConstRunIterator pos):
 	schedule(schedule),
 	pos(pos),
-	detached_run(nullptr)
+	detached_run(*pos),
+	performed(false)
 	{}
 	
 	DestroyRun::~DestroyRun()
 	{
-		if(detached_run) schedule->destroyDetachedRun(detached_run);
+		if(performed) destructor(&detached_run);
 	}
-
 	
-	void DestroyRun::perform()
+	Schedule::RunIterator DestroyRun::perform()
 	{
-		detached_run = *pos;
-		next_iterator = schedule->detachRun(pos);
+		assert(!performed);
+		
+		auto result = schedule.detachRun(pos);
+		next_iterator = result.first;
+		destructor = result.second;
+		performed = true;
+		return next_iterator.get();
 	}
 
 	void DestroyRun::rollback()
 	{
-		if(detached_run) schedule->attachRun(next_iterator.value(), detached_run);
-		next_iterator = boost::none;
-		detached_run = nullptr;
+		assert(performed);
+		
+		schedule.attachRun(next_iterator.value(), detached_run);
+		next_iterator = None;
+		performed = false;
 	}
-	
-	boost::optional< Schedule::RunsList::iterator > DestroyRun::result() const
-	{
-		return next_iterator;
-	}
-
-
 }

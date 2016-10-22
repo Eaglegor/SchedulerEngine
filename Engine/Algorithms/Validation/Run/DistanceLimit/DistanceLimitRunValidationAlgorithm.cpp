@@ -7,8 +7,8 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Utils/Aggregators/DistanceAccumulator.h>
 
-bool Scheduler::DistanceLimitRunValidationAlgorithm::isValid(const Run * run) const
+bool Scheduler::DistanceLimitRunValidationAlgorithm::isValid(const Run& run) const
 {
-	if (!run->getSchedule()->constraints().runDistanceLimit().isSet()) return true;
-	return DistanceAccumulator::accumulateDistance(run->getStartStop(), run->getEndStop()) > run->getSchedule()->constraints().runDistanceLimit();
+	if (!run.getSchedule().constraints().runDistanceLimit().isSet()) return true;
+	return DistanceAccumulator::accumulateDistance(run.getStops().begin(), run.getStops().end()) > run.getSchedule().constraints().runDistanceLimit();
 }

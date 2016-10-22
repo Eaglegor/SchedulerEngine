@@ -12,21 +12,19 @@
 
 namespace Scheduler
 {
-	class Strategy;
+	class AlgorithmsManager;
 
 	class LoaderImpl
 	{
 	public:
-		LoaderImpl(Strategy* strategy);
+		explicit LoaderImpl(AlgorithmsManager& algorithms_manager);
 
-		VRPSolver* loadVRPSolver(const boost::property_tree::ptree& props);
-		TSPSolver* loadTSPSolver(const boost::property_tree::ptree& props);
+		VRPSolver& loadVRPSolver(const boost::property_tree::ptree& props);
+		TSPSolver& loadTSPSolver(const boost::property_tree::ptree& props);
 
-		RunCostFunction* loadRunCostFunction(const boost::property_tree::ptree& props);
-		ScheduleCostFunction* loadScheduleCostFunction(const boost::property_tree::ptree& props);
-		SceneCostFunction* loadSceneCostFunction(const boost::property_tree::ptree& props);
-
-		Strategy* getStrategy() const;
+		RunCostFunction& loadRunCostFunction(const boost::property_tree::ptree& props);
+		ScheduleCostFunction& loadScheduleCostFunction(const boost::property_tree::ptree& props);
+		SceneCostFunction& loadSceneCostFunction(const boost::property_tree::ptree& props);
 
 	private:
 		template<typename T>
@@ -64,7 +62,7 @@ namespace Scheduler
 			scene_cost_function_loaders.emplace(loader->getName(), loader);
 		}
 
-		Strategy* strategy;
+		AlgorithmsManager& algorithms_manager;
 
 		std::unordered_map<std::string, std::shared_ptr<VRPSolverLoader>> vrp_solver_loaders;
 		std::unordered_map<std::string, std::shared_ptr<TSPSolverLoader>> tsp_solver_loaders;

@@ -5,6 +5,8 @@
 #include "../Listeners/StructuralChangesListener.h"
 #include <boost/optional.hpp>
 #include <SceneManager_export.h>
+#include <Engine/Utils/ReferenceWrapper.h>
+#include <Engine/Utils/Optional.h>
 
 namespace Scheduler
 {
@@ -13,29 +15,29 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT OperationStopMappingQuery : public StructuralChangesListener
 	{
 	public:
-		OperationStopMappingQuery(Scene* scene);
+		explicit OperationStopMappingQuery(Scene& scene);
 		~OperationStopMappingQuery();
 		
-		boost::optional<Run::StopsList::iterator> findStop(const Operation* operation);
-		boost::optional<Run::WorkStopsList::iterator> findWorkStop(const Operation* operation);
+		Optional<Run::ConstStopIterator> findStop(const Operation& operation) const;
+		Optional<Run::ConstWorkStopIterator> findWorkStop(const Operation& operation) const;
 		
-		virtual void afterWorkStopCreated(Run::WorkStopsList::const_iterator iter);
-		virtual void beforeWorkStopDestroyed(Run::WorkStopsList::const_iterator iter);
+		virtual void afterWorkStopCreated(Run::ConstWorkStopIterator iter) override;
+		virtual void beforeWorkStopDestroyed(Run::ConstWorkStopIterator iter) override;
 		
-		virtual void afterStartOperationAdded(Run::StopsList::const_iterator iter, const Operation* operation);
-		virtual void beforeStartOperationRemoved(Run::StopsList::const_iterator iter, const Operation* operation);
+		virtual void afterStartOperationAdded(Run::ConstStopIterator iter, const Operation& operation) override;
+		virtual void beforeStartOperationRemoved(Run::ConstStopIterator iter, const Operation& operation) override;
 		
-		virtual void afterEndOperationAdded(Run::StopsList::const_iterator iter, const Operation* operation);
-		virtual void beforeEndOperationRemoved(Run::StopsList::const_iterator iter, const Operation* operation);
+		virtual void afterEndOperationAdded(Run::ConstStopIterator iter, const Operation& operation) override;
+		virtual void beforeEndOperationRemoved(Run::ConstStopIterator iter, const Operation& operation) override;
 		
-		virtual void beforeRunDestroyed(Schedule::RunsList::const_iterator iter);
+		virtual void beforeRunDestroyed(Schedule::ConstRunIterator iter) override;
 		
 	private:
 		void update();
 		
-		Scene* scene;
+		Scene& scene;
 		bool dirty;
-		std::unordered_map<const Operation*, Run::StopsList::iterator> stops;
-		std::unordered_map<const Operation*, Run::WorkStopsList::iterator> work_stops;
+		mutable std::unordered_map<ReferenceWrapper<const Operation>, Run::ConstStopIterator> stops;
+		mutable std::unordered_map<ReferenceWrapper<const Operation>, Run::ConstWorkStopIterator> work_stops;
 	};
 }

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Engine/SceneManager/Extensions/RunVehicleBinder.h>
+#include <Engine/SceneManager/Algorithms/RunVehicleBinder.h>
 #include <unordered_map>
+#include <Engine/Utils/ReferenceWrapper.h>
 
 #include <PerformerAssignedVehicleBinder_export.h>
 
@@ -11,18 +12,20 @@ namespace Scheduler
     class Vehicle;
     class Scene;
     
-	/// Vehicle binder using explicit performer to vehicle assignments (all runs of a single schedule get the same vehicle)
     class PERFORMERASSIGNEDVEHICLEBINDER_EXPORT PerformerAssignedVehicleBinder : public RunVehicleBinder
     {
     public:
         PerformerAssignedVehicleBinder();
 
-        virtual bool bindVehicle(Run *run) override;
+        virtual bool bindVehicle(Run &run) const override;
+		
+		constexpr static const char* staticGetName(){return "PerformerAssigned";}
+		virtual const char* getName() const override {return staticGetName();}
 
-        void assign(const Performer *performer, const Vehicle *vehicle);
-        void unassign(const Performer *performer, const Vehicle *vehicle);
+        void assign(const Performer &performer, const Vehicle &vehicle);
+        void unassign(const Performer &performer, const Vehicle &vehicle);
 
     private:
-        std::unordered_map<const Performer*, const Vehicle*> bindings;
+        std::unordered_map<ReferenceWrapper<const Performer>, ReferenceWrapper<const Vehicle>> bindings;
     };
 }

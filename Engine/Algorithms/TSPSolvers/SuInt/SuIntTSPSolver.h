@@ -1,9 +1,10 @@
 #pragma once
 
-#include <Engine/StrategiesManager/TSPSolver.h>
-#include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
+#include <Engine/AlgorithmsManager/TSPSolver.h>
+#include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/Engine/Services/RoutingService.h>
 #include <Engine/LoggingManager/LoggingManager.h>
+#include <Engine/Utils/Optional.h>
 #include <Engine/Utils/Factory.h>
 #include <memory>
 #include <SuIntTSPSolver_export.h>
@@ -19,11 +20,11 @@ namespace Scheduler
 	public:
 		SuIntTSPSolver();
 
-		virtual void optimize(Schedule* schedule) const override;
-		virtual void optimize(Run* run) const override;
+		virtual void optimize(Schedule& schedule) const override;
+		virtual void optimize(Run& run) const override;
 
-        void setRoutingService(RoutingService* routing_service);
-		void setCostFunction(ScheduleCostFunction* cost_function);
+        void setRoutingService(const RoutingService& routing_service);
+		void setCostFunction(const ScheduleCostFunction& cost_function);
 
         static constexpr const char* staticGetName() { return "SuInt"; }
 		virtual const char* getName() const override { return staticGetName(); };
@@ -32,9 +33,10 @@ namespace Scheduler
 		void addEdgeIntroducer(const EdgeIntroducerType& type);
 
 	private:
-        RoutingService* routing_service;
-		ScheduleCostFunction* cost_function;
-		Logger* logger;
+        Optional<const RoutingService&> routing_service;
+		Optional<const ScheduleCostFunction&> cost_function;
+		
+		Logger& logger;
 
 		EdgeSuggestorType edge_suggestor_type;
 		std::vector<EdgeIntroducerType> edge_introducers_types;

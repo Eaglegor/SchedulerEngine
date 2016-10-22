@@ -6,19 +6,19 @@
 namespace Scheduler
 {
 	class RoutingService;
-	class SceneManager;
 	class Scene;
+	class Engine;
 
 	class JSONSCENELOADER_EXPORT JSONSceneLoader
 	{
 	public:
-		JSONSceneLoader(SceneManager* scene_manager, RoutingService* rs);
+		JSONSceneLoader(Engine& engine, RoutingService& rs);
 
-		Scene* loadScene(std::istream& stream);
-		Scene* loadScene(const std::string &filename);
+		Scene& loadScene(std::istream& stream);
+		Scene& loadScene(const std::string &filename);
 
 	private:
-		SceneManager* scene_manager;
-		RoutingService* routing_service;
+		Engine& engine;
+		RoutingService& routing_service;
 	};
 }

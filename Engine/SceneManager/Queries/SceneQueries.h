@@ -8,13 +8,13 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT SceneQueries
 	{
 	public:
-		SceneQueries(Scene* scene);
+		explicit SceneQueries(Scene& scene);
 		
-		OperationStopMappingQuery& operationStopMapping();
+		OperationStopMappingQuery& operationStopMapping() const;
 		
 	private:
-		Scene* scene;
+		Scene& scene;
 		
-		boost::optional<OperationStopMappingQuery> operation_stop_mapping_query;
+		mutable boost::optional<OperationStopMappingQuery> operation_stop_mapping_query;
 	};
 }

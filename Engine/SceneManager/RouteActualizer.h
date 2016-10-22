@@ -1,52 +1,23 @@
 #pragma once
 
-#include "Extensions/RouteActualizationAlgorithm.h"
-
 namespace Scheduler
 {
 	class Stop;
+	class RouteActualizationAlgorithm;
 
 	class RouteActualizer
 	{
 	public:
-		RouteActualizer() :
-			algorithm(nullptr),
-			stop(nullptr),
-			is_dirty(true)
-		{
-		}
+		explicit RouteActualizer(Stop& stop);
 
-		RouteActualizer& operator=(const RouteActualizer& rhs)
-		{
-			this->algorithm = rhs.algorithm;
-			this->stop = rhs.stop;
-			is_dirty = true;
-			return *this;
-		}
+		void actualize() const;
 
-		RouteActualizer(RouteActualizationAlgorithm* algorithm, Stop* stop) :
-			algorithm(algorithm),
-			stop(stop),
-			is_dirty(true)
-		{
-		}
-
-		void actualize() const
-		{
-			if(is_dirty && algorithm) {
-				algorithm->actualize(stop);
-				is_dirty = false;
-			}
-		}
-
-		void setDirty(bool dirty)
-		{
-			is_dirty = dirty;
-		}
+		void setDirty(bool dirty);
 		
 	private:
-		Stop* stop;
+		inline const RouteActualizationAlgorithm& getAlgorithm() const;
+		
+		Stop& stop;
 		mutable bool is_dirty;
-		RouteActualizationAlgorithm* algorithm;
 	};
 }

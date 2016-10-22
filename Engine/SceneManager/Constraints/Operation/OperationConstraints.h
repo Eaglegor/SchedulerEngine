@@ -4,6 +4,7 @@
 
 #include "../ConstraintHolder.h"
 #include <Engine/Concepts/Capacity.h>
+#include <Engine/Utils/ReferenceWrapper.h>
 
 #include <SceneManager_export.h>
 #include <Engine/Concepts/TimeWindow.h>
@@ -17,8 +18,8 @@ namespace Scheduler
 	public:
 		using TimeWindowsConstraint = ConstraintHolder<std::vector<TimeWindow>>;
 		using DemandConstraint = ConstraintHolder<Capacity>;
-		using PerformerSkillsRequirements = ConstraintHolder<std::vector<const Attribute*>>;
-		using VehicleAttributesRequirements = ConstraintHolder<std::vector<const Attribute*>>;
+		using PerformerSkillsRequirements = ConstraintHolder<std::vector<ReferenceWrapper<const Attribute>>>;
+		using VehicleAttributesRequirements = ConstraintHolder<std::vector<ReferenceWrapper<const Attribute>>>;
 
 		const TimeWindowsConstraint& timeWindows() const;
 		TimeWindowsConstraint& timeWindows();

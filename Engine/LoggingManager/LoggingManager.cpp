@@ -6,7 +6,7 @@ namespace Scheduler
 	static spdlog::level::level_enum log_level = spdlog::level::debug;
 	static std::vector<spdlog::sink_ptr> sinks;
 
-	Logger* LoggingManager::getLogger(const char* name)
+	Logger& LoggingManager::getLogger(const char* name)
 	{
 		std::shared_ptr<spdlog::logger> logger = spdlog::get(name);
 		if (!logger)
@@ -15,7 +15,7 @@ namespace Scheduler
 			logger->set_level(log_level);
 			spdlog::register_logger(logger);
 		}
-		return logger.get();
+		return *logger.get();
 	}
 
 	void LoggingManager::configure(const char * config_filename)

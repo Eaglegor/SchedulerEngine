@@ -5,159 +5,165 @@
 #include <Engine/Engine/Services/RoutingService.h>
 #include "ScheduleActualizationModel.h"
 #include "ScheduleValidationModel.h"
-#include "Extensions/RunValidationAlgorithm.h"
+#include "Algorithms/Validation/RunValidationAlgorithm.h"
 #include "WorkStop.h"
 #include "Schedule.h"
+#include <algorithm>
+#include <Engine/Utils/AutoCastRange.h>
 #include "Listeners/StructuralChangesObserver.h"
 
 
 namespace Scheduler {
 
-    Run::Run(std::size_t id, const Location &start_location, const Location &end_location, Schedule *schedule, LinkedPointersList<Stop*> &stops_list, LinkedPointersList<Stop*>::iterator pos) :
-            id(id),
-            schedule(schedule),
-            stops_factory(nullptr),
-            start_stop(start_location, this),
-            end_stop(end_location, this),
-            vehicle(nullptr),
-            schedule_actualization_model(nullptr),
-			schedule_validation_model(nullptr),
-			arrival_time_actualizer(nullptr),
-			structural_changes_observer(nullptr),
-			is_detached(false)
+    Run::Run(std::size_t id, const Context& context, Schedule &schedule, const Location &start_location, const Location &end_location, Schedule::StopsList &stops_list, Schedule::StopsList::const_iterator pos):
+	id(id),
+	context(context),
+	schedule(schedule),
+	start_stop(Stop::Context{duration_actualizer, context.arrival_time_actualizer}, start_location, *this),
+	end_stop(Stop::Context{duration_actualizer, context.arrival_time_actualizer}, end_location, *this),
+	duration_actualizer(*this),
+	schedule_stops(stops_list),
+	is_detached(false)
     {
-		auto start = stops_list.insert(pos, &start_stop);
-		auto end = stops_list.insert(pos, &end_stop);
-		stops.reset(new StopsList(stops_list, start, pos));
-		raw_work_stops.reset(new StopsSublist(*stops, std::next(stops->begin()), std::next(stops->begin())));
-		work_stops.reset(new WorkStopsList(*raw_work_stops));
+		stops = std::move(StopsRange(&stops_list, pos.unconst(), pos.unconst()));
+
+		stops.insert(stops.end(), start_stop);
+		stops.insert(stops.end(), end_stop);
+		
+		work_stops = std::move(WorkStopsRange(&stops, std::prev(stops.end()), std::prev(stops.end())));
+		casted_work_stops = WorkStopsList(&work_stops);
+		
+		assert(isConsistent());
     }
 
-    std::size_t Run::getId() const {
-		assert(!is_detached);
-		
+    std::size_t Run::getId() const 
+    {
         return id;
     }
 
-    const Schedule *Run::getSchedule() const {
-		assert(!is_detached);
-		
+    const Schedule& Run::getSchedule() const 
+    {
         return schedule;
     }
+    
+	Schedule& Run::getSchedule()
+	{
+		return schedule;
+	}
 
-    Schedule *Run::getSchedule() {
-		assert(!is_detached);
-		
-        return schedule;
-    }
-
-    const Vehicle *Run::getVehicle() const {
-		assert(!is_detached);
-		
+    Optional<const Vehicle&> Run::getVehicle() const 
+    {
         return vehicle;
     }
 
-    const RunBoundaryStop *Run::getStartStop() const {
-		assert(!is_detached);
-		
-        return &start_stop;
+    const RunBoundaryStop& Run::getStartStop() const 
+    {
+        return start_stop;
     }
 
-    RunBoundaryStop *Run::getStartStop() {
-		assert(!is_detached);
-		
-        return &start_stop;
+    RunBoundaryStop& Run::getStartStop() 
+	{
+        return start_stop;
     }
 
 	const Run::WorkStopsList& Run::getWorkStops() const
 	{
-		if(is_detached)
-		{
-			int a = 0;
-		}
-		
-		assert(!is_detached);
-		
-		return *work_stops;
+		return casted_work_stops;
+	}
+	
+	Run::WorkStopsList& Run::getWorkStops()
+	{
+		return casted_work_stops;
 	}
 
-    const RunBoundaryStop *Run::getEndStop() const {
-		assert(!is_detached);
-		
-        return &end_stop;
+	const Run::StopsList& Run::getStops() const
+	{
+		return stops;
+	}
+	
+	Run::StopsList& Run::getStops()
+	{
+		return stops;
+	}
+	
+    const RunBoundaryStop& Run::getEndStop() const 
+    {
+        return end_stop;
     }
 
-	RunBoundaryStop *Run::getEndStop() {
-		assert(!is_detached);
-		
-        return &end_stop;
+	RunBoundaryStop& Run::getEndStop() 
+	{
+        return end_stop;
     }
 
-    RunBoundaryStop *Run::allocateStartOperation(const Operation *operation) {
+    void Run::allocateStartOperation(const Operation &operation) 
+	{
 		assert(!is_detached);
 		
         start_stop.addOperation(operation);
 		
-		structural_changes_observer->afterStartOperationAdded(stops->begin(), operation);
-		
-        return &start_stop;
+		context.structural_changes_observer.afterStartOperationAdded(stops.begin(), operation);
     }
-
-    Run::WorkStopsList::iterator Run::createWorkStop(WorkStopsList::iterator pos, const Operation *operation) {
+    
+    Run::WorkStopIterator Run::createWorkStop(ConstWorkStopIterator pos, const Operation &operation) 
+	{
 		assert(!is_detached);
 		
-        assert(stops_factory);
+		WorkStop &stop = *context.stops_factory.createObject(Stop::Context{duration_actualizer, context.arrival_time_actualizer}, *this, operation);
+		
+		auto iter = casted_work_stops.insert(pos, stop);
 
-		WorkStop *stop = createWorkStop(operation);
-		auto iter = work_stops->insert(pos, stop);
-				
-		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		context.arrival_time_actualizer.setDirty(true);
 		duration_actualizer.setDirty(true);
 
-		structural_changes_observer->afterWorkStopCreated(iter);
+		context.structural_changes_observer.afterWorkStopCreated(iter);
+		
+		assert(isConsistent());
 		
         return iter;
     }
 
-    RunBoundaryStop *Run::allocateEndOperation(const Operation *operation) {
+    void Run::allocateEndOperation(const Operation &operation) 
+	{
 		assert(!is_detached);
 		
         end_stop.addOperation(operation);
 		
-		structural_changes_observer->afterEndOperationAdded(std::prev(stops->end()), operation);
-		
-        return &end_stop;
+		context.structural_changes_observer.afterEndOperationAdded(std::prev(stops.end()), operation);
     }
 
-    void Run::unallocateStartOperation(const Operation *operation) {
+    void Run::unallocateStartOperation(const Operation &operation) 
+	{
 		assert(!is_detached);
 		
-		structural_changes_observer->beforeStartOperationRemoved(stops->begin(), operation);
+		context.structural_changes_observer.beforeStartOperationRemoved(stops.begin(), operation);
 		
         start_stop.removeOperation(operation);
     }
 
-    Run::WorkStopsList::iterator Run::destroyWorkStop(WorkStopsList::iterator pos) {
+    Run::WorkStopsList::iterator Run::destroyWorkStop(WorkStopsList::const_iterator pos) 
+	{
 		assert(!is_detached);
 		
-        assert(stops_factory);
-
-		structural_changes_observer->beforeWorkStopDestroyed(pos);
+		context.structural_changes_observer.beforeWorkStopDestroyed(pos);
 		
-		auto iter = work_stops->erase(pos);
+		auto iter = casted_work_stops.erase(pos);
 		
-        stops_factory->destroyObject(*pos);
+        context.stops_factory.destroyObject(const_cast<WorkStop*>(&*pos));
 		
-		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		context.arrival_time_actualizer.setDirty(true);
 		duration_actualizer.setDirty(true);
+		
+		assert(isConsistent());
 		
 		return iter;
     }
 
-    void Run::unallocateEndOperation(const Operation *operation) {
+    void Run::unallocateEndOperation(const Operation &operation) 
+	{
 		assert(!is_detached);
 		
-		structural_changes_observer->beforeEndOperationRemoved(std::prev(stops->end()), operation);
+		context.structural_changes_observer.beforeEndOperationRemoved(std::prev(stops.end()), operation);
 		
         end_stop.removeOperation(operation);
     }
@@ -166,168 +172,223 @@ namespace Scheduler {
 	{
 		assert(!is_detached);
 		
-		if (schedule_validation_model == nullptr || schedule_validation_model->getRunValidationAlgorithm() == nullptr) return true;
-		return schedule_validation_model->getRunValidationAlgorithm()->isValid(this);
+		return schedule.getValidationModel().getRunValidationAlgorithm().isValid(*this);
 	}
 
-    void Run::setStopsFactory(SceneObjectsFactory<WorkStop> *factory) {
+    void Run::setVehicle(Optional<const Vehicle&> vehicle) {
 		assert(!is_detached);
 		
-        this->stops_factory = factory;
-    }
-
-    void Run::setVehicle(const Vehicle *vehicle) {
-		assert(!is_detached);
-		
-        if (vehicle &&
-            (this->vehicle == nullptr || vehicle->getRoutingProfile() != this->vehicle->getRoutingProfile())) {
-            this->vehicle = vehicle;
-			if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
-        }
-        else {
-            this->vehicle = vehicle;
-        }
+		if(!vehicle && this->vehicle) context.arrival_time_actualizer.setDirty(true);
+		else if(vehicle && !this->vehicle) context.arrival_time_actualizer.setDirty(true);
+		else if(vehicle && this->vehicle && vehicle->getRoutingProfile() != this->vehicle->getRoutingProfile()) context.arrival_time_actualizer.setDirty(true);
+        
+		this->vehicle = vehicle;
     }
 
     Run::~Run() {
-        assert(stops_factory);
-
-		auto iter = work_stops->begin();
-		while(iter != work_stops->end())
-		{
-			auto next = std::next(iter);
-			destroyWorkStop(iter);
-			iter = next;
-		}
-        stops->clear();
+		if(!isDetached()) detach();
+		
+		detached_stops.pop_front();
+		detached_stops.pop_back();
+		
+		detached_stops.clear_and_dispose([&](Stop* s){context.stops_factory.destroyObject(static_cast<WorkStop*>(s));});
     }
-
-    void Run::setScheduleActualizationModel(Scheduler::ScheduleActualizationModel* model, Scheduler::ArrivalTimeActualizer* arrival_time_actualizer) {
-		assert(!is_detached);
-		
-        this->schedule_actualization_model = model;
-		
-		this->arrival_time_actualizer = arrival_time_actualizer;
-		
-		duration_actualizer = model ? DurationActualizer(model->getDurationActualizationAlgorithm(), this) : DurationActualizer();
-		
-		start_stop.setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
-		end_stop.setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
-
-		for(WorkStop* stop : *work_stops)
-		{
-			stop->setScheduleActualizationModel(model, arrival_time_actualizer, &duration_actualizer);
-		}
-    }
-
-	void Run::setScheduleValidationModel(ScheduleValidationModel * model)
-	{
-		assert(!is_detached);
-		
-		this->schedule_validation_model = model;
-
-		start_stop.setScheduleValidationModel(model);
-		end_stop.setScheduleValidationModel(model);
-
-		for (WorkStop* stop : *work_stops)
-		{
-			stop->setScheduleValidationModel(model);
-		}
-	}
-
-	WorkStop* Run::createWorkStop(const Operation * operation)
-	{
-		assert(!is_detached);
-		
-		WorkStop *stop = stops_factory->createObject(this);
-		stop->setScheduleActualizationModel(schedule_actualization_model, arrival_time_actualizer, &duration_actualizer);
-		stop->setScheduleValidationModel(schedule_validation_model);
-		stop->setOperation(operation);
-		
-		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
-		duration_actualizer.setDirty(true);
-		
-		return stop;
-	}
 	
-	void Run::swapWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator second)
+	void Run::swapWorkStops(ConstWorkStopIterator first, ConstWorkStopIterator second)
 	{
 		assert(!is_detached);
 		
 		if(first == second) return;
 
-		structural_changes_observer->beforeWorkStopsSwapped(first, second);
+		context.structural_changes_observer.beforeWorkStopsSwapped(first, second);
 		
 		if(std::next(first) == second)
 		{
-			work_stops->splice(first, *work_stops, second, std::next(second));
+			casted_work_stops.splice(first, casted_work_stops, second);
 			return;
 		} 
 		else if(std::next(second) == first)
 		{
-			work_stops->splice(second, *work_stops, first, std::next(first));
+			casted_work_stops.splice(second, casted_work_stops, first);
 			return;
 		}
-		WorkStopsList::iterator pos = std::next(second);
-		work_stops->splice(first, *work_stops, second, std::next(second));
-		work_stops->splice(pos, *work_stops, first, std::next(first));
+		ConstWorkStopIterator pos = std::next(second);
+		casted_work_stops.splice(first, casted_work_stops, second);
+		casted_work_stops.splice(pos, casted_work_stops, first);
 		
-		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		context.arrival_time_actualizer.setDirty(true);
 		duration_actualizer.setDirty(true);
+		
+		assert(isConsistent());
 	}
 
-	void Run::reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last)
+	void Run::reverseWorkStops()
+	{
+		reverseWorkStops(casted_work_stops.begin(), casted_work_stops.end());
+	}
+
+	void Run::reverseWorkStops(ConstWorkStopIterator first, ConstWorkStopIterator last)
 	{
 		assert(!is_detached);
 		
-		structural_changes_observer->beforeWorkStopsReversed(first, last);
+		context.structural_changes_observer.beforeWorkStopsReversed(first, last);
 		
-		work_stops->reverse(first, last);
+		casted_work_stops.reverse(first, last);
 		
-		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		context.arrival_time_actualizer.setDirty(true);
 		duration_actualizer.setDirty(true);
+		
+		assert(isConsistent());
 	}
 
-	void Run::spliceWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last)
+	void Run::spliceWorkStops(ConstWorkStopIterator pos, ConstWorkStopIterator first, ConstWorkStopIterator last)
+	{
+		spliceWorkStops(pos, *this, first, last);
+	}
+
+	void Run::spliceWorkStops(ConstWorkStopIterator pos, Run& from, ConstWorkStopIterator first, ConstWorkStopIterator last, Optional<std::size_t> n)
 	{
 		assert(!is_detached);
 		
-		Run* from_run = (*first)->getRun();
-		
-		structural_changes_observer->beforeWorkStopsSpliced(this, pos, from_run, first, last);
+		context.structural_changes_observer.beforeWorkStopsSpliced(*this, pos, from, first, last);
 
-		work_stops->splice(pos, *from_run->work_stops, first, last);
+		if(n) casted_work_stops.splice(pos, from.casted_work_stops, first, last, n.get());
+		else casted_work_stops.splice(pos, from.casted_work_stops, first, last);
 		
-		if(this != from_run)
+		if(this != &from)
 		{
-			for(auto iter = first; iter != pos; ++iter)
+			for(auto iter = first.base().unconst(); iter != pos.base(); ++iter)
 			{
-				(*iter)->run = this;
+				iter->run = *this;
 			}
 		}
 		
-		if(arrival_time_actualizer) arrival_time_actualizer->setDirty(true);
+		context.arrival_time_actualizer.setDirty(true);
 		duration_actualizer.setDirty(true);
+		
+		assert(isConsistent());
+	}
+	
+	void Run::setStopsEndIterator(ConstStopIterator end)
+	{
+		assert(!is_detached);
+		
+		stops.setEnd(end, stops.size());
+		
+		assert(isConsistent());
+	}
+	
+	bool Run::operator==(const Run& rhs) const
+	{
+		return id == rhs.id && this == &rhs;
 	}
 
-	const Run::StopsList& Run::getStops() const
+	bool Run::operator!=(const Run& rhs) const
 	{
-		assert(!is_detached);
-		
-		return *stops;
+		return !(*this == rhs);
 	}
 	
-	void Run::adjustStopsRange(StopsList::iterator begin, StopsList::iterator end)
+	Run::ConstStopIterator Run::findStop(const Stop& stop) const
 	{
-		assert(!is_detached);
+		return Schedule::StopsList::s_iterator_to(stop);
+	}
+
+	Run::StopIterator Run::findStop(Stop& stop)
+	{
+		return Schedule::StopsList::s_iterator_to(stop);
+	}
+
+	Run::ConstWorkStopIterator Run::findWorkStop(const WorkStop& stop) const
+	{
+		return WorkStopsList::const_iterator(Schedule::StopsList::s_iterator_to(stop));
+	}
+
+	Run::WorkStopIterator Run::findWorkStop(WorkStop& stop)
+	{
+		return WorkStopsList::iterator(Schedule::StopsList::s_iterator_to(stop));
+	}
+
+	bool Run::isConsistent() const
+	{
+		std::size_t counter = 0;
+		for(auto iter = stops.begin(); iter != stops.end(); ++iter)
+		{
+			if(&*iter == nullptr) 
+			{
+				return false;
+			}
+			if(counter >= stops.size()) 
+			{
+				return false;
+			}
+			++counter;
+		}
+		if(counter != stops.size()) 
+		{
+			return false;
+		}
 		
-		stops->adjustRange(begin, end, stops->size());
+		counter = 0;
+		for(auto iter = work_stops.begin(); iter != work_stops.end(); ++iter)
+		{
+			if(&*iter == nullptr) 
+			{
+				return false;
+			}
+			if(counter >= work_stops.size()) 
+			{
+				return false;
+			}
+			++counter;
+		}
+		if(counter != work_stops.size()) 
+		{
+			return false;
+		}
+		
+		counter = 0;
+		for(auto iter = casted_work_stops.begin(); iter != casted_work_stops.end(); ++iter)
+		{
+			if(&*iter == nullptr) 
+			{
+				return false;
+			}
+			if(counter >= casted_work_stops.size()) 
+			{
+				return false;
+			}
+			++counter;
+		}
+		if(counter != casted_work_stops.size()) 
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
-	void Run::setStructuralChangesObserver(StructuralChangesObserver* observer)
+	void Run::detach()
 	{
 		assert(!is_detached);
-		
-		this->structural_changes_observer = observer;
+		is_detached = true;
+		detached_stops.splice(detached_stops.end(), schedule_stops, stops.begin(), stops.end(), stops.size());
 	}
+
+	void Run::attach(Schedule::StopsList::const_iterator pos)
+	{
+		assert(is_detached);
+
+		schedule_stops.splice(pos, detached_stops, detached_stops.begin(), detached_stops.end(), detached_stops.size());
+		stops.setEnd(pos);
+		//work_stops.setEnd(std::prev(stops.end()));
+	
+		is_detached = false;
+		assert(isConsistent());
+	}
+
+	bool Run::isDetached() const
+	{
+		return is_detached;
+	}
+
 }

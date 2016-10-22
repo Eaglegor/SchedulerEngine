@@ -5,6 +5,9 @@
 
 #include "Constraints/Scene/SceneConstraints.h"
 #include <Engine/Utils/Collections/ImmutableVector.h>
+#include <Engine/Utils/ReferenceWrapper.h>
+#include <Engine/Utils/Optional.h>
+#include <Engine/Utils/String.h>
 #include "SceneObjectsFactory.h"
 
 namespace Scheduler
@@ -20,50 +23,58 @@ namespace Scheduler
 	
 	class SCENEMANAGER_EXPORT SceneContext
 	{
+		private:
+			template<typename T>
+			using ReferencesVector = std::vector<ReferenceWrapper<T>>;
+		
 		public:
-			SceneContext(std::size_t id);
+			using OperationsList = ReferencesVector<const Operation>;
+			using OrdersList = ReferencesVector<const Order>;
+			using PerformersList = ReferencesVector<const Performer>;
+			using VehiclesList = ReferencesVector<const Vehicle>;
+			using LocationsList = ReferencesVector<const Location>;
+			using DepotsList = ReferencesVector<const Depot>;
+			using AttributesMap = std::unordered_map<std::string, ReferenceWrapper<const Attribute>>;
+			
+			explicit SceneContext(std::size_t id);
 			~SceneContext();
 			
 			std::size_t getId() const;
 			
-			const ImmutableVector<Operation*>& getFreeOperations() const;
-			const ImmutableVector<Order*>& getOrders() const;
-			const ImmutableVector<Performer*>& getPerformers() const;
-			const ImmutableVector<Vehicle*>& getVehicles() const;
-			const ImmutableVector<Location*>& getLocations() const;
-			const ImmutableVector<Depot*>& getDepots() const;
-			const Attribute* getAttribute(const char* name) const;
-			
-			ImmutableVector<Operation*>& getFreeOperations();
-			ImmutableVector<Order*>& getOrders();
-			ImmutableVector<Performer*>& getPerformers();
-			ImmutableVector<Vehicle*>& getVehicles();
-			ImmutableVector<Location*>& getLocations();
-			ImmutableVector<Depot*>& getDepots();
+			const OperationsList& getFreeOperations() const;
+			const OrdersList& getOrders() const;
+			const PerformersList& getPerformers() const;
+			const VehiclesList& getVehicles() const;
+			const LocationsList& getLocations() const;
+			const DepotsList& getDepots() const;
+			const AttributesMap& getAttributes() const;
 
-			Operation* createFreeOperation(const Location &location);
-			Order* createOrder();
-			Performer* createPerformer();
-			Vehicle* createVehicle();
-			Location* createLocation(const Site& site);
-			Depot* createDepot(const Location &location);
-			const Attribute* createAttribute(const char* name);
+			Operation& createFreeOperation(const Location &location);
+			Order& createOrder(Optional<const Depot&> depot = None);
+			Performer& createPerformer(Optional<const Depot&> depot = None);
+			Vehicle& createVehicle(Optional<const Depot&> depot = None);
+			Location& createLocation(const Site& site);
+			Depot& createDepot(const Location &location);
+			const Attribute& createAttribute(const String& name);
 			
 			const SceneConstraints& constraints() const;
 			SceneConstraints& constraints();
 			
+			bool operator==(const SceneContext& rhs) const;
+			bool operator!=(const SceneContext& rhs) const;
+			
 		private:
-			size_t id;
+			std::size_t id;
 
-			std::vector<Operation*> free_operations;
-			std::vector<Order*> orders;
-			std::vector<Location*> locations;
+			OperationsList free_operations;
+			OrdersList orders;
+			LocationsList locations;
 
-			std::vector<Performer*> performers;
-			std::vector<Vehicle*> vehicles;
-			std::vector<Depot*> depots;
+			PerformersList performers;
+			VehiclesList vehicles;
+			DepotsList depots;
 
-			std::unordered_map<std::string, Attribute*> attributes;
+			AttributesMap attributes;
 			
 			SceneObjectsFactory<Operation> operations_factory;
 			SceneObjectsFactory<Order> orders_factory;

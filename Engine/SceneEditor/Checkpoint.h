@@ -13,20 +13,19 @@ namespace Scheduler
 	class SCENEEDITOR_EXPORT Checkpoint
 	{
 	public:
-		Checkpoint(MemoryManager* memory_manager, std::size_t base_version) :
-		memory_manager(memory_manager), 
+		explicit Checkpoint(std::size_t base_version) :
 		base_version(base_version),
 		current_version(base_version)
 		{}
 
 		template<typename ActionType, typename... Args>
-		const ActionType& performAction(Args&& ...args)
+		typename ActionType::return_type performAction(std::size_t &out_version, Args&& ...args)
 		{
-			auto action = std::allocate_shared<ActionType>(MallocAllocator<ActionType>(memory_manager), std::forward<Args>(args)...);
-			action->perform();
+			auto action = std::allocate_shared<ActionType>(MallocAllocator<ActionType>(), std::forward<Args>(args)...);
 			actions.emplace_back(action);
 			++current_version;
-			return *action;
+			out_version = current_version;
+			return action->perform();
 		}
 
 		void applyPatch(Patch&& patch);
@@ -40,8 +39,7 @@ namespace Scheduler
 	private:
 		std::size_t base_version;
 		std::size_t current_version;
-		MemoryManager* memory_manager;
 
-		std::deque<std::shared_ptr<Action>> actions;
+		std::deque<std::shared_ptr<ActionBase>> actions;
 	};
 }

@@ -2,78 +2,111 @@
 
 namespace Scheduler
 {
-	Vehicle::Vehicle(size_t id): 
+	Vehicle::Vehicle(std::size_t id, Optional<const Depot&> depot): 
 	id(id),
-	depot(nullptr)
+	depot(depot)
 	{
 	}
 
-	size_t Vehicle::getId() const{
+	std::size_t Vehicle::getId() const 
+	{
 		return id;
 	}
 
-	const char* Vehicle::getName() const {
-		return name.c_str();
+	const String& Vehicle::getName() const 
+	{
+		return name;
 	}
 
-	const RoutingProfile& Vehicle::getRoutingProfile() const {
+	const RoutingProfile& Vehicle::getRoutingProfile() const 
+	{
 		return routing_profile;
 	}
 
-	const Cost &Vehicle::getDurationUnitCost() const {
+	const Cost& Vehicle::getDurationUnitCost() const 
+	{
 		return duration_unit_cost;
 	}
 
-	const Cost &Vehicle::getDistanceUnitCost() const {
+	const Cost& Vehicle::getDistanceUnitCost() const 
+	{
 		return distance_unit_cost;
 	}
 
-	const Cost &Vehicle::getActivationCost() const {
+	const Cost& Vehicle::getActivationCost() const 
+	{
 		return activation_cost;
 	}
 
-	void Vehicle::setName(const char *name) {
+	void Vehicle::setName(const String &name) 
+	{
 		this->name = name;
 	}
 
-	void Vehicle::setRoutingProfile(const RoutingProfile &routing_profile) {
+	void Vehicle::setRoutingProfile(const RoutingProfile &routing_profile) 
+	{
 		this->routing_profile = routing_profile;
 	}
 
-	void Vehicle::setDurationUnitCost(const Cost &cost) {
+	void Vehicle::setDurationUnitCost(const Cost &cost) 
+	{
 		this->duration_unit_cost = cost;
 	}
 
-	void Vehicle::setDistanceUnitCost(const Cost &cost) {
+	void Vehicle::setDistanceUnitCost(const Cost &cost) 
+	{
 		this->distance_unit_cost = cost;
 	}
 
-	void Vehicle::setActivationCost(const Cost &cost) {
+	void Vehicle::setActivationCost(const Cost &cost) 
+	{
 		this->activation_cost = cost;
 	}
 
-	const ImmutableUnorderedSet <const Attribute *> &Vehicle::getAttributes() const {
+	const Vehicle::AttributesSet& Vehicle::getAttributes() const 
+	{
 		return attributes;
 	}
 
-	void Vehicle::setAttributes(const ImmutableUnorderedSet<const Attribute *> &attributes) {
-		this->attributes = attributes;
+	void Vehicle::addAttribute(const Attribute& attribute)
+	{
+		attributes.emplace(attribute);
 	}
-	const VehicleConstraints & Vehicle::constraints() const
+	
+	void Vehicle::removeAttribute(const Attribute& attribute)
+	{
+		attributes.erase(attribute);
+	}
+	
+	void Vehicle::clearAttributes()
+	{
+		attributes.clear();
+	}
+	
+	const VehicleConstraints& Vehicle::constraints() const
 	{
 		return vehicle_constraints;
 	}
-	VehicleConstraints & Vehicle::constraints()
+	
+	VehicleConstraints& Vehicle::constraints()
 	{
 		return vehicle_constraints;
 	}
-	const Depot* Vehicle::getDepot() const
+	
+	Optional<const Depot&> Vehicle::getDepot() const
 	{
 		return depot;
 	}
-	void Vehicle::setDepot(const Depot* depot)
+	
+	bool Vehicle::operator==(const Vehicle& rhs) const
 	{
-		this->depot = depot;
+		return id == rhs.id && this == &rhs;
 	}
+	
+	bool Vehicle::operator!=(const Vehicle& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
 }
 

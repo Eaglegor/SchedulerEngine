@@ -10,7 +10,7 @@ namespace Scheduler
     {
     }
 
-    ListTemperatureScheduler::ListTemperatureScheduler(size_t aLength, float aInitialProbability, size_t iterationsCount) :
+    ListTemperatureScheduler::ListTemperatureScheduler(std::size_t aLength, float aInitialProbability, std::size_t iterationsCount) :
         adapt_counter(0), iterations_count(iterationsCount), length(aLength), i(0), adapt_sum(0.f), initial_probability(aInitialProbability)
     {
     }
@@ -30,7 +30,7 @@ namespace Scheduler
         ++i;
     }
 
-    void ListTemperatureScheduler::initialize(Run* run, ScheduleCostFunction* cost_function)
+    void ListTemperatureScheduler::initialize(Run& run, const ScheduleCostFunction& cost_function)
     {
         std::priority_queue<float> new_values;
         const auto costs = create_initial_costs(run, cost_function, length);

@@ -7,6 +7,9 @@
 
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
+#include <Engine/Utils/String.h>
+#include <Engine/Utils/Optional.h>
+#include <Engine/Utils/ReferenceWrapper.h>
 #include "Attribute.h"
 
 #include "Constraints/Performer/PerformerConstraints.h"
@@ -17,47 +20,48 @@ namespace Scheduler
 {
 	class Depot;
 	
-	/**
-		Class representing a human performer (e.g. driver of a vehicle).
-
-		Has 2 cost factors:
-		- cost per duration unit: performer's worktime cost
-		- activation cost: fixed price paid when performer starts his workday (or not paid if the performer is not used to complete orders).
-	*/
     class SCENEMANAGER_EXPORT Performer
     {
     public:
-		Performer(size_t id);
+		using Skill = Attribute;
+		using SkillsSet = std::unordered_set<ReferenceWrapper<const Skill>>;
+		
+		Performer(std::size_t id, Optional<const Depot&> depot);
 
-		size_t getId() const;
-		const char* getName() const;
+		std::size_t getId() const;
+		
+		const String& getName() const;
+		void setName(const String& name);
 
 		const Cost& getDurationUnitCost() const;
-		const Cost& getActivationCost() const;
-
-		void setName(const char* name);
-
 		void setDurationUnitCost(const Cost &cost);
+		
+		const Cost& getActivationCost() const;
 		void setActivationCost(const Cost &cost);
 
-		const ImmutableUnorderedSet<const Attribute*>& getSkills() const;
-		void setSkills(const ImmutableUnorderedSet<const Attribute*> &skills);
+		const SkillsSet& getSkills() const;
+		void addSkill(const Skill& skill);
+		void removeSkill(const Skill& skill);
+		void clearSkills();
 
-		const Depot* getDepot() const;
-		void setDepot(const Depot* depot);
+		Optional<const Depot&> getDepot() const;
 		
 		const PerformerConstraints& constraints() const;
 		PerformerConstraints& constraints();
+		
+		bool operator==(const Performer& rhs) const;
+		bool operator!=(const Performer& rhs) const;
 
 	private:
-		size_t id;
-		std::string name;
+		std::size_t id;
+		String name;
+		
 		Cost duration_unit_cost;
 		Cost activation_cost;
 
-		std::unordered_set<const Attribute*> skills;
+		SkillsSet skills;
 
-		const Depot* depot;
+		Optional<const Depot&> depot;
 		
 		PerformerConstraints performer_constraints;
 	};

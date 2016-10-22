@@ -14,7 +14,7 @@ namespace Scheduler
 	class CompositeEdgeIntroducer : public EdgeIntroducer
 	{
 	public:
-		CompositeEdgeIntroducer(Run* run, ScheduleCostFunction* cost_function, SceneEditor& scene_editor);
+		CompositeEdgeIntroducer(Run& run, const ScheduleCostFunction& cost_function, SceneEditor& scene_editor);
 
 		virtual bool introduce(const SuggestedEdge& edge) override;
 
@@ -26,13 +26,13 @@ namespace Scheduler
 		}
 
 	private:
-		Run* run;
-		ScheduleCostFunction* cost_function;
+		Run& run;
+		const ScheduleCostFunction& cost_function;
 		SceneEditor& scene_editor;
 		Cost best_cost;
 
 		std::vector<std::shared_ptr<EdgeIntroducer>> introducers;
 
-		Logger* logger;
+		Logger& logger;
 	};
 }

@@ -12,12 +12,12 @@ namespace Scheduler
 		return "Transparent";
 	}
 
-	void TransparentTSPSolver::optimize(Schedule* schedule) const
+	void TransparentTSPSolver::optimize(Schedule& schedule) const
 	{
 		// Do nothing
 	}
 
-	void TransparentTSPSolver::optimize(Run* run) const
+	void TransparentTSPSolver::optimize(Run& run) const
 	{
 		// Do nothing
 	}

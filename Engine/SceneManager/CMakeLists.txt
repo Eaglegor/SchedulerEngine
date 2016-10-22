@@ -31,9 +31,9 @@ add_library(SceneManager SHARED
 	
     Actualizable.h
     ScheduleActualizationModel.h ScheduleActualizationModel.cpp
-	RouteActualizer.h
-    ArrivalTimeActualizer.h
-    DurationActualizer.h
+	RouteActualizer.h RouteActualizer.cpp
+    ArrivalTimeActualizer.h ArrivalTimeActualizer.cpp
+    DurationActualizer.h DurationActualizer.cpp
     
 	ScheduleValidationModel.h ScheduleValidationModel.cpp
 	
@@ -66,16 +66,21 @@ add_library(SceneManager SHARED
 	Constraints/Vehicle/VehicleConstraints.h Constraints/Vehicle/VehicleConstraints.cpp
 	
 	Utils/SceneCloner.h Utils/SceneCloner.cpp
+	Utils/InvariantWorkStopsList.h Utils/InvariantWorkStopsList.cpp
+	Utils/StreamIO.h Utils/StreamIO.cpp
 	
-	Extensions/TimeWindowSelector.h
-	Extensions/RunVehicleBinder.h
-	Extensions/ArrivalTimeActualizationAlgorithm.h
-    Extensions/DurationActualizationAlgorithm.h
-    Extensions/RouteActualizationAlgorithm.h
-	Extensions/StopValidationAlgorithm.h
-	Extensions/RunValidationAlgorithm.h
-	Extensions/ScheduleValidationAlgorithm.h
+	Algorithms/RunVehicleBinder.h
+	Algorithms/Actualization/ArrivalTimeActualizationAlgorithm.h
+    Algorithms/Actualization/DurationActualizationAlgorithm.h
+    Algorithms/Actualization/RouteActualizationAlgorithm.h
+	Algorithms/Validation/StopValidationAlgorithm.h
+	Algorithms/Validation/RunValidationAlgorithm.h
+	Algorithms/Validation/ScheduleValidationAlgorithm.h
 	
+    CostFunctions/SceneCostFunction.h
+    CostFunctions/ScheduleCostFunction.h
+    CostFunctions/RunCostFunction.h
+
 	Listeners/StructuralChangesListener.h
 	Listeners/StructuralChangesObserver.h Listeners/StructuralChangesObserver.cpp
 	

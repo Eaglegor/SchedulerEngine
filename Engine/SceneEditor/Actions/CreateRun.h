@@ -3,26 +3,24 @@
 #include "../Action.h"
 #include <boost/optional.hpp>
 #include <Engine/SceneManager/Schedule.h>
+#include <Engine/Utils/Optional.h>
 #include <SceneEditor_export.h>
 
 namespace Scheduler
 {
-	class SCENEEDITOR_EXPORT CreateRun : public Action
+	class SCENEEDITOR_EXPORT CreateRun : public Action<Schedule::RunIterator>
 	{
 	public:
-		CreateRun(Schedule* schedule, Schedule::RunsList::const_iterator pos, const Location& from, const Location& to);
+		CreateRun(Schedule& schedule, Schedule::ConstRunIterator pos, const Location& from, const Location& to);
 		
-		virtual void perform();
-		virtual void rollback();
-		
-		boost::optional<Schedule::RunsList::iterator> result() const;
+		virtual Schedule::RunIterator perform() override;
+		virtual void rollback() override;
 		
 	private:
-		Schedule* schedule;
-		Schedule::RunsList::const_iterator pos;
+		Schedule& schedule;
+		Schedule::ConstRunIterator pos;
 		const Location& from;
 		const Location& to;
-		
-		boost::optional<Schedule::RunsList::iterator> resulting_run;
+		Optional<Schedule::RunIterator> resulting_run;
 	};
 }

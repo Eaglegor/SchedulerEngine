@@ -11,7 +11,7 @@ add_library(CWSavingsVRPSolver SHARED
 
 set_target_properties(CWSavingsVRPSolver PROPERTIES FOLDER "Engine/Algorithms/VRPSolvers/CWSavings")
 
-target_link_libraries(CWSavingsVRPSolver StrategiesManager SceneManager SceneEditor)
+target_link_libraries(CWSavingsVRPSolver AlgorithmsManager SceneManager SceneEditor)
 
 cotire(CWSavingsVRPSolver)
 

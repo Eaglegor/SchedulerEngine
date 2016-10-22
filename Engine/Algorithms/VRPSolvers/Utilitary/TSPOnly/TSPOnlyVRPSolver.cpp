@@ -1,22 +1,20 @@
 #include "TSPOnlyVRPSolver.h"
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/StrategiesManager/TSPSolver.h>
+#include <Engine/AlgorithmsManager/TSPSolver.h>
 
 namespace Scheduler
 {
-	TSPOnlyVRPSolver::TSPOnlyVRPSolver(TSPSolver* tsp_solver):
+	TSPOnlyVRPSolver::TSPOnlyVRPSolver(const TSPSolver& tsp_solver):
 		tsp_solver(tsp_solver)
 	{
-		assert(tsp_solver);
 	}
 
-	void TSPOnlyVRPSolver::optimize(Scene* scene) const
+	void TSPOnlyVRPSolver::optimize(Scene& scene) const
 	{
-		assert(tsp_solver);
-		for(Schedule* schedule : scene->getSchedules())
+		for(Schedule& schedule : scene.getSchedules())
 		{
-			tsp_solver->optimize(schedule);
+			tsp_solver.optimize(schedule);
 		}
 	}
 }

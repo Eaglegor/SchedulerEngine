@@ -7,11 +7,17 @@
 #include "RunBoundaryStop.h"
 #include <Engine/Utils/Collections/LinkedPointersList.h>
 #include <Engine/Utils/Collections/LinkedPointersSublist.h>
-#include <Engine/Utils/Collections/LinkedPointersListTypeAdapter.h>
+#include <Engine/Utils/Collections/RangeTypeAdapter.h>
 #include <Engine/SceneManager/WorkStop.h>
+#include "Schedule.h"
+#include "DurationActualizer.h"
 #include <memory>
+#include <Engine/Utils/AutoCastRange.h>
 
 #include <SceneManager_export.h>
+#include <boost/range/adaptor/transformed.hpp>
+#include <Engine/Utils/DerivedTypeCaster.h>
+#include <Engine/Utils/Optional.h>
 
 namespace Scheduler
 {
@@ -23,89 +29,101 @@ namespace Scheduler
 	class ScheduleValidationModel;
 	class StructuralChangesObserver;
 
-	/**
-		Class representing single performer trip which starts and ends in the specified locations.
-
-		Each run must be associated with a vehicle to be correclty processed by the scene manager (otherwise all routes will be zero  because the routing profile is not provided).
-		Default vehicle assigner (if was set for the Scene) is populated by the Scene after the run is created.
-		User may explicitly override the vehicle set by the scene by this is not recommended.
-
-		Has 3 operation slots (according to the order's specification):
-		- start operations: are allocated to the first stop (at start location) - there can be multiple start operations for the first stop
-		- work operations: are allocated between the first and last stop - there is only one work operations for a single work stop
-		- end operations: are allocated to the last stop (at end location) - there can be multiple end operations for the last stop
-	*/
 	class SCENEMANAGER_EXPORT Run
 	{
-	public:
-		using StopsList = LinkedPointersSublist<Stop*>;
-		using StopsSublist = LinkedPointersSublist<Stop*, StopsList>;
-		using WorkStopsList = LinkedPointersListTypeAdapter< StopsSublist, WorkStop* >;
+	private:
+		using StopsRange = Range<Schedule::StopsList>;
+		using WorkStopsRange = Range<StopsRange>;
 		
-		Run(std::size_t id, const Location& start_location, const Location& end_location, Schedule* schedule, LinkedPointersList<Stop*> &stops_list, LinkedPointersList<Stop*>::iterator pos);
+	public:
+		using StopsList = StopsRange;
+		using StopIterator = StopsList::iterator;
+		using ConstStopIterator = StopsList::const_iterator;
+		
+		using WorkStopsList = RangeTypeAdapter<WorkStopsRange, WorkStop>;
+		using WorkStopIterator = WorkStopsList::iterator;
+		using ConstWorkStopIterator = WorkStopsList::const_iterator;
+		
+		struct Context
+		{
+			SceneObjectsFactory<WorkStop>& stops_factory;
+			StructuralChangesObserver& structural_changes_observer;
+			ArrivalTimeActualizer& arrival_time_actualizer;
+		};
+		
+		Run(std::size_t id, const Context& context, Schedule& schedule, const Location& start_location, const Location& end_location, Schedule::StopsList &stops_list, Schedule::StopsList::const_iterator pos);
 		~Run();
 
 		std::size_t getId() const;
 
-		const Schedule* getSchedule() const;
-		Schedule* getSchedule();
+		const Schedule& getSchedule() const;
+		Schedule& getSchedule();
 
-		const Vehicle* getVehicle() const;
+		Optional<const Vehicle&> getVehicle() const;
+		void setVehicle(Optional<const Vehicle&> vehicle);
 
-		void setVehicle(const Vehicle *vehicle);
-
-		const RunBoundaryStop* getStartStop() const;
-		RunBoundaryStop* getStartStop();
+		const RunBoundaryStop& getStartStop() const;
+		RunBoundaryStop& getStartStop();
 
 		const WorkStopsList& getWorkStops() const;
-		const StopsList& getStops() const;
-
-		const RunBoundaryStop* getEndStop() const;
-		RunBoundaryStop* getEndStop();
-
-		RunBoundaryStop* allocateStartOperation(const Operation *operation);
-		WorkStopsList::iterator createWorkStop(WorkStopsList::iterator pos, const Operation *operation);
-		RunBoundaryStop* allocateEndOperation(const Operation *operation);
-
-		void unallocateStartOperation(const Operation *operation);
-		WorkStopsList::iterator destroyWorkStop(WorkStopsList::iterator pos);
-		void unallocateEndOperation(const Operation *operation);
+		WorkStopsList& getWorkStops();
 		
-		void swapWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator second);
-		void reverseWorkStops(WorkStopsList::iterator first, WorkStopsList::iterator last);
-		void spliceWorkStops(WorkStopsList::iterator pos, WorkStopsList::iterator first, WorkStopsList::iterator last);
+		const StopsList& getStops() const;
+		StopsList& getStops();
+
+		const RunBoundaryStop& getEndStop() const;
+		RunBoundaryStop& getEndStop();
+
+		void allocateStartOperation(const Operation &operation);
+		WorkStopIterator createWorkStop(ConstWorkStopIterator pos, const Operation &operation);
+		void allocateEndOperation(const Operation &operation);
+
+		void unallocateStartOperation(const Operation &operation);
+		WorkStopIterator destroyWorkStop(ConstWorkStopIterator pos);
+		void unallocateEndOperation(const Operation &operation);
+		
+		void swapWorkStops(ConstWorkStopIterator first, ConstWorkStopIterator second);
+		void reverseWorkStops();
+		void reverseWorkStops(ConstWorkStopIterator first, ConstWorkStopIterator last);
+		void spliceWorkStops(ConstWorkStopIterator pos, ConstWorkStopIterator first, ConstWorkStopIterator last);
+		void spliceWorkStops(ConstWorkStopIterator pos, Run& from, ConstWorkStopIterator first, ConstWorkStopIterator last, Optional<std::size_t> n = None);
 
 		bool isValid() const;
 
-		// == framework internal ====================================
-		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
-		void setScheduleActualizationModel(ScheduleActualizationModel* model, ArrivalTimeActualizer* arrival_time_actualizer);
-		void setScheduleValidationModel(ScheduleValidationModel* model);
-		void adjustStopsRange(StopsList::iterator begin, StopsList::iterator end);
-		void setStructuralChangesObserver(StructuralChangesObserver* observer);
-
+		bool operator==(const Run& rhs) const;
+		bool operator!=(const Run& rhs) const;
+		
+		StopIterator findStop(Stop& stop);
+		ConstStopIterator findStop(const Stop& stop) const;
+		
+		WorkStopIterator findWorkStop(WorkStop& stop);
+		ConstWorkStopIterator findWorkStop(const WorkStop& stop) const;
+		
 	private:
-		WorkStop* createWorkStop(const Operation* operation);
+		bool isDetached() const;
+		void detach();
+		void attach(Schedule::StopsList::const_iterator pos);
+		
+		bool isConsistent() const;
+		void setStopsEndIterator(ConstStopIterator end);
 
 		std::size_t id;
-		Schedule* schedule;
-		const Vehicle* vehicle;
+		Context context;
+		
+		Schedule& schedule;
+		Optional<const Vehicle&> vehicle;
 
 		RunBoundaryStop start_stop;
 		RunBoundaryStop end_stop;
 
-		SceneObjectsFactory<WorkStop> *stops_factory;
-
-		ScheduleActualizationModel* schedule_actualization_model;
-		ArrivalTimeActualizer* arrival_time_actualizer;
 		DurationActualizer duration_actualizer;
-		ScheduleValidationModel* schedule_validation_model;
 
-		std::unique_ptr<StopsList> stops;
-		std::unique_ptr<StopsSublist> raw_work_stops;
-		std::unique_ptr<WorkStopsList> work_stops;
-		
-		StructuralChangesObserver* structural_changes_observer;
+		StopsRange stops;
+		WorkStopsRange work_stops;
+		WorkStopsList casted_work_stops;
+
+		Schedule::StopsList& schedule_stops;
+		Schedule::StopsList detached_stops;
 		
 		bool is_detached;
 		

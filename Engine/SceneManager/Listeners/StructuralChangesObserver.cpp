@@ -2,101 +2,101 @@
 
 namespace Scheduler
 {
-	void StructuralChangesObserver::addListener(StructuralChangesListener* listener)
+	void StructuralChangesObserver::addListener(StructuralChangesListener& listener)
 	{
 		listeners.emplace(listener);
 	}
 	
-	void StructuralChangesObserver::removeListener(StructuralChangesListener* listener)
+	void StructuralChangesObserver::removeListener(StructuralChangesListener& listener)
 	{
 		listeners.erase(listener);
 	}
 	
-	void StructuralChangesObserver::afterStartOperationAdded(Run::StopsList::const_iterator iter, const Operation* operation)
+	void StructuralChangesObserver::afterStartOperationAdded(Run::ConstStopIterator iter, const Operation& operation)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->afterStartOperationAdded(iter, operation);
+			listener.afterStartOperationAdded(iter, operation);
 		}
 	}
 	
-	void StructuralChangesObserver::beforeStartOperationRemoved(Run::StopsList::const_iterator iter, const Operation* operation)
+	void StructuralChangesObserver::beforeStartOperationRemoved(Run::ConstStopIterator iter, const Operation& operation)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->beforeStartOperationRemoved(iter, operation);
+			listener.beforeStartOperationRemoved(iter, operation);
 		}
 	}
 	
-	void StructuralChangesObserver::afterEndOperationAdded(Run::StopsList::const_iterator iter, const Operation* operation)
+	void StructuralChangesObserver::afterEndOperationAdded(Run::ConstStopIterator iter, const Operation& operation)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->afterEndOperationAdded(iter, operation);
+			listener.afterEndOperationAdded(iter, operation);
 		}
 	}
 	
-	void StructuralChangesObserver::beforeEndOperationRemoved(Run::StopsList::const_iterator iter, const Operation* operation)
+	void StructuralChangesObserver::beforeEndOperationRemoved(Run::ConstStopIterator iter, const Operation& operation)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->beforeEndOperationRemoved(iter, operation);
+			listener.beforeEndOperationRemoved(iter, operation);
 		}
 	}
 	
-	void StructuralChangesObserver::afterRunCreated(Schedule::RunsList::const_iterator iter)
+	void StructuralChangesObserver::afterRunCreated(Schedule::ConstRunIterator iter)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->afterRunCreated(iter);
+			listener.afterRunCreated(iter);
 		}
 	}
 	
-	void StructuralChangesObserver::beforeRunDestroyed(Schedule::RunsList::const_iterator iter)
+	void StructuralChangesObserver::beforeRunDestroyed(Schedule::ConstRunIterator iter)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->beforeRunDestroyed(iter);
+			listener.beforeRunDestroyed(iter);
 		}
 	}
 	
-	void StructuralChangesObserver::afterWorkStopCreated(Run::WorkStopsList::const_iterator iter)
+	void StructuralChangesObserver::afterWorkStopCreated(Run::ConstWorkStopIterator iter)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->afterWorkStopCreated(iter);
+			listener.afterWorkStopCreated(iter);
 		}
 	}
 	
-	void StructuralChangesObserver::beforeWorkStopDestroyed(Run::WorkStopsList::const_iterator iter)
+	void StructuralChangesObserver::beforeWorkStopDestroyed(Run::ConstWorkStopIterator iter)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener&listener : listeners)
 		{
-			listener->beforeWorkStopDestroyed(iter);
+			listener.beforeWorkStopDestroyed(iter);
 		}
 	}
 	
-	void StructuralChangesObserver::beforeWorkStopsReversed(Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end)
+	void StructuralChangesObserver::beforeWorkStopsReversed(Run::ConstWorkStopIterator range_begin, Run::ConstWorkStopIterator range_end)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->beforeWorkStopsReversed(range_begin, range_end);
+			listener.beforeWorkStopsReversed(range_begin, range_end);
 		}
 	}
 	
-	void StructuralChangesObserver::beforeWorkStopsSwapped(Run::WorkStopsList::const_iterator first, Run::WorkStopsList::const_iterator second)
+	void StructuralChangesObserver::beforeWorkStopsSwapped(Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator second)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->beforeWorkStopsSwapped(first, second);
+			listener.beforeWorkStopsSwapped(first, second);
 		}
 	}
 	
-	void StructuralChangesObserver::beforeWorkStopsSpliced(Run* to_run, Run::WorkStopsList::const_iterator pos, Run* from_run, Run::WorkStopsList::const_iterator range_begin, Run::WorkStopsList::const_iterator range_end)
+	void StructuralChangesObserver::beforeWorkStopsSpliced(const Run& to_run, Run::ConstWorkStopIterator pos, const Run& from_run, Run::ConstWorkStopIterator range_begin, Run::ConstWorkStopIterator range_end)
 	{
-		for(StructuralChangesListener* listener : listeners)
+		for(StructuralChangesListener& listener : listeners)
 		{
-			listener->beforeWorkStopsSpliced(to_run, pos, from_run, range_begin, range_end);
+			listener.beforeWorkStopsSpliced(to_run, pos, from_run, range_begin, range_end);
 		}
 	}
 

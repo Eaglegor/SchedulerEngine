@@ -2,11 +2,14 @@ add_library(DefaultArrivalTimeActualizationAlgorithm SHARED
 	
 	DefaultArrivalTimeActualizationAlgorithm.h
 	DefaultArrivalTimeActualizationAlgorithm.cpp
+	
+	TimeWindowSelectors/FirstTimeWindowSelector/FirstTimeWindowSelector.h
+	TimeWindowSelectors/FirstTimeWindowSelector/FirstTimeWindowSelector.cpp
 )
 
 set_target_properties(DefaultArrivalTimeActualizationAlgorithm PROPERTIES FOLDER "Engine/Algorithms/ScheduleActualization/ArrivalTime")
 
-target_link_libraries(DefaultArrivalTimeActualizationAlgorithm SceneManager FirstTimeWindowSelector)
+target_link_libraries(DefaultArrivalTimeActualizationAlgorithm SceneManager)
 
 cotire(DefaultArrivalTimeActualizationAlgorithm)
 

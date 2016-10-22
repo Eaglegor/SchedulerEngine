@@ -2,25 +2,29 @@
 
 namespace Scheduler
 {
-    Attribute::Attribute(size_t id, const char *name):
-            id(id),
-            name(name)
+    Attribute::Attribute(std::size_t id, const String& name):
+	id(id),
+	name(name)
     {
     }
 
-    size_t Attribute::getId() const{
+    std::size_t Attribute::getId() const
+    {
         return id;
     }
 
-    const char* Attribute::getName() const {
-        return name.c_str();
+    const String& Attribute::getName() const 
+    {
+        return name;
     }
 
-    bool Attribute::operator==(const Attribute &rhs) const {
-        return this->id == rhs.id;
+    bool Attribute::operator==(const Attribute &rhs) const 
+    {
+        return id == rhs.id && this == &rhs;
     }
 
-    bool Attribute::operator!=(const Attribute &rhs) const {
+    bool Attribute::operator!=(const Attribute &rhs) const 
+    {
         return !(*this == rhs);
     }
 }

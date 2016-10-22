@@ -2,20 +2,13 @@
 
 namespace Scheduler
 {
-	Engine::Engine() :
-		memory_manager(new MemoryManager()),
-		scene_manager(new SceneManager()),
-		strategies_manager(new StrategiesManager())
+	SceneManager& Engine::getSceneManager()
 	{
-	}
-
-	SceneManager* Engine::getSceneManager()
-	{
-		return scene_manager.get();
+		return scene_manager;
 	}
 	
-	StrategiesManager* Engine::getStrategiesManager()
+	AlgorithmsManager& Engine::getAlgorithmsManager()
 	{
-		return strategies_manager.get();
+		return algorithms_manager;
 	}
 }

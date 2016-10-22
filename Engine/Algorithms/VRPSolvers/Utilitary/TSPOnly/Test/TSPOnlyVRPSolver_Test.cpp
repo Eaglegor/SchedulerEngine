@@ -6,8 +6,8 @@
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/StrategiesManager/StrategiesManager.h>
-#include <Engine/StrategiesManager/Strategy.h>
+#include <Engine/AlgorithmsManager/AlgorithmsManager.h>
+#include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <Engine/Engine/Engine.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
 
@@ -15,12 +15,12 @@ class MockTSPSolver : public Scheduler::TSPSolver
 {
 public:
 
-	virtual void optimize(Scheduler::Schedule* schedule) const override
+	virtual void optimize(Scheduler::Schedule& schedule) const override
 	{
 		was_called = true;
 	}
 
-	virtual void optimize(Scheduler::Run* run) const override
+	virtual void optimize(Scheduler::Run& run) const override
 	{
 		was_called = true;
 	}
@@ -47,23 +47,21 @@ TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][functional][vrp_so
 
 	Engine engine;
 
-    SceneManager* sm = engine.getSceneManager();
+    SceneManager& sm = engine.getSceneManager();
 
-	SceneContext* scene_context = sm->createSceneContext();
-	Performer* performer = scene_context->createPerformer();
+	SceneContext& scene_context = sm.createSceneContext();
+	Performer& performer = scene_context.createPerformer();
 
-	Scene* scene = sm->createScene(*scene_context);
-	Schedule* schedule = scene->createSchedule(*performer);
+	Scene& scene = sm.createScene(scene_context);
+	Schedule& schedule = scene.createSchedule(performer);
 	
-	StrategiesManager* strategies_manager = engine.getStrategiesManager();
+	AlgorithmsManager& am = engine.getAlgorithmsManager();
 
-	Strategy* strategy = strategies_manager->createStrategy();
+	MockTSPSolver& tsp_solver = am.createAlgorithm<MockTSPSolver>();
 
-	MockTSPSolver* tsp_solver = strategy->createTSPSolver<MockTSPSolver>();
+	TSPOnlyVRPSolver& solver = am.createAlgorithm<TSPOnlyVRPSolver>(tsp_solver);
 
-	TSPOnlyVRPSolver* solver = strategy->createVRPSolver<TSPOnlyVRPSolver>(tsp_solver);
+	solver.optimize(scene);
 
-	solver->optimize(scene);
-
-	REQUIRE(tsp_solver->wasCalled());
+	REQUIRE(tsp_solver.wasCalled());
 }

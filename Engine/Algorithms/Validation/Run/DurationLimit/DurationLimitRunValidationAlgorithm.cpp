@@ -7,8 +7,8 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Utils/Aggregators/DurationAccumulator.h>
 
-bool Scheduler::DurationLimitRunValidationAlgorithm::isValid(const Run * run) const
+bool Scheduler::DurationLimitRunValidationAlgorithm::isValid(const Run& run) const
 {
-	if (!run->getSchedule()->constraints().runWorkingTimeLimit().isSet()) return true;
-	return DurationAccumulator::accumulateDuration(run->getStartStop(), run->getEndStop()) > run->getSchedule()->constraints().runWorkingTimeLimit();
+	if (!run.getSchedule().constraints().runWorkingTimeLimit().isSet()) return true;
+	return DurationAccumulator::accumulateDuration(run.getStartStop(), run.getEndStop()) > run.getSchedule().constraints().runWorkingTimeLimit();
 }

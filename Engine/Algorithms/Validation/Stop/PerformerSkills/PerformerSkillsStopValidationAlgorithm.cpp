@@ -19,32 +19,32 @@ public:
 	{
 	}
 
-	virtual void dispatch(const Scheduler::WorkStop* work_stop) override
+	virtual void dispatch(const Scheduler::WorkStop& work_stop) override
 	{
 		is_valid = true;
-		const Scheduler::Operation* operaton = work_stop->getOperation();
-		const Scheduler::Performer* performer = work_stop->getRun()->getSchedule()->getPerformer();
-		if (operaton->constraints().performerSkillsRequirements().isSet())
+		const Scheduler::Operation& operaton = work_stop.getOperation();
+		const Scheduler::Performer& performer = work_stop.getRun().getSchedule().getPerformer();
+		if (operaton.constraints().performerSkillsRequirements().isSet())
 		{
-			for(const Scheduler::Attribute* requirement : operaton->constraints().performerSkillsRequirements().get())
+			for(const Scheduler::Performer::Skill& requirement : operaton.constraints().performerSkillsRequirements().get())
 			{
-				is_valid = is_valid && util::contains_key(performer->getSkills(), requirement);
+				is_valid = is_valid && util::contains_key(performer.getSkills(), requirement);
 				if (!is_valid) break;
 			}
 		}
 	}
 
-	virtual void dispatch(const Scheduler::RunBoundaryStop* run_boundary_stop) override
+	virtual void dispatch(const Scheduler::RunBoundaryStop& run_boundary_stop) override
 	{
 		is_valid = true;
-		for (const Scheduler::Operation* operation : run_boundary_stop->getOperations())
+		for (const Scheduler::Operation& operation : run_boundary_stop.getOperations())
 		{
-			const Scheduler::Performer* performer = run_boundary_stop->getRun()->getSchedule()->getPerformer();
-			if (operation->constraints().performerSkillsRequirements().isSet())
+			const Scheduler::Performer& performer = run_boundary_stop.getRun().getSchedule().getPerformer();
+			if (operation.constraints().performerSkillsRequirements().isSet())
 			{
-				for (const Scheduler::Attribute* requirement : operation->constraints().performerSkillsRequirements().get())
+				for (const Scheduler::Performer::Skill& requirement : operation.constraints().performerSkillsRequirements().get())
 				{
-					is_valid = is_valid && util::contains_key(performer->getSkills(), requirement);
+					is_valid = is_valid && util::contains_key(performer.getSkills(), requirement);
 					if (!is_valid) break;
 				}
 			}
@@ -61,7 +61,7 @@ private:
 	bool is_valid;
 };
 
-bool Scheduler::PerformerSkillsStopValidationAlgorithm::isValid(const Stop * stop) const
+bool Scheduler::PerformerSkillsStopValidationAlgorithm::isValid(const Stop& stop) const
 {
 	return CallableVisitorProxy().call<SkillsChecker>(stop);
 }

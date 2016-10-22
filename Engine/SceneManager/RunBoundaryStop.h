@@ -3,6 +3,8 @@
 #include "Stop.h"
 
 #include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
+#include <functional>
+#include <Engine/Utils/ReferenceWrapper.h>
 #include <SceneManager_export.h>
 
 namespace Scheduler
@@ -10,22 +12,24 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT RunBoundaryStop : public Stop
 	{
 	public:
-		RunBoundaryStop(const Location& location, Run* run);
+		using OperationsSet = std::unordered_set<ReferenceWrapper<const Operation> >;
+		
+		RunBoundaryStop(const Stop::Context& context, const Location& location, Run& run);
 
-		void addOperation(const Operation* operation);
-		void removeOperation(const Operation* operation);
+		void addOperation(const Operation& operation);
+		void removeOperation(const Operation& operation);
 
-		bool containsOperation(const Operation* operation) const;
+		bool containsOperation(const Operation& operation) const;
 
 		virtual const Location& getLocation() const override;
 
-		ImmutableUnorderedSet<const Operation*> getOperations() const;
+		const OperationsSet& getOperations() const;
 
-		void acceptVisitor(StopVisitor* visitor) override;
-		void acceptVisitor(ConstStopVisitor* visitor) const override;
+		void acceptVisitor(StopVisitor& visitor) override;
+		void acceptVisitor(ConstStopVisitor& visitor) const override;
 
 	private:
 		const Location& location;
-		std::unordered_set<const Operation*> operations;
+		OperationsSet operations;
 	};
 }

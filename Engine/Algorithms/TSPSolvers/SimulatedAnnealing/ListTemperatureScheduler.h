@@ -13,14 +13,14 @@ namespace Scheduler
     {
     public:
         ListTemperatureScheduler ();
-        ListTemperatureScheduler (size_t length, float initialProbability, size_t iterationsCount);
+        ListTemperatureScheduler (std::size_t length, float initialProbability, std::size_t iterationsCount);
 
         virtual float getTemperature() const override;
         virtual bool isFinish() const override;
 
         virtual void adapt(Cost delta, float random) override;
         virtual void changeTemperature() override;
-        virtual void initialize(Run* run, ScheduleCostFunction* cost_function) override;
+        virtual void initialize(Run& run, const ScheduleCostFunction& cost_function) override;
 
         static constexpr const char* staticGetName() { return "List"; }
         virtual const char* getName() const override
@@ -30,10 +30,10 @@ namespace Scheduler
 
     private:
         std::priority_queue<float> values;
-        size_t adapt_counter;
+        std::size_t adapt_counter;
         const size_t iterations_count;
         const size_t length;
-        size_t i;
+        std::size_t i;
         float adapt_sum;
         const float initial_probability;
     };

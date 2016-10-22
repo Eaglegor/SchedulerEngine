@@ -3,17 +3,19 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 
-bool Scheduler::ChainRunValidationAlgorithm::isValid(const Run * run) const
+namespace Scheduler
 {
-	for (RunValidationAlgorithm* algorithm : algorithms)
+	bool ChainRunValidationAlgorithm::isValid(const Run &run) const
 	{
-		if (!algorithm->isValid(run)) return false;
+		for (const RunValidationAlgorithm& algorithm : algorithms)
+		{
+			if (!algorithm.isValid(run)) return false;
+		}
+		return true;
 	}
-	return true;
-}
 
-void Scheduler::ChainRunValidationAlgorithm::addAlgorithm(RunValidationAlgorithm * algorithm)
-{
-	assert(algorithm);
-	algorithms.push_back(algorithm);
+	void ChainRunValidationAlgorithm::addAlgorithm(const RunValidationAlgorithm& algorithm)
+	{
+		algorithms.emplace_back(algorithm);
+	}
 }

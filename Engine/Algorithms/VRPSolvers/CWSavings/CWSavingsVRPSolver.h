@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Engine/StrategiesManager/VRPSolver.h>
+#include <Engine/AlgorithmsManager/VRPSolver.h>
 #include <Engine/Engine/Services/RoutingService.h>
+#include <Engine/Utils/Optional.h>
 #include <CWSavingsVRPSolver_export.h>
 
 namespace Scheduler
@@ -13,15 +14,16 @@ namespace Scheduler
 	class CWSAVINGSVRPSOLVER_EXPORT CWSavingsVRPSolver : public VRPSolver
 	{
 	public:
-		void optimize(Scene* scene) const;
+		void optimize(Scene& scene) const;
+		
 		static const char* staticGetName() {return "CWSavings";}
 		const char* getName() const {return staticGetName();}
 		
-		void setRoutingService(RoutingService* routing_service);
+		void setRoutingService(const RoutingService& routing_service);
 		
 	private:
-		bool performAction(Scene* scene, SceneEditor& editor, Order* i, Order* j) const;
+		bool performAction(Scene& scene, SceneEditor& editor, const Order& i, const Order& j) const;
 		
-		RoutingService* routing_service;
+		Optional<const RoutingService&> routing_service;
 	};
 }

@@ -9,6 +9,6 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT SceneCloner
 	{
 	public:
-		static void cloneScheduleState(const Schedule* from, Schedule* to);
+		static void cloneScheduleState(const Schedule& from, Schedule& to);
 	};
 }

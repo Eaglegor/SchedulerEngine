@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Engine/Utils/ReferenceWrapper.h>
+
 namespace Scheduler
 {
     class Stop;
@@ -8,12 +10,13 @@ namespace Scheduler
     class Actualizable
     {
         public:
-			Actualizable()
+			explicit Actualizable(const Actualizer& actualizer):
+			actualizer(actualizer)
 			{}
 
             const T& get() const
             {
-                if(actualizer) actualizer->actualize();
+                actualizer.get().actualize();
                 return value;
             }
 
@@ -23,13 +26,14 @@ namespace Scheduler
 				return *this;
             }
             
-            void setActualizer(const Actualizer* actualizer)
+            void setActualizer(const Actualizer &actualizer)
             {
                 this->actualizer = actualizer;
             }
 
         private:
             T value;
-            const Actualizer* actualizer;
+			
+			ReferenceWrapper<const Actualizer> actualizer;
     };
 }

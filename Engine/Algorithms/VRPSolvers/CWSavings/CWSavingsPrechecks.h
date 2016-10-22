@@ -8,21 +8,21 @@ namespace Scheduler
 	class CWSavingsPrechecks
 	{
 		public:	
-			static bool isFirstWorkStop(Run::WorkStopsList::iterator iter)
+			static bool isFirstWorkStop(Run::ConstWorkStopIterator iter)
 			{
-				Run* r = (*iter)->getRun();
-				return r->getWorkStops().front() == *iter;
+				const Run& r = iter->getRun();
+				return r.getWorkStops().begin() == iter;
 			}
 			
-			static bool isLastWorkStop(Run::WorkStopsList::iterator iter)
+			static bool isLastWorkStop(Run::ConstWorkStopIterator iter)
 			{
-				Run* r = (*iter)->getRun();
-				return r->getWorkStops().back() == *iter;
+				const Run& r = iter->getRun();
+				return std::prev(r.getWorkStops().end()) == iter;
 			}
 			
-			static bool isValidSaving(boost::optional<Run::WorkStopsList::iterator> from, boost::optional<Run::WorkStopsList::iterator> to)
+			static bool isValidSaving(boost::optional<Run::ConstWorkStopIterator> from, boost::optional<Run::ConstWorkStopIterator> to)
 			{
-				if(from && to && (*from.value())->getRun() == (*to.value())->getRun()) return false;
+				if(from && to && from.value()->getRun() == to.value()->getRun()) return false;
 				return (!from || isLastWorkStop(from.value())) && (!to || isFirstWorkStop(to.value()));
 			}
 	};

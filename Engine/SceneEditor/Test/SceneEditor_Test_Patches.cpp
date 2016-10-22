@@ -9,7 +9,7 @@
 
 #include <cstring>
 #include <Engine/SceneEditor/SceneEditor.h>
-#include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
+#include <Engine/SceneEditor/Actions/SwapWorkStops.h>
 #include <Engine/SceneManager/WorkStop.h>
 
 
@@ -20,19 +20,19 @@ TEST_CASE("Scene editor patches", "[integration][functional][scene_editor]")
 	Engine engine;
 	CrowFlyRoutingService routing_service;
 
-	JSONSceneLoader loader(engine.getSceneManager(), &routing_service);
+	JSONSceneLoader loader(engine, routing_service);
 
-	Scene* scene = loader.loadScene("TestData/SceneEditor_Test/TestScene.json");
+	Scene& scene = loader.loadScene("TestData/SceneEditor_Test/TestScene.json");
 
-	Run* run = scene->getSchedules()[0]->getRuns()[0];
+	Run& run = scene.getSchedules()[0].get().getRuns()[0];
 
-	const auto& work_stops = run->getWorkStops();
+	const auto& work_stops = run.getWorkStops();
 
-	auto checkOrder = [&](Scheduler::Run* run, std::vector<size_t> expected_order)
+	auto checkOrder = [&](Scheduler::Run& run, std::vector<size_t> expected_order)
 	{
-		for (int i = 0; i < run->getWorkStops().size(); ++i)
+		for (int i = 0; i < run.getWorkStops().size(); ++i)
 		{
-			REQUIRE(std::string("Operation") + std::to_string(expected_order[i] + 1) == (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName());
+			REQUIRE(std::string("Operation") + std::to_string(expected_order[i] + 1) == std::next(run.getWorkStops().begin(), i)->getOperation().getName());
 		}
 	};
 
@@ -42,19 +42,15 @@ TEST_CASE("Scene editor patches", "[integration][functional][scene_editor]")
 
 	REQUIRE(editor.getCurrentVersion() == 0);
 
-	auto run_iter = scene->getSchedules()[0]->getRuns().begin();
-
-	auto perform = [&](size_t ia, size_t ib)
+	auto perform = [&](std::size_t ia, std::size_t ib)
 	{
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), ia), std::next(run->getWorkStops().begin(), ib));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), ia), std::next(run.getWorkStops().begin(), ib));
 	};
 	
-	auto patchPerform = [&](Patch &patch, size_t ia, size_t ib)
+	auto patchPerform = [&](Patch &patch, std::size_t ia, std::size_t ib)
 	{
-		patch.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), ia), std::next(run->getWorkStops().begin(), ib));
+		patch.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), ia), std::next(run.getWorkStops().begin(), ib));
 	};
-	
-	MemoryManager m;
 	
 	SECTION("Default construction")
 	{
@@ -68,7 +64,7 @@ TEST_CASE("Scene editor patches", "[integration][functional][scene_editor]")
 	{
 		Patch p2;
 		
-		p2.initialize(&m, 10);
+		p2.initialize(10);
 		
 		REQUIRE(p2.getCurrentVersion() == 10);
 		REQUIRE(p2.getBaseVersion() == 10);
@@ -89,7 +85,7 @@ TEST_CASE("Scene editor patches", "[integration][functional][scene_editor]")
 	{
 		Patch p2;
 		
-		p2.initialize(&m, 10);
+		p2.initialize(10);
 		
 		REQUIRE(p2.getCurrentVersion() == 10);
 		REQUIRE(p2.getBaseVersion() == 10);
@@ -116,7 +112,7 @@ TEST_CASE("Scene editor patches", "[integration][functional][scene_editor]")
 	{
 		Patch p;
 		
-		p.initialize(&m, 0);
+		p.initialize(0);
 		
 		patchPerform(p, 0, 1);
 		
@@ -141,7 +137,7 @@ TEST_CASE("Scene editor patches", "[integration][functional][scene_editor]")
 	{
 		Patch p;
 		
-		p.initialize(&m, 0);
+		p.initialize(0);
 		
 		REQUIRE(p.getCurrentVersion() == 0);
 		REQUIRE(p.getBaseVersion() == 0);

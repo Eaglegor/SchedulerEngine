@@ -1,8 +1,9 @@
 #pragma once
 
-#include <Engine/StrategiesManager/TSPSolver.h>
+#include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <ChainTSPSolver_export.h>
 #include <vector>
+#include <Engine/Utils/ReferenceWrapper.h>
 
 namespace Scheduler
 {
@@ -11,15 +12,15 @@ namespace Scheduler
 	public:
 		ChainTSPSolver();
 
-		virtual void optimize(Schedule* schedule) const override;
-		virtual void optimize(Run* schedule) const override;
+		virtual void optimize(Schedule& schedule) const override;
+		virtual void optimize(Run& schedule) const override;
 
-        void addTSPSolver(TSPSolver* aTSPSolver);
+        void addTSPSolver(const TSPSolver& aTSPSolver);
 
         static constexpr const char* staticGetName() { return "Chain"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:
-        std::vector<TSPSolver*> tsp_solvers;
+        std::vector<ReferenceWrapper<const TSPSolver>> tsp_solvers;
 	};
 }

@@ -10,7 +10,7 @@ namespace Scheduler
 	public:
 		virtual ~StopVisitor() {}
 
-		virtual void dispatch(WorkStop* work_stop) = 0;
-		virtual void dispatch(RunBoundaryStop* run_boundary_stop) = 0;
+		virtual void dispatch(WorkStop& work_stop) = 0;
+		virtual void dispatch(RunBoundaryStop& run_boundary_stop) = 0;
 	};
 }

@@ -14,16 +14,16 @@ namespace Scheduler
 		return "Reverse";
 	}
 
-	void ReverseTSPSolver::optimize(Schedule* schedule) const
+	void ReverseTSPSolver::optimize(Schedule& schedule) const
 	{
-		for(Run* r : schedule->getRuns())
+		for(Run& r : schedule.getRuns())
 		{
 			optimize(r);
 		}
 	}
 
-	void ReverseTSPSolver::optimize(Run* run) const
+	void ReverseTSPSolver::optimize(Run& run) const
 	{
-		run->reverseWorkStops(run->getWorkStops().begin(), run->getWorkStops().end());
+		run.reverseWorkStops();
 	}
 }
