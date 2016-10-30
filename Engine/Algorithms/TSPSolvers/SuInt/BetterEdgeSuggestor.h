@@ -15,7 +15,7 @@ namespace Scheduler
 	class BetterEdgeSuggestor : public EdgeSuggestor
 	{
 	public:
-		BetterEdgeSuggestor(Run* run, RoutingService* routing_service);
+		BetterEdgeSuggestor(Run& run, const RoutingService& routing_service);
 
 		virtual std::vector<SuggestedEdge> next() override;
 		virtual bool hasNext() override;
@@ -33,9 +33,9 @@ namespace Scheduler
 			}
 		};
 
-		Run* run;
-		RoutingService* routing_service;
+		Run& run;
+		const RoutingService& routing_service;
 		size_t current_index;
-		Logger* logger;
+		Logger& logger;
 	};
 }

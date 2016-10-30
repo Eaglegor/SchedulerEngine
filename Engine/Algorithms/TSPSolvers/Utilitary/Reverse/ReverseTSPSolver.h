@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/StrategiesManager/TSPSolver.h>
+#include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <ReverseTSPSolver_export.h>
 
 namespace Scheduler
@@ -11,7 +11,7 @@ namespace Scheduler
 		virtual const char* getName() const;
 		static const char* staticGetName();
 		
-		virtual void optimize(Run* run) const;
-		virtual void optimize(Schedule* schedule) const;
+		virtual void optimize(Run& run) const;
+		virtual void optimize(Schedule& schedule) const;
 	};
 }

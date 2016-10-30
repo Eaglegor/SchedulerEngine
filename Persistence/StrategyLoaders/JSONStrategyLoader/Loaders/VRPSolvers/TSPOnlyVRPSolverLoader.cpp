@@ -1,7 +1,7 @@
 #include "TSPOnlyVRPSolverLoader.h"
 
 #include <Persistence/StrategyLoaders/JSONStrategyLoader/LoaderImpl.h>
-#include <Engine/StrategiesManager/Strategy.h>
+#include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
 #include <Persistence/Utils/PtreeDeserializer.h>
 
@@ -24,14 +24,12 @@ namespace Scheduler
 		}
 	};
 
-	VRPSolver* TSPOnlyVRPSolverLoader::load(const boost::property_tree::ptree& settings, LoaderImpl* loader_instance)
+	VRPSolver& TSPOnlyVRPSolverLoader::load(const boost::property_tree::ptree& settings, LoaderImpl& loader_instance, AlgorithmsManager& algorithms_manager)
 	{
 		TSPOnlyVRPSolverDesc desc = PtreeDeserializer<TSPOnlyVRPSolverDesc>()(settings);
-		TSPSolver* tsp_solver = loader_instance->loadTSPSolver(desc.tsp_solver);
+		TSPSolver& tsp_solver = loader_instance.loadTSPSolver(desc.tsp_solver);
 
-		TSPOnlyVRPSolver* tsp_only_vrp_solver = loader_instance->getStrategy()->createVRPSolver<TSPOnlyVRPSolver>(tsp_solver);
-
-		return tsp_only_vrp_solver;
+		return algorithms_manager.createAlgorithm<TSPOnlyVRPSolver>(tsp_solver);
 	}
 
 	const char* TSPOnlyVRPSolverLoader::getName() const

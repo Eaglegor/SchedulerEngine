@@ -2,18 +2,21 @@
 
 #include <Engine/Concepts/Distance.h>
 #include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/Run.h>
+#include <boost/range/iterator_range.hpp>
 
 namespace Scheduler
 {
 	class DistanceAccumulator
 	{
 	public:
-		static Distance accumulateDistance(const Stop* start_stop, const Stop* end_stop)
+		static Distance accumulateDistance(const Run::ConstStopIterator& start_stop, const Run::ConstStopIterator& end_stop)
 		{
 			Distance total_distance;
-			for (const Stop* stop = start_stop; stop != end_stop; stop = stop->next())
+			
+			for(const Stop& stop : boost::iterator_range<Stop::const_iterator_type>(start_stop, end_stop))
 			{
-				total_distance += stop->getNextRoute().getDistance();
+				total_distance += stop.getNextRoute().getDistance();
 			}
 			return total_distance;
 		}

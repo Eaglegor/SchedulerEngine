@@ -6,9 +6,11 @@ add_custom_target(Utils SOURCES
 	Collections/ImmutableUnorderedSet.h
 	Collections/ImmutableVector.h
 
-        Collections/LinkedPointersList.h
-        Collections/LinkedPointersSublist.h
-        Collections/LinkedPointersListTypeAdapter.h
+	Collections/Range.h
+	Collections/RangeTypeAdapter.h
+	
+	Collections/LinkedPointersList.h
+	Collections/LinkedPointersSublist.h
 	
     Aggregators/DistanceAccumulator.h
     Aggregators/DurationAccumulator.h

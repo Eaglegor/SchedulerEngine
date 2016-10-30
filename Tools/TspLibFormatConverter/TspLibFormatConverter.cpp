@@ -404,7 +404,7 @@ int main(int ac, const char** av)
 	outfile.write(reinterpret_cast<const char*>(&state.digits), sizeof(uint32_t));
 
 	uint32_t *distances = new uint32_t[count * count];
-	memset(distances, 100500, sizeof(uint32_t) * count * count);
+	memset(distances, std::numeric_limits<unsigned char>::max(), sizeof(uint32_t) * count * count);
 
 	std::cout << "Graph nodes: " << count << std::endl;
 

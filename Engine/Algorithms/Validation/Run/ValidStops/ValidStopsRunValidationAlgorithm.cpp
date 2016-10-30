@@ -3,11 +3,11 @@
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
 
-bool Scheduler::ValidStopsRunValidationAlgorithm::isValid(const Run * run) const
+bool Scheduler::ValidStopsRunValidationAlgorithm::isValid(const Run& run) const
 {
-	for (const Stop *s = run->getStartStop(); s != run->getEndStop()->next(); s = s->next())
+	for(const Stop& s : run.getStops())
 	{
-		if (!s->isValid()) return false;
+		if(!s.isValid()) return false;
 	}
 	return true;
 }

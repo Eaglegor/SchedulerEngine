@@ -9,7 +9,6 @@
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Utils/SceneCloner.h>
 #include <Engine/SceneEditor/SceneEditor.h>
-#include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
 #include <Engine/SceneManager/ScheduleVariant.h>
 
 
@@ -21,41 +20,41 @@ namespace Scheduler
 	{
 	}
 
-    void BestOfTSPSolver::optimize(Schedule* schedule) const
+    void BestOfTSPSolver::optimize(Schedule& schedule) const
 	{
         if (!schedule_cost_function) return;
 		if(concurrency_enabled) concurrentOptimize(schedule);
 		else sequentialOptimize(schedule);
 	}
 
-	void BestOfTSPSolver::optimize(Run* run) const
+	void BestOfTSPSolver::optimize(Run& run) const
 	{
         if (!schedule_cost_function) return;
         if(concurrency_enabled) concurrentOptimize(run);
 		else sequentialOptimize(run);
 	}
 
-    void BestOfTSPSolver::addTSPSolver(TSPSolver* aTSPSolver)
+    void BestOfTSPSolver::addTSPSolver(const TSPSolver& aTSPSolver)
 	{
-        this->tsp_solvers.push_back(aTSPSolver);
+        this->tsp_solvers.emplace_back(aTSPSolver);
 	}
 
-    void BestOfTSPSolver::setScheduleCostFunction(ScheduleCostFunction *cost_function)
+    void BestOfTSPSolver::setScheduleCostFunction(const ScheduleCostFunction &cost_function)
     {
         schedule_cost_function = cost_function;
     }
 
-    void BestOfTSPSolver::sequentialOptimize(Schedule* schedule) const
+    void BestOfTSPSolver::sequentialOptimize(Schedule& schedule) const
     {
-		SIMPLE_LOG_TRACE(logger, "Starting sequential schedule optimization");
+		TraceableSection("BestOfTSPSolver::sequentialOptimize(Schedule&)", logger);
 		
         ScheduleVariant best_variant;
         Cost best_cost;
         std::size_t idx = 0;
-        for (auto solver : this->tsp_solvers) {
+        for (const TSPSolver& solver : tsp_solvers) {
             ScheduleVariant variant = schedule;
-            solver->optimize(variant.getSchedule());
-            const Cost cost = schedule_cost_function->calculateCost(variant.getSchedule());
+            solver.optimize(variant.getSchedule().get());
+            const Cost cost = schedule_cost_function->calculateCost(variant.getSchedule().get());
             if (cost < best_cost || !best_variant) {
                 best_cost = cost;
                 best_variant = std::move(variant);
@@ -66,20 +65,20 @@ namespace Scheduler
         best_variant.apply();
     }
 
-    void BestOfTSPSolver::sequentialOptimize(Run* run) const
+    void BestOfTSPSolver::sequentialOptimize(Run& run) const
     {
-		SIMPLE_LOG_TRACE(logger, "Starting sequential run optimization");
+		TraceableSection("BestOfTSPSolver::sequentialOptimize(Run&)", logger);
 		
         ScheduleVariant best_variant;
-        Schedule* run_schedule = run->getSchedule();
-        auto it = std::find(run_schedule->getRuns().begin(), run_schedule->getRuns().end(), run);
-        const size_t run_index = std::distance(run_schedule->getRuns().begin(), it);
+        Schedule& run_schedule = run.getSchedule();
+        auto it = std::find(run_schedule.getRuns().begin(), run_schedule.getRuns().end(), run);
+        const std::size_t run_index = std::distance(run_schedule.getRuns().begin(), it);
         Cost best_cost;
-        for (auto solver : this->tsp_solvers) {
+        for (const TSPSolver& solver : this->tsp_solvers) {
             ScheduleVariant variant = run_schedule;
-            Run* temporary_run = variant.getSchedule()->getRuns().at(run_index);
-            solver->optimize(temporary_run);
-            Cost cost = schedule_cost_function->calculateCost(variant.getSchedule());
+            Run& temporary_run = variant.getSchedule()->getRuns().at(run_index);
+            solver.optimize(temporary_run);
+            Cost cost = schedule_cost_function->calculateCost(variant.getSchedule().get());
             if (cost < best_cost || !best_variant) {
                 best_cost = cost;
                 best_variant = std::move(variant);
@@ -89,12 +88,12 @@ namespace Scheduler
         best_variant.apply();
     }
 
-    void BestOfTSPSolver::concurrentOptimize(Schedule* schedule) const
+    void BestOfTSPSolver::concurrentOptimize(Schedule& schedule) const
     {
-        SIMPLE_LOG_TRACE(logger, "Starting concurrent schedule optimization");
+        TraceableSection("BestOfTSPSolver::concurrentOptimize(Schedule&)", logger);
 		
 		std::vector<ScheduleVariant> variants;
-        for (size_t idx = 0; idx < tsp_solvers.size(); ++idx) {
+        for (std::size_t idx = 0; idx < tsp_solvers.size(); ++idx) {
             variants.emplace_back(schedule);
         }
 		
@@ -103,23 +102,23 @@ namespace Scheduler
 		
         #pragma omp parallel for
         for (int idx = 0; idx < this->tsp_solvers.size(); ++idx) {
-			LOG_TRACE(logger, "Starting solver: {}", this->tsp_solvers.at(idx)->getName() );
-            TSPSolver* solver = this->tsp_solvers.at(idx);
+			logger.trace("Starting solver: {}", this->tsp_solvers.at(idx).get().getName() );
+            const TSPSolver& solver = this->tsp_solvers.at(idx);
 			ScheduleVariant &variant = variants.at(idx);
-            Schedule* schedule = variant.getSchedule();
-            solver->optimize(schedule);
-			LOG_TRACE(logger, "Solver '{}' finished work", this->tsp_solvers.at(idx)->getName() );
+            Schedule& schedule = variant.getSchedule().get();
+            solver.optimize(schedule);
+			logger.trace("Solver '{}' finished work", this->tsp_solvers.at(idx).get().getName() );
 			
 			const Cost cost = schedule_cost_function->calculateCost(schedule);
 			
-			LOG_DEBUG(logger, "Resulting cost by '{}': {}", this->tsp_solvers.at(idx)->getName(), cost.getValue() );
+			logger.debug("Resulting cost by '{}': {}", this->tsp_solvers.at(idx).get().getName(), cost.getValue() );
 			
 			#pragma omp critical
 			{
 				if (cost < best_cost || !best_variant) {
 					best_cost = cost;
 					best_variant = std::move(variant);
-					LOG_DEBUG(logger, "Better than best result found by '{}'", this->tsp_solvers.at(idx)->getName(), cost.getValue() );
+					logger.debug("Better than best result found by '{}'", this->tsp_solvers.at(idx).get().getName(), cost.getValue() );
 				}
 			}
         }
@@ -127,17 +126,16 @@ namespace Scheduler
         best_variant.apply();
     }
 
-    void BestOfTSPSolver::concurrentOptimize(Run* run) const
+    void BestOfTSPSolver::concurrentOptimize(Run& run) const
     {
-		SIMPLE_LOG_TRACE(logger, "Starting concurrent run optimization");
+		TraceableSection("BestOfTSPSolver::concurrentOptimize(Run&)", logger);
 		
-		ImmutableVector<Run*> &runs = run->getSchedule()->getRuns();
-		std::ptrdiff_t run_index = std::distance(runs.begin(), std::find(runs.begin(), runs.end(), run));
+		std::size_t run_index = std::distance<Schedule::ConstRunIterator>(run.getSchedule().getRuns().begin(), run.getSchedule().findRun(run));
 		
 		std::vector<ScheduleVariant> variants;
 
         for (std::size_t idx = 0; idx < tsp_solvers.size(); ++idx) {
-            variants.emplace_back(run->getSchedule());
+            variants.emplace_back(run.getSchedule());
         }
         
         Cost best_cost;
@@ -145,10 +143,10 @@ namespace Scheduler
         
         #pragma omp parallel for
         for (int idx = 0; idx < this->tsp_solvers.size(); ++idx) {
-            TSPSolver* solver = this->tsp_solvers.at(idx);
+            const TSPSolver& solver = this->tsp_solvers.at(idx);
 			ScheduleVariant& variant = variants.at(idx);
-            Schedule* schedule = variant.getSchedule();
-            solver->optimize(*(std::next(schedule->getRuns().begin(), run_index)));
+            Schedule& schedule = variant.getSchedule().get();
+            solver.optimize(*(std::next(schedule.getRuns().begin(), run_index)));
         
 			const Cost cost = schedule_cost_function->calculateCost(schedule);
 			

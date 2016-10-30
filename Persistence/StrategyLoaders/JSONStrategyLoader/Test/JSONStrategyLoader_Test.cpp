@@ -15,16 +15,15 @@ TEST_CASE("Persistence - StrategyLoaders - JSONStrategyLoader", "[integration][f
 	CrowFlyRoutingService rs;
 	Engine engine;
 
-	StrategiesManager* sm = engine.getStrategiesManager();
+	AlgorithmsManager& am = engine.getAlgorithmsManager();
 
 	std::ifstream ifile;
 	ifile.open("TestData/JSONStrategyLoader_Test/TestStrategy1.json");
 	REQUIRE(ifile.is_open());
 
-	JSONStrategyLoader loader(sm);
-	Strategy* strategy = loader.loadStrategy(ifile);
-
-	REQUIRE(strategy);
+	JSONStrategyLoader loader(am);
+	
+	loader.loadVRPStrategy(ifile);
 
 	ifile.close();
 }

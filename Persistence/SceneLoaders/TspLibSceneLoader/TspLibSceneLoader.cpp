@@ -18,18 +18,19 @@
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/SceneContext.h>
 #include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
+#include <Engine/Engine/Engine.h>
 
 namespace Scheduler
 {
 
-	TspLibSceneLoader::TspLibSceneLoader(SceneManager* scene_manager):
-	scene_manager(scene_manager)
+	TspLibSceneLoader::TspLibSceneLoader(Engine& engine):
+	engine(engine)
 	{
 	}
 
-	Scene* TspLibSceneLoader::loadScene(std::istream& stream, TspLibRoutingService* routing_service, Format format, uint32_t &out_known_optimum)
+	Scene& TspLibSceneLoader::loadScene(std::istream& stream, TspLibRoutingService& routing_service, Format format, uint32_t &out_known_optimum)
 	{
-		size_t nodes_count;
+		std::size_t nodes_count;
 
 		switch(format)
 		{
@@ -40,60 +41,60 @@ namespace Scheduler
 			loadXmlMatrix(stream, nodes_count, routing_service, out_known_optimum);
 		}
 
-		SceneContext* scene_context = scene_manager->createSceneContext();
+		SceneContext& scene_context = engine.getSceneManager().createSceneContext();
 		
-		Vehicle* vehicle = scene_context->createVehicle();
-		vehicle->setName("Vehicle");
+		Vehicle& vehicle = scene_context.createVehicle();
+		vehicle.setName("Vehicle");
 
-		Performer* performer = scene_context->createPerformer();
-		performer->setName("Performer");
+		Performer& performer = scene_context.createPerformer();
+		performer.setName("Performer");
 
-		std::vector<Operation*> operations;
+		std::vector<ReferenceWrapper<Operation>> operations;
 		
 		for (std::size_t i = 1; i < nodes_count; ++i)
 		{
-			Location* location = scene_context->createLocation(Site(Coordinate(i), Coordinate(0)));
+			Location& location = scene_context.createLocation(Site(Coordinate(i), Coordinate(0)));
 			
-			Operation* operation = scene_context->createFreeOperation(*location);
-			operation->setName((std::string("Operation") + std::to_string(i)).c_str());
-			operation->setDuration(Duration(0));
+			Operation& operation = scene_context.createFreeOperation(location);
+			operation.setName(String("Operation" + std::to_string(i)));
+			operation.setDuration(Duration(0));
 			operations.push_back(operation);
 		}
 		
-		Location* location = scene_context->createLocation(Site());
+		Location& zero_location = scene_context.createLocation(Site(Coordinate(0), Coordinate(0)));
 		
-		Scene* scene = scene_manager->createScene(*scene_context);
+		Scene& scene = engine.getSceneManager().createScene(scene_context);
 		
-		Schedule* schedule = scene->createSchedule(*performer);
+		Schedule& schedule = scene.createSchedule(performer);
 
-		ScheduleActualizationModel* actualization_model = scene_manager->createScheduleActualizationModel();
-		DefaultRouteActualizationAlgorithm* route_actualization_algorithm = scene_manager->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(routing_service);
-		actualization_model->setRouteActualizationAlgorithm(route_actualization_algorithm);
+		ScheduleActualizationModel actualization_model;
+		DefaultRouteActualizationAlgorithm& route_actualization_algorithm = engine.getAlgorithmsManager().createAlgorithm<DefaultRouteActualizationAlgorithm>(routing_service);
+		actualization_model.setRouteActualizationAlgorithm(route_actualization_algorithm);
 
-		schedule->setActualizationModel(actualization_model);
+		schedule.setActualizationModel(actualization_model);
 
-		Run *run = *schedule->createRun(schedule->getRuns().end(), *location, *location); // Creating run (0,0) -> (0,0)
-		run->setVehicle(vehicle);
+		Run &run = *schedule.createRun(schedule.getRuns().end(), zero_location, zero_location);
+		run.setVehicle(vehicle);
 
 		for (std::size_t i = 0; i < operations.size(); ++i)
 		{
-			run->createWorkStop(run->getWorkStops().end(), operations[i]);
+			run.createWorkStop(run.getWorkStops().end(), operations[i]);
 		}
 
 		return scene;
 	}
 
-	Scene* TspLibSceneLoader::loadScene(const std::string& filename, TspLibRoutingService* routing_service, Format format, uint32_t &out_known_optimum)
+	Scene& TspLibSceneLoader::loadScene(const std::string& filename, TspLibRoutingService& routing_service, Format format, uint32_t &out_known_optimum)
 	{
 		std::ifstream file;
 		file.open(filename.c_str(), format == Format::BINARY ? std::ios_base::in | std::ios_base::binary : std::ios_base::in);
 		assert(file.is_open());
-		Scene* scene = loadScene(file, routing_service, format, out_known_optimum);
+		Scene& scene = loadScene(file, routing_service, format, out_known_optimum);
 		file.close();
 		return scene;
 	}
 
-	void TspLibSceneLoader::loadBinaryMatrix(std::istream& stream, size_t &out_count, TspLibRoutingService* routing_service, uint32_t &out_known_optimum)
+	void TspLibSceneLoader::loadBinaryMatrix(std::istream& stream, size_t &out_count, TspLibRoutingService& routing_service, uint32_t &out_known_optimum)
 	{
 		uint32_t count;
 		uint32_t optimum;
@@ -103,7 +104,7 @@ namespace Scheduler
 		stream.read(reinterpret_cast<char*>(&optimum), sizeof(uint32_t));
 		stream.read(reinterpret_cast<char*>(&ignoredDigits), sizeof(uint32_t));
 
-		routing_service->init(count);
+		routing_service.init(count);
 
 		uint32_t buffer;
 		for (size_t i = 0; i < count; ++i)
@@ -112,7 +113,7 @@ namespace Scheduler
 			{
 				stream.read(reinterpret_cast<char*>(&buffer), sizeof(uint32_t));
 				float distance = static_cast<float>(buffer) / pow(10, ignoredDigits);
-				routing_service->insertRoute(i, j, distance);
+				routing_service.insertRoute(i, j, distance);
 			}
 		}
 
@@ -120,7 +121,7 @@ namespace Scheduler
 		out_count = count;
 	}
 
-	void TspLibSceneLoader::loadXmlMatrix(std::istream& stream, size_t &out_count, TspLibRoutingService* routing_service, uint32_t &out_known_optimum)
+	void TspLibSceneLoader::loadXmlMatrix(std::istream& stream, size_t &out_count, TspLibRoutingService& routing_service, uint32_t &out_known_optimum)
 	{
 		using boost::property_tree::ptree;
 		using boost::property_tree::read_xml;
@@ -134,18 +135,17 @@ namespace Scheduler
 		const ptree& graph = root.get_child("graph");
 
 		size_t from_index = 0;
-		routing_service->init(graph.size());
+		routing_service.init(graph.size());
 
 		out_count = graph.size();
 
-		bool is_first_stop = true;
 		for (const auto &viter : graph)
 		{
 			for (const auto &eiter : viter.second)
 			{
 				float distance = eiter.second.get_child("<xmlattr>").get<float>("cost");
 				size_t to_index = eiter.second.get_value<size_t>();
-				routing_service->insertRoute(from_index, to_index, distance);
+				routing_service.insertRoute(from_index, to_index, distance);
 			}
 			++from_index;
 		}

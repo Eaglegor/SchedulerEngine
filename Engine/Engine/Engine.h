@@ -3,7 +3,7 @@
 #include <memory>
 
 #include <Engine/SceneManager/SceneManager.h>
-#include <Engine/StrategiesManager/StrategiesManager.h>
+#include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <Engine/MemoryManager/MemoryManager.h>
 
 #include <Engine_export.h>
@@ -16,14 +16,11 @@ namespace Scheduler
 	class ENGINE_EXPORT Engine
 	{
 		public:
-			Engine();
-			
-			SceneManager* getSceneManager();
-			StrategiesManager* getStrategiesManager();
+			SceneManager& getSceneManager();
+			AlgorithmsManager& getAlgorithmsManager();
 			
 		private:
-			std::unique_ptr<MemoryManager> memory_manager;
-			std::unique_ptr<SceneManager> scene_manager;
-			std::unique_ptr<StrategiesManager> strategies_manager;
+			SceneManager scene_manager;
+			AlgorithmsManager algorithms_manager;
 	};
 }

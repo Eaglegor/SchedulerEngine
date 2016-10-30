@@ -1,13 +1,13 @@
 #include "SuIntTSPSolver.h"
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
+#include <Engine/SceneEditor/Actions/SwapWorkStops.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/Concepts/Route.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneEditor/SceneEditor.h>
-#include <Engine/SceneEditor/Actions/RotateWorkStopsSubsequence.h>
-#include <Engine/SceneEditor/Actions/MoveRunWorkStopsSubsequence.h>
+#include <Engine/SceneEditor/Actions/RotateWorkStops.h>
+#include <Engine/SceneEditor/Actions/MoveWorkStops.h>
 #include <Engine/SceneManager/Stop.h>
 #include <algorithm>
 #include <queue>
@@ -24,44 +24,38 @@
 namespace Scheduler
 {
 	SuIntTSPSolver::SuIntTSPSolver():
-		routing_service(nullptr),
-		cost_function(nullptr),
 		logger(LoggingManager::getLogger("SuIntTSPSolver"))
 	{
 	}
 
-	void SuIntTSPSolver::optimize(Schedule* schedule) const
+	void SuIntTSPSolver::optimize(Schedule& schedule) const
 	{
-		if (routing_service == nullptr || cost_function == nullptr) {
-			if (routing_service == nullptr) SIMPLE_LOG_WARNING(logger, "Routing service is not set. Can't solve TSP.");
-			if (cost_function == nullptr) SIMPLE_LOG_WARNING(logger, "Cost function is not set. Can't solve TSP.");
+		TRACEABLE_SECTION(__optimize__, "SuIntTSPSolver::optimize(Schedule&)", logger);
+		
+		if (!routing_service || !cost_function) {
+			if (!routing_service) LOG_WARNING(logger, "Routing service is not set. Can't solve TSP.");
+			if (!cost_function) LOG_WARNING(logger, "Cost function is not set. Can't solve TSP.");
 			return;
 		}
 
-		SIMPLE_LOG_DEBUG(logger, "Multirun TSP started");
-
-		for(Run* r: schedule->getRuns())
+		for(Run& r: schedule.getRuns())
 		{
 			optimize(r);
 		}
-
-		SIMPLE_LOG_DEBUG(logger, "Multirun TSP finished");
 	}
 
-	void SuIntTSPSolver::optimize(Run* run) const
+	void SuIntTSPSolver::optimize(Run& run) const
 	{
-		if (routing_service == nullptr || cost_function == nullptr)
+		TRACEABLE_SECTION(__optimize__, "SuIntTSPSolver::optimize(Run&)", logger);
+		
+		if (!routing_service || !cost_function)
 		{
-			if (routing_service == nullptr) SIMPLE_LOG_WARNING(logger, "Routing service is not set. Can't solve TSP.");
-			if (cost_function == nullptr) SIMPLE_LOG_WARNING(logger, "Cost function is not set. Can't solve TSP.");
+			if (!routing_service) LOG_WARNING(logger, "Routing service is not set. Can't solve TSP.");
+			if (!cost_function) LOG_WARNING(logger, "Cost function is not set. Can't solve TSP.");
 			return;
 		}
 
-		SIMPLE_LOG_DEBUG(logger, "Single run TSP started");
-
-		SIMPLE_LOG_TRACE(logger, "Initializing");
-
-		bool finished = false;
+		LOG_TRACE(logger, "Initializing");
 
 		SceneEditor scene_editor;
 		
@@ -71,34 +65,34 @@ namespace Scheduler
 		{
 			case EdgeSuggestorType::BETTER_EDGE:
 			{
-				suggestor.reset(new BetterEdgeSuggestor(run, routing_service));
+				suggestor.reset(new BetterEdgeSuggestor(run, routing_service.get()));
 				break;
 			}
 			case EdgeSuggestorType::DISTANCE_RATING:
 			{
-				suggestor.reset(new DistanceRatingEdgeSuggestor(run, routing_service));
+				suggestor.reset(new DistanceRatingEdgeSuggestor(run, routing_service.get()));
 				break;
 			}
 		}
 		
-		CompositeEdgeIntroducer edge_introducer(run, cost_function, scene_editor);
+		CompositeEdgeIntroducer edge_introducer(run, cost_function.get(), scene_editor);
 		for(const EdgeIntroducerType& introducer_type : edge_introducers_types)
 		{
 			switch(introducer_type)
 			{
 				case EdgeIntroducerType::CIRCULAR:
 				{
-					edge_introducer.addIntroducer<CircularEdgeIntroducer>(run, cost_function, scene_editor);
+					edge_introducer.addIntroducer<CircularEdgeIntroducer>(run, cost_function.get(), scene_editor);
 					break;
 				}
 				case EdgeIntroducerType::DIRECT:
 				{
-					edge_introducer.addIntroducer<DirectEdgeIntroducer>(run, cost_function, scene_editor);
+					edge_introducer.addIntroducer<DirectEdgeIntroducer>(run, cost_function.get(), scene_editor);
 					break;
 				}
 				case EdgeIntroducerType::REVERSE:
 				{
-					edge_introducer.addIntroducer<ReverseEdgeIntroducer>(run, cost_function, scene_editor);
+					edge_introducer.addIntroducer<ReverseEdgeIntroducer>(run, scene_editor);
 					break;
 				}
 			}
@@ -106,50 +100,52 @@ namespace Scheduler
 		
 		assert(suggestor);
 
-		SIMPLE_LOG_TRACE(logger, "Starting main cycle");
-
-		while (!finished)
 		{
-			SIMPLE_LOG_TRACE(logger, "Starting next iteration");
-			finished = true;
-			while (suggestor->hasNext())
+			TRACEABLE_SECTION(__main_loop__,  "SuIntTSPSolver::optimize: main loop", logger);
+
+			bool finished = false;
+			
+			while (!finished)
 			{
-				std::vector<SuggestedEdge> edges = suggestor->next();
-				for (SuggestedEdge edge : edges)
+				TRACEABLE_SECTION(__outer_iteration__, "SuIntTSPSolver::optimize: outer iteration", logger);
+				
+				finished = true;
+				while (suggestor->hasNext())
 				{
-					LOG_DEBUG(logger, "Suggested edge: {}-{}", edge.from_index, edge.to_index);
-					if (edge.from_index == edge.to_index) continue;
-					if (edge.from_index == 0 && edge.to_index == run->getWorkStops().size() + 1) continue;
-					if (edge.from_index == run->getWorkStops().size() + 1) continue;
-					if (edge.to_index == 0) continue;
-					SIMPLE_LOG_TRACE(logger, "Trying to introduce suggested edge");
-					if (edge_introducer.introduce(edge))
+					std::vector<SuggestedEdge> edges = suggestor->next();
+					for (SuggestedEdge edge : edges)
 					{
-						SIMPLE_LOG_TRACE(logger, "Introduction successful. Commiting changes");
-						scene_editor.commit();
-						finished = false;
-						break;
-					}
-					else
-					{
-						SIMPLE_LOG_TRACE(logger, "Introduction failed. Rolling changes back");
-						scene_editor.rollbackAll();
+						LOG_DEBUG(logger, "Suggested edge: {}-{}", edge.from_index, edge.to_index);
+						if (edge.from_index == edge.to_index) continue;
+						if (edge.from_index == 0 && edge.to_index == run.getWorkStops().size() + 1) continue;
+						if (edge.from_index == run.getWorkStops().size() + 1) continue;
+						if (edge.to_index == 0) continue;
+						LOG_TRACE(logger, "Trying to introduce suggested edge");
+						if (edge_introducer.introduce(edge))
+						{
+							LOG_TRACE(logger, "Introduction successful. Commiting changes");
+							scene_editor.commit();
+							finished = false;
+							break;
+						}
+						else
+						{
+							LOG_TRACE(logger, "Introduction failed. Rolling changes back");
+							scene_editor.rollbackAll();
+						}
 					}
 				}
+				suggestor->reset();
 			}
-			SIMPLE_LOG_TRACE(logger, "Resetting suggestor");
-			suggestor->reset();
 		}
-
-		SIMPLE_LOG_DEBUG(logger, "Single run TSP finished");
 	}
 
-	void SuIntTSPSolver::setRoutingService(RoutingService* routing_service)
+	void SuIntTSPSolver::setRoutingService(const RoutingService& routing_service)
 	{
 		this->routing_service = routing_service;
 	}
 
-	void SuIntTSPSolver::setCostFunction(ScheduleCostFunction* cost_function)
+	void SuIntTSPSolver::setCostFunction(const ScheduleCostFunction& cost_function)
 	{
 		this->cost_function = cost_function;
 	}

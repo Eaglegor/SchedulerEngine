@@ -1,41 +1,45 @@
 #include "HybridOptTSPSolver.h"
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
-#include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
-#include <Engine/SceneEditor/Actions/MoveRunWorkStop.h>
+#include <Engine/SceneEditor/Actions/SwapWorkStops.h>
+#include <Engine/SceneEditor/Actions/ReverseWorkStops.h>
+#include <Engine/SceneEditor/Actions/MoveWorkStop.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneEditor/SceneEditor.h>
-#include <Engine/Utils/Collections/PositionPreservingLinkedPointersListWrapper.h>
+#include <Engine/SceneManager/Utils/InvariantWorkStopsList.h>
 
 namespace Scheduler
 {
 	HybridOptTSPSolver::HybridOptTSPSolver():
-		schedule_cost_function(nullptr)
+	logger(LoggingManager::getLogger("HybridOptTSPSolver"))
 	{
 	}
 
-    void HybridOptTSPSolver::optimize(Schedule* schedule) const
+    void HybridOptTSPSolver::optimize(Schedule& schedule) const
 	{
-		if (!schedule_cost_function) return; // We don't have a metric to optimize - so we can't
+		if (!schedule_cost_function) return;
 
-		for(Run* run : schedule->getRuns())
+		for(Run& run : schedule.getRuns())
 		{
 			optimize(run);
 		}
 	}
 
-	void HybridOptTSPSolver::optimize(Run* run) const
+	void HybridOptTSPSolver::optimize(Run& run) const
 	{
-		if (!schedule_cost_function) return; // We don't have a metric to optimize - so we can't
-
-		if(run->getWorkStops().empty()) return;
+		TRACEABLE_SECTION(__optimize__, "HybridOptTSPSolver::optimize(Run&)", logger);
 		
-		PositionPreservingLinkedPointersListWrapper<Run::WorkStopsList> stops(run->getWorkStops());
+		if (!schedule_cost_function) return;
+		
+		if(run.getWorkStops().empty()) return;
+		
+		InvariantWorkStopsList stops(run.getWorkStops());
 
-		auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
-        Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
+        Cost best_cost = schedule_cost_function->calculateCost(run.getSchedule());
+		
         bool changed = true;
+		
         SceneEditor editor;
+		
         while (changed) {
             changed = false;
             for (auto stop_it1 = stops.begin(); stop_it1 != stops.end(); ++stop_it1) {
@@ -45,8 +49,8 @@ namespace Scheduler
 					Cost current_best_cost(std::numeric_limits<Cost::value_type>::max());
 					
 					Patch reverse_patch = editor.createPatch();
-                    reverse_patch.performAction<ReverseWorkStopsSubsequence>(run_iter, *stop_it1, *std::next(stop_it2));
-                    Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
+                    reverse_patch.performAction<ReverseWorkStops>(run, stops.getRunWorkStopIterator(run, stop_it1), stops.getRunWorkStopIterator(run, stop_it2));
+                    Cost cost = schedule_cost_function->calculateCost(run.getSchedule());
 					reverse_patch.hold();
 					if(cost < current_best_cost)
 					{
@@ -55,8 +59,8 @@ namespace Scheduler
 					}
 
 					Patch swap_patch = editor.createPatch();
-                    swap_patch.performAction<SwapRunWorkStops>(run_iter, *stop_it1, *stop_it2);
-                    cost = schedule_cost_function->calculateCost(run->getSchedule());
+                    swap_patch.performAction<SwapWorkStops>(run, stops.getRunWorkStopIterator(run, stop_it1), stops.getRunWorkStopIterator(run, stop_it2));
+                    cost = schedule_cost_function->calculateCost(run.getSchedule());
 					swap_patch.hold();
 					if(cost < current_best_cost)
 					{
@@ -65,8 +69,8 @@ namespace Scheduler
 					}
 
 					Patch move_patch = editor.createPatch();
-                    move_patch.performAction<MoveRunWorkStop>(run_iter, *stop_it1, *stop_it2);
-                    cost = schedule_cost_function->calculateCost(run->getSchedule());
+                    move_patch.performAction<MoveWorkStop>(run, stops.getRunWorkStopIterator(run, stop_it1), stops.getRunWorkStopIterator(run, stop_it2));
+                    cost = schedule_cost_function->calculateCost(run.getSchedule());
 					move_patch.hold();
 					if(cost < current_best_cost)
 					{
@@ -80,7 +84,7 @@ namespace Scheduler
 						
 						editor.applyPatch(std::move(best_patch));
 						editor.commit();
-						stops.update();
+						stops = run.getWorkStops();
                     }
                     else
 					{
@@ -91,7 +95,7 @@ namespace Scheduler
         }
 	}
 
-	void HybridOptTSPSolver::setScheduleCostFunction(ScheduleCostFunction* cost_function)
+	void HybridOptTSPSolver::setScheduleCostFunction(const ScheduleCostFunction& cost_function)
 	{
 		this->schedule_cost_function = cost_function;
 	}

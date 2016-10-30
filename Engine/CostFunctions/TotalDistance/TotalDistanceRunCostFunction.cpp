@@ -7,8 +7,8 @@
 
 namespace Scheduler
 {
-	Cost TotalDistanceRunCostFunction::calculateCost(const Run* run)
+	Cost TotalDistanceRunCostFunction::calculateCost(const Run& run) const
 	{
-		return Cost(DistanceAccumulator::accumulateDistance(run->getStartStop(), run->getEndStop()).getValue());
+		return Cost(DistanceAccumulator::accumulateDistance(run.getStops().begin(), run.getStops().end()).getValue());
 	}
 }

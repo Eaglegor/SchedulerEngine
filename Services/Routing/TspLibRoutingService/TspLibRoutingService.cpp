@@ -29,10 +29,10 @@ namespace Scheduler
 		memset(this->routes, 0, sizeof(*routes) * nodes_count * nodes_count);
 	}
 
-	Route TspLibRoutingService::calculateRoute(const Site& from, const Site& to, const RoutingProfile& routing_profile)
+	Route TspLibRoutingService::calculateRoute(const Site& from, const Site& to, const RoutingProfile& routing_profile) const
 	{
-		size_t from_index = from.getLatitude().getValue();
-		size_t to_index = to.getLatitude().getValue();
+		std::size_t from_index = from.getLatitude().getValue();
+		std::size_t to_index = to.getLatitude().getValue();
 		
 		float distance = routes[from_index * nodes_count + to_index];
 
@@ -45,7 +45,7 @@ namespace Scheduler
 		return r;
 	}
 
-	void TspLibRoutingService::insertRoute(size_t ia, size_t ib, float distance)
+	void TspLibRoutingService::insertRoute(std::size_t ia, std::size_t ib, float distance)
 	{
 		assert(ia * nodes_count + ib < nodes_count * nodes_count);
 		routes[ia * nodes_count + ib] = distance;

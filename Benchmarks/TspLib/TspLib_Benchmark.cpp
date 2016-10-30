@@ -14,7 +14,7 @@
 #include <Engine/Engine/Engine.h>
 #include <Engine/CostFunctions/TotalDistance/TotalDistanceScheduleCostFunction.h>
 #include <Engine/SceneManager/Scene.h>
-#include <Engine/StrategiesManager/Strategy.h>
+#include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Chain/ChainTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
@@ -178,15 +178,14 @@ public:
 
 	TspLibTestInstance(const std::vector<std::string> &datasets, BenchmarkPublisher& publisher):
 		publisher(publisher),
-		datasets(datasets)
+		datasets(datasets),
+		cost_function(engine.getAlgorithmsManager().createCostFunction<TotalDistanceScheduleCostFunction>()),
+		total_cost(0),
+		total_time(0)
 	{
-		engine.reset(new Engine());
-
-		strategy = engine->getStrategiesManager()->createStrategy();
-		cost_function = strategy->createScheduleCostFunction<TotalDistanceScheduleCostFunction>();
 	}
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) = 0;
+	virtual TSPSolver& createTSPSolver() = 0;
 	virtual const char* getAlgorithmName() = 0;
 
 	void run()
@@ -214,12 +213,12 @@ protected:
 
 	virtual void runDataset(size_t id)
 	{
-		TspLibSceneLoader scene_loader(engine->getSceneManager());
+		TspLibSceneLoader scene_loader(engine);
 
 		Scheduler::BenchmarkResult result;
 		result.algorithm_name = getAlgorithmName();
 
-		TSPSolver* solver = createTSPSolver(strategy);
+		TSPSolver& solver = createTSPSolver();
 
         std::vector<float> costs;
 		uint32_t optimal_value;
@@ -232,17 +231,17 @@ protected:
 
         for (size_t i = 0; i < number_of_iterations; ++i)
 		{
-			Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
+			Scene& scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".bin", routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
 
 			std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
-			solver->optimize(scene->getSchedules()[0]);
+			solver.optimize(scene.getSchedules()[0]);
 			std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
 			std::chrono::nanoseconds local_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
 			long long count = local_duration.count();
 			nanoseconds += count;
 
-            const Cost cost = cost_function->calculateCost(scene->getSchedules()[0]);
+            const Cost cost = cost_function.calculateCost(scene.getSchedules()[0]);
             costs.push_back(cost.getValue());
 
             std::cout << "#" << std::flush;
@@ -273,12 +272,11 @@ protected:
 	std::vector<float> deviations;
 	float total_time;
 
-	Scheduler::TspLibRoutingService routing_service;
-	Scheduler::BenchmarkPublisher& publisher;
-	std::unique_ptr<Scheduler::Engine> engine;
-	Scheduler::Strategy* strategy;
+	TspLibRoutingService routing_service;
+	BenchmarkPublisher& publisher;
+	Engine engine;
 	const std::vector<std::string>& datasets;
-	ScheduleCostFunction* cost_function;
+	ScheduleCostFunction& cost_function;
 	
 };
 
@@ -292,7 +290,7 @@ public:
 
 	virtual void runDataset(size_t id) override
 	{
-		TspLibSceneLoader scene_loader(engine->getSceneManager());
+		TspLibSceneLoader scene_loader(engine);
 
 		Scheduler::BenchmarkResult result;
 		result.algorithm_name = getAlgorithmName();
@@ -301,7 +299,7 @@ public:
 
 		result.dataset_name = datasets[id];
 
-		Scene* scene = scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".bin", &routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
+		scene_loader.loadScene(std::string(TSPLIB_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".bin", routing_service, TspLibSceneLoader::Format::BINARY, optimal_value);
 
 		result.kpi.emplace(COST_KPI_NAME, std::to_string(optimal_value));
 
@@ -310,9 +308,9 @@ public:
 		publisher.addResult(result);
 	}
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	virtual TSPSolver& createTSPSolver() override
 	{
-		return nullptr;
+		return engine.getAlgorithmsManager().createAlgorithm<TransparentTSPSolver>();
 	}
 
 	virtual const char* getAlgorithmName() override
@@ -329,10 +327,10 @@ public:
 	{
 	}
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	virtual TSPSolver& createTSPSolver() override
 	{
-		GreedyTSPSolver *tsp_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-		tsp_solver->setRoutingService(&routing_service);
+		GreedyTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+		tsp_solver.setRoutingService(routing_service);
 		return tsp_solver;
 	}
 
@@ -350,17 +348,17 @@ public:
 	{
 	}
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	virtual TSPSolver& createTSPSolver() override
 	{
-		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
-		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-		greedy_solver->setRoutingService(&routing_service);
+		ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
+		GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+		greedy_solver.setRoutingService(routing_service);
 
-		SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
-		two_opt_solver->setScheduleCostFunction(cost_function);
+		SimpleTwoOptTSPSolver& two_opt_solver = engine.getAlgorithmsManager().createAlgorithm<SimpleTwoOptTSPSolver>();
+		two_opt_solver.setScheduleCostFunction(cost_function);
 
-		tsp_solver->addTSPSolver(greedy_solver);
-		tsp_solver->addTSPSolver(two_opt_solver);
+		tsp_solver.addTSPSolver(greedy_solver);
+		tsp_solver.addTSPSolver(two_opt_solver);
 		return tsp_solver;
 	}
 
@@ -378,17 +376,17 @@ public:
     {
     }
 
-    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    virtual TSPSolver& createTSPSolver() override
     {
-        ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
-        GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-        greedy_solver->setRoutingService(&routing_service);
+        ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
+        GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+        greedy_solver.setRoutingService(routing_service);
 
-        HybridOptTSPSolver *hybrid_opt_solver = strategy->createTSPSolver<HybridOptTSPSolver>();
-        hybrid_opt_solver->setScheduleCostFunction(cost_function);
+        HybridOptTSPSolver& hybrid_opt_solver = engine.getAlgorithmsManager().createAlgorithm<HybridOptTSPSolver>();
+        hybrid_opt_solver.setScheduleCostFunction(cost_function);
 
-        tsp_solver->addTSPSolver(greedy_solver);
-        tsp_solver->addTSPSolver(hybrid_opt_solver);
+        tsp_solver.addTSPSolver(greedy_solver);
+        tsp_solver.addTSPSolver(hybrid_opt_solver);
         return tsp_solver;
     }
 
@@ -407,15 +405,15 @@ public:
         temperature_scheduler.reset(new ListTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000));
     }
 
-    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    virtual TSPSolver& createTSPSolver() override
     {
-        MultiAgentSimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<MultiAgentSimulatedAnnealingTSPSolver>();
-        sa_solver->setScheduleCostFunction(cost_function);
-        sa_solver->setTemperatureScheduler(temperature_scheduler.get());
-        sa_solver->setMarkovChainLengthScale(1.f);
-        sa_solver->setPopulationScale(2);
-        sa_solver->setThreadsNumber(4);
-        sa_solver->setMutations({
+        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        sa_solver.setScheduleCostFunction(cost_function);
+        sa_solver.setTemperatureScheduler(*temperature_scheduler);
+        sa_solver.setMarkovChainLengthScale(1.f);
+        sa_solver.setPopulationScale(2);
+        sa_solver.setThreadsNumber(4);
+        sa_solver.setMutations({
                                     SolutionGenerator::MutationType::VertexSwap,
                                     SolutionGenerator::MutationType::BlockReverse,
                                     SolutionGenerator::MutationType::VertexInsert,
@@ -445,25 +443,25 @@ public:
         temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -3)), 1000));
     }
 
-    TSPSolver* createSATSPSolver(Strategy* strategy, TemperatureScheduler* temperatureScheduler)
+    TSPSolver& createSATSPSolver(TemperatureScheduler& temperatureScheduler)
     {
-        SimulatedAnnealingTSPSolver* sa_solver = strategy->createTSPSolver<SimulatedAnnealingTSPSolver>();
-        sa_solver->setScheduleCostFunction(cost_function);
-        sa_solver->setTemperatureScheduler(temperatureScheduler);
-        sa_solver->setMarkovChainLengthScale(1.f);
-        sa_solver->setMutations({SolutionGenerator::MutationType::BlockInsert,
+        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
+        sa_solver.setScheduleCostFunction(cost_function);
+        sa_solver.setTemperatureScheduler(temperatureScheduler);
+        sa_solver.setMarkovChainLengthScale(1.f);
+        sa_solver.setMutations({SolutionGenerator::MutationType::BlockInsert,
                                  SolutionGenerator::MutationType::BlockReverse,
                                  SolutionGenerator::MutationType::VertexInsert});
 
         return sa_solver;
     }
 
-    virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+    virtual TSPSolver& createTSPSolver() override
     {
-        BestOfTSPSolver* best_solver = strategy->createTSPSolver<BestOfTSPSolver>();
-        best_solver->setScheduleCostFunction(cost_function);
+        BestOfTSPSolver& best_solver = engine.getAlgorithmsManager().createAlgorithm<BestOfTSPSolver>();
+        best_solver.setScheduleCostFunction(cost_function);
         for (auto& ts : temperature_schedulers) {
-            best_solver->addTSPSolver(createSATSPSolver(strategy, ts.get()));
+            best_solver.addTSPSolver(createSATSPSolver(*ts));
         }
 
         return best_solver;
@@ -485,10 +483,10 @@ public:
 	{
 	}
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	virtual TSPSolver& createTSPSolver() override
 	{
-		OneRelocateTSPSolver *tsp_solver = strategy->createTSPSolver<OneRelocateTSPSolver>();
-		tsp_solver->setScheduleCostFunction(cost_function);
+		OneRelocateTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<OneRelocateTSPSolver>();
+		tsp_solver.setScheduleCostFunction(cost_function);
 		
 		return tsp_solver;
 	}
@@ -507,22 +505,22 @@ public:
 	{
 	}
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	virtual TSPSolver& createTSPSolver() override
 	{
-		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+		ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
 
-		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-		greedy_solver->setRoutingService(&routing_service);
+		GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+		greedy_solver.setRoutingService(routing_service);
 
-		OneRelocateTSPSolver *onerel_solver = strategy->createTSPSolver<OneRelocateTSPSolver>();
-		onerel_solver->setScheduleCostFunction(cost_function);
+		OneRelocateTSPSolver& onerel_solver = engine.getAlgorithmsManager().createAlgorithm<OneRelocateTSPSolver>();
+		onerel_solver.setScheduleCostFunction(cost_function);
 
-		SimpleTwoOptTSPSolver *two_opt_solver = strategy->createTSPSolver<SimpleTwoOptTSPSolver>();
-		two_opt_solver->setScheduleCostFunction(cost_function);
+		SimpleTwoOptTSPSolver& two_opt_solver = engine.getAlgorithmsManager().createAlgorithm<SimpleTwoOptTSPSolver>();
+		two_opt_solver.setScheduleCostFunction(cost_function);
 
-		tsp_solver->addTSPSolver(greedy_solver);
-		tsp_solver->addTSPSolver(two_opt_solver);
-		tsp_solver->addTSPSolver(onerel_solver);
+		tsp_solver.addTSPSolver(greedy_solver);
+		tsp_solver.addTSPSolver(two_opt_solver);
+		tsp_solver.addTSPSolver(onerel_solver);
 		
 		return tsp_solver;
 	}
@@ -541,23 +539,23 @@ public:
 	{
 	}
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	virtual TSPSolver& createTSPSolver() override
 	{
-		ChainTSPSolver *tsp_solver = strategy->createTSPSolver<ChainTSPSolver>();
+		ChainTSPSolver &tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
 
-		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-		greedy_solver->setRoutingService(&routing_service);
+		GreedyTSPSolver &greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+		greedy_solver.setRoutingService(routing_service);
 
-		SuIntTSPSolver *suint_solver = strategy->createTSPSolver<SuIntTSPSolver>();
-		suint_solver->setCostFunction(cost_function);
-		suint_solver->setRoutingService(&routing_service);
-		suint_solver->setEdgeSuggestor(EdgeSuggestorType::BETTER_EDGE);
-		suint_solver->addEdgeIntroducer(EdgeIntroducerType::REVERSE);
-		suint_solver->addEdgeIntroducer(EdgeIntroducerType::DIRECT);
-		suint_solver->addEdgeIntroducer(EdgeIntroducerType::CIRCULAR);
+		SuIntTSPSolver& suint_solver = engine.getAlgorithmsManager().createAlgorithm<SuIntTSPSolver>();
+		suint_solver.setCostFunction(cost_function);
+		suint_solver.setRoutingService(routing_service);
+		suint_solver.setEdgeSuggestor(EdgeSuggestorType::BETTER_EDGE);
+		suint_solver.addEdgeIntroducer(EdgeIntroducerType::REVERSE);
+		suint_solver.addEdgeIntroducer(EdgeIntroducerType::DIRECT);
+		suint_solver.addEdgeIntroducer(EdgeIntroducerType::CIRCULAR);
 
-		tsp_solver->addTSPSolver(greedy_solver);
-		tsp_solver->addTSPSolver(suint_solver);
+		tsp_solver.addTSPSolver(greedy_solver);
+		tsp_solver.addTSPSolver(suint_solver);
 
 		return tsp_solver;
 	}
@@ -576,35 +574,35 @@ public:
 	{
 	}
 
-	virtual TSPSolver* createTSPSolver(Strategy* strategy) override
+	virtual TSPSolver& createTSPSolver() override
 	{
-		ChainTSPSolver *main_solver = strategy->createTSPSolver<ChainTSPSolver>();
+		ChainTSPSolver& main_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
 
-		GreedyTSPSolver *greedy_solver = strategy->createTSPSolver<GreedyTSPSolver>();
-		greedy_solver->setRoutingService(&routing_service);
+		GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+		greedy_solver.setRoutingService(routing_service);
 
-		SuIntTSPSolver *suint_solver = strategy->createTSPSolver<SuIntTSPSolver>();
-		suint_solver->setCostFunction(cost_function);
-		suint_solver->setRoutingService(&routing_service);
-		suint_solver->setEdgeSuggestor(EdgeSuggestorType::BETTER_EDGE);
-		suint_solver->addEdgeIntroducer(EdgeIntroducerType::REVERSE);
-		suint_solver->addEdgeIntroducer(EdgeIntroducerType::DIRECT);
-		suint_solver->addEdgeIntroducer(EdgeIntroducerType::CIRCULAR);
+		SuIntTSPSolver& suint_solver = engine.getAlgorithmsManager().createAlgorithm<SuIntTSPSolver>();
+		suint_solver.setCostFunction(cost_function);
+		suint_solver.setRoutingService(routing_service);
+		suint_solver.setEdgeSuggestor(EdgeSuggestorType::BETTER_EDGE);
+		suint_solver.addEdgeIntroducer(EdgeIntroducerType::REVERSE);
+		suint_solver.addEdgeIntroducer(EdgeIntroducerType::DIRECT);
+		suint_solver.addEdgeIntroducer(EdgeIntroducerType::CIRCULAR);
 		
-		ReverseTSPSolver* reverse_solver = strategy->createTSPSolver<ReverseTSPSolver>();
-		ChainTSPSolver* second_suint_solver = strategy->createTSPSolver<ChainTSPSolver>();
-		second_suint_solver->addTSPSolver(reverse_solver);
-		second_suint_solver->addTSPSolver(suint_solver);
+		ReverseTSPSolver& reverse_solver = engine.getAlgorithmsManager().createAlgorithm<ReverseTSPSolver>();
+		ChainTSPSolver& second_suint_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
+		second_suint_solver.addTSPSolver(reverse_solver);
+		second_suint_solver.addTSPSolver(suint_solver);
 
-		TransparentTSPSolver* transparent_solver = strategy->createTSPSolver<TransparentTSPSolver>();
-		BestOfTSPSolver *best_of_solver = strategy->createTSPSolver<BestOfTSPSolver>();
-		best_of_solver->addTSPSolver(transparent_solver);
-		best_of_solver->addTSPSolver(second_suint_solver);
-		best_of_solver->setScheduleCostFunction(cost_function);
+		TransparentTSPSolver& transparent_solver = engine.getAlgorithmsManager().createAlgorithm<TransparentTSPSolver>();
+		BestOfTSPSolver& best_of_solver = engine.getAlgorithmsManager().createAlgorithm<BestOfTSPSolver>();
+		best_of_solver.addTSPSolver(transparent_solver);
+		best_of_solver.addTSPSolver(second_suint_solver);
+		best_of_solver.setScheduleCostFunction(cost_function);
 		
-		main_solver->addTSPSolver(greedy_solver);
-		main_solver->addTSPSolver(suint_solver);
-		main_solver->addTSPSolver(best_of_solver);
+		main_solver.addTSPSolver(greedy_solver);
+		main_solver.addTSPSolver(suint_solver);
+		main_solver.addTSPSolver(best_of_solver);
 
 		return main_solver;
 	}

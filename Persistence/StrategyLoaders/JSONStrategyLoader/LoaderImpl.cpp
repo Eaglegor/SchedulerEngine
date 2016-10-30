@@ -11,11 +11,12 @@
 #include "Loaders/ScheduleCostFunctions/TotalDistanceScheduleCostFunctionLoader.h"
 
 #include "Loaders/SceneCostFunctions/TotalDistanceSceneCostFunctionLoader.h"
+#include "UnknownAlgorithmException.h"
 
 namespace Scheduler
 {
-	LoaderImpl::LoaderImpl(Strategy* strategy):
-		strategy(strategy)
+	LoaderImpl::LoaderImpl(AlgorithmsManager& algorithms_manager):
+		algorithms_manager(algorithms_manager)
 	{
 		registerVRPSolverLoader<ChainVRPSolverLoader>();
 		registerVRPSolverLoader<TransparentVRPSolverLoader>();
@@ -30,63 +31,58 @@ namespace Scheduler
 		registerSceneCostFunctionLoader<TotalDistanceSceneCostFunctionLoader>();
 	}
 
-	VRPSolver* LoaderImpl::loadVRPSolver(const boost::property_tree::ptree& props)
+	VRPSolver& LoaderImpl::loadVRPSolver(const boost::property_tree::ptree& props)
 	{
 		std::string solver_type = props.get<std::string>("type");
 		auto iter = vrp_solver_loaders.find(solver_type);
 		assert(iter != vrp_solver_loaders.end());
-		if (iter == vrp_solver_loaders.end()) return nullptr;
+		if (iter == vrp_solver_loaders.end()) throw UnknownAlgorithmException(solver_type);
 
 		boost::property_tree::ptree settings = props.get_child("settings");
-		return iter->second->load(settings, this);
+		return iter->second->load(settings, *this, algorithms_manager);
 	}
 
-	TSPSolver* LoaderImpl::loadTSPSolver(const boost::property_tree::ptree& props)
+	TSPSolver& LoaderImpl::loadTSPSolver(const boost::property_tree::ptree& props)
 	{
 		std::string solver_type = props.get<std::string>("type");
 		auto iter = tsp_solver_loaders.find(solver_type);
 		assert(iter != tsp_solver_loaders.end());
-		if (iter == tsp_solver_loaders.end()) return nullptr;
+		if (iter == tsp_solver_loaders.end()) throw UnknownAlgorithmException(solver_type);
 
 		boost::property_tree::ptree settings = props.get_child("settings");
-		return iter->second->load(settings, this);
+		return iter->second->load(settings, *this, algorithms_manager);
 	}
 
-	RunCostFunction* LoaderImpl::loadRunCostFunction(const boost::property_tree::ptree& props)
+	RunCostFunction& LoaderImpl::loadRunCostFunction(const boost::property_tree::ptree& props)
 	{
-		std::string solver_type = props.get<std::string>("type");
-		auto iter = run_cost_function_loaders.find(solver_type);
+		std::string cf_type = props.get<std::string>("type");
+		auto iter = run_cost_function_loaders.find(cf_type);
 		assert(iter != run_cost_function_loaders.end());
-		if (iter == run_cost_function_loaders.end()) return nullptr;
+		if (iter == run_cost_function_loaders.end()) throw UnknownAlgorithmException(cf_type);
 
 		boost::property_tree::ptree settings = props.get_child("settings");
-		return iter->second->load(settings, this);
+		return iter->second->load(settings, *this, algorithms_manager);
 	}
 
-	ScheduleCostFunction* LoaderImpl::loadScheduleCostFunction(const boost::property_tree::ptree& props)
+	ScheduleCostFunction& LoaderImpl::loadScheduleCostFunction(const boost::property_tree::ptree& props)
 	{
-		std::string solver_type = props.get<std::string>("type");
-		auto iter = schedule_cost_function_loaders.find(solver_type);
+		std::string cf_type = props.get<std::string>("type");
+		auto iter = schedule_cost_function_loaders.find(cf_type);
 		assert(iter != schedule_cost_function_loaders.end());
-		if (iter == schedule_cost_function_loaders.end()) return nullptr;
+		if (iter == schedule_cost_function_loaders.end()) throw UnknownAlgorithmException(cf_type);
 
 		boost::property_tree::ptree settings = props.get_child("settings");
-		return iter->second->load(settings, this);
+		return iter->second->load(settings, *this, algorithms_manager);
 	}
 
-	SceneCostFunction* LoaderImpl::loadSceneCostFunction(const boost::property_tree::ptree& props)
+	SceneCostFunction& LoaderImpl::loadSceneCostFunction(const boost::property_tree::ptree& props)
 	{
-		std::string solver_type = props.get<std::string>("type");
-		auto iter = scene_cost_function_loaders.find(solver_type);
+		std::string cf_type = props.get<std::string>("type");
+		auto iter = scene_cost_function_loaders.find(cf_type);
 		assert(iter != scene_cost_function_loaders.end());
-		if (iter == scene_cost_function_loaders.end()) return nullptr;
+		if (iter == scene_cost_function_loaders.end()) throw UnknownAlgorithmException(cf_type);
 
 		boost::property_tree::ptree settings = props.get_child("settings");
-		return iter->second->load(settings, this);
-	}
-
-	Strategy* LoaderImpl::getStrategy() const
-	{
-		return strategy;
+		return iter->second->load(settings, *this, algorithms_manager);
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace Scheduler
 {
-	void TransparentVRPSolver::optimize(Scene* scene) const
+	void TransparentVRPSolver::optimize(Scene& scene) const
 	{
 	}
 }

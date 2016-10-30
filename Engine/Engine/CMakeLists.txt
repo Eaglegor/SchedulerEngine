@@ -9,8 +9,9 @@ add_library(Engine SHARED
 target_link_libraries(Engine 
     SceneManager 
 	SceneEditor
-    StrategiesManager
+    AlgorithmsManager
     MemoryManager
+    
     
     PerformerAssignedVehicleBinder
     
@@ -27,12 +28,11 @@ target_link_libraries(Engine
 	
 	ChainStopValidationAlgorithm
     
-    FirstTimeWindowSelector
-    
     TransparentVRPSolver
     ChainVRPSolver
     TSPOnlyVRPSolver
 	SweepVRPSolver
+	CWSavingsVRPSolver
     
 	SimpleTwoOptTSPSolver
 	SimulatedAnnealingTSPSolver
@@ -46,7 +46,7 @@ target_link_libraries(Engine
 	ReverseTSPSolver
 	
 	TotalDistanceCostFunctions
-    )
+)
 
 set_target_properties(Engine PROPERTIES FOLDER "Engine")
 

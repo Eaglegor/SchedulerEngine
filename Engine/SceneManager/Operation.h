@@ -6,8 +6,10 @@
 #include <Engine/Concepts/TimeWindow.h>
 #include <Engine/Concepts/Capacity.h>
 #include <Engine/Utils/Collections/ImmutableVector.h>
+#include <boost/optional.hpp>
 #include "Order.h"
 #include "Constraints/Operation/OperationConstraints.h"
+#include <Engine/Utils/Optional.h>
 
 #include <SceneManager_export.h>
 
@@ -17,9 +19,9 @@ namespace Scheduler
     class SCENEMANAGER_EXPORT Operation
     {
     public:
-        Operation(size_t id, const Location& location);
+        Operation(std::size_t id, const Location& location, Optional<const Order&> order);
 
-        const char* getName() const;
+        const String& getName() const;
 
         std::size_t getId() const;
 
@@ -27,25 +29,26 @@ namespace Scheduler
 
         const Duration& getDuration() const;
 
-        const Order* getOrder() const;
+        Optional<const Order&> getOrder() const;
 
-        void setName(const char* name);
+        void setName(const String& name);
 
         void setDuration(const Duration &duration);
-
-        void setOrder(const Order *order);
 
 		const OperationConstraints& constraints() const;
 		OperationConstraints& constraints();
 
+		bool operator==(const Operation& rhs) const;
+		bool operator!=(const Operation& rhs) const;
+		
 	private:
-        size_t id;
-        std::string name;
+        std::size_t id;
+        String name;
 
         const Location& location;
         Duration duration;
 
-        const Order* order;
+        Optional<const Order&> order;
 
 		OperationConstraints operations_constraints;
     };

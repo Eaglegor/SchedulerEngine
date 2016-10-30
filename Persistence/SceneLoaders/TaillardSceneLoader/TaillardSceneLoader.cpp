@@ -20,19 +20,20 @@
 #include <Engine/SceneManager/ScheduleValidationModel.h>
 #include <Engine/Algorithms/Validation/Schedule/ValidRuns/ValidRunsScheduleValidationAlgorithm.h>
 #include <Engine/Algorithms/Validation/Run/Overload/OverloadRunValidationAlgorithm.h>
+#include <Engine/Engine/Engine.h>
 
 namespace Scheduler
 {
 
-	TaillardSceneLoader::TaillardSceneLoader(SceneManager* scene_manager, RoutingService* rs):
-	scene_manager(scene_manager),
+	TaillardSceneLoader::TaillardSceneLoader(Engine& engine, RoutingService& rs):
+	engine(engine),
 	rs(rs)
 	{
 	}
 
-	Scene* TaillardSceneLoader::loadScene(std::istream& stream)
+	Scene& TaillardSceneLoader::loadScene(std::istream& stream)
 	{
-		SceneContext* scene_context = scene_manager->createSceneContext();
+		SceneContext& scene_context = engine.getSceneManager().createSceneContext();
 
 		std::size_t customers_number;
 		float best_solution;
@@ -49,75 +50,74 @@ namespace Scheduler
 		depot_location.setLatitude(Coordinate(xdepot));
 		depot_location.setLongitude(Coordinate(ydepot));
 
-		PerformerAssignedVehicleBinder* vehicle_binder = scene_manager->createRunVehicleBinder<PerformerAssignedVehicleBinder>();
+		PerformerAssignedVehicleBinder& vehicle_binder = engine.getAlgorithmsManager().createAlgorithm<PerformerAssignedVehicleBinder>();
 
-		ScheduleActualizationModel* actualization_model = scene_manager->createScheduleActualizationModel();
-		DefaultRouteActualizationAlgorithm* route_actualization_algorithm = scene_manager->createRouteActualizationAlgorithm<DefaultRouteActualizationAlgorithm>(rs);
-		actualization_model->setRouteActualizationAlgorithm(route_actualization_algorithm);
+		ScheduleActualizationModel actualization_model;
+		DefaultRouteActualizationAlgorithm& route_actualization_algorithm = engine.getAlgorithmsManager().createAlgorithm<DefaultRouteActualizationAlgorithm>(rs);
+		actualization_model.setRouteActualizationAlgorithm(route_actualization_algorithm);
 
-		ScheduleValidationModel* validation_model = scene_manager->createScheduleValidationModel();
-		ScheduleValidationAlgorithm* valid_runs_algorithm = scene_manager->createScheduleValidationAlgorithm<ValidRunsScheduleValidationAlgorithm>();
-		RunValidationAlgorithm* overload_check_algorithm = scene_manager->createRunValidationAlgorithm<OverloadRunValidationAlgorithm>();
-		validation_model->setScheduleValidationAlgorithm(valid_runs_algorithm);
-		validation_model->setRunValidationAlgorithm(overload_check_algorithm);
+		ScheduleValidationModel validation_model;
+		ScheduleValidationAlgorithm& valid_runs_algorithm = engine.getAlgorithmsManager().createAlgorithm<ValidRunsScheduleValidationAlgorithm>();
+		RunValidationAlgorithm& overload_check_algorithm = engine.getAlgorithmsManager().createAlgorithm<OverloadRunValidationAlgorithm>();
+		validation_model.setScheduleValidationAlgorithm(valid_runs_algorithm);
+		validation_model.setRunValidationAlgorithm(overload_check_algorithm);
 
-		Depot* depot = scene_context->createDepot(*scene_context->createLocation(depot_location));
+		Depot& depot = scene_context.createDepot(scene_context.createLocation(depot_location));
 		
 		for (size_t i = 0; i < customers_number; ++i)
 		{
-			Vehicle* vehicle = scene_context->createVehicle();
+			Vehicle& vehicle = scene_context.createVehicle(depot);
 			{
 				std::string name = "Vehicle" + std::to_string(i);
-				vehicle->setName(name.c_str());
-				vehicle->constraints().capacity().set(Capacity(vehicle_capacity, 0, 0, 0));
+				vehicle.setName(name);
+				vehicle.constraints().capacity().set(Capacity(vehicle_capacity, 0, 0, 0));
 			}
-			Performer* performer = scene_context->createPerformer();
+			Performer& performer = scene_context.createPerformer(depot);
 			{
 				std::string name = "Driver" + std::to_string(i);
-				performer->setName(name.c_str());
-				performer->setDepot(depot);
+				performer.setName(name);
 			}
-			vehicle_binder->assign(performer, vehicle);
+			vehicle_binder.assign(performer, vehicle);
 			
-			Order* order = scene_context->createOrder();
+			Order& order = scene_context.createOrder();
 			{
 				std::string name = "Order" + std::to_string(i);
-				order->setName(name.c_str());
+				order.setName(name);
 				
 				stream >> customer_number >> x >> y >> demand;
 
-				Location* location = scene_context->createLocation(Site(Coordinate(x), Coordinate(y)));
-				Operation* work_operation = order->createWorkOperation(*location);
+				Location& location = scene_context.createLocation(Site(Coordinate(x), Coordinate(y)));
+				Operation& work_operation = order.createWorkOperation(location);
 				{
 					std::string op_name = name + ".Work";
-					work_operation->setName(op_name.c_str());
-					work_operation->constraints().demand().set(Capacity(demand, 0, 0, 0));
+					work_operation.setName(op_name);
+					work_operation.constraints().demand().set(Capacity(demand, 0, 0, 0));
 				}
 			}
 		}
 
-		Scene* scene = scene_manager->createScene(*scene_context);
+		Scene& scene = engine.getSceneManager().createScene(scene_context);
 		
-		for(const Performer* performer : scene->getContext().getPerformers())
+		for(const Performer& performer : scene.getContext().getPerformers())
 		{
-			std::string name = "Schedule of " + std::string(performer->getName());
-			Schedule* schedule = scene->createSchedule(*performer);
-			schedule->setName(name.c_str());
+			std::string name = "Schedule of " + performer.getName();
+			Schedule& schedule = scene.createSchedule(performer);
+			schedule.setName(name.c_str());
 
-			schedule->setRunVehicleBinder(vehicle_binder);
-			schedule->setActualizationModel(actualization_model);
-			schedule->setValidationModel(validation_model);
+			schedule.setRunVehicleBinder(vehicle_binder);
+			schedule.setActualizationModel(actualization_model);
+			schedule.setValidationModel(validation_model);
 		}
 		
 		return scene;
 	}
 
-	Scene* TaillardSceneLoader::loadScene(const std::string& filename)
+	Scene& TaillardSceneLoader::loadScene(const std::string& filename)
 	{
 		std::ifstream file;
 		file.open(filename.c_str());
 		assert(file.is_open());
-		Scene* scene = loadScene(file);
+		Scene& scene = loadScene(file);
 		file.close();
 		return scene;
 	}

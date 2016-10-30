@@ -4,106 +4,91 @@
 
 namespace Scheduler {
 
-    Order::Order(size_t id) :
+    Order::Order(std::size_t id, const Context& context, Optional<const Depot&> depot) :
             id(id),
-            start_operation(nullptr),
-            end_operation(nullptr),
-            operations_factory(nullptr)
+            context(context),
+            depot(depot)
     {
     }
 
-
-    const char* Order::getName() const {
-        return name.c_str();
+    const String& Order::getName() const {
+        return name;
     }
 
-	Operation* Order::getStartOperation(){
-		return start_operation;
+    Optional<const Operation&> Order::getStartOperation() const {
+		if(!start_operation) return None;
+        return start_operation.get();
+    }
+
+	Optional<const Operation&> Order::getWorkOperation() const {
+		if(!work_operation) return None;
+		return work_operation.get();
 	}
 
-    const Operation* Order::getStartOperation() const {
-        return start_operation;
-    }
-
-    ImmutableVector<Operation*>& Order::getWorkOperations() {
-        return work_operations;
-    }
-
-	const ImmutableVector<Operation*>& Order::getWorkOperations() const {
-		return work_operations;
+	Optional<const Operation&> Order::getEndOperation() const {
+		if(!end_operation) return None;
+		return end_operation.get();
 	}
 
-	Operation* Order::getEndOperation() {
-		return end_operation;
-	}
-
-    const Operation* Order::getEndOperation() const {
-        return end_operation;
-    }
-
-	size_t Order::getId() const {
+	std::size_t Order::getId() const {
         return id;
     }
 
-    void Order::setName(const char *name) {
+    void Order::setName(const String &name) {
         this->name = name;
     }
 
-	const OrderConstraints & Order::constraints() const
+	const OrderConstraints& Order::constraints() const
 	{
 		return order_constraints;
 	}
 
-	OrderConstraints & Order::constraints()
+	OrderConstraints& Order::constraints()
 	{
 		return order_constraints;
 	}
 
-    void Order::setOperationsFactory(SceneObjectsFactory<Operation> *factory) {
-        this->operations_factory = factory;
+    Operation& Order::createStartOperation(const Location& location) {
+        if(this->start_operation) context.operations_factory.destroyObject(&this->start_operation.get());
+		start_operation = *context.operations_factory.createObject(location, *this);
+		return start_operation.get();
     }
 
-    Operation *Order::createStartOperation(const Location& location) {
-        assert(operations_factory);
-        if(!operations_factory) return nullptr;
-
-        if(this->start_operation) operations_factory->destroyObject(this->start_operation);
-
-		Operation* operation = operations_factory->createObject(location);
-		operation->setOrder(this);
-        this->start_operation = operation;
-        return operation;
+    Operation& Order::createWorkOperation(const Location& location) {
+		if(this->work_operation) context.operations_factory.destroyObject(&this->work_operation.get());
+		work_operation = *context.operations_factory.createObject(location, *this);
+        return work_operation.get();
     }
 
-    Operation *Order::createWorkOperation(const Location& location) {
-        assert(operations_factory);
-        if(!operations_factory) return nullptr;
-
-        Operation* operation = operations_factory->createObject(location);
-		operation->setOrder(this);
-        this->work_operations.push_back(operation);
-
-        return operation;
+    Operation& Order::createEndOperation(const Location& location) {
+        if(this->end_operation) context.operations_factory.destroyObject(&this->end_operation.get());
+		end_operation = *context.operations_factory.createObject(location, *this);
+		return end_operation.get();
     }
+    
+	bool Order::operator==(const Order& rhs) const
+	{
+		return id == rhs.id && this == &rhs;
+	}
+	
+	bool Order::operator!=(const Order& rhs) const
+	{
+		return !(*this == rhs);
+	}
 
-    Operation *Order::createEndOperation(const Location& location) {
-        assert(operations_factory);
-        if(!operations_factory) return nullptr;
+	Optional<const Depot&> Order::getDepot() const
+	{
+		return depot;
+	}
 
-        if(this->end_operation) operations_factory->destroyObject(this->end_operation);
-
-		Operation* operation = operations_factory->createObject(location);
-		operation->setOrder(this);
-        this->end_operation = operation;
-        return operation;
-    }
-
-    Order::~Order() {
-        if(start_operation) operations_factory->destroyObject(start_operation);
-        if(end_operation) operations_factory->destroyObject(end_operation);
-        for(Operation* operation : work_operations)
-        {
-            operations_factory->destroyObject(operation);
-        }
+	const Order::Context& Order::getContext() const
+	{
+		return context;
+	}
+	
+	Order::~Order() {
+        if(start_operation) context.operations_factory.destroyObject(&start_operation.get());
+		if(work_operation) context.operations_factory.destroyObject(&work_operation.get());
+        if(end_operation) context.operations_factory.destroyObject(&end_operation.get());
     }
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SceneManager_export.h>
+#include <Engine/Utils/ReferenceWrapper.h>
 
 namespace Scheduler
 {
@@ -11,23 +12,19 @@ namespace Scheduler
     class SCENEMANAGER_EXPORT ScheduleActualizationModel
     {
         public:
-			ScheduleActualizationModel():
-				route_actualization_algorithm(nullptr),
-				arrival_time_actualization_algorithm(nullptr),
-				duration_actualization_algorithm(nullptr)
-			{}
+			ScheduleActualizationModel();
 
-            RouteActualizationAlgorithm* getRouteActualizationAlgorithm() const;
-            ArrivalTimeActualizationAlgorithm* getArrivalTimeActualizationAlgorithm() const;
-            DurationActualizationAlgorithm* getDurationActualizationAlgorithm() const;
+            const RouteActualizationAlgorithm& getRouteActualizationAlgorithm() const;
+            const ArrivalTimeActualizationAlgorithm& getArrivalTimeActualizationAlgorithm() const;
+            const DurationActualizationAlgorithm& getDurationActualizationAlgorithm() const;
             
-            void setRouteActualizationAlgorithm(RouteActualizationAlgorithm* algorithm);
-            void setArrivalTimeActualizationAlgorithm(ArrivalTimeActualizationAlgorithm* algorithm);
-            void setDurationActualizationAlgorithm(DurationActualizationAlgorithm* algorithm);
+            void setRouteActualizationAlgorithm(const RouteActualizationAlgorithm& algorithm);
+            void setArrivalTimeActualizationAlgorithm(const ArrivalTimeActualizationAlgorithm& algorithm);
+            void setDurationActualizationAlgorithm(const DurationActualizationAlgorithm& algorithm);
             
         private:
-            RouteActualizationAlgorithm* route_actualization_algorithm;
-            ArrivalTimeActualizationAlgorithm* arrival_time_actualization_algorithm;
-            DurationActualizationAlgorithm* duration_actualization_algorithm;
+			ReferenceWrapper<const RouteActualizationAlgorithm> route_actualization_algorithm;
+			ReferenceWrapper<const ArrivalTimeActualizationAlgorithm> arrival_time_actualization_algorithm;
+			ReferenceWrapper<const DurationActualizationAlgorithm> duration_actualization_algorithm;
     };
 }

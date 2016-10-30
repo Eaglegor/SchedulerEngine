@@ -2,23 +2,24 @@
 
 #include <istream>
 #include <string>
+#include <Engine/Utils/String.h>
 
 #include <JSONStrategyLoader_export.h>
 
 namespace Scheduler
 {
-	class StrategiesManager;
-	class Strategy;
+	class AlgorithmsManager;
+	class VRPSolver;
 
 	class JSONSTRATEGYLOADER_EXPORT JSONStrategyLoader
 	{
 	public:
-		JSONStrategyLoader(StrategiesManager* strategies_manager);
+		explicit JSONStrategyLoader(AlgorithmsManager& strategies_manager);
 
-		Strategy* loadStrategy(std::istream &stream) const;
-		Strategy* loadStrategy(const std::string& filename) const;
+		const VRPSolver& loadVRPStrategy(std::istream &stream) const;
+		const VRPSolver& loadVRPStrategy(const String &filename) const;
 
 	private:
-		StrategiesManager* strategies_manager;
+		AlgorithmsManager& algorithms_manager;
 	};
 }

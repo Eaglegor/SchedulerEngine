@@ -17,7 +17,7 @@ namespace Scheduler
 			class LocationConstraint
 			{
 			public:
-				LocationConstraint(const Location& location):location(location){};
+				explicit LocationConstraint(const Location& location):location(location){};
 				LocationConstraint(const LocationConstraint &rhs):location(rhs.location){}
 				
 				operator const Location&() const
@@ -33,6 +33,11 @@ namespace Scheduler
 				bool operator==(const LocationConstraint& rhs) const
 				{
 					return location == rhs.location;
+				}
+				
+				bool operator==(const Location& rhs) const
+				{
+					return location == rhs;
 				}
 				
 			private:

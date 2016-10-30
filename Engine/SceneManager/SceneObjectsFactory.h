@@ -9,7 +9,7 @@ namespace Scheduler
     class SceneObjectsFactory
     {
     public:
-		SceneObjectsFactory(std::size_t initial_capacity = 10): 
+		explicit SceneObjectsFactory(std::size_t initial_capacity = 10): 
 			counter(0),
 			backend_factory(sizeof(T), initial_capacity)
 		{}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/SceneManager/Extensions/DurationActualizationAlgorithm.h>
+#include <Engine/SceneManager/Algorithms/Actualization/DurationActualizationAlgorithm.h>
 
 #include <DefaultDurationActualizationAlgorithm_export.h>
 
@@ -13,6 +13,6 @@ namespace Scheduler
 		static constexpr const char* staticGetName() { return "Default"; }
 		virtual const char* getName() const { return staticGetName(); };
 
-		virtual void actualize(Run* stop) override;
+		virtual void actualize(Run& run) const override;
 	};
 }

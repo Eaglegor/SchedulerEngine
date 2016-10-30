@@ -3,16 +3,16 @@
 #include <mutex>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/StrategiesManager/CostFunctions/ScheduleCostFunction.h>
+#include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
 #include "SolutionGenerator.h"
 
 namespace Scheduler
 {
 
-std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* run, ScheduleCostFunction* schedule_cost_function, size_t length)
+std::vector<Cost> TemperatureScheduler::create_initial_costs(Run& run, const ScheduleCostFunction& schedule_cost_function, std::size_t length)
 {
     std::vector<Cost> costs;
-    Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
+    Cost best_cost = schedule_cost_function.calculateCost(run.getSchedule());
     SolutionGeneratorClassic solution_generator(run);
     solution_generator.enableMutation(SolutionGenerator::MutationType::BlockInsert);
     solution_generator.enableMutation(SolutionGenerator::MutationType::BlockReverse);
@@ -20,9 +20,9 @@ std::vector<Cost> TemperatureScheduler::create_initial_costs(Run* run, ScheduleC
     solution_generator.enableMutation(SolutionGenerator::MutationType::VertexSwap);
 
     for (size_t number_of_iterations = 0; number_of_iterations < length; ++number_of_iterations) {
-        const size_t checkpoint = solution_generator.checkpoint();
+        const std::size_t checkpoint = solution_generator.checkpoint();
         solution_generator.neighbour();
-        const Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
+        const Cost cost = schedule_cost_function.calculateCost(run.getSchedule());
         if (cost < best_cost) {
             best_cost = cost;
         } else {

@@ -93,20 +93,6 @@
             }
           ],
           "duration": "00:10"
-        },
-        {
-          "name": "delivery",
-          "location": "Order2_Drop",
-          "load": [
-            -2
-          ],
-          "time_windows": [
-            {
-              "start_time": "12:00",
-              "end_time": "15:00"
-            }
-          ],
-          "duration": "00:10"
         }
       ]
     },
@@ -223,7 +209,7 @@
               }
             },
 			{
-              "operation": "Order2.delivery",
+              "operation": "Order3.work",
               "allocation_time": {
                 "start_time": "10:00",
                 "end_time": "11:10"

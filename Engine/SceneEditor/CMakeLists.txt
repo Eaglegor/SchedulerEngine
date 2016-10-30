@@ -4,14 +4,15 @@ add_library(SceneEditor SHARED
     Action.h
     Checkpoint.h Checkpoint.cpp
     Patch.h Patch.cpp
-    
-    Actions/ActionsImpl.h Actions/ActionsImpl.cpp
-    Actions/SwapRunWorkStops.h Actions/SwapRunWorkStops.cpp
-    Actions/ReverseRunWorkStopsSubsequence.h Actions/ReverseRunWorkStopsSubsequence.cpp
-    Actions/MoveRunWorkStop.h Actions/MoveRunWorkStop.cpp
-    Actions/ScrambleWorkStopsSubsequence.h Actions/ScrambleWorkStopsSubsequence.cpp
-    Actions/RotateWorkStopsSubsequence.h Actions/RotateWorkStopsSubsequence.cpp
-	Actions/MoveRunWorkStopsSubsequence.h Actions/MoveRunWorkStopsSubsequence.cpp
+    Actions/SwapWorkStops.h Actions/SwapWorkStops.cpp
+    Actions/ReverseWorkStops.h Actions/ReverseWorkStops.cpp
+    Actions/MoveWorkStop.h Actions/MoveWorkStop.cpp
+    Actions/ScrambleWorkStops.h Actions/ScrambleWorkStops.cpp
+    Actions/RotateWorkStops.h Actions/RotateWorkStops.cpp
+	Actions/MoveWorkStops.h Actions/MoveWorkStops.cpp
+	Actions/AllocateOrder.h Actions/AllocateOrder.cpp
+	Actions/CreateRun.h Actions/CreateRun.cpp
+	Actions/DestroyRun.h Actions/DestroyRun.cpp
 )
 
 set_target_properties(SceneEditor PROPERTIES FOLDER "Engine")

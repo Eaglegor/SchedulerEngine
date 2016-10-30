@@ -1,15 +1,14 @@
 #include "TotalDistanceRunCostFunctionLoader.h"
 
-#include <Engine/StrategiesManager/Strategy.h>
+#include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <Engine/CostFunctions/TotalDistance/TotalDistanceRunCostFunction.h>
 #include <Persistence/StrategyLoaders/JSONStrategyLoader/LoaderImpl.h>
 
 namespace Scheduler
 {
-	RunCostFunction* TotalDistanceRunCostFunctionLoader::load(const boost::property_tree::ptree& settings, LoaderImpl* loader_instance)
+	RunCostFunction& TotalDistanceRunCostFunctionLoader::load(const boost::property_tree::ptree& settings, LoaderImpl& loader_instance, AlgorithmsManager& algorithms_manager)
 	{
-		TotalDistanceRunCostFunction* run_cost_function = loader_instance->getStrategy()->createRunCostFunction<TotalDistanceRunCostFunction>();
-		return run_cost_function;
+		return algorithms_manager.createCostFunction<TotalDistanceRunCostFunction>();
 	}
 
 	const char* TotalDistanceRunCostFunctionLoader::getName() const

@@ -6,7 +6,7 @@ add_library(SweepVRPSolver SHARED
 
 set_target_properties(SweepVRPSolver PROPERTIES FOLDER "Engine/Algorithms/VRPSolvers/Sweep")
 
-target_link_libraries(SweepVRPSolver StrategiesManager SceneManager)
+target_link_libraries(SweepVRPSolver AlgorithmsManager SceneManager SceneEditor)
 
 cotire(SweepVRPSolver)
 

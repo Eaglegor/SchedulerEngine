@@ -1,6 +1,6 @@
 add_subdirectory(Engine)
 add_subdirectory(SceneManager)
-add_subdirectory(StrategiesManager)
+add_subdirectory(AlgorithmsManager)
 add_subdirectory(Algorithms)
 add_subdirectory(Concepts)
 add_subdirectory(Utils)

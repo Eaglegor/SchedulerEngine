@@ -10,6 +10,6 @@ namespace Scheduler
 	class RoutingService {
 	public:
 		virtual ~RoutingService() {}
-		virtual Route calculateRoute(const Site &from, const Site &to, const RoutingProfile &routing_profile) = 0;
+		virtual Route calculateRoute(const Site &from, const Site &to, const RoutingProfile &routing_profile) const = 0;
 	};
 }

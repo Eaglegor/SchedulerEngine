@@ -30,163 +30,143 @@ namespace Scheduler
 		return scene_constraints;
 	}
 	
-	Operation* SceneContext::createFreeOperation(const Location &location)
+	Operation& SceneContext::createFreeOperation(const Location &location)
 	{
-		Operation* operation = operations_factory.createObject(location);
+		Operation& operation = *operations_factory.createObject(location, None);
         free_operations.push_back(operation);
         return operation;
 	}
 	
-	Location* SceneContext::createLocation(const Site& site)
+	Location& SceneContext::createLocation(const Site& site)
 	{
-		Location* location = locations_factory.createObject(site);
+		Location& location = *locations_factory.createObject(site);
 		locations.push_back(location);
 		return location;
 	}
 	
-	Order* SceneContext::createOrder()
+	Order& SceneContext::createOrder(Optional<const Depot&> depot)
 	{
-		Order* order = orders_factory.createObject();
-		order->setOperationsFactory(&operations_factory);
+		Order::Context context{operations_factory};
+		
+		Order& order = *orders_factory.createObject(context, depot);
         orders.push_back(order);
         return order;
 	}
 	
-	Performer* SceneContext::createPerformer()
+	Performer& SceneContext::createPerformer(Optional<const Depot&> depot)
 	{
-		Performer* performer = performers_factory.createObject();
+		Performer& performer = *performers_factory.createObject(depot);
 		performers.push_back(performer);
 		return performer;
 	}
 	
-	Vehicle* SceneContext::createVehicle()
+	Vehicle& SceneContext::createVehicle(Optional<const Depot&> depot)
 	{
-		Vehicle* vehicle= vehicles_factory.createObject();
+		Vehicle& vehicle = *vehicles_factory.createObject(depot);
 		vehicles.push_back(vehicle);
 		return vehicle;
 	}
 	
-	Depot* SceneContext::createDepot(const Location &location)
+	Depot& SceneContext::createDepot(const Location &location)
 	{
-		Depot* depot = depots_factory.createObject(location);
+		Depot& depot = *depots_factory.createObject(location);
 		depots.push_back(depot);
 		return depot;
 	}
 	
-	Scheduler::ImmutableVector< Operation* >& SceneContext::getFreeOperations()
+	const SceneContext::OperationsList& SceneContext::getFreeOperations() const
 	{
 		return free_operations;
 	}
 	
-	const Scheduler::ImmutableVector< Operation* >& SceneContext::getFreeOperations() const
-	{
-		return free_operations;
-	}
-	
-	Scheduler::ImmutableVector< Location* >& SceneContext::getLocations()
+	const SceneContext::LocationsList& SceneContext::getLocations() const
 	{
 		return locations;
-	}
-	
-	const Scheduler::ImmutableVector< Location* >& SceneContext::getLocations() const
-	{
-		return locations;
-	}
-	
-	Scheduler::ImmutableVector< Order* >& SceneContext::getOrders()
-	{
-		return orders;
-	}
-	
-	const Scheduler::ImmutableVector< Order* >& SceneContext::getOrders() const
-	{
-		return orders;
 	}
 
-	Scheduler::ImmutableVector< Performer* >& SceneContext::getPerformers()
+	const SceneContext::OrdersList& SceneContext::getOrders() const
+	{
+		return orders;
+	}
+	
+	const SceneContext::PerformersList& SceneContext::getPerformers() const
 	{
 		return performers;
 	}
 	
-	const Scheduler::ImmutableVector< Performer* >& SceneContext::getPerformers() const
-	{
-		return performers;
-	}
-	
-	Scheduler::ImmutableVector< Vehicle* >& SceneContext::getVehicles()
+	const SceneContext::VehiclesList& SceneContext::getVehicles() const
 	{
 		return vehicles;
 	}
 	
-	const Scheduler::ImmutableVector< Vehicle* >& SceneContext::getVehicles() const
-	{
-		return vehicles;
-	}
-	
-	const Attribute* SceneContext::createAttribute(const char* name)
+	const Attribute& SceneContext::createAttribute(const String& name)
 	{
 		auto iter = attributes.find(name);
 		if (iter != attributes.end()) return iter->second;
 
-		Attribute* attribute = attributes_factory.createObject(name);
+		Attribute& attribute = *attributes_factory.createObject(name);
 		attributes.emplace(name, attribute);
 
 		return attribute;
 	}
 	
-	const Attribute* SceneContext::getAttribute(const char* name) const
+	const SceneContext::AttributesMap& SceneContext::getAttributes() const
 	{
-		auto iter = attributes.find(name);
-		if (iter != attributes.end()) return iter->second;
-		
-		return nullptr;
+		return attributes;
 	}
+
 	
-	Scheduler::ImmutableVector< Depot* >& SceneContext::getDepots()
-	{
-		return depots;
-	}
-	
-	const Scheduler::ImmutableVector< Depot* >& SceneContext::getDepots() const
+	const SceneContext::DepotsList& SceneContext::getDepots() const
 	{
 		return depots;
 	}
 	
 	SceneContext::~SceneContext()
 	{
-        for(Order* order : orders)
+        for(const Order& order : orders)
         {
-            orders_factory.destroyObject(order);
+            orders_factory.destroyObject(const_cast<Order*>(&order));
         }
 
-        for(Operation* operation : free_operations)
+        for(const Operation& operation : free_operations)
         {
-            operations_factory.destroyObject(operation);
+            operations_factory.destroyObject(const_cast<Operation*>(&operation));
         }
 
-        for(Vehicle* vehicle : vehicles)
+        for(const Vehicle& vehicle : vehicles)
         {
-            vehicles_factory.destroyObject(vehicle);
+            vehicles_factory.destroyObject(const_cast<Vehicle*>(&vehicle));
         }
 
-        for(Performer* performer : performers)
+        for(const Performer& performer : performers)
         {
-            performers_factory.destroyObject(performer);
+            performers_factory.destroyObject(const_cast<Performer*>(&performer));
         }
         
-        for(Location* location : locations)
+        for(const Location& location : locations)
         {
-            locations_factory.destroyObject(location);
+            locations_factory.destroyObject(const_cast<Location*>(&location));
         }
         
-        for(Depot* depot : depots)
+        for(const Depot& depot : depots)
         {
-            depots_factory.destroyObject(depot);
+            depots_factory.destroyObject(const_cast<Depot*>(&depot));
         }
         
-        for (auto &iter : attributes)
+        for (const auto &iter : attributes)
 		{
-			attributes_factory.destroyObject(iter.second);
+			attributes_factory.destroyObject(const_cast<Attribute*>(&iter.second.get()));
 		}
 	}
+	
+	bool SceneContext::operator==(const SceneContext& rhs) const
+	{
+		return id == rhs.id && this == &rhs;
+	}
+	
+	bool SceneContext::operator!=(const SceneContext& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
 }

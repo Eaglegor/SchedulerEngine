@@ -3,17 +3,16 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
 
-bool Scheduler::ChainStopValidationAlgorithm::isValid(const Stop * stop) const
+bool Scheduler::ChainStopValidationAlgorithm::isValid(const Stop& stop) const
 {
-	for (StopValidationAlgorithm* algorithm : algorithms)
+	for (const StopValidationAlgorithm& algorithm : algorithms)
 	{
-		if (!algorithm->isValid(stop)) return false;
+		if (!algorithm.isValid(stop)) return false;
 	}
 	return true;
 }
 
-void Scheduler::ChainStopValidationAlgorithm::addAlgorithm(StopValidationAlgorithm * algorithm)
+void Scheduler::ChainStopValidationAlgorithm::addAlgorithm(const StopValidationAlgorithm& algorithm)
 {
-	assert(algorithm);
 	algorithms.push_back(algorithm);
 }

@@ -3,37 +3,38 @@
 #include "Utils/SceneCloner.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include <assert.h>
 
 namespace Scheduler
 {
-	ScheduleVariant::ScheduleVariant():
-	original_schedule(nullptr),
-	new_schedule(nullptr)
+	ScheduleVariant::ScheduleVariant()
 	{}
 	
-	ScheduleVariant::ScheduleVariant(Schedule* schedule):
+	ScheduleVariant::ScheduleVariant(Schedule& schedule):
 	original_schedule(schedule)
 	{
-		SceneManager* scene_manager = original_schedule->getScene()->getSceneManager();
-		Scene* scene = scene_manager->createScene(original_schedule->getScene()->getContext());
-		new_schedule = scene->createSchedule(*original_schedule->getPerformer());
-		SceneCloner::cloneScheduleState(original_schedule, new_schedule);
+		SceneManager& scene_manager = original_schedule->getScene().getSceneManager();
+		new_scene = scene_manager.createScene(original_schedule->getScene().getContext());
+		new_schedule = new_scene->createSchedule(original_schedule->getPerformer());
+		SceneCloner::cloneScheduleState(original_schedule.get(), new_schedule.get());
 	}
 	
 	ScheduleVariant::ScheduleVariant(ScheduleVariant&& rhs):
 	original_schedule(rhs.original_schedule),
-	new_schedule(rhs.new_schedule)
+	new_schedule(rhs.new_schedule),
+	new_scene(rhs.new_scene)
 	{
-		rhs.original_schedule = nullptr;
-		rhs.new_schedule = nullptr;
+		rhs.original_schedule = None;
+		rhs.new_schedule = None;
+		rhs.new_scene = None;
 	}
 	
 	ScheduleVariant::~ScheduleVariant()
 	{
-		if(new_schedule != nullptr)
+		if(new_schedule)
 		{
-			SceneManager* scene_manager = new_schedule->getScene()->getSceneManager();
-			scene_manager->destroyScene(new_schedule->getScene());
+			SceneManager& scene_manager = new_scene->getSceneManager();
+			scene_manager.destroyScene(new_scene.get());
 		}
 	}
 
@@ -41,27 +42,30 @@ namespace Scheduler
 	{
 		this->original_schedule = rhs.original_schedule;
 		this->new_schedule = rhs.new_schedule;
+		this->new_scene = rhs.new_scene;
 		
-		rhs.original_schedule = nullptr;
-		rhs.new_schedule = nullptr;
+		rhs.original_schedule = None;
+		rhs.new_schedule = None;
+		rhs.new_scene = None;
 
 		return *this;
 	}
 	
 	void ScheduleVariant::apply() const
 	{
-		if(new_schedule == nullptr) return;
-		SceneCloner::cloneScheduleState(new_schedule, original_schedule);
+		assert(new_schedule);
+		if(!new_schedule) return;
+		SceneCloner::cloneScheduleState(new_schedule.get(), original_schedule.get());
 	}
 	
-	Schedule* ScheduleVariant::getSchedule() const
+	Optional<Schedule&> ScheduleVariant::getSchedule() const
 	{
 		return new_schedule;
 	}
 	
 	ScheduleVariant::operator bool() const
 	{
-		return new_schedule != nullptr;
+		return new_schedule ? true : false;
 	}
 
 }

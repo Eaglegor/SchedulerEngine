@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/StrategiesManager/VRPSolver.h>
+#include <Engine/AlgorithmsManager/VRPSolver.h>
 #include <TSPOnlyVRPSolver.h>
 
 namespace Scheduler
@@ -10,13 +10,13 @@ namespace Scheduler
 	class TSPONLYVRPSOLVER_EXPORT TSPOnlyVRPSolver : public VRPSolver
 	{
 	public:
-		TSPOnlyVRPSolver(TSPSolver* tsp_solver);
-		virtual void optimize(Scene* scene) const override;
+		explicit TSPOnlyVRPSolver(const TSPSolver& tsp_solver);
+		virtual void optimize(Scene& scene) const override;
 
 		static constexpr const char* staticGetName() { return "TSPOnly"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
 	private:
-		TSPSolver* tsp_solver;
+		const TSPSolver& tsp_solver;
 	};
 }

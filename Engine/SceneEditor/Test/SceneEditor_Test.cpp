@@ -9,8 +9,8 @@
 
 #include <cstring>
 #include <Engine/SceneEditor/SceneEditor.h>
-#include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
-#include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
+#include <Engine/SceneEditor/Actions/SwapWorkStops.h>
+#include <Engine/SceneEditor/Actions/ReverseWorkStops.h>
 #include <Engine/SceneManager/WorkStop.h>
 
 
@@ -21,19 +21,19 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 	Engine engine;
 	CrowFlyRoutingService routing_service;
 
-	JSONSceneLoader loader(engine.getSceneManager(), &routing_service);
+	JSONSceneLoader loader(engine, routing_service);
 
-	Scene* scene = loader.loadScene("TestData/SceneEditor_Test/TestScene.json");
+	Scene& scene = loader.loadScene("TestData/SceneEditor_Test/TestScene.json");
 
-	Run* run = scene->getSchedules()[0]->getRuns()[0];
+	Run& run = scene.getSchedules()[0].get().getRuns()[0];
 
-	const auto& work_stops = run->getWorkStops();
+	const auto& work_stops = run.getWorkStops();
 
-	auto checkOrder = [&](Scheduler::Run* run, std::vector<size_t> expected_order)
+	auto checkOrder = [&](Scheduler::Run& run, std::vector<std::size_t> expected_order)
 	{
-		for (int i = 0; i < run->getWorkStops().size(); ++i)
+		for (int i = 0; i < run.getWorkStops().size(); ++i)
 		{
-			REQUIRE(std::string("Operation") + std::to_string(expected_order[i]) == (*std::next(run->getWorkStops().begin(), i))->getOperation()->getName());
+			REQUIRE(std::string("Operation") + std::to_string(expected_order[i]) == std::next(run.getWorkStops().begin(), i)->getOperation().getName());
 		}
 	};
 
@@ -43,23 +43,21 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	REQUIRE(editor.getCurrentVersion() == 0);
 
-	auto run_iter = scene->getSchedules()[0]->getRuns().begin();
-
 	SECTION("Direct action")
 	{
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 1), std::next(run.getWorkStops().begin(), 3));
 
 		REQUIRE(editor.getCurrentVersion() == 1);
 		
 		checkOrder(run, {1, 4, 3, 2, 5});
 
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 4), std::next(run.getWorkStops().begin(), 0));
 
 		REQUIRE(editor.getCurrentVersion() == 2);
 		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 0), std::next(run.getWorkStops().begin(), 2));
 
 		REQUIRE(editor.getCurrentVersion() == 3);
 		
@@ -68,19 +66,19 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SECTION("Single checkpoint rollback all")
 	{
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 1), std::next(run.getWorkStops().begin(), 3));
 
 		REQUIRE(editor.getCurrentVersion() == 1);
 		
 		checkOrder(run, { 1, 4, 3, 2, 5 });
 
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 4), std::next(run.getWorkStops().begin(), 0));
 
 		REQUIRE(editor.getCurrentVersion() == 2);
 		
 		checkOrder(run, { 5, 4, 3, 2, 1 });
 
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 0), std::next(run.getWorkStops().begin(), 2));
 
 		REQUIRE(editor.getCurrentVersion() == 3);
 		
@@ -95,7 +93,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SECTION("Rollback to last checkpoint")
 	{
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 1), std::next(run.getWorkStops().begin(), 3));
 
 		REQUIRE(editor.getCurrentVersion() == 1);
 		
@@ -105,7 +103,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 		REQUIRE(editor.getCurrentVersion() == 1);
 		
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 4), std::next(run.getWorkStops().begin(), 0));
 
 		REQUIRE(editor.getCurrentVersion() == 2);
 		
@@ -115,7 +113,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 		REQUIRE(editor.getCurrentVersion() == 2);
 		
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 0), std::next(run.getWorkStops().begin(), 2));
 
 		REQUIRE(editor.getCurrentVersion() == 3);
 		
@@ -136,7 +134,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SECTION("Rollback to specific checkpoint")
 	{
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 1), std::next(run.getWorkStops().begin(), 3));
 
 		REQUIRE(editor.getCurrentVersion() == 1);
 		
@@ -146,7 +144,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 		REQUIRE(editor.getCurrentVersion() == 1);
 		
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 4), std::next(run.getWorkStops().begin(), 0));
 
 		REQUIRE(editor.getCurrentVersion() == 2);
 		
@@ -156,7 +154,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 		REQUIRE(editor.getCurrentVersion() == 2);
 		
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 0), std::next(run.getWorkStops().begin(), 2));
 
 		REQUIRE(editor.getCurrentVersion() == 3);
 		
@@ -184,7 +182,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 	SECTION("Clear history")
 	{
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 1), std::next(run->getWorkStops().begin(), 3));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 1), std::next(run.getWorkStops().begin(), 3));
 
 		REQUIRE(editor.getCurrentVersion() == 1);
 		
@@ -194,7 +192,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 
 		REQUIRE(editor.getCurrentVersion() == 1);
 		
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 4), std::next(run->getWorkStops().begin(), 0));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 4), std::next(run.getWorkStops().begin(), 0));
 
 		REQUIRE(editor.getCurrentVersion() == 2);
 		
@@ -204,7 +202,7 @@ TEST_CASE("Scene editor works", "[integration][functional][scene_editor]")
 		
 		REQUIRE(editor.getCurrentVersion() == 2);
 		
-		editor.performAction<SwapRunWorkStops>(run_iter, std::next(run->getWorkStops().begin(), 0), std::next(run->getWorkStops().begin(), 2));
+		editor.performAction<SwapWorkStops>(run, std::next(run.getWorkStops().begin(), 0), std::next(run.getWorkStops().begin(), 2));
 
 		REQUIRE(editor.getCurrentVersion() == 3);
 		

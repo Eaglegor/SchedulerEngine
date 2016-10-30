@@ -7,10 +7,18 @@
 #include "SceneObjectsFactory.h"
 #include "Constraints/Schedule/ScheduleConstraints.h"
 #include <Engine/Utils/Collections/LinkedPointersList.h>
+#include <Engine/Utils/String.h>
 #include "ArrivalTimeActualizer.h"
+#include "Stop.h"
+#include <memory>
+#include <functional>
+
+#include <boost/intrusive/list.hpp>
+#include <Engine/Utils/Collections/Range.h>
 
 #include <SceneManager_export.h>
 #include "ScheduleActualizationModel.h"
+#include "ScheduleValidationModel.h"
 
 namespace Scheduler
 {
@@ -23,82 +31,101 @@ namespace Scheduler
 	class RunVehicleBinder;
 	class ScheduleValidationModel;
 	class Location;
+	class StructuralChangesObserver;
 
 	/**
 		Class representing single performer's work shift.
 	*/
     class SCENEMANAGER_EXPORT Schedule
     {
-    public:
-		using RunsList = ImmutableVector<Run*>;
-		using StopsList = LinkedPointersList<Stop*>;
+	private:
+		using StopsIntrusiveList = boost::intrusive::list<Stop, boost::intrusive::value_traits<Stop::IntrusiveValueTraits>>;
 		
-        Schedule(size_t id, const Performer &performer);
+    public:
+		using RunsList = std::vector<ReferenceWrapper<Run>>;
+		using RunIterator = RunsList::iterator;
+		using ConstRunIterator = RunsList::const_iterator;
+		using RunDestructor = std::function< void(Run*) >;
+		
+		using StopsList = StopsIntrusiveList;
+		
+
+		struct Context
+		{
+			SceneObjectsFactory<Run>& runs_factory;
+			SceneObjectsFactory<WorkStop>& stops_factory;
+			StructuralChangesObserver& structural_changes_observer;
+		};
+		
+        Schedule(std::size_t id, const Context& context, const Performer &performer, const Scene& scene);
 		~Schedule();
 
-        size_t getId() const;
-        const char* getName() const;
-        const Performer* getPerformer() const;
-
-        void setName(const char* name);
+        std::size_t getId() const;
+		
+        const String& getName() const;
+        void setName(const String& name);
+        
+		const Performer& getPerformer() const;
 
 		const RunsList& getRuns() const;
-
-		RunsList::iterator createRun(RunsList::const_iterator pos, const Location &from, const Location &to);
+		RunIterator createRun(ConstRunIterator pos, const Location &from, const Location &to);
 
 		const StopsList& getStops() const;
+		StopsList& getStops();
 		
-		void destroyRun(RunsList::iterator pos);
+		RunIterator destroyRun(ConstRunIterator pos);
+		
+		std::pair<RunIterator, RunDestructor> detachRun(ConstRunIterator pos);
+		RunIterator attachRun(ConstRunIterator pos, Run& run);
 
         bool isValid() const;
 
-		void setActualizationModel(ScheduleActualizationModel* model);
-		void setValidationModel(ScheduleValidationModel* model);
+		void setActualizationModel(const ScheduleActualizationModel& model);
+		void setValidationModel(const ScheduleValidationModel& model);
 		
-		ScheduleActualizationModel* getActualizationModel() const;
-		ScheduleValidationModel* getValidationModel() const;
+		const ScheduleActualizationModel& getActualizationModel() const;
+		const ScheduleValidationModel& getValidationModel() const;
 
 		const TimeWindow& getShift() const;
 		void setShift(const TimeWindow &shift);
 
 		void clear();
 
-		const Scene* getScene() const;
-		Scene* getScene();
+		const Scene& getScene() const;
 
 		const ScheduleConstraints& constraints() const;
 		ScheduleConstraints& constraints();
 
-		void setRunVehicleBinder(RunVehicleBinder *run_vehicle_binder);
-		RunVehicleBinder* getRunVehicleBinder() const;
+		void setRunVehicleBinder(Optional<const RunVehicleBinder&> run_vehicle_binder);
+		Optional<const RunVehicleBinder&> getRunVehicleBinder() const;
 		
-		// == framework internal ====================================
-		void setScene(Scene* scene);
-		void setRunsFactory(SceneObjectsFactory<Run> *factory);
-		void setStopsFactory(SceneObjectsFactory<WorkStop> *factory);
-
+		bool operator==(const Schedule& rhs) const;
+		bool operator!=(const Schedule& rhs) const;
+		
+		RunIterator findRun(Run& r);
+		ConstRunIterator findRun(const Run& r) const;
+		
 	private:
-        size_t id;
-        std::string name;
-
+        std::size_t id;
+		Context context;
         const Performer& performer;
-
-		std::vector<Run*> runs;
-		StopsList stops;
-
-		Scene* scene;
-
-		SceneObjectsFactory<Run> *runs_factory;
-		SceneObjectsFactory<WorkStop> *stops_factory;
+		const Scene& scene;
+		
+        String name;
 
 		TimeWindow shift;
 
-		ScheduleActualizationModel* schedule_actualization_model;
 		ArrivalTimeActualizer arrival_time_actualizer;
-		ScheduleValidationModel* schedule_validation_model;
+		
+		ScheduleActualizationModel schedule_actualization_model;
+		ScheduleValidationModel schedule_validation_model;
 
-		RunVehicleBinder* run_vehicle_binder;
-
+		Optional<const RunVehicleBinder&> run_vehicle_binder;
+		
 		ScheduleConstraints schedule_constraints;
+		
+		RunsList runs;
+		StopsList stops;
+		
     };
 }

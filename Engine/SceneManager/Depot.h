@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <string>
+#include <Engine/Utils/String.h>
 #include <SceneManager_export.h>
 
 namespace Scheduler
@@ -16,12 +17,15 @@ namespace Scheduler
 		std::size_t getId() const;
 		const Location& getLocation() const;
 		
-		void setName(const char* name);
-		const char* getName() const;
+		const String& getName() const;
+		void setName(const String& name);
+
+		bool operator==(const Depot& rhs) const;
+		bool operator!=(const Depot& rhs) const;
 		
 	private:
 		std::size_t id;
-		std::string name;
+		String name;
 		const Location& location;
 	};
 }

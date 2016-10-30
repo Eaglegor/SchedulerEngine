@@ -14,7 +14,7 @@ namespace Scheduler
 	class MarkdownBenchmarkPublisher : public BenchmarkPublisher
 	{
 	public:
-		MarkdownBenchmarkPublisher(const std::string& output_filename) :
+		explicit MarkdownBenchmarkPublisher(const std::string& output_filename) :
 			output_filename(output_filename)
 		{
 			

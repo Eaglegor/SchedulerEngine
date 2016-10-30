@@ -13,7 +13,7 @@ namespace Scheduler
 {
 
 	Route CrowFlyRoutingService::calculateRoute(const Site &from, const Site &to,
-														const RoutingProfile &routing_profile) {
+														const RoutingProfile &routing_profile) const {
 		const float EARTH_RADIUS = 6399.0f;
 
 		float from_lat = fromFixedPoint<Coordinate::PRECISION>(from.getLatitude().getValue());

@@ -14,14 +14,14 @@ namespace Scheduler
 		TspLibRoutingService();
 		~TspLibRoutingService();
 		
-		void init(size_t nodes_count);
+		void init(std::size_t nodes_count);
 
-		virtual Route calculateRoute(const Site& from, const Site& to, const RoutingProfile& routing_profile) override;
+		virtual Route calculateRoute(const Site& from, const Site& to, const RoutingProfile& routing_profile) const override;
 
-		void insertRoute(size_t ia, size_t ib, float distance);
+		void insertRoute(std::size_t ia, std::size_t ib, float distance);
 
 	private:
 		float* routes;
-		size_t nodes_count;
+		std::size_t nodes_count;
 	};
 }

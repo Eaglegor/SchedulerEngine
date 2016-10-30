@@ -10,7 +10,7 @@ namespace Scheduler
 	public:
 		virtual ~ConstStopVisitor() {}
 
-		virtual void dispatch(const WorkStop* work_stop) = 0;
-		virtual void dispatch(const RunBoundaryStop* run_boundary_stop) = 0;
+		virtual void dispatch(const WorkStop& work_stop) = 0;
+		virtual void dispatch(const RunBoundaryStop& run_boundary_stop) = 0;
 	};
 }

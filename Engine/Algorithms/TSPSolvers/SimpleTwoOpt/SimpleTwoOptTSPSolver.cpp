@@ -1,53 +1,53 @@
 #include "SimpleTwoOptTSPSolver.h"
 #include <Engine/SceneManager/Schedule.h>
-#include <Engine/SceneEditor/Actions/SwapRunWorkStops.h>
-#include <Engine/SceneEditor/Actions/ReverseRunWorkStopsSubsequence.h>
+#include <Engine/SceneEditor/Actions/SwapWorkStops.h>
+#include <Engine/SceneEditor/Actions/ReverseWorkStops.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneEditor/SceneEditor.h>
-#include <Engine/Utils/Collections/PositionPreservingLinkedPointersListWrapper.h>
+#include <Engine/SceneManager/Utils/InvariantWorkStopsList.h>
 
 namespace Scheduler
 {
 	SimpleTwoOptTSPSolver::SimpleTwoOptTSPSolver():
-		schedule_cost_function(nullptr)
+	logger(LoggingManager::getLogger("SimpleTwoOptTSPSolver"))
 	{
 	}
 
-    void SimpleTwoOptTSPSolver::optimize(Schedule* schedule) const
+    void SimpleTwoOptTSPSolver::optimize(Schedule& schedule) const
 	{
-		if (!schedule_cost_function) return; // We don't have a metric to optimize - so we can't
+		if (!schedule_cost_function) return;
 
-		for(Run* run : schedule->getRuns())
+		for(Run& run : schedule.getRuns())
 		{
 			optimize(run);
 		}
 	}
 
-	void SimpleTwoOptTSPSolver::optimize(Run* run) const
+	void SimpleTwoOptTSPSolver::optimize(Run& run) const
 	{
-		if (!schedule_cost_function) return; // We don't have a metric to optimize - so we can't
+		TRACEABLE_SECTION(__optimize__, "SimpleTwoOptTSPSolver::optimize(Run&)", logger);
 
-		if(run->getWorkStops().empty()) return;
+		if (!schedule_cost_function) return;
 		
-		//PositionPreservingLinkedPointersListWrapper<Run::WorkStopsList> stops(run->getWorkStops());
-		const auto& stops = run->getWorkStops();
+		if(run.getWorkStops().empty()) return;
+		
+		const auto& stops = run.getWorkStops();
 
-		auto run_iter = std::find(run->getSchedule()->getRuns().begin(), run->getSchedule()->getRuns().end(), run);
-        Cost best_cost = schedule_cost_function->calculateCost(run->getSchedule());
+        Cost best_cost = schedule_cost_function->calculateCost(run.getSchedule());
+		
         bool changed = true;
         while (changed) {
             changed = false;
             for (auto stop_it1 = stops.begin(); stop_it1 != stops.end(); ++stop_it1) {
                 for (auto stop_it2 = std::next(stop_it1); stop_it2 != stops.end(); ++stop_it2) {
                     SceneEditor editor;
-                    editor.performAction<ReverseWorkStopsSubsequence>(run_iter, stop_it1, std::next(stop_it2));
-                    Cost cost = schedule_cost_function->calculateCost(run->getSchedule());
+                    editor.performAction<ReverseWorkStops>(run, stop_it1, std::next(stop_it2));
+                    Cost cost = schedule_cost_function->calculateCost(run.getSchedule());
                     if (cost < best_cost) {
                         best_cost = cost;
                         changed = true;
 						editor.commit();
-						//stops.update();
-						std::swap(stop_it1, stop_it2);
+						std::swap(stop_it1, stop_it2); // stop_it1 is now pointing to the end of the reversed chain - so we need to swap iterators to make it point to our next stop
                     } else {
                         editor.rollbackAll();
                     }
@@ -56,7 +56,7 @@ namespace Scheduler
         }
 	}
 
-	void SimpleTwoOptTSPSolver::setScheduleCostFunction(ScheduleCostFunction* cost_function)
+	void SimpleTwoOptTSPSolver::setScheduleCostFunction(const ScheduleCostFunction& cost_function)
 	{
 		this->schedule_cost_function = cost_function;
 	}

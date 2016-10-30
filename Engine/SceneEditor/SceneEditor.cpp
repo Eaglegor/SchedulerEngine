@@ -4,7 +4,8 @@ namespace Scheduler
 {
 	SceneEditor::SceneEditor():
 	current_version(0),
-	state(State::OPEN)
+	state(State::OPEN),
+	logger(LoggingManager::getLogger("SceneEditor"))
 	{
 		checkpoint();
 	}
@@ -17,7 +18,7 @@ namespace Scheduler
 	{
 		if(state != SceneEditor::State::OPEN)
 		{
-			STATIC_SIMPLE_LOG_ERROR("SceneEditor", "Trying to perform rollback while in patching state");
+			logger.error("Trying to perform rollback while in patching state");
 			return;
 		}
 		
@@ -29,7 +30,7 @@ namespace Scheduler
 	{
 		if(state != SceneEditor::State::OPEN)
 		{
-			STATIC_SIMPLE_LOG_ERROR("SceneEditor", "Trying to perform rollback while in patching state");
+			logger.error("Trying to perform rollback while in patching state");
 			return;
 		}
 		
@@ -46,7 +47,7 @@ namespace Scheduler
 	{
 		if(state != SceneEditor::State::OPEN)
 		{
-			STATIC_SIMPLE_LOG_ERROR("SceneEditor", "Trying to perform rollback while in patching state");
+			logger.error("Trying to perform rollback while in patching state");
 			return;
 		}
 		
@@ -71,14 +72,14 @@ namespace Scheduler
 
 	std::size_t SceneEditor::checkpoint()
 	{
-		checkpoints.emplace_back(std::allocate_shared<Checkpoint>(MallocAllocator<Checkpoint>(&memory_manager), &memory_manager, current_version));
+		checkpoints.emplace_back(std::allocate_shared<Checkpoint>(MallocAllocator<Checkpoint>(), current_version));
 		return checkpoints.size() - 1;
 	}
 
 	Patch SceneEditor::createPatch()
 	{
 		Patch p;
-		p.initialize(&memory_manager, current_version);
+		p.initialize(current_version);
 		
 		state = State::PATCHING;
 		
@@ -89,16 +90,16 @@ namespace Scheduler
 	{
 		if(state != State::PATCHING)
 		{
-			STATIC_LOG_ERROR("SceneEditor", "Can't apply patch while not in patching state");
+			logger.error("Can't apply patch while not in patching state");
 		}
 		if(patch.getState() == Patch::State::NOT_INITIALIZED)
 		{
-			STATIC_SIMPLE_LOG_DEBUG("SceneEditor", "Applying not initialized patch");
+			logger.error("Applying not initialized patch");
 			return checkpoints.size() - 1;
 		}
 		if(current_version != patch.getBaseVersion())
 		{
-			STATIC_LOG_ERROR("SceneEditor", "Incorrect patch base version. Scene editor version = {}, patch base version = {}", current_version, patch.getBaseVersion());
+			logger.error("Incorrect patch base version. Scene editor version = {}, patch base version = {}", current_version, patch.getBaseVersion());
 			return checkpoints.size() - 1;
 		}
 		std::size_t new_cp_id = checkpoint();

@@ -15,7 +15,7 @@ namespace Scheduler
 	class DistanceRatingEdgeSuggestor : public EdgeSuggestor
 	{
 	public:
-		DistanceRatingEdgeSuggestor(Run* run, RoutingService* routing_service);
+		DistanceRatingEdgeSuggestor(Run& run, const RoutingService& routing_service);
 
 		virtual std::vector<SuggestedEdge> next() override;
 		virtual bool hasNext() override;
@@ -32,15 +32,15 @@ namespace Scheduler
 
 		using Rating = std::vector<Entry>;
 
-		std::vector<size_t> findStopsBySite(const Site& location) const;
+		std::vector<std::size_t> findStopsBySite(const Site& location) const;
 
 		void generateRating();
 
-		Run* run;
-		RoutingService* routing_service;
+		Run& run;
+		const RoutingService& routing_service;
 		Rating rating;
 		Rating::iterator current_iterator;
-		Logger* logger;
+		Logger& logger;
 		Distance max_run_distance;
 	};
 }
