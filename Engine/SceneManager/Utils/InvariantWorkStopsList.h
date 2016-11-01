@@ -4,9 +4,11 @@
 #include <functional>
 #include <vector>
 
+#include <SceneManager_export.h>
+
 namespace Scheduler
 {
-	class InvariantWorkStopsList
+	class SCENEMANAGER_EXPORT InvariantWorkStopsList
 	{
 	public:
 		using const_iterator = std::vector<ReferenceWrapper<const WorkStop>>::const_iterator;

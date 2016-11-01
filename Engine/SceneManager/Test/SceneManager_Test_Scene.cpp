@@ -143,21 +143,21 @@ TEST_CASE("SceneManager - Scene - Schedule - ValidationModel")
 	class MockScheduleValidationAlgorithm : public ScheduleValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Schedule& schedule) const{};
+		virtual bool isValid(const Schedule& schedule) const{return true;};
 		virtual const char* getName() const{return "Mock";}
 	} schedule_validation_algorithm;
 	
 	class MockRunValidationAlgorithm : public RunValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Run& run) const{};
+		virtual bool isValid(const Run& run) const{return true;};
 		virtual const char* getName() const{return "Mock";}
 	} run_validation_algorithm;
 	
 	class MockStopValidationAlgorithm : public StopValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Stop& stop) const{};
+		virtual bool isValid(const Stop& stop) const{return true;};
 		virtual const char* getName() const{return "Mock";}
 	} stop_validation_algorithm;
 	

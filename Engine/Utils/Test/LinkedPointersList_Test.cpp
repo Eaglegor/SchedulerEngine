@@ -59,84 +59,96 @@ namespace std
 	class front_insert_iterator<LinkedPointersList<Node*>> : public iterator<Node, output_iterator_tag>
 	{
 	public:
-		front_insert_iterator(LinkedPointersList<Node*>& cont):cont(cont){}
-		front_insert_iterator& operator=(typename LinkedPointersList<Node*>::reference value){cont.push_front(value);}
+		using container_type = LinkedPointersList<Node*>;
+		front_insert_iterator(LinkedPointersList<Node*>& cont):cont(&cont){}
+		front_insert_iterator& operator=(typename LinkedPointersList<Node*>::reference value) { cont->push_front(value); return *this; }
+		front_insert_iterator& operator=(const front_insert_iterator& rhs) { this->cont = rhs.cont; return *this; }
 		
 		front_insert_iterator& operator*(){return *this;}
 		void operator++(){}
 		
 	private:
-		LinkedPointersList<Node*>& cont;
+		LinkedPointersList<Node*>* cont;
 	};
 	
 	template<>
 	class front_insert_iterator<LinkedPointersSublist<Node*>> : public iterator<Node, output_iterator_tag>
 	{
 	public:
-		front_insert_iterator(LinkedPointersSublist<Node*>& cont):cont(cont){}
-		front_insert_iterator& operator=(typename LinkedPointersSublist<Node*>::reference value){cont.push_front(value);}
+		using container_type = LinkedPointersSublist<Node*>;
+		front_insert_iterator(LinkedPointersSublist<Node*>& cont):cont(&cont){}
+		front_insert_iterator& operator=(typename LinkedPointersSublist<Node*>::reference value){cont->push_front(value); return *this;}
+		front_insert_iterator& operator=(const front_insert_iterator& rhs) { this->cont = rhs.cont;  return *this; }
 		
 		front_insert_iterator& operator*(){return *this;}
 		void operator++(){}
 		
 	private:
-		LinkedPointersSublist<Node*>& cont;
+		LinkedPointersSublist<Node*>* cont;
 	};
 	
 	template<>
 	class front_insert_iterator<LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>> : public iterator<Node, output_iterator_tag>
 	{
 	public:
-		front_insert_iterator(LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>& cont):cont(cont){}
-		front_insert_iterator& operator=(typename LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>::reference value){cont.push_front(value);}
+		using container_type = LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>;
+		front_insert_iterator(LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>& cont):cont(&cont){}
+		front_insert_iterator& operator=(typename LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>::reference value){cont->push_front(value); return *this;}
+		front_insert_iterator& operator=(const front_insert_iterator& rhs) { this->cont = rhs.cont;  return *this; }
 		
 		front_insert_iterator& operator*(){return *this;}
 		void operator++(){}
 		
 	private:
-		LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>& cont;
+		LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>* cont;
 	};
 	
 	template<>
 	class back_insert_iterator<LinkedPointersList<Node*>> : public iterator<Node, output_iterator_tag>
 	{
 	public:
-		back_insert_iterator(LinkedPointersList<Node*>& cont):cont(cont){}
-		back_insert_iterator& operator=(typename LinkedPointersList<Node*>::reference value){cont.push_back(value);}
+		using container_type = LinkedPointersList<Node*>;
+		back_insert_iterator(LinkedPointersList<Node*>& cont):cont(&cont){}
+		back_insert_iterator& operator=(typename LinkedPointersList<Node*>::reference value){cont->push_back(value); return *this;}
+		back_insert_iterator& operator=(const back_insert_iterator& rhs) { this->cont = rhs.cont;  return *this; }
 		
 		back_insert_iterator& operator*(){return *this;}
 		void operator++(){}
 		
 	private:
-		LinkedPointersList<Node*>& cont;
+		LinkedPointersList<Node*>* cont;
 	};
 	
 	template<>
 	class back_insert_iterator<LinkedPointersSublist<Node*>> : public iterator<Node, output_iterator_tag>
 	{
 	public:
-		back_insert_iterator(LinkedPointersSublist<Node*>& cont):cont(cont){}
-		back_insert_iterator& operator=(typename LinkedPointersSublist<Node*>::reference value){cont.push_back(value);}
+		using container_type = LinkedPointersSublist<Node*>;
+		back_insert_iterator(LinkedPointersSublist<Node*>& cont):cont(&cont){}
+		back_insert_iterator& operator=(typename LinkedPointersSublist<Node*>::reference value){cont->push_back(value); return *this;}
+		back_insert_iterator& operator=(const back_insert_iterator& rhs) { this->cont = rhs.cont;  return *this; }
 		
 		back_insert_iterator& operator*(){return *this;}
 		void operator++(){}
 		
 	private:
-		LinkedPointersSublist<Node*>& cont;
+		LinkedPointersSublist<Node*>* cont;
 	};
 	
 	template<>
 	class back_insert_iterator<LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>> : public iterator<Node, output_iterator_tag>
 	{
 	public:
-		back_insert_iterator(LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>& cont):cont(cont){}
-		back_insert_iterator& operator=(typename LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>::reference value){cont.push_back(value);}
+		using container_type = LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>;
+		back_insert_iterator(LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>& cont):cont(&cont){}
+		back_insert_iterator& operator=(typename LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>::reference value){cont->push_back(value); return *this;}
+		back_insert_iterator& operator=(const back_insert_iterator& rhs) { this->cont = rhs.cont;  return *this; }
 		
 		back_insert_iterator& operator*(){return *this;}
 		void operator++(){}
 		
 	private:
-		LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>& cont;
+		LinkedPointersSublist<Node*, LinkedPointersSublist<Node*>>* cont;
 	};
 }
 

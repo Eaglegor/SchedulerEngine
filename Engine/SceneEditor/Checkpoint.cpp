@@ -1,6 +1,7 @@
 #include "Checkpoint.h"
 #include "assert.h"
 #include <algorithm>
+#include <iterator>
 
 namespace Scheduler
 {
