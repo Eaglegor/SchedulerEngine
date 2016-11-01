@@ -4,3 +4,4 @@ conanbuildinfo.txt
 conaninfo.txt
 /.project
 *.kdev4
+*.PVS-Studio*

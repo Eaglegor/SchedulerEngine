@@ -24,7 +24,8 @@
 namespace Scheduler
 {
 	SuIntTSPSolver::SuIntTSPSolver():
-		logger(LoggingManager::getLogger("SuIntTSPSolver"))
+		logger(LoggingManager::getLogger("SuIntTSPSolver")),
+		edge_suggestor_type(EdgeSuggestorType::BETTER_EDGE)
 	{
 	}
 

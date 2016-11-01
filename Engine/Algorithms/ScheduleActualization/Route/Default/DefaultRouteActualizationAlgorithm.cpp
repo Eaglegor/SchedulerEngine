@@ -24,8 +24,10 @@ namespace Scheduler
 
 	void DefaultRouteActualizationAlgorithm::actualize(Stop& stop) const
 	{
-		auto iter = stop.getRun().findStop(stop);
-		auto& stops_list = stop.getRun().getSchedule().getStops();
+		Run& r = stop.getRun();
+		Schedule& s = r.getSchedule();
+		auto iter = r.findStop(stop);
+		auto& stops_list = s.getStops();
 		if(std::next(iter) == stops_list.end())
 		{
 			stop.setNextRoute(Route(stop.getLocation().getSite(), stop.getLocation().getSite(), Distance(0), Duration(0)));

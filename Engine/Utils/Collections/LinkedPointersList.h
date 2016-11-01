@@ -274,6 +274,7 @@ namespace Scheduler
 			{
 				insert(pos, *iter);
 			}
+			return last;
 		}
 		
 		iterator erase(iterator pos)

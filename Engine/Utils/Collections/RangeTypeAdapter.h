@@ -126,6 +126,12 @@ namespace Scheduler
 		backend_collection(rhs.backend_collection)
 		{}
 		
+		RangeTypeAdapter& operator=(const RangeTypeAdapter& rhs)
+		{
+			backend_collection = rhs.backend_collection;
+			return *this;
+		}
+
 		reference front()
 		{
 			return static_cast<reference>(backend_collection->front());

@@ -42,6 +42,18 @@ namespace Scheduler
 		{
 		}
 		
+		Range(Range&& rhs) :
+			parent(rhs.parent),
+			begin_iterator(rhs.begin_iterator),
+			end_iterator(rhs.end_iterator),
+			constant_time_size(rhs.constant_time_size)
+		{
+			rhs.parent = nullptr;
+			rhs.begin_iterator = iterator();
+			rhs.end_iterator = iterator();
+			rhs.constant_time_size = 0;
+		}
+
 		Range& operator=(Range&& rhs)
 		{
 			parent = rhs.parent;
