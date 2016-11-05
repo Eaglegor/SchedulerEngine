@@ -58,16 +58,16 @@ namespace Scheduler
 		
         for (auto stop_i = stops.begin(); stop_i != std::prev(stops.end()); ++stop_i) {
             auto nearest_element_iter = stop_i;
-            auto min_distance = routing_service->calculateRoute(location, nearest_element_iter->get().getLocation().getSite(), routing_profile).getDistance();
+            auto min_distance = routing_service->calculateRoute(location, nearest_element_iter->getLocation().getSite(), routing_profile).getDistance();
             for (auto stop_j = std::next(stop_i); stop_j != stops.end(); ++stop_j) {
-                const auto distance = routing_service->calculateRoute(location, stop_j->get().getLocation().getSite(), routing_profile).getDistance();
+                const auto distance = routing_service->calculateRoute(location, stop_j->getLocation().getSite(), routing_profile).getDistance();
                 if (distance < min_distance) {
                     min_distance = distance;
 					nearest_element_iter = stop_j;
                 }
             }
 
-            location = nearest_element_iter->get().getLocation().getSite();
+            location = nearest_element_iter->getLocation().getSite();
             scene_editor.performAction<SwapWorkStops>(run, run.findWorkStop(*stop_i), run.findWorkStop(*nearest_element_iter));
 			scene_editor.commit();
 			stops = run.getWorkStops();
