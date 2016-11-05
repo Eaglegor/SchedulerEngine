@@ -84,6 +84,7 @@ namespace Scheduler
 						
 						editor.applyPatch(std::move(best_patch));
 						editor.commit();
+						
 						stops = run.getWorkStops();
                     }
                     else
