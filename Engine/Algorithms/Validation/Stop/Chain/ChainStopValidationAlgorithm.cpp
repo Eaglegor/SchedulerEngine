@@ -2,17 +2,22 @@
 
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
+#include <Engine/SceneManager/Algorithms/Validation/ProxyViolationsConsumer.h>
 
-bool Scheduler::ChainStopValidationAlgorithm::isValid(const Stop& stop) const
+namespace Scheduler
 {
-	for (const StopValidationAlgorithm& algorithm : algorithms)
+	void ChainStopValidationAlgorithm::validate(const Stop& stop, ViolationsConsumer& violations_consumer) const
 	{
-		if (!algorithm.isValid(stop)) return false;
+		ProxyViolationsConsumer consumer(violations_consumer);
+		for (const StopValidationAlgorithm& algorithm : algorithms)
+		{
+			algorithm.validate(stop, consumer);
+			if(consumer.getCurrentContinuancePolicy() == ValidationContinuancePolicy::INTERRUPT) return;
+		}
 	}
-	return true;
-}
-
-void Scheduler::ChainStopValidationAlgorithm::addAlgorithm(const StopValidationAlgorithm& algorithm)
-{
-	algorithms.push_back(algorithm);
+	
+	void ChainStopValidationAlgorithm::addAlgorithm(const StopValidationAlgorithm& algorithm)
+	{
+		algorithms.push_back(algorithm);
+	}
 }

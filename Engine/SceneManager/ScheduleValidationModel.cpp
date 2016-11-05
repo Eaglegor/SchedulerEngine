@@ -1,29 +1,26 @@
 #include "ScheduleValidationModel.h"
 
-#include "Algorithms/Validation/StopValidationAlgorithm.h"
-#include "Algorithms/Validation/RunValidationAlgorithm.h"
-#include "Algorithms/Validation/ScheduleValidationAlgorithm.h"
 
 namespace Scheduler
 {
 	class EmptyStopValidationAlgorithm : public StopValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Stop& stop) const override {return true;}
+		virtual void validate(const Stop& object, ViolationsConsumer& violations_consumer) const {}
 		virtual const char* getName() const override {return "Empty";}
 	};
 	
 	class EmptyRunValidationAlgorithm : public RunValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Run& run) const override {return true;}
+		virtual void validate(const Run& object, ViolationsConsumer& violations_consumer) const {}
 		virtual const char* getName() const override {return "Empty";}
 	};
 	
 	class EmptyScheduleValidationAlgorithm : public ScheduleValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Schedule& schedule) const override {return true;}
+		virtual void validate(const Schedule& object, ViolationsConsumer& violations_consumer) const {}
 		virtual const char* getName() const override {return "Empty";}
 	};
 	

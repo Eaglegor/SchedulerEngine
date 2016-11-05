@@ -12,12 +12,12 @@ namespace Scheduler
 	
 	InvariantWorkStopsList::const_iterator InvariantWorkStopsList::begin() const
 	{
-		return work_stops.begin();
+		return const_iterator(&work_stops, 0);
 	}
 	
 	InvariantWorkStopsList::const_iterator InvariantWorkStopsList::end() const
 	{
-		return work_stops.end();
+		return const_iterator(&work_stops, work_stops.size());
 	}
 	
 	InvariantWorkStopsList& InvariantWorkStopsList::operator=(InvariantWorkStopsList&& rhs)
@@ -38,7 +38,7 @@ namespace Scheduler
 
 	Run::ConstWorkStopIterator InvariantWorkStopsList::getRunWorkStopIterator(const Run& r, const_iterator iter)
 	{
-		if(iter == work_stops.end()) return r.getWorkStops().end();
+		if(iter == end()) return r.getWorkStops().end();
 		return r.findWorkStop(*iter);
 	}
 };

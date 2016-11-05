@@ -6,7 +6,8 @@
 #include "Vehicle.h"
 #include "Algorithms/RunVehicleBinder.h"
 #include "ScheduleValidationModel.h"
-#include "Algorithms/Validation/ScheduleValidationAlgorithm.h"
+#include "Algorithms/Validation/ValidationAlgorithm.h"
+#include "Algorithms/Validation/Validator.h"
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <iterator>
 #include "Listeners/StructuralChangesObserver.h"
@@ -82,9 +83,16 @@ namespace Scheduler {
 
     bool Schedule::isValid() const
     {
-		return schedule_validation_model.getScheduleValidationAlgorithm().isValid(*this);
+		Validator validator;
+		validate(validator);
+		return validator.getValidationResult() == Validator::ValidationResult::VALID;
     }
 
+	void Schedule::validate(ViolationsConsumer& violations_consumer) const
+	{
+		schedule_validation_model.getScheduleValidationAlgorithm().validate(*this, violations_consumer);
+	}
+    
 	void Schedule::setActualizationModel(const ScheduleActualizationModel& model)
 	{
 		this->schedule_actualization_model = model;

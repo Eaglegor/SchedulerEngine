@@ -73,9 +73,6 @@ add_library(SceneManager SHARED
 	Algorithms/Actualization/ArrivalTimeActualizationAlgorithm.h
     Algorithms/Actualization/DurationActualizationAlgorithm.h
     Algorithms/Actualization/RouteActualizationAlgorithm.h
-	Algorithms/Validation/StopValidationAlgorithm.h
-	Algorithms/Validation/RunValidationAlgorithm.h
-	Algorithms/Validation/ScheduleValidationAlgorithm.h
 	
     CostFunctions/SceneCostFunction.h
     CostFunctions/ScheduleCostFunction.h

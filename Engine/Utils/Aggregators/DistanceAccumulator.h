@@ -10,6 +10,15 @@ namespace Scheduler
 	class DistanceAccumulator
 	{
 	public:
+		Distance operator()(const Distance& distance, const Stop& stop) const
+		{
+			return distance + stop.getNextRoute().getDistance();
+		}
+	};
+	
+	class DistanceAccumulatorAlg
+	{
+	public:
 		static Distance accumulateDistance(const Run::ConstStopIterator& start_stop, const Run::ConstStopIterator& end_stop)
 		{
 			Distance total_distance;

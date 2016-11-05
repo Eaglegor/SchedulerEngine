@@ -17,6 +17,7 @@ namespace Scheduler
 		~ScheduleVariant();
 		
 		ScheduleVariant& operator=(ScheduleVariant&& rhs);
+		ScheduleVariant& operator=(Schedule& rhs);
 		
 		Optional<Schedule&> getSchedule() const;
 		void apply() const;

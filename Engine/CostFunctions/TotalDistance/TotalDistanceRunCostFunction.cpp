@@ -9,6 +9,6 @@ namespace Scheduler
 {
 	Cost TotalDistanceRunCostFunction::calculateCost(const Run& run) const
 	{
-		return Cost(DistanceAccumulator::accumulateDistance(run.getStops().begin(), run.getStops().end()).getValue());
+		return Cost(std::accumulate(run.getStops().begin(), run.getStops().end(), Distance(0), DistanceAccumulator()).getValue());
 	}
 }

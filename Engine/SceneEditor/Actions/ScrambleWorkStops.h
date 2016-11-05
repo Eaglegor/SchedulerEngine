@@ -25,8 +25,9 @@ namespace Scheduler
 
 	private:
 		Run& run;
-        std::stack<SwapWorkStops> swaps;
+        std::vector<SwapWorkStops> swaps;
 		Run::ConstWorkStopIterator first;
 		Run::ConstWorkStopIterator last;
+		bool performed;
 	};
 }

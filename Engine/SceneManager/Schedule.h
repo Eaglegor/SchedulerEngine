@@ -32,6 +32,7 @@ namespace Scheduler
 	class ScheduleValidationModel;
 	class Location;
 	class StructuralChangesObserver;
+	class ViolationsConsumer;
 
 	/**
 		Class representing single performer's work shift.
@@ -79,6 +80,7 @@ namespace Scheduler
 		RunIterator attachRun(ConstRunIterator pos, Run& run);
 
         bool isValid() const;
+		void validate(ViolationsConsumer& violations_consumer) const;
 
 		void setActualizationModel(const ScheduleActualizationModel& model);
 		void setValidationModel(const ScheduleValidationModel& model);
