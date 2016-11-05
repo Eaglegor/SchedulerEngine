@@ -42,14 +42,14 @@ namespace Scheduler
 		
         while (changed) {
             changed = false;
-            for (auto stop_it1 = stops.begin(); stop_it1 != stops.end(); ++stop_it1) {
+            for (auto stop_it1 = stops.begin(); stop_it1 != std::prev(stops.end()); ++stop_it1) {
                 for (auto stop_it2 = std::next(stop_it1); stop_it2 != stops.end(); ++stop_it2) {
 					
 					Patch best_patch;
 					Cost current_best_cost(std::numeric_limits<Cost::value_type>::max());
 					
 					Patch reverse_patch = editor.createPatch();
-                    reverse_patch.performAction<ReverseWorkStops>(run, stops.getRunWorkStopIterator(run, stop_it1), stops.getRunWorkStopIterator(run, stop_it2));
+                    reverse_patch.performAction<ReverseWorkStops>(run, stops.getRunWorkStopIterator(run, stop_it1), stops.getRunWorkStopIterator(run, std::next(stop_it2)));
                     Cost cost = schedule_cost_function->calculateCost(run.getSchedule());
 					reverse_patch.hold();
 					if(cost < current_best_cost)
