@@ -25,6 +25,7 @@ namespace Scheduler
 	class Location;
 	class ArrivalTimeActualizer;
 	class DurationActualizer;
+	class ViolationsConsumer;
 
 	class StopVisitor;
 	class ConstStopVisitor;
@@ -63,6 +64,7 @@ namespace Scheduler
 		virtual void acceptVisitor(ConstStopVisitor& visitor) const = 0;
 
 		bool isValid() const;
+		void validate(ViolationsConsumer& violations_consumer) const;
 		
 	public:
 		class IntrusiveListNode

@@ -7,61 +7,62 @@
 #include <Engine/SceneManager/RunBoundaryStop.h>
 #include <Engine/SceneManager/ConstStopVisitor.h>
 #include <Engine/Utils/Collections/Algorithms.h>
-#include <Engine/Utils/CallableVisitorProxy.h>
+#include <Engine/SceneManager/Algorithms/Validation/ViolationsConsumer.h>
 
-class SkillsChecker : public Scheduler::ConstStopVisitor
+namespace Scheduler
 {
-public:
-	using ReturnType = bool;
-
-	SkillsChecker()
-		: is_valid(true)
+	class SkillsChecker : public ConstStopVisitor
 	{
-	}
-
-	virtual void dispatch(const Scheduler::WorkStop& work_stop) override
-	{
-		is_valid = true;
-		const Scheduler::Operation& operaton = work_stop.getOperation();
-		const Scheduler::Performer& performer = work_stop.getRun().getSchedule().getPerformer();
-		if (operaton.constraints().performerSkillsRequirements().isSet())
+	public:
+		SkillsChecker(ViolationsConsumer& violations_consumer):
+		violations_consumer(violations_consumer)
 		{
-			for(const Scheduler::Performer::Skill& requirement : operaton.constraints().performerSkillsRequirements().get())
-			{
-				is_valid = is_valid && util::contains_key(performer.getSkills(), requirement);
-				if (!is_valid) break;
-			}
 		}
-	}
 
-	virtual void dispatch(const Scheduler::RunBoundaryStop& run_boundary_stop) override
-	{
-		is_valid = true;
-		for (const Scheduler::Operation& operation : run_boundary_stop.getOperations())
+		virtual void dispatch(const WorkStop& work_stop) override
 		{
-			const Scheduler::Performer& performer = run_boundary_stop.getRun().getSchedule().getPerformer();
+			const Operation& operation = work_stop.getOperation();
+			const Performer& performer = work_stop.getRun().getSchedule().getPerformer();
+			
 			if (operation.constraints().performerSkillsRequirements().isSet())
 			{
-				for (const Scheduler::Performer::Skill& requirement : operation.constraints().performerSkillsRequirements().get())
+				for(const Performer::Skill& requirement : operation.constraints().performerSkillsRequirements().get())
 				{
-					is_valid = is_valid && util::contains_key(performer.getSkills(), requirement);
-					if (!is_valid) break;
+					if(!util::contains_key(performer.getSkills(), requirement)) 
+					{
+						auto continuation_policy = violations_consumer.consumeViolation(PerformerSkillsRequirementsViolation(work_stop, operation, requirement));
+						if(continuation_policy == ValidationContinuancePolicy::INTERRUPT) return;
+					}
 				}
 			}
-			if (!is_valid) break;
 		}
-	}
 
-	ReturnType getRetVal() const
+		virtual void dispatch(const RunBoundaryStop& run_boundary_stop) override
+		{
+			for (const Operation& operation : run_boundary_stop.getOperations())
+			{
+				const Performer& performer = run_boundary_stop.getRun().getSchedule().getPerformer();
+				if (operation.constraints().performerSkillsRequirements().isSet())
+				{
+					for (const Performer::Skill& requirement : operation.constraints().performerSkillsRequirements().get())
+					{
+						if(!util::contains_key(performer.getSkills(), requirement))
+						{
+							auto continuation_policy = violations_consumer.consumeViolation(PerformerSkillsRequirementsViolation(run_boundary_stop, operation, requirement));
+							if(continuation_policy == ValidationContinuancePolicy::INTERRUPT) return;
+						}
+					}
+				}
+			}
+		}
+
+	private:
+		ViolationsConsumer& violations_consumer;
+	};
+
+	void PerformerSkillsStopValidationAlgorithm::validate(const Stop& stop, ViolationsConsumer& violations_consumer) const
 	{
-		return is_valid;
+		SkillsChecker checker(violations_consumer);
+		stop.acceptVisitor(checker);
 	}
-
-private:
-	bool is_valid;
-};
-
-bool Scheduler::PerformerSkillsStopValidationAlgorithm::isValid(const Stop& stop) const
-{
-	return CallableVisitorProxy().call<SkillsChecker>(stop);
 }

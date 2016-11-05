@@ -28,6 +28,7 @@ namespace Scheduler
 	class ScheduleActualizationModel;
 	class ScheduleValidationModel;
 	class StructuralChangesObserver;
+	class ViolationsConsumer;
 
 	class SCENEMANAGER_EXPORT Run
 	{
@@ -89,6 +90,7 @@ namespace Scheduler
 		void spliceWorkStops(ConstWorkStopIterator pos, Run& from, ConstWorkStopIterator first, ConstWorkStopIterator last, Optional<std::size_t> n = None);
 
 		bool isValid() const;
+		void validate(ViolationsConsumer& violations_consumer) const;
 
 		bool operator==(const Run& rhs) const;
 		bool operator!=(const Run& rhs) const;

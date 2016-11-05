@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/SceneManager/Algorithms/Validation/StopValidationAlgorithm.h>
+#include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <ChainStopValidationAlgorithm_export.h>
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <list>
@@ -10,7 +10,7 @@ namespace Scheduler
 	class CHAINSTOPVALIDATIONALGORITHM_EXPORT ChainStopValidationAlgorithm : public StopValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Stop& stop) const override;
+		virtual void validate(const Stop& stop, ViolationsConsumer& violations_consumer) const override;
 
 		virtual void addAlgorithm(const StopValidationAlgorithm& algorithm);
 		

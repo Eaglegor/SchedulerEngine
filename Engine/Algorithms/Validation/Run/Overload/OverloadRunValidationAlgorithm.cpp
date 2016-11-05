@@ -4,20 +4,58 @@
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Operation.h>
+#include <Engine/SceneManager/Algorithms/Validation/ViolationsConsumer.h>
 
-bool Scheduler::OverloadRunValidationAlgorithm::isValid(const Run& run) const
+namespace Scheduler
 {
-	if (!run.getVehicle()) return true; // Have no vehicle to check with
-	if (!run.getVehicle()->constraints().capacity().isSet()) return true; // No capacity limit
-	const auto& stops = run.getWorkStops();
-	const Capacity &vehicle_capacity = run.getVehicle()->constraints().capacity().get();
-	bool overload = false;
-	Capacity run_demand;
-	for (auto stop_it = stops.begin(); stop_it != stops.end() && !overload;	++stop_it) {
-		if (!stop_it->getOperation().constraints().demand().isSet()) continue;
-		const Capacity& demand = stop_it->getOperation().constraints().demand().get();
-		run_demand += demand;
-		overload = (run_demand > vehicle_capacity);
+	void OverloadRunValidationAlgorithm::validate(const Run& run, ViolationsConsumer& violations_consumer) const
+	{
+		if(!run.getVehicle()) return;
+		if(!run.getVehicle()->constraints().capacity().isSet()) return;
+		
+		const Capacity &vehicle_capacity = run.getVehicle()->constraints().capacity().get();
+		
+		Capacity current_demand;
+		
+		
+		
+		for(const Operation& operation : run.getStartStop().getOperations())
+		{
+			if(operation.constraints().demand().isSet()) current_demand += operation.constraints().demand().get();
+		}
+		
+		if(current_demand > vehicle_capacity)
+		{
+			auto continuation_policy = violations_consumer.consumeViolation(VehicleCapacityViolation(run, current_demand - vehicle_capacity, run.getStops().begin()));
+			if(continuation_policy == ValidationContinuancePolicy::INTERRUPT) return;
+		}
+
+
+		
+		const auto& work_stops = run.getWorkStops();
+		
+		for(const WorkStop& stop : run.getWorkStops())
+		{
+			if(!stop.getOperation().constraints().demand().isSet()) continue;
+			current_demand += stop.getOperation().constraints().demand();
+			if(current_demand > vehicle_capacity)
+			{
+				auto continuation_policy = violations_consumer.consumeViolation(VehicleCapacityViolation(run, current_demand - vehicle_capacity, run.findStop(stop) ));
+				if(continuation_policy == ValidationContinuancePolicy::INTERRUPT) return;
+			}
+		}
+
+		
+		
+		for(const Operation& operation : run.getEndStop().getOperations())
+		{
+			if(operation.constraints().demand().isSet()) current_demand += operation.constraints().demand().get();
+		}
+		
+		if(current_demand > vehicle_capacity)
+		{
+			auto continuation_policy = violations_consumer.consumeViolation(VehicleCapacityViolation(run, current_demand - vehicle_capacity, std::prev(run.getStops().end())));
+			if(continuation_policy == ValidationContinuancePolicy::INTERRUPT) return;
+		}
 	}
-	return !overload;
 }

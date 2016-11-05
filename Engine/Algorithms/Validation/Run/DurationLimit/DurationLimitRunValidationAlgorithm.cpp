@@ -6,9 +6,20 @@
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Utils/Aggregators/DurationAccumulator.h>
+#include <Engine/SceneManager/Algorithms/Validation/ViolationsConsumer.h>
 
-bool Scheduler::DurationLimitRunValidationAlgorithm::isValid(const Run& run) const
+namespace Scheduler
 {
-	if (!run.getSchedule().constraints().runWorkingTimeLimit().isSet()) return true;
-	return DurationAccumulator::accumulateDuration(run.getStartStop(), run.getEndStop()) > run.getSchedule().constraints().runWorkingTimeLimit();
+	void DurationLimitRunValidationAlgorithm::validate(const Run& run, ViolationsConsumer& violations_consumer) const
+	{
+		if (!run.getSchedule().constraints().runWorkingTimeLimit().isSet()) return;
+		
+		Duration run_duration = run.getEndStop().getAllocationTime().getEndTime() - run.getStartStop().getAllocationTime().getStartTime();
+		const Duration& run_duration_limit = run.getSchedule().constraints().runWorkingTimeLimit();
+		
+		if(run_duration > run_duration_limit)
+		{
+			violations_consumer.consumeViolation(RunWorkingTimeLimitViolation(run, run_duration - run_duration_limit));
+		}
+	}
 }

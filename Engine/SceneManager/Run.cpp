@@ -5,7 +5,8 @@
 #include <Engine/Engine/Services/RoutingService.h>
 #include "ScheduleActualizationModel.h"
 #include "ScheduleValidationModel.h"
-#include "Algorithms/Validation/RunValidationAlgorithm.h"
+#include "Algorithms/Validation/ValidationAlgorithm.h"
+#include "Algorithms/Validation/Validator.h"
 #include "WorkStop.h"
 #include "Schedule.h"
 #include <algorithm>
@@ -172,9 +173,18 @@ namespace Scheduler {
 	{
 		assert(!is_detached);
 		
-		return schedule.getValidationModel().getRunValidationAlgorithm().isValid(*this);
+		Validator validator;
+		validate(validator);
+		return validator.getValidationResult() == Validator::ValidationResult::VALID;
 	}
 
+	void Run::validate(ViolationsConsumer& violations_consumer) const
+	{
+		assert(!is_detached);
+		
+		schedule.getValidationModel().getRunValidationAlgorithm().validate(*this, violations_consumer);
+	}
+	
     void Run::setVehicle(Optional<const Vehicle&> vehicle) {
 		assert(!is_detached);
 		

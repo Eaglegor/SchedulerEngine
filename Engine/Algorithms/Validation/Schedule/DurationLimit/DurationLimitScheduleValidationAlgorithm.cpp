@@ -5,10 +5,25 @@
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Utils/Aggregators/DurationAccumulator.h>
+#include <Engine/SceneManager/Algorithms/Validation/ViolationsConsumer.h>
 
-bool Scheduler::DurationLimitScheduleValidationAlgorithm::isValid(const Schedule& schedule) const
+namespace Scheduler
 {
-	if (schedule.getRuns().empty()) return true;
-	if (!schedule.constraints().scheduleWorkingTimeLimit().isSet()) return true;
-	return DurationAccumulator::accumulateDuration(schedule.getRuns().front().get().getStartStop(), schedule.getRuns().back().get().getEndStop()) > schedule.constraints().scheduleWorkingTimeLimit();
+	void DurationLimitScheduleValidationAlgorithm::validate(const Schedule& schedule, ViolationsConsumer& violations_consumer) const
+	{
+		if(schedule.getRuns().empty()) return;
+		if(!schedule.constraints().scheduleWorkingTimeLimit().isSet()) return;
+		
+		Duration schedule_duration = std::prev(schedule.getStops().end())->getAllocationTime().getEndTime() - 
+										schedule.getStops().begin()->getAllocationTime().getStartTime();
+										
+		const Duration& schedule_duration_limit = schedule.constraints().scheduleWorkingTimeLimit();
+		
+		if(schedule_duration > schedule_duration_limit)
+		{
+			violations_consumer.consumeViolation(ScheduleWorkingTimeLimitViolation(schedule, schedule_duration - schedule_duration_limit));
+		}
+		
+	}
 }
+

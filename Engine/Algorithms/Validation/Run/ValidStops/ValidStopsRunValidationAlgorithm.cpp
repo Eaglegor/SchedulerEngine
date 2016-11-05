@@ -2,12 +2,19 @@
 
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
+#include <Engine/SceneManager/Algorithms/Validation/ProxyViolationsConsumer.h>
 
-bool Scheduler::ValidStopsRunValidationAlgorithm::isValid(const Run& run) const
+namespace Scheduler
 {
-	for(const Stop& s : run.getStops())
+	void ValidStopsRunValidationAlgorithm::validate(const Run& run, ViolationsConsumer& violations_consumer) const
 	{
-		if(!s.isValid()) return false;
+		ProxyViolationsConsumer consumer(violations_consumer);
+		
+		for(const Stop& s : run.getStops())
+		{
+			s.validate(consumer);
+			if(consumer.getCurrentContinuancePolicy() == ValidationContinuancePolicy::INTERRUPT) return;
+		}
 	}
-	return true;
 }
+

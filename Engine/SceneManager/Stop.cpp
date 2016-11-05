@@ -7,7 +7,8 @@
 #include "ArrivalTimeActualizer.h"
 #include "DurationActualizer.h"
 #include "ScheduleValidationModel.h"
-#include "Algorithms/Validation/StopValidationAlgorithm.h"
+#include "Algorithms/Validation/ValidationAlgorithm.h"
+#include "Algorithms/Validation/Validator.h"
 #include <assert.h>
 
 namespace Scheduler
@@ -66,9 +67,16 @@ namespace Scheduler
 
 	bool Stop::isValid() const
 	{
-		return run.get().getSchedule().getValidationModel().getStopValidationAlgorithm().isValid(*this);
+		Validator validator;
+		validate(validator);
+		return validator.getValidationResult() == Validator::ValidationResult::VALID;
 	}
 
+	void Stop::validate(ViolationsConsumer& violations_consumer) const
+	{
+		run.get().getSchedule().getValidationModel().getStopValidationAlgorithm().validate(*this, violations_consumer);
+	}
+	
 	void Stop::setStartTime(const TimePoint &time)
 	{
 		this->setAllocationTime(TimeWindow(time, time + duration.get()));

@@ -15,9 +15,7 @@
 #include <Engine/SceneManager/Algorithms/Actualization/ArrivalTimeActualizationAlgorithm.h>
 #include <Engine/SceneManager/Algorithms/Actualization/DurationActualizationAlgorithm.h>
 #include <Engine/SceneManager/Algorithms/Actualization/RouteActualizationAlgorithm.h>
-#include <Engine/SceneManager/Algorithms/Validation/RunValidationAlgorithm.h>
-#include <Engine/SceneManager/Algorithms/Validation/ScheduleValidationAlgorithm.h>
-#include <Engine/SceneManager/Algorithms/Validation/StopValidationAlgorithm.h>
+#include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <Engine/SceneManager/Utils/StreamIO.h>
 #include <Engine/Utils/Collections/Algorithms.h>
 
@@ -143,21 +141,21 @@ TEST_CASE("SceneManager - Scene - Schedule - ValidationModel")
 	class MockScheduleValidationAlgorithm : public ScheduleValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Schedule& schedule) const{return true;};
+		virtual void validate(const Schedule& object, ViolationsConsumer& violations_consumer) const override {}
 		virtual const char* getName() const{return "Mock";}
 	} schedule_validation_algorithm;
 	
 	class MockRunValidationAlgorithm : public RunValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Run& run) const{return true;};
+		virtual void validate(const Run& object, ViolationsConsumer& violations_consumer) const override {}
 		virtual const char* getName() const{return "Mock";}
 	} run_validation_algorithm;
 	
 	class MockStopValidationAlgorithm : public StopValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Stop& stop) const{return true;};
+		virtual void validate(const Stop& object, ViolationsConsumer& violations_consumer) const override {}
 		virtual const char* getName() const{return "Mock";}
 	} stop_validation_algorithm;
 	

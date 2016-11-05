@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Engine/Concepts/Duration.h>
-#include <Engine/SceneManager/Algorithms/Validation/RunValidationAlgorithm.h>
+#include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <DurationLimitRunValidationAlgorithm_export.h>
 
 namespace Scheduler
@@ -9,7 +9,7 @@ namespace Scheduler
 	class DURATIONLIMITRUNVALIDATIONALGORITHM_EXPORT DurationLimitRunValidationAlgorithm : public RunValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Run& run) const override;
+		virtual void validate(const Run& run, ViolationsConsumer& violations_consumer) const override;
 		
 		constexpr static const char* staticGetName(){return "DurationLimit";}
 		virtual const char* getName() const override{return staticGetName();}

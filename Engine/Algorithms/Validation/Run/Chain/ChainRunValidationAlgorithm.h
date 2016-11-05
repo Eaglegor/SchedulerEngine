@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/SceneManager/Algorithms/Validation/RunValidationAlgorithm.h>
+#include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <ChainRunValidationAlgorithm_export.h>
 #include <list>
@@ -10,7 +10,7 @@ namespace Scheduler
 	class CHAINRUNVALIDATIONALGORITHM_EXPORT ChainRunValidationAlgorithm : public RunValidationAlgorithm
 	{
 	public:
-		virtual bool isValid(const Run& run) const override;
+		virtual void validate(const Run& run, ViolationsConsumer& violations_consumer) const override;
 		
 		constexpr static const char* staticGetName(){return "Chain";}
 		virtual const char* getName() const override{return staticGetName();}
