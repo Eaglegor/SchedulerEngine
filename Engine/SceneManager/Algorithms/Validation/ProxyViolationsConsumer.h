@@ -88,6 +88,11 @@ namespace Scheduler
 			return policy = backend.consumeViolation(violation);
 		}
 		
+		virtual bool supportsViolationType(ConstraintViolationType type)
+		{
+			return backend.supportsViolationType(type);
+		}
+		
 		ValidationContinuancePolicy getCurrentContinuancePolicy() const
 		{
 			return policy;

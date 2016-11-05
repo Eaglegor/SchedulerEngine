@@ -12,6 +12,8 @@ namespace Scheduler
 {
 	void DurationLimitRunValidationAlgorithm::validate(const Run& run, ViolationsConsumer& violations_consumer) const
 	{
+		if(!violations_consumer.supportsViolationType(ConstraintViolationType::RUN_WORKING_TIME_LIMIT_VIOLATION)) return;
+		
 		if (!run.getSchedule().constraints().runWorkingTimeLimit().isSet()) return;
 		
 		Duration run_duration = run.getEndStop().getAllocationTime().getEndTime() - run.getStartStop().getAllocationTime().getStartTime();

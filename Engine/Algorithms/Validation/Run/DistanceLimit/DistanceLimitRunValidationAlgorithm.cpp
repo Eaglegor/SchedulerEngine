@@ -12,6 +12,8 @@ namespace Scheduler
 {
 	void DistanceLimitRunValidationAlgorithm::validate(const Run& run, ViolationsConsumer& violations_consumer) const
 	{
+		if(!violations_consumer.supportsViolationType(ConstraintViolationType::RUN_DISTANCE_LIMIT_VIOLATION)) return;
+		
 		if (!run.getSchedule().constraints().runDistanceLimit().isSet()) return;
 		
 		Distance run_distance = std::accumulate(run.getStops().begin(), run.getStops().end(), Distance(0), DistanceAccumulator());

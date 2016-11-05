@@ -64,6 +64,8 @@ namespace Scheduler
 
 	void VehicleRequirementsStopValidationAlgorithm::validate(const Stop& stop, ViolationsConsumer& violations_consumer) const
 	{
+		if(!violations_consumer.supportsViolationType(ConstraintViolationType::VEHICLE_ATTRIBUTES_REQUIREMENTS_VIOLATION)) return;
+		
 		RequirementsChecker checker(violations_consumer);
 		stop.acceptVisitor(checker);
 	}

@@ -11,6 +11,8 @@ namespace Scheduler
 {
 	void DurationLimitScheduleValidationAlgorithm::validate(const Schedule& schedule, ViolationsConsumer& violations_consumer) const
 	{
+		if(!violations_consumer.supportsViolationType(ConstraintViolationType::SCHEDULE_WORKING_TIME_LIMIT_VIOLATION)) return;
+		
 		if(schedule.getRuns().empty()) return;
 		if(!schedule.constraints().scheduleWorkingTimeLimit().isSet()) return;
 		

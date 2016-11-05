@@ -62,6 +62,8 @@ namespace Scheduler
 
 	void PerformerSkillsStopValidationAlgorithm::validate(const Stop& stop, ViolationsConsumer& violations_consumer) const
 	{
+		if(!violations_consumer.supportsViolationType(ConstraintViolationType::PERFORMER_SKILLS_REQUIREMENTS_VIOLATION)) return;
+		
 		SkillsChecker checker(violations_consumer);
 		stop.acceptVisitor(checker);
 	}

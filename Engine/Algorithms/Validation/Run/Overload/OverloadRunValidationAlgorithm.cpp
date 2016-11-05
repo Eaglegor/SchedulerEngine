@@ -10,6 +10,8 @@ namespace Scheduler
 {
 	void OverloadRunValidationAlgorithm::validate(const Run& run, ViolationsConsumer& violations_consumer) const
 	{
+		if(!violations_consumer.supportsViolationType(ConstraintViolationType::VEHICLE_CAPACITY_VIOLATION)) return;
+		
 		if(!run.getVehicle()) return;
 		if(!run.getVehicle()->constraints().capacity().isSet()) return;
 		

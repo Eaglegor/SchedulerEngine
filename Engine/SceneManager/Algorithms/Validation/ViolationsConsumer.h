@@ -46,5 +46,7 @@ namespace Scheduler
 		virtual ValidationContinuancePolicy consumeViolation(const OperationTimeWindowsViolation& violation){return genericConsumeViolation(violation);}
 		virtual ValidationContinuancePolicy consumeViolation(const PerformerSkillsRequirementsViolation& violation){return genericConsumeViolation(violation);}
 		virtual ValidationContinuancePolicy consumeViolation(const VehicleAttributesRequirementsViolation& violation){return genericConsumeViolation(violation);}
+		
+		virtual bool supportsViolationType(ConstraintViolationType type) {return true;}
 	};
 }
