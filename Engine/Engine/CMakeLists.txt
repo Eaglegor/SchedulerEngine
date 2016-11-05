@@ -44,6 +44,9 @@ target_link_libraries(Engine
 	SuIntTSPSolver
 	TransparentTSPSolver
 	ReverseTSPSolver
+	IterativeTSPSolver
+	ScrambleTSPSolver
+	RotateTSPSolver
 	
 	TotalDistanceCostFunctions
 )

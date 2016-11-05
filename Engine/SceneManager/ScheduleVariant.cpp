@@ -50,7 +50,22 @@ namespace Scheduler
 
 		return *this;
 	}
-	
+
+	ScheduleVariant& ScheduleVariant::operator=(Schedule& rhs)
+	{
+		if(new_schedule)
+		{
+			SceneManager& scene_manager = new_scene->getSceneManager();
+			scene_manager.destroyScene(new_scene.get());
+		}
+		this->original_schedule = rhs;
+		
+		SceneManager& scene_manager = original_schedule->getScene().getSceneManager();
+		new_scene = scene_manager.createScene(original_schedule->getScene().getContext());
+		new_schedule = new_scene->createSchedule(original_schedule->getPerformer());
+		SceneCloner::cloneScheduleState(original_schedule.get(), new_schedule.get());
+	}
+
 	void ScheduleVariant::apply() const
 	{
 		assert(new_schedule);
