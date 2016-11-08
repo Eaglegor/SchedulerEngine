@@ -396,17 +396,22 @@ public:
     }
 };
 
-class MASATspLibInstance : public TspLibTestInstance
+class MTASA_FastTspLibInstance : public TspLibTestInstance
 {
 public:
-    MASATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+    MTASA_FastTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
-        temperature_scheduler.reset(new ListTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000));
+        temperature_scheduler.reset(new FastTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000, 0.25f));
     }
 
     virtual TSPSolver& createTSPSolver() override
     {
+        ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
+        GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+        greedy_solver.setRoutingService(routing_service);
+        tsp_solver.addTSPSolver(greedy_solver);
+
         MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
@@ -414,65 +419,98 @@ public:
         sa_solver.setPopulationScale(2);
         sa_solver.setThreadsNumber(4);
         sa_solver.setMutations({
-                                    SolutionGenerator::MutationType::VertexSwap,
-                                    SolutionGenerator::MutationType::BlockReverse,
-                                    SolutionGenerator::MutationType::VertexInsert,
-                                    SolutionGenerator::MutationType::BlockInsert
+                                   SolutionGenerator::MutationType::BlockReverse,
+                                   SolutionGenerator::MutationType::VertexInsert,
+                                   SolutionGenerator::MutationType::BlockInsert
                                 });
-
-        return sa_solver;
+        tsp_solver.addTSPSolver(sa_solver);
+        return tsp_solver;
     }
 
     virtual const char* getAlgorithmName() override
     {
-        return "MTASA";
+        return "MTASA_Fast";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
 };
 
-class MTSATspLibInstance : public TspLibTestInstance
+class MTASA_NormalTspLibInstance : public TspLibTestInstance
 {
 public:
-    MTSATspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+    MTASA_NormalTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -18)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -13)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -8)), 1000));
-        temperature_schedulers.emplace_back(new ListTemperatureScheduler(120, std::log(std::pow(10, -3)), 1000));
-    }
-
-    TSPSolver& createSATSPSolver(TemperatureScheduler& temperatureScheduler)
-    {
-        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
-        sa_solver.setScheduleCostFunction(cost_function);
-        sa_solver.setTemperatureScheduler(temperatureScheduler);
-        sa_solver.setMarkovChainLengthScale(1.f);
-        sa_solver.setMutations({SolutionGenerator::MutationType::BlockInsert,
-                                 SolutionGenerator::MutationType::BlockReverse,
-                                 SolutionGenerator::MutationType::VertexInsert});
-
-        return sa_solver;
+        temperature_scheduler.reset(new ListTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000));
     }
 
     virtual TSPSolver& createTSPSolver() override
     {
-        BestOfTSPSolver& best_solver = engine.getAlgorithmsManager().createAlgorithm<BestOfTSPSolver>();
-        best_solver.setScheduleCostFunction(cost_function);
-        for (auto& ts : temperature_schedulers) {
-            best_solver.addTSPSolver(createSATSPSolver(*ts));
-        }
+        ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
+        GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+        greedy_solver.setRoutingService(routing_service);
+        tsp_solver.addTSPSolver(greedy_solver);
 
-        return best_solver;
+        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        sa_solver.setScheduleCostFunction(cost_function);
+        sa_solver.setTemperatureScheduler(*temperature_scheduler);
+        sa_solver.setMarkovChainLengthScale(1.f);
+        sa_solver.setPopulationScale(2);
+        sa_solver.setThreadsNumber(4);
+        sa_solver.setMutations({
+                                   SolutionGenerator::MutationType::BlockReverse,
+                                   SolutionGenerator::MutationType::VertexInsert,
+                                   SolutionGenerator::MutationType::BlockInsert
+                                });
+        tsp_solver.addTSPSolver(sa_solver);
+        return tsp_solver;
     }
 
     virtual const char* getAlgorithmName() override
     {
-        return "MTSA";
+        return "MTASA_Normal";
     }
 private:
-    std::vector<std::unique_ptr<TemperatureScheduler>> temperature_schedulers;
+    std::unique_ptr<TemperatureScheduler> temperature_scheduler;
+};
+
+class MTASA_SlowTspLibInstance : public TspLibTestInstance
+{
+public:
+    MTASA_SlowTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher)
+    {
+        temperature_scheduler.reset(new SlowTemperatureScheduler(120, std::log(std::pow(10,-10)), 10000, 0.25f));
+    }
+
+    virtual TSPSolver& createTSPSolver() override
+    {
+        ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
+        GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+        greedy_solver.setRoutingService(routing_service);
+        tsp_solver.addTSPSolver(greedy_solver);
+
+        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        sa_solver.setScheduleCostFunction(cost_function);
+        sa_solver.setTemperatureScheduler(*temperature_scheduler);
+        sa_solver.setMarkovChainLengthScale(1.f);
+        sa_solver.setPopulationScale(2);
+        sa_solver.setThreadsNumber(4);
+        sa_solver.setMutations({
+                                   SolutionGenerator::MutationType::BlockReverse,
+                                   SolutionGenerator::MutationType::VertexInsert,
+                                   SolutionGenerator::MutationType::BlockInsert
+                                });
+        tsp_solver.addTSPSolver(sa_solver);
+        return tsp_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "MTASA_Slow";
+    }
+private:
+    std::unique_ptr<TemperatureScheduler> temperature_scheduler;
 };
 
 class OneRelocate_TspLibInstance : public TspLibTestInstance
@@ -656,7 +694,17 @@ int main(int argc, char **argv)
         }
 
         {
-            MASATspLibInstance test(dataset, *publisher);
+            MTASA_FastTspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            MTASA_NormalTspLibInstance test(dataset, *publisher);
+            test.run();
+        }
+
+        {
+            MTASA_SlowTspLibInstance test(dataset, *publisher);
             test.run();
         }
 		
