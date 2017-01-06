@@ -28,6 +28,7 @@ namespace Scheduler
 			{
 				collection = rhs.collection;
 				index = rhs.index;
+				return *this;
 			}
 			
 			bool operator==(const Iterator &rhs) const

@@ -64,6 +64,8 @@ namespace Scheduler
 		new_scene = scene_manager.createScene(original_schedule->getScene().getContext());
 		new_schedule = new_scene->createSchedule(original_schedule->getPerformer());
 		SceneCloner::cloneScheduleState(original_schedule.get(), new_schedule.get());
+		
+		return *this;
 	}
 
 	void ScheduleVariant::apply() const

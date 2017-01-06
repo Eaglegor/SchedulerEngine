@@ -16,6 +16,7 @@ namespace Scheduler
 		virtual ValidationContinuancePolicy genericConsumeViolation(const ConstraintViolation& violation) override
 		{
 			assert(false); // We don't go there
+			return ValidationContinuancePolicy::CONTINUE;
 		}
 		
 		virtual ValidationContinuancePolicy consumeViolation(const VehicleAttributesRequirementsViolation& violation) override
