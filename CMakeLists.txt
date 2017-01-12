@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(CPP_SCHEDULER)
 
 if(NOT MSVC)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -pthread -fopenmp -Werror=return-type")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -pthread -fopenmp")
 else()
 	add_definitions( "/wd4251 /wd4275 /openmp" )
 endif()
