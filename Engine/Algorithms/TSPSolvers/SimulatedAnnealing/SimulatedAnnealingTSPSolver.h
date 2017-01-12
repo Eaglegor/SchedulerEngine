@@ -21,7 +21,7 @@ namespace Scheduler
         virtual void optimize(Run& run) const override;
 
 		void setScheduleCostFunction(const ScheduleCostFunction& cost_function);
-        void setTemperatureScheduler(TemperatureScheduler& temperature_scheduler);
+        void setTemperatureScheduler(TemperatureScheduler& temperature_scheduler_template);
         void setMarkovChainLengthScale(float markovScale);
         void setMutations(std::initializer_list<SolutionGenerator::MutationType> mutations);
 
@@ -29,11 +29,11 @@ namespace Scheduler
 		virtual const char* getName() const override { return staticGetName(); };
 
     protected:
-        bool acceptance(Cost delta, float random) const;
+        bool acceptance(Cost delta, float random, float temperature) const;
         std::size_t markovChainLength (std::size_t stopsCount) const;
 
 		Optional<const ScheduleCostFunction&> schedule_cost_function;
-        Optional<TemperatureScheduler&> temperature_scheduler;
+        Optional<TemperatureScheduler&> temperature_scheduler_template;
         float markov_chain_length_scale;
 
         std::set<SolutionGenerator::MutationType> allowed_mutations;

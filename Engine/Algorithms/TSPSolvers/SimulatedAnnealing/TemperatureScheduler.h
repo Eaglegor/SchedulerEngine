@@ -24,6 +24,8 @@ namespace Scheduler
         virtual void changeTemperature() = 0;
         virtual void initialize(Run& run, const ScheduleCostFunction& cost_function) = 0;
 
+        virtual TemperatureScheduler* clone () const = 0;
+
     protected:
         std::vector<Cost> create_initial_costs(Run& run, const ScheduleCostFunction& cost_function, std::size_t length);
     };

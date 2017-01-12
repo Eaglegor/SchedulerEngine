@@ -23,7 +23,7 @@ namespace Scheduler
     void SimulatedAnnealingTSPSolver::optimize(Schedule& schedule) const
     {
         if (!schedule_cost_function) return;
-        if (!temperature_scheduler) return;
+        if (!temperature_scheduler_template) return;
 
         for(Run& run : schedule.getRuns())
         {
@@ -34,7 +34,7 @@ namespace Scheduler
     void SimulatedAnnealingTSPSolver::optimize(Run& run) const
     {
         if (!schedule_cost_function) return;
-        if (!temperature_scheduler) return;
+        if (!temperature_scheduler_template) return;
         if (allowed_mutations.empty()) return;
 
         if (run.getWorkStops().size() <= 1) {
@@ -46,6 +46,7 @@ namespace Scheduler
             solution_generator.enableMutation(mutation);
         }
 
+        auto temperature_scheduler = std::unique_ptr<TemperatureScheduler>(temperature_scheduler_template->clone());
         temperature_scheduler->initialize(run, schedule_cost_function.get());
         Cost best_cost = schedule_cost_function->calculateCost(run.getSchedule());
 
@@ -63,7 +64,7 @@ namespace Scheduler
                     solution_generator.store();
                 } else {
                     const float random_value = float_distribution(random_engine);
-                    if (acceptance(cost - best_cost, random_value)) {
+                    if (acceptance(cost - best_cost, random_value, temperature_scheduler->getTemperature())) {
                         temperature_scheduler->adapt(cost - best_cost, random_value);
                         best_cost = cost;
                         solution_generator.store();
@@ -76,10 +77,10 @@ namespace Scheduler
         }
     }
 
-    bool SimulatedAnnealingTSPSolver::acceptance(Cost delta, float random) const
+    bool SimulatedAnnealingTSPSolver::acceptance(Cost delta, float random, float temperature) const
     {
-        const float normalized_value = 1 / (1 + std::exp(delta.getValue() / temperature_scheduler->getTemperature()));
-        //const float normalized_value = std::exp(-delta.getValue() / temperature_scheduler->getTemperature());
+        //const float normalized_value = 1 / (1 + std::exp(delta.getValue() / temperature_scheduler->getTemperature()));
+        const float normalized_value = std::exp(-delta.getValue() / temperature);
         return random <= normalized_value;
     }
 
@@ -90,7 +91,7 @@ namespace Scheduler
 
     void SimulatedAnnealingTSPSolver::setTemperatureScheduler(TemperatureScheduler &temperature_function)
     {
-        this->temperature_scheduler = temperature_function;
+        this->temperature_scheduler_template = temperature_function;
     }
 
     void SimulatedAnnealingTSPSolver::setMarkovChainLengthScale(float markovScale)
@@ -120,13 +121,14 @@ namespace Scheduler
     void MultiAgentSimulatedAnnealingTSPSolver::optimize(Run& run) const
     {
         if (!schedule_cost_function) return;
-        if (!temperature_scheduler) return;
+        if (!temperature_scheduler_template) return;
         if (allowed_mutations.empty()) return;
 
         if (run.getWorkStops().size() <= 1) {
             return;
         }
 
+        auto temperature_scheduler = std::unique_ptr<TemperatureScheduler>(temperature_scheduler_template->clone());
         temperature_scheduler->initialize(run, schedule_cost_function.get());
 
         auto runIter = run.getSchedule().findRun(run);
@@ -188,8 +190,12 @@ namespace Scheduler
                             solution_generator->store();
                         } else {
                             const float random_value = float_distribution(random_engine);
-                            if (acceptance(cost - best_cost, random_value)) {
-                                temperature_scheduler->adapt(cost - best_cost, random_value);
+                            const Cost delta = cost - best_cost;
+                            if (acceptance(delta, random_value, temperature_scheduler->getTemperature())) {
+                                #pragma omp critical
+                                {
+                                    temperature_scheduler->adapt(delta, random_value);
+                                }
                                 best_cost = cost;
                                 solution_generator->store();
                             } else {
