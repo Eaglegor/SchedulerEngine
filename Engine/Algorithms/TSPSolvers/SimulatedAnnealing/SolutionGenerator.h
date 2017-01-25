@@ -89,7 +89,9 @@ public:
     void setPopulations(std::vector<ReferenceWrapper<Run>> populations);
 
 protected:
-    void neighbour (Run& anotherRun);
+    typedef std::vector<std::size_t> VectorSizeT;
+
+    void neighbour (const VectorSizeT& anotherRun);
     void neighbour (std::size_t a, std::size_t b, bool alternative);
     void neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b, bool alternative);
     void addEdgeWithBlockReverse(std::size_t a, std::size_t b);
@@ -97,7 +99,9 @@ protected:
     void addEdgeWithVertexSwap(std::size_t a, std::size_t b);
     void addEdgeWithBlockInsert(std::size_t a, std::size_t b);
 
-    std::vector<ReferenceWrapper<Run>> populations;
+
+
+    std::vector<VectorSizeT> optimized_populations;
     std::unordered_map<std::size_t, Run::WorkStopIterator> ids;
 };
 
