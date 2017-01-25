@@ -2,8 +2,10 @@
 
 #include <random>
 #include <set>
+#include <unordered_map>
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/Utils/ReferenceWrapper.h>
+#include <Engine/SceneManager/Run.h>
 
 namespace Scheduler
 {
@@ -35,6 +37,7 @@ public:
     void store ();
     std::size_t checkpoint ();
     void rollbackTo (std::size_t checkpoint);
+    bool hasPermutation () const;
 
 protected:
     typedef std::uniform_int_distribution<std::size_t> index_distr_t;
@@ -58,6 +61,7 @@ protected:
     Run& run;
     std::set<MutationType> allowed_mutations;
     std::size_t N;
+    bool has_permutation;
 };
 
 class SolutionGeneratorClassic : public SolutionGenerator
@@ -87,12 +91,14 @@ public:
 protected:
     void neighbour (Run& anotherRun);
     void neighbour (std::size_t a, std::size_t b, bool alternative);
+    void neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b, bool alternative);
     void addEdgeWithBlockReverse(std::size_t a, std::size_t b);
     void addEdgeWithVertexInsert(std::size_t a, std::size_t b);
     void addEdgeWithVertexSwap(std::size_t a, std::size_t b);
     void addEdgeWithBlockInsert(std::size_t a, std::size_t b);
 
     std::vector<ReferenceWrapper<Run>> populations;
+    std::unordered_map<std::size_t, Run::WorkStopIterator> ids;
 };
 
 }

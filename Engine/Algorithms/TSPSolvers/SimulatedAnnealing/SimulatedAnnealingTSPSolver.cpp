@@ -184,7 +184,7 @@ namespace Scheduler
                     Cost &best_cost = costs[g * T + m];
                     for (size_t s = 0; s < S && !stop; ++s) {
                         solution_generator->neighbour();
-                        const Cost cost = schedule_cost_function->calculateCost(runRef.get().getSchedule());
+                        const Cost cost = solution_generator->hasPermutation() ? schedule_cost_function->calculateCost(runRef.get().getSchedule()) : best_cost;
                         if (cost < best_cost) {
                             best_cost = cost;
                             solution_generator->store();
