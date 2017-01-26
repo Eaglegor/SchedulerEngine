@@ -287,37 +287,43 @@ void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGener
 
     if (source_edge == 0) {
         const std::size_t operation_b_id = anotherRun.front();
-        auto operation_b_it = ids.at(operation_b_id);
-        neighbour(run.getWorkStops().begin(), operation_b_it, false);
+        const auto operation_a_it = run.getWorkStops().begin();
+        const auto operation_b_it = ids.at(operation_b_id);
+        neighbour(operation_a_it, operation_b_it, false);
     } else if (source_edge == N) {
         const std::size_t operation_a_id = anotherRun.back();
-        auto operation_a_it = ids.at(operation_a_id);
-        auto operation_b_it = run.getWorkStops().end();
-        --operation_b_it;
+        const auto operation_a_it = ids.at(operation_a_id);
+        const auto operation_b_it = std::prev(run.getWorkStops().end());
         neighbour(operation_a_it, operation_b_it, true);
     } else {
         const std::size_t operation_a_id = anotherRun.at(source_edge - 1);
         const std::size_t operation_b_id = anotherRun.at(source_edge);
 
-        auto iter_a = ids.at(operation_a_id);
-        auto iter_b = ids.at(operation_b_id);
+        const auto iter_a = ids.at(operation_a_id);
+        const auto iter_b = ids.at(operation_b_id);
 
-        auto front_it = run.getWorkStops().begin();
-        auto back_it = run.getWorkStops().end();
-        --back_it;
+        const auto front_it = run.getWorkStops().begin();
+        const auto back_it = std::prev(run.getWorkStops().end());
 
         if (iter_a != back_it &&
             iter_b != front_it) {
             const float random_value = float_distribution(random_engine, float_param_t(0.f, 1.f));
             if (random_value < 0.5f) {
-                neighbour(++iter_a, iter_b, false);
+                neighbour(std::next(iter_a), iter_b, false);
             } else {
-                neighbour(iter_a, --iter_b, true);
+                neighbour(iter_a, std::prev(iter_b), true);
             }
         } else if (iter_a != back_it) {
-            neighbour(++iter_a, iter_b, false);
+            neighbour(std::next(iter_a), iter_b, false);
         } else if (iter_b != front_it) {
-            neighbour(iter_a, --iter_b, true);
+            neighbour(iter_a, std::prev(iter_b), true);
+        } else {
+            const float random_value = float_distribution(random_engine, float_param_t(0.f, 1.f));
+            if (random_value < 0.5f) {
+                addEdgeWithVertexInsert(iter_b, iter_a);
+            } else {
+                addEdgeWithVertexInsert(std::next(iter_a), iter_b);
+            }
         }
     }
 }
