@@ -73,31 +73,23 @@ SolutionGenerator::MutationType SolutionGenerator::selectRandomMutation()
 
 void SolutionGenerator::blockInsert(std::size_t i, std::size_t j, std::size_t k)
 {
-    has_permutation = true;
     auto iter_ri = std::next(run.getWorkStops().begin(), i);
     auto iter_rj = std::next(iter_ri, j - i);
     auto iter_rk = std::next(run.getWorkStops().begin(), k);
 
-    scene_editor.performAction<RotateWorkStops>(run,
-                                                iter_ri,
-                                                iter_rj,
-                                                iter_rk);
+    blockInsert(iter_ri, iter_rj, iter_rk);
 }
 
 void SolutionGenerator::blockReverse(std::size_t i, std::size_t j)
 {
-    has_permutation = true;
     auto iter_ri = std::next(run.getWorkStops().begin(), i);
     auto iter_rj = std::next(iter_ri, j - i);
 
-    scene_editor.performAction<ReverseWorkStops>(run,
-                                                 iter_ri,
-                                                 iter_rj);
+    blockReverse(iter_ri, iter_rj);
 }
 
 void SolutionGenerator::vertexInsert(std::size_t i, std::size_t j)
 {
-    has_permutation = true;
     Run::WorkStopsList::iterator iter_i;
     Run::WorkStopsList::iterator iter_j;
     if (j > i) {
@@ -108,14 +100,11 @@ void SolutionGenerator::vertexInsert(std::size_t i, std::size_t j)
         iter_i = std::next(iter_j, i - j);
     }
 
-    scene_editor.performAction<MoveWorkStop>(run,
-                                                iter_i,
-                                                iter_j);
+    vertexInsert(iter_i, iter_j);
 }
 
 void SolutionGenerator::vertexSwap(std::size_t i, std::size_t j)
 {
-    has_permutation = true;
     Run::WorkStopsList::iterator iter_i;
     Run::WorkStopsList::iterator iter_j;
     if (j > i) {
@@ -126,9 +115,31 @@ void SolutionGenerator::vertexSwap(std::size_t i, std::size_t j)
         iter_i = std::next(iter_j, i - j);
     }
 
-    scene_editor.performAction<SwapWorkStops>(run,
-                                              iter_i,
-                                              iter_j);
+    vertexSwap(iter_i, iter_j);
+}
+
+void SolutionGenerator::blockInsert(Run::WorkStopIterator i, Run::WorkStopIterator j, Run::WorkStopIterator k)
+{
+    has_permutation = true;
+    scene_editor.performAction<RotateWorkStops>(run, i, j, k);
+}
+
+void SolutionGenerator::blockReverse(Run::WorkStopIterator i, Run::WorkStopIterator j)
+{
+    has_permutation = true;
+    scene_editor.performAction<ReverseWorkStops>(run, i, j);
+}
+
+void SolutionGenerator::vertexInsert(Run::WorkStopIterator i, Run::WorkStopIterator j)
+{
+    has_permutation = true;
+    scene_editor.performAction<MoveWorkStop>(run, i, j);
+}
+
+void SolutionGenerator::vertexSwap(Run::WorkStopIterator i, Run::WorkStopIterator j)
+{
+    has_permutation = true;
+    scene_editor.performAction<SwapWorkStops>(run, i, j);
 }
 
 void SolutionGenerator::printSolution()
@@ -279,7 +290,7 @@ void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGener
         auto operation_b_it = ids.at(operation_b_id);
         neighbour(run.getWorkStops().begin(), operation_b_it, false);
     } else if (source_edge == N) {
-        const std::size_t operation_a_id = anotherRun.front();
+        const std::size_t operation_a_id = anotherRun.back();
         auto operation_a_it = ids.at(operation_a_id);
         auto operation_b_it = run.getWorkStops().end();
         --operation_b_it;
@@ -313,15 +324,10 @@ void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGener
 
 void InstanceBasedSolutionGenerator::neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b, bool alternative)
 {
-    neighbour(std::distance(run.getWorkStops().begin(), a), std::distance(run.getWorkStops().begin(), b), alternative);
-}
-
-void InstanceBasedSolutionGenerator::neighbour(std::size_t a, std::size_t b, bool alternative)
-{
     if (a == b) {
         return;
     }
-    if ((a + 1) == b) {
+    if (std::next(a) == b) {
         addEdgeWithVertexSwap(a, b);
         return;
     }
@@ -331,7 +337,7 @@ void InstanceBasedSolutionGenerator::neighbour(std::size_t a, std::size_t b, boo
         break;
     case MutationType::VertexInsert:
         if (alternative) {
-            addEdgeWithVertexInsert(b + 1, a);
+            addEdgeWithVertexInsert(std::next(b), a);
         } else {
             addEdgeWithVertexInsert(a, b);
         }
@@ -341,7 +347,7 @@ void InstanceBasedSolutionGenerator::neighbour(std::size_t a, std::size_t b, boo
         break;
     case MutationType::BlockInsert:
         if (alternative) {
-            addEdgeWithBlockInsert(a + 1, b + 1);
+            addEdgeWithBlockInsert(std::next(a), std::next(b));
         } else {
             addEdgeWithBlockInsert(a, b);
         }
@@ -349,6 +355,28 @@ void InstanceBasedSolutionGenerator::neighbour(std::size_t a, std::size_t b, boo
     default:
         break;
     }
+}
+
+void InstanceBasedSolutionGenerator::addEdgeWithBlockReverse(Run::WorkStopIterator a, Run::WorkStopIterator b)
+{
+    addEdgeWithBlockReverse(std::distance(run.getWorkStops().begin(), a),
+                            std::distance(run.getWorkStops().begin(), b));
+}
+
+void InstanceBasedSolutionGenerator::addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b)
+{
+    vertexInsert(b, a);
+}
+
+void InstanceBasedSolutionGenerator::addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b)
+{
+    vertexSwap(a, b);
+}
+
+void InstanceBasedSolutionGenerator::addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b)
+{
+    addEdgeWithBlockInsert(std::distance(run.getWorkStops().begin(), a),
+                           std::distance(run.getWorkStops().begin(), b));
 }
 
 void InstanceBasedSolutionGenerator::addEdgeWithBlockReverse(std::size_t a, std::size_t b)
@@ -375,16 +403,6 @@ void InstanceBasedSolutionGenerator::addEdgeWithBlockInsert(std::size_t a, std::
         const std::size_t new_pos = b + u + 1;
         blockInsert(b, new_pos, a);
     }
-}
-
-void InstanceBasedSolutionGenerator::addEdgeWithVertexInsert(std::size_t a, std::size_t b)
-{
-    vertexInsert(b, a);
-}
-
-void InstanceBasedSolutionGenerator::addEdgeWithVertexSwap(std::size_t a, std::size_t b)
-{
-    vertexSwap(a, b);
 }
 
 void InstanceBasedSolutionGenerator::setPopulations(std::vector<ReferenceWrapper<Run>> populations)

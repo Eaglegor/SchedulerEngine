@@ -49,6 +49,12 @@ protected:
     void blockReverse(std::size_t i, std::size_t j);
     void vertexInsert(std::size_t i, std::size_t j);
     void vertexSwap(std::size_t i, std::size_t j);
+
+    void blockInsert(Run::WorkStopIterator i, Run::WorkStopIterator j, Run::WorkStopIterator k);
+    void blockReverse(Run::WorkStopIterator i, Run::WorkStopIterator j);
+    void vertexInsert(Run::WorkStopIterator i, Run::WorkStopIterator j);
+    void vertexSwap(Run::WorkStopIterator i, Run::WorkStopIterator j);
+
     void printSolution();
     void printSolution(Run& run);
 
@@ -92,13 +98,15 @@ protected:
     typedef std::vector<std::size_t> VectorSizeT;
 
     void neighbour (const VectorSizeT& anotherRun);
-    void neighbour (std::size_t a, std::size_t b, bool alternative);
     void neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b, bool alternative);
-    void addEdgeWithBlockReverse(std::size_t a, std::size_t b);
-    void addEdgeWithVertexInsert(std::size_t a, std::size_t b);
-    void addEdgeWithVertexSwap(std::size_t a, std::size_t b);
-    void addEdgeWithBlockInsert(std::size_t a, std::size_t b);
 
+    void addEdgeWithBlockReverse(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
+
+    void addEdgeWithBlockReverse(std::size_t a, std::size_t b);
+    void addEdgeWithBlockInsert(std::size_t a, std::size_t b);
 
 
     std::vector<VectorSizeT> optimized_populations;
