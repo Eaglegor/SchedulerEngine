@@ -1,6 +1,5 @@
 #include "ListTemperatureScheduler.h"
-#include <algorithm>
-#include <iostream>
+#include <numeric>
 #include <Engine/Concepts/Cost.h>
 #include <Engine/SceneManager/Run.h>
 

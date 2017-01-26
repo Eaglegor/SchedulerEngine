@@ -6,7 +6,7 @@
 #include <Engine/SceneManager/Operation.h>
 #include <Engine/Utils/Aggregators/DistanceAccumulator.h>
 #include <Engine/SceneManager/Algorithms/Validation/ViolationsConsumer.h>
-#include <algorithm>
+#include <numeric>
 
 namespace Scheduler
 {

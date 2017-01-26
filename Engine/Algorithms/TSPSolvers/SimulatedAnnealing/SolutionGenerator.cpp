@@ -77,10 +77,7 @@ void SolutionGenerator::blockInsert(std::size_t i, std::size_t j, std::size_t k)
     auto iter_rj = std::next(iter_ri, j - i);
     auto iter_rk = std::next(run.getWorkStops().begin(), k);
 
-    scene_editor.performAction<RotateWorkStops>(run,
-                                                iter_ri,
-                                                iter_rj,
-                                                iter_rk);
+    blockInsert(iter_ri, iter_rj, iter_rk);
 }
 
 void SolutionGenerator::blockReverse(std::size_t i, std::size_t j)
@@ -88,9 +85,7 @@ void SolutionGenerator::blockReverse(std::size_t i, std::size_t j)
     auto iter_ri = std::next(run.getWorkStops().begin(), i);
     auto iter_rj = std::next(iter_ri, j - i);
 
-    scene_editor.performAction<ReverseWorkStops>(run,
-                                                 iter_ri,
-                                                 iter_rj);
+    blockReverse(iter_ri, iter_rj);
 }
 
 void SolutionGenerator::vertexInsert(std::size_t i, std::size_t j)
@@ -105,9 +100,7 @@ void SolutionGenerator::vertexInsert(std::size_t i, std::size_t j)
         iter_i = std::next(iter_j, i - j);
     }
 
-    scene_editor.performAction<MoveWorkStop>(run,
-                                                iter_i,
-                                                iter_j);
+    vertexInsert(iter_i, iter_j);
 }
 
 void SolutionGenerator::vertexSwap(std::size_t i, std::size_t j)
@@ -122,9 +115,31 @@ void SolutionGenerator::vertexSwap(std::size_t i, std::size_t j)
         iter_i = std::next(iter_j, i - j);
     }
 
-    scene_editor.performAction<SwapWorkStops>(run,
-                                              iter_i,
-                                              iter_j);
+    vertexSwap(iter_i, iter_j);
+}
+
+void SolutionGenerator::blockInsert(Run::WorkStopIterator i, Run::WorkStopIterator j, Run::WorkStopIterator k)
+{
+    has_permutation = true;
+    scene_editor.performAction<RotateWorkStops>(run, i, j, k);
+}
+
+void SolutionGenerator::blockReverse(Run::WorkStopIterator i, Run::WorkStopIterator j)
+{
+    has_permutation = true;
+    scene_editor.performAction<ReverseWorkStops>(run, i, j);
+}
+
+void SolutionGenerator::vertexInsert(Run::WorkStopIterator i, Run::WorkStopIterator j)
+{
+    has_permutation = true;
+    scene_editor.performAction<MoveWorkStop>(run, i, j);
+}
+
+void SolutionGenerator::vertexSwap(Run::WorkStopIterator i, Run::WorkStopIterator j)
+{
+    has_permutation = true;
+    scene_editor.performAction<SwapWorkStops>(run, i, j);
 }
 
 void SolutionGenerator::printSolution()
@@ -141,6 +156,10 @@ void SolutionGenerator::printSolution(Run& run)
     std::cout << std::endl;
 }
 
+bool SolutionGenerator::hasPermutation() const
+{
+    return has_permutation;
+}
 
 
 
@@ -152,6 +171,7 @@ SolutionGeneratorClassic::SolutionGeneratorClassic(Run &run) : SolutionGenerator
 
 void SolutionGeneratorClassic::neighbour()
 {
+    has_permutation = false;
     randomMutation();
 }
 
@@ -246,109 +266,74 @@ void SolutionGeneratorClassic::vertexSwap()
 
 InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run &run) :
     SolutionGenerator(run)
-{}
+{
+    for (Run::WorkStopIterator it = run.getWorkStops().begin();
+         it != run.getWorkStops().end();
+         ++it) {
+        ids[it->getOperation().getId()] = it;
+    }
+}
 
 void InstanceBasedSolutionGenerator::neighbour()
 {
-    const std::size_t from = index_distribution(random_engine, index_param_t(0, populations.size() - 1));
-    neighbour(populations.at(from));
+    has_permutation = false;
+    const std::size_t from = index_distribution(random_engine, index_param_t(0, optimized_populations.size() - 1));
+    neighbour(optimized_populations.at(from));
 }
 
-void InstanceBasedSolutionGenerator::neighbour (Run& anotherRun)
+void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGenerator::VectorSizeT& anotherRun)
 {
     const std::size_t source_edge = index_distribution(random_engine, index_param_t(0, N));
 
     if (source_edge == 0) {
-        auto source_iter_b = anotherRun.getWorkStops().begin();
-        const std::size_t operation_b_id = source_iter_b->getOperation().getId();
-
-        bool operation_b_found = false;
-        std::size_t operation_b_idx = 0;
-        std::size_t operation_idx = 0;
-        for (auto iter = run.getWorkStops().begin();
-             iter != run.getWorkStops().end() && !operation_b_found;
-             ++iter, ++operation_idx) {
-            const std::size_t operation_id = iter->getOperation().getId();
-            if (operation_id == operation_b_id) {
-                operation_b_found = true;
-                operation_b_idx = operation_idx;
-            }
-        }
-        if (operation_b_found) {
-            neighbour(0, operation_b_idx, false);
-        } else {
-            std::cout << "oops!";
-        }
+        const std::size_t operation_b_id = anotherRun.front();
+        const auto operation_a_it = run.getWorkStops().begin();
+        const auto operation_b_it = ids.at(operation_b_id);
+        neighbour(operation_a_it, operation_b_it, false);
     } else if (source_edge == N) {
-        auto source_iter_a = anotherRun.getWorkStops().begin();
-        const std::size_t operation_a_id = source_iter_a->getOperation().getId();
-
-        bool operation_a_found = false;
-        std::size_t operation_a_idx = 0;
-        std::size_t operation_idx = 0;
-        for (auto iter = run.getWorkStops().begin();
-             iter != run.getWorkStops().end() && !operation_a_found;
-             ++iter, ++operation_idx) {
-            const std::size_t operation_id = iter->getOperation().getId();
-            if (operation_id == operation_a_id) {
-                operation_a_found = true;
-                operation_a_idx = operation_idx;
-            }
-        }
-        if (operation_a_found) {
-            neighbour(operation_a_idx, N - 1, true);
-        } else {
-            std::cout << "oops!";
-        }
+        const std::size_t operation_a_id = anotherRun.back();
+        const auto operation_a_it = ids.at(operation_a_id);
+        const auto operation_b_it = std::prev(run.getWorkStops().end());
+        neighbour(operation_a_it, operation_b_it, true);
     } else {
-        auto source_iter_a = std::next(anotherRun.getWorkStops().begin(), source_edge - 1);
-        auto source_iter_b = std::next(source_iter_a, 1);
-        const std::size_t operation_a_id = source_iter_a->getOperation().getId();
-        const std::size_t operation_b_id = source_iter_b->getOperation().getId();
+        const std::size_t operation_a_id = anotherRun.at(source_edge - 1);
+        const std::size_t operation_b_id = anotherRun.at(source_edge);
 
-        bool operation_a_found = false;
-        bool operation_b_found = false;
-        std::size_t operation_a_idx = 0;
-        std::size_t operation_b_idx = 0;
-        std::size_t operation_idx = 0;
-        for (auto iter = run.getWorkStops().begin();
-             iter != run.getWorkStops().end() && (!operation_a_found || !operation_b_found);
-             ++iter, ++operation_idx) {
-            const std::size_t operation_id = iter->getOperation().getId();
-            if (operation_id == operation_a_id) {
-                operation_a_found = true;
-                operation_a_idx = operation_idx;
-            } else if (operation_id == operation_b_id) {
-                operation_b_found = true;
-                operation_b_idx = operation_idx;
+        const auto iter_a = ids.at(operation_a_id);
+        const auto iter_b = ids.at(operation_b_id);
+
+        const auto front_it = run.getWorkStops().begin();
+        const auto back_it = std::prev(run.getWorkStops().end());
+
+        if (iter_a != back_it &&
+            iter_b != front_it) {
+            const float random_value = float_distribution(random_engine, float_param_t(0.f, 1.f));
+            if (random_value < 0.5f) {
+                neighbour(std::next(iter_a), iter_b, false);
+            } else {
+                neighbour(iter_a, std::prev(iter_b), true);
             }
-        }
-        if (operation_a_found && operation_b_found) {
-            if (operation_a_idx < (N - 1) &&
-                operation_b_idx > 0) {
-                const float random_value = float_distribution(random_engine, float_param_t(0.f, 1.f));
-                if (random_value < 0.5f) {
-                    neighbour(operation_a_idx + 1, operation_b_idx, false);
-                } else {
-                    neighbour(operation_a_idx, operation_b_idx - 1, true);
-                }
-            } else if (operation_a_idx < (N - 1)) {
-                neighbour(operation_a_idx + 1, operation_b_idx, false);
-            } else if (operation_b_idx > 0) {
-                neighbour(operation_a_idx, operation_b_idx - 1, true);
-            }
+        } else if (iter_a != back_it) {
+            neighbour(std::next(iter_a), iter_b, false);
+        } else if (iter_b != front_it) {
+            neighbour(iter_a, std::prev(iter_b), true);
         } else {
-            std::cout << "oops!";
+            const float random_value = float_distribution(random_engine, float_param_t(0.f, 1.f));
+            if (random_value < 0.5f) {
+                addEdgeWithVertexInsert(iter_b, iter_a);
+            } else {
+                addEdgeWithVertexInsert(std::next(iter_a), iter_b);
+            }
         }
     }
 }
 
-void InstanceBasedSolutionGenerator::neighbour(std::size_t a, std::size_t b, bool alternative)
+void InstanceBasedSolutionGenerator::neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b, bool alternative)
 {
     if (a == b) {
         return;
     }
-    if ((a + 1) == b) {
+    if (std::next(a) == b) {
         addEdgeWithVertexSwap(a, b);
         return;
     }
@@ -358,7 +343,7 @@ void InstanceBasedSolutionGenerator::neighbour(std::size_t a, std::size_t b, boo
         break;
     case MutationType::VertexInsert:
         if (alternative) {
-            addEdgeWithVertexInsert(b + 1, a);
+            addEdgeWithVertexInsert(std::next(b), a);
         } else {
             addEdgeWithVertexInsert(a, b);
         }
@@ -368,7 +353,7 @@ void InstanceBasedSolutionGenerator::neighbour(std::size_t a, std::size_t b, boo
         break;
     case MutationType::BlockInsert:
         if (alternative) {
-            addEdgeWithBlockInsert(a + 1, b + 1);
+            addEdgeWithBlockInsert(std::next(a), std::next(b));
         } else {
             addEdgeWithBlockInsert(a, b);
         }
@@ -376,6 +361,28 @@ void InstanceBasedSolutionGenerator::neighbour(std::size_t a, std::size_t b, boo
     default:
         break;
     }
+}
+
+void InstanceBasedSolutionGenerator::addEdgeWithBlockReverse(Run::WorkStopIterator a, Run::WorkStopIterator b)
+{
+    addEdgeWithBlockReverse(std::distance(run.getWorkStops().begin(), a),
+                            std::distance(run.getWorkStops().begin(), b));
+}
+
+void InstanceBasedSolutionGenerator::addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b)
+{
+    vertexInsert(b, a);
+}
+
+void InstanceBasedSolutionGenerator::addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b)
+{
+    vertexSwap(a, b);
+}
+
+void InstanceBasedSolutionGenerator::addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b)
+{
+    addEdgeWithBlockInsert(std::distance(run.getWorkStops().begin(), a),
+                           std::distance(run.getWorkStops().begin(), b));
 }
 
 void InstanceBasedSolutionGenerator::addEdgeWithBlockReverse(std::size_t a, std::size_t b)
@@ -404,22 +411,16 @@ void InstanceBasedSolutionGenerator::addEdgeWithBlockInsert(std::size_t a, std::
     }
 }
 
-void InstanceBasedSolutionGenerator::addEdgeWithVertexInsert(std::size_t a, std::size_t b)
-{
-    vertexInsert(b, a);
-}
-
-void InstanceBasedSolutionGenerator::addEdgeWithVertexSwap(std::size_t a, std::size_t b)
-{
-    vertexSwap(a, b);
-}
-
 void InstanceBasedSolutionGenerator::setPopulations(std::vector<ReferenceWrapper<Run>> populations)
 {
-    this->populations.clear();
+    this->optimized_populations.clear();
     for (Run& runRef : populations) {
         if (&run != &runRef) {
-            this->populations.emplace_back(runRef);
+            VectorSizeT vector_of_idx;
+            for (auto & workStop : runRef.getWorkStops()) {
+                vector_of_idx.push_back(workStop.getOperation().getId());
+            }
+            this->optimized_populations.emplace_back(vector_of_idx);
         }
     }
 }

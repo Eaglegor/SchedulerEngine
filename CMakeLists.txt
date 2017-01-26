@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 2.8)
 project(CPP_SCHEDULER)
 
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
 if(NOT MSVC)
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -pthread -fopenmp")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes")
 else()
-	add_definitions( "/wd4251 /wd4275 /openmp" )
+	add_definitions( "/wd4251 /wd4275" )
 endif()
 
 set(CPP_SCHEDULER_BUILD_ENABLE_CONAN TRUE CACHE BOOL "If enabled, conan will be responsible for updating dependencies")
@@ -73,6 +79,7 @@ set(__CONAN_ARGS "install")
 set(__CONAN_ARGS "${__CONAN_ARGS} --build=missing")
 
 cmake_policy(SET CMP0054 OLD)
+cmake_policy(SET CMP0042 OLD)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
   message(STATUS "Configuring conan for MSVC")

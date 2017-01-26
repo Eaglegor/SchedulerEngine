@@ -180,11 +180,14 @@ namespace Scheduler
                 #pragma omp parallel for num_threads(threads_number) if (threads_number > 1)
                 for (int m = 0; m < T; ++m) {
                     auto solution_generator = generators[g * T + m];
+                    auto concurrent_populations = runs;
+                    concurrent_populations.erase(std::next(concurrent_populations.begin(), g * T), std::next(concurrent_populations.begin(), g * T + T));
+                    solution_generator->setPopulations(concurrent_populations);
                     auto runRef = runs[g * T + m];
                     Cost &best_cost = costs[g * T + m];
                     for (size_t s = 0; s < S && !stop; ++s) {
                         solution_generator->neighbour();
-                        const Cost cost = schedule_cost_function->calculateCost(runRef.get().getSchedule());
+                        const Cost cost = solution_generator->hasPermutation() ? schedule_cost_function->calculateCost(runRef.get().getSchedule()) : best_cost;
                         if (cost < best_cost) {
                             best_cost = cost;
                             solution_generator->store();

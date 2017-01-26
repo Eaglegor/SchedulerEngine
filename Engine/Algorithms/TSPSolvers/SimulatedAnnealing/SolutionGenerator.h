@@ -2,8 +2,10 @@
 
 #include <random>
 #include <set>
+#include <unordered_map>
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/Utils/ReferenceWrapper.h>
+#include <Engine/SceneManager/Run.h>
 
 namespace Scheduler
 {
@@ -35,6 +37,7 @@ public:
     void store ();
     std::size_t checkpoint ();
     void rollbackTo (std::size_t checkpoint);
+    bool hasPermutation () const;
 
 protected:
     typedef std::uniform_int_distribution<std::size_t> index_distr_t;
@@ -46,6 +49,12 @@ protected:
     void blockReverse(std::size_t i, std::size_t j);
     void vertexInsert(std::size_t i, std::size_t j);
     void vertexSwap(std::size_t i, std::size_t j);
+
+    void blockInsert(Run::WorkStopIterator i, Run::WorkStopIterator j, Run::WorkStopIterator k);
+    void blockReverse(Run::WorkStopIterator i, Run::WorkStopIterator j);
+    void vertexInsert(Run::WorkStopIterator i, Run::WorkStopIterator j);
+    void vertexSwap(Run::WorkStopIterator i, Run::WorkStopIterator j);
+
     void printSolution();
     void printSolution(Run& run);
 
@@ -58,6 +67,7 @@ protected:
     Run& run;
     std::set<MutationType> allowed_mutations;
     std::size_t N;
+    bool has_permutation;
 };
 
 class SolutionGeneratorClassic : public SolutionGenerator
@@ -85,14 +95,22 @@ public:
     void setPopulations(std::vector<ReferenceWrapper<Run>> populations);
 
 protected:
-    void neighbour (Run& anotherRun);
-    void neighbour (std::size_t a, std::size_t b, bool alternative);
+    typedef std::vector<std::size_t> VectorSizeT;
+
+    void neighbour (const VectorSizeT& anotherRun);
+    void neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b, bool alternative);
+
+    void addEdgeWithBlockReverse(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
+
     void addEdgeWithBlockReverse(std::size_t a, std::size_t b);
-    void addEdgeWithVertexInsert(std::size_t a, std::size_t b);
-    void addEdgeWithVertexSwap(std::size_t a, std::size_t b);
     void addEdgeWithBlockInsert(std::size_t a, std::size_t b);
 
-    std::vector<ReferenceWrapper<Run>> populations;
+
+    std::vector<VectorSizeT> optimized_populations;
+    std::unordered_map<std::size_t, Run::WorkStopIterator> ids;
 };
 
 }
