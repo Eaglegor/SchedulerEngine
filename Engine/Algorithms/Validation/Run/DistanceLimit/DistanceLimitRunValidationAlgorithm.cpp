@@ -1,5 +1,6 @@
 #include "DistanceLimitRunValidationAlgorithm.h"
 
+#include <numeric>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/WorkStop.h>
