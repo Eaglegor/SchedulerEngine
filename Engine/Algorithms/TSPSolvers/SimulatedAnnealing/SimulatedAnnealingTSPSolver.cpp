@@ -140,19 +140,19 @@ namespace Scheduler
         std::vector<std::shared_ptr<InstanceBasedSolutionGenerator>> generators;
         const std::size_t population_size = threads_number * population_scale;
         for (std::size_t idx = 0; idx < population_size; ++idx) {
-            schedules.push_back(std::move(ScheduleVariant(run.getSchedule())));
+            schedules.emplace_back(run.getSchedule());
             ScheduleVariant& temporarySchedule = schedules.back();
 
             Run& temporaryRun = temporarySchedule.getSchedule()->getRuns().at(runIdx);
             runs.push_back(temporaryRun);
 
+            const TSPSolver& tsp_solver = tsp_solvers.at(idx % tsp_solvers.size());
+            tsp_solver.optimize(temporaryRun);
+            
             auto solution_generator = std::make_shared<InstanceBasedSolutionGenerator>(temporaryRun);
             for (const auto mutation : allowed_mutations) {
                 solution_generator->enableMutation(mutation);
             }
-
-            solution_generator->shuffle();
-            solution_generator->store();
             generators.push_back(solution_generator);
 
             const Cost initialCost = schedule_cost_function->calculateCost(temporaryRun.getSchedule());
@@ -225,5 +225,10 @@ namespace Scheduler
     void MultiAgentSimulatedAnnealingTSPSolver::setThreadsNumber(std::size_t threadsNumber)
     {
         this->threads_number = threadsNumber;
+    }
+    
+    void MultiAgentSimulatedAnnealingTSPSolver::addTSPSolver(const Scheduler::TSPSolver &aTSPSolver)
+    {
+        tsp_solvers.emplace_back(aTSPSolver);
     }
 }

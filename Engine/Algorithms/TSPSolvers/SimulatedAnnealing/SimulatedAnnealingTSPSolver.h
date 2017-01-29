@@ -47,11 +47,15 @@ namespace Scheduler
 
         void setThreadsNumber(std::size_t threadsNumber);
         void setPopulationScale(std::size_t populationScale);
+        
+        void addTSPSolver(const TSPSolver& aTSPSolver);
 
         static constexpr const char* staticGetName() { return "MultiAgentSimulatedAnnealing"; }
         virtual const char* getName() const override { return staticGetName(); };
 		
     private:
+        std::vector<ReferenceWrapper<const TSPSolver>> tsp_solvers;
+        
         std::size_t population_scale;
         std::size_t threads_number;
     };

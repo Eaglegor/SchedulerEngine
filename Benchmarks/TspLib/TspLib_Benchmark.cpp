@@ -24,6 +24,7 @@
 #include <Engine/Algorithms/TSPSolvers/Utilitary/BestOf/BestOfTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Transparent/TransparentTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Reverse/ReverseTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/Scramble/ScrambleTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/OneRelocate/OneRelocateTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SuInt/SuIntTSPSolver.h>
 
@@ -423,6 +424,7 @@ public:
                                    SolutionGenerator::MutationType::VertexInsert,
                                    SolutionGenerator::MutationType::BlockInsert
                                 });
+        sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<ScrambleTSPSolver>());
         tsp_solver.addTSPSolver(sa_solver);
         return tsp_solver;
     }
@@ -462,6 +464,7 @@ public:
                                    SolutionGenerator::MutationType::VertexInsert,
                                    SolutionGenerator::MutationType::BlockInsert
                                 });
+        sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<ScrambleTSPSolver>());
         tsp_solver.addTSPSolver(sa_solver);
         return tsp_solver;
     }
@@ -501,6 +504,7 @@ public:
                                    SolutionGenerator::MutationType::VertexInsert,
                                    SolutionGenerator::MutationType::BlockInsert
                                 });
+        sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<ScrambleTSPSolver>());
         tsp_solver.addTSPSolver(sa_solver);
         return tsp_solver;
     }
