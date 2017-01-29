@@ -2,6 +2,7 @@ add_library(SimpleEAVRPSolver SHARED
 	
 	SimpleEAVRPSolver.h SimpleEAVRPSolver.cpp
 	RandomSolutionGenerator.h RandomSolutionGenerator.cpp
+	Evolution.h Evolution.cpp
 
 	)
 

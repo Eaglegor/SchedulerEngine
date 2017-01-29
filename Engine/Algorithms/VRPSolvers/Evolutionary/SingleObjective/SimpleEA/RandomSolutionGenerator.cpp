@@ -3,6 +3,7 @@
 #include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/SceneManager/Depot.h>
+#include <Engine/SceneManager/Utils/SceneCloner.h>
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/SceneEditor/Actions/AllocateOrder.h>
 #include <random>
@@ -11,24 +12,28 @@
 
 namespace Scheduler 
 {
-	Scene& RandomSolutionGenerator::generate(Scene& base_scene)
+	RandomSolutionGenerator::RandomSolutionGenerator(const Scene& base_scene):
+	g(std::random_device()()),
+	base_scene(base_scene)
+	{
+	}
+
+	Scene& RandomSolutionGenerator::generate()
 	{
 		const SceneContext& scene_context = base_scene.getContext();
 		SceneManager& scene_manager = base_scene.getSceneManager();
 		
 		Scene& scene = scene_manager.createScene(scene_context);
 		
-		std::vector<std::size_t> orders(scene_context.getOrders().size());
-		orders.resize(scene_context.getOrders().size());
-		std::iota(orders.begin(), orders.end(), 0);
+		SceneCloner::cloneSceneSchedulesPool(base_scene, scene);
 		
-		std::random_device rd;
-		std::mt19937 g(rd());
+		std::vector<std::size_t> orders(scene_context.getOrders().size());
+		std::iota(orders.begin(), orders.end(), 0);
 		
 		std::shuffle(orders.begin(), orders.end(), g);
 		
-		std::vector<std::size_t> assignments(base_scene.getSchedules().size());
-		for(int i = 0; i < assignments.size(); ++i)
+		std::vector<std::size_t> assignments;
+		for(int i = 0; i < scene.getSchedules().size(); ++i)
 		{
 			assignments.push_back(g() % orders.size());
 		}
@@ -56,8 +61,6 @@ namespace Scheduler
 			
 			scene_editor.commit();
 		}
-		
-		
 		
 		return scene;
 	}

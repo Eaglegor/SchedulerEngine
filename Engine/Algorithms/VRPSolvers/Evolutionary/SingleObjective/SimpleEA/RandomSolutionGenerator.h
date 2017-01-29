@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 namespace Scheduler
 {
 	class Scene;
@@ -9,6 +11,11 @@ namespace Scheduler
 	class RandomSolutionGenerator
 	{
 	public:
-		static Scene& generate(Scene& base_scene);
+		RandomSolutionGenerator(const Scene& base_scene);
+		Scene& generate();
+		
+	private:
+		std::mt19937 g;
+		const Scene& base_scene;
 	};
 }
