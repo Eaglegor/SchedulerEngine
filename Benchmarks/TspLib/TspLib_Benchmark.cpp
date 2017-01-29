@@ -11,7 +11,7 @@
 
 #include "../Publishers/StdoutBenchmarkPublisher.h"
 #include "../Publishers/MarkdownBenchmarkPublisher.h"
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/CostFunctions/TotalDistance/TotalDistanceScheduleCostFunction.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/AlgorithmsManager/AlgorithmsManager.h>

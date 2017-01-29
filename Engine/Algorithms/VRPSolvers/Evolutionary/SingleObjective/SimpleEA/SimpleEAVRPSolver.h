@@ -17,8 +17,12 @@ namespace Scheduler
             const char* getName() const override{ return staticGetName();}
 
             void setCostFunction(const CostFunction& cost_function);
-
+			void setIterationsLimit(std::size_t iterations_limit);
+			void setPopulationSize(std::size_t population_size);
+			
         private:
             Optional<const CostFunction&> cost_function;
+			std::size_t iterations_limit = 100;
+			std::size_t population_size = 20;
     };
 }

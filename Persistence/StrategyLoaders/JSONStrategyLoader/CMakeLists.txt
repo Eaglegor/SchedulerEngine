@@ -20,7 +20,7 @@ add_library(JSONStrategyLoader SHARED
 		Loaders/SceneCostFunctions/TotalDistanceSceneCostFunctionLoader.h Loaders/SceneCostFunctions/TotalDistanceSceneCostFunctionLoader.cpp
 )
 
-target_link_libraries(JSONStrategyLoader Engine)
+target_link_libraries(JSONStrategyLoader Core)
 
 set_target_properties(JSONStrategyLoader PROPERTIES FOLDER "Persistence/StrategyLoaders")
 

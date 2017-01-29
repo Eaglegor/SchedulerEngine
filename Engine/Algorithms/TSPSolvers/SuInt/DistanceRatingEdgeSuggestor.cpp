@@ -1,7 +1,7 @@
 #include "DistanceRatingEdgeSuggestor.h"
 
 #include <unordered_set>
-#include <Engine/Engine/Services/RoutingService.h>
+#include <Engine/Routing/RoutingService.h>
 #include <Engine/Utils/CallableVisitorProxy.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/WorkStop.h>

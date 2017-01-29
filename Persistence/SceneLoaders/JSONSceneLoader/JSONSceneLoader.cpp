@@ -24,7 +24,7 @@
 #include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
 #include <Engine/Algorithms/ScheduleActualization/Duration/Default/DefaultDurationActualizationAlgorithm.h>
 #include <Engine/Algorithms/ScheduleActualization/ArrivalTime/Default/DefaultArrivalTimeActualizationAlgorithm.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 
 #include <locale>
 

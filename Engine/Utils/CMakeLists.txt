@@ -33,7 +33,7 @@ if(CPP_SCHEDULER_TESTS)
 	set_property(SOURCE Test/Collections_Algorithms_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
 		
 	add_test(NAME Utils_Test COMMAND $<TARGET_FILE:Utils_Test>)
-	target_link_libraries(Utils_Test Engine CrowFlyRoutingService)
+	target_link_libraries(Utils_Test Core CrowFlyRoutingService)
 	set_target_properties(Utils_Test PROPERTIES FOLDER "Engine/Tests/")
 	
 	cotire(Utils_Test)

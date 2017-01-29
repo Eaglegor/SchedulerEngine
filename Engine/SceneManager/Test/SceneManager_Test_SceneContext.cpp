@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
 #include <Engine/Concepts/Test/MakeTimeWindow.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/SceneManager/SceneContext.h>
 #include <Engine/SceneManager/Operation.h>

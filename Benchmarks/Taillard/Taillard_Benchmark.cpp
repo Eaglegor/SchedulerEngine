@@ -11,7 +11,7 @@
 #include <Engine/Algorithms/VRPSolvers/Utilitary/Chain/ChainVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Sweep/SweepVRPSolver.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/CostFunctions/TotalDistance/TotalDistanceSceneCostFunction.h>
 #include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <Engine/SceneManager/Scene.h>
