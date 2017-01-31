@@ -24,6 +24,7 @@
 #include <Engine/Algorithms/TSPSolvers/Utilitary/BestOf/BestOfTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Transparent/TransparentTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Reverse/ReverseTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/Utilitary/Scramble/ScrambleTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/OneRelocate/OneRelocateTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SuInt/SuIntTSPSolver.h>
 
@@ -412,7 +413,7 @@ public:
         greedy_solver.setRoutingService(routing_service);
         tsp_solver.addTSPSolver(greedy_solver);
 
-        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
         sa_solver.setMarkovChainLengthScale(1.f);
@@ -423,13 +424,14 @@ public:
                                    SolutionGenerator::MutationType::VertexInsert,
                                    SolutionGenerator::MutationType::BlockInsert
                                 });
+        sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<ScrambleTSPSolver>());
         tsp_solver.addTSPSolver(sa_solver);
         return tsp_solver;
     }
 
     virtual const char* getAlgorithmName() override
     {
-        return "MTASA_Fast";
+        return "Greedy >> SA_Fast";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
@@ -451,7 +453,7 @@ public:
         greedy_solver.setRoutingService(routing_service);
         tsp_solver.addTSPSolver(greedy_solver);
 
-        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
         sa_solver.setMarkovChainLengthScale(1.f);
@@ -462,13 +464,14 @@ public:
                                    SolutionGenerator::MutationType::VertexInsert,
                                    SolutionGenerator::MutationType::BlockInsert
                                 });
+        sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<ScrambleTSPSolver>());
         tsp_solver.addTSPSolver(sa_solver);
         return tsp_solver;
     }
 
     virtual const char* getAlgorithmName() override
     {
-        return "MTASA_Normal";
+        return "Greedy >> SA_Normal";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
@@ -480,7 +483,7 @@ public:
     MTASA_SlowTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
-        temperature_scheduler.reset(new SlowTemperatureScheduler(120, std::log(std::pow(10,-10)), 10000, 0.25f));
+        temperature_scheduler.reset(new SlowTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000, 0.25f));
     }
 
     virtual TSPSolver& createTSPSolver() override
@@ -490,7 +493,7 @@ public:
         greedy_solver.setRoutingService(routing_service);
         tsp_solver.addTSPSolver(greedy_solver);
 
-        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
         sa_solver.setMarkovChainLengthScale(1.f);
@@ -501,13 +504,14 @@ public:
                                    SolutionGenerator::MutationType::VertexInsert,
                                    SolutionGenerator::MutationType::BlockInsert
                                 });
+        sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<ScrambleTSPSolver>());
         tsp_solver.addTSPSolver(sa_solver);
         return tsp_solver;
     }
 
     virtual const char* getAlgorithmName() override
     {
-        return "MTASA_Slow";
+        return "Greedy >> SA_Slow";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;

@@ -12,11 +12,13 @@
 namespace Scheduler
 {
     SimulatedAnnealingTSPSolver::SimulatedAnnealingTSPSolver():
-        markov_chain_length_scale(1.f),
         allowed_mutations({SolutionGenerator::MutationType::BlockInsert,
                           SolutionGenerator::MutationType::BlockReverse,
                           SolutionGenerator::MutationType::VertexInsert,
-                          SolutionGenerator::MutationType::VertexSwap})
+                          SolutionGenerator::MutationType::VertexSwap}),
+        markov_chain_length_scale(1.f),
+        population_scale(2),
+        threads_number(1)
     {
     }
 
@@ -28,52 +30,6 @@ namespace Scheduler
         for(Run& run : schedule.getRuns())
         {
             optimize(run);
-        }
-    }
-
-    void SimulatedAnnealingTSPSolver::optimize(Run& run) const
-    {
-        if (!schedule_cost_function) return;
-        if (!temperature_scheduler_template) return;
-        if (allowed_mutations.empty()) return;
-
-        if (run.getWorkStops().size() <= 1) {
-            return;
-        }
-
-        SolutionGeneratorClassic solution_generator(run);
-        for (const auto mutation : allowed_mutations) {
-            solution_generator.enableMutation(mutation);
-        }
-
-        auto temperature_scheduler = std::unique_ptr<TemperatureScheduler>(temperature_scheduler_template->clone());
-        temperature_scheduler->initialize(run, schedule_cost_function.get());
-        Cost best_cost = schedule_cost_function->calculateCost(run.getSchedule());
-
-        std::random_device random_device;
-        std::mt19937_64 random_engine(random_device());
-        std::uniform_real_distribution<float> float_distribution(0.f, 1.f);
-
-        const std::size_t M = markovChainLength(run.getWorkStops().size());
-        while (!temperature_scheduler->isFinish()) {
-            for (size_t m = 0; m < M; ++m) {
-                solution_generator.neighbour();
-                const Cost cost = schedule_cost_function->calculateCost(run.getSchedule());
-                if (cost < best_cost) {
-                    best_cost = cost;
-                    solution_generator.store();
-                } else {
-                    const float random_value = float_distribution(random_engine);
-                    if (acceptance(cost - best_cost, random_value, temperature_scheduler->getTemperature())) {
-                        temperature_scheduler->adapt(cost - best_cost, random_value);
-                        best_cost = cost;
-                        solution_generator.store();
-                    } else {
-                        solution_generator.discard();
-                    }
-                }
-            }
-            temperature_scheduler->changeTemperature();
         }
     }
 
@@ -112,13 +68,22 @@ namespace Scheduler
         return std::max(std::size_t(1), M);
     }
 
+    void SimulatedAnnealingTSPSolver::setPopulationScale(size_t populationScale)
+    {
+        population_scale = std::max(static_cast<std::size_t>(2), populationScale);
+    }
 
-    MultiAgentSimulatedAnnealingTSPSolver::MultiAgentSimulatedAnnealingTSPSolver():
-        population_scale(2),
-        threads_number(1)
-    {}
+    void SimulatedAnnealingTSPSolver::setThreadsNumber(std::size_t threadsNumber)
+    {
+        this->threads_number = threadsNumber;
+    }
 
-    void MultiAgentSimulatedAnnealingTSPSolver::optimize(Run& run) const
+    void SimulatedAnnealingTSPSolver::addTSPSolver(const Scheduler::TSPSolver &aTSPSolver)
+    {
+        tsp_solvers.emplace_back(aTSPSolver);
+    }
+
+    void SimulatedAnnealingTSPSolver::optimize(Run& run) const
     {
         if (!schedule_cost_function) return;
         if (!temperature_scheduler_template) return;
@@ -140,19 +105,19 @@ namespace Scheduler
         std::vector<std::shared_ptr<InstanceBasedSolutionGenerator>> generators;
         const std::size_t population_size = threads_number * population_scale;
         for (std::size_t idx = 0; idx < population_size; ++idx) {
-            schedules.push_back(std::move(ScheduleVariant(run.getSchedule())));
+            schedules.emplace_back(run.getSchedule());
             ScheduleVariant& temporarySchedule = schedules.back();
 
             Run& temporaryRun = temporarySchedule.getSchedule()->getRuns().at(runIdx);
             runs.push_back(temporaryRun);
 
+            const TSPSolver& tsp_solver = tsp_solvers.at(idx % tsp_solvers.size());
+            tsp_solver.optimize(temporaryRun);
+            
             auto solution_generator = std::make_shared<InstanceBasedSolutionGenerator>(temporaryRun);
             for (const auto mutation : allowed_mutations) {
                 solution_generator->enableMutation(mutation);
             }
-
-            solution_generator->shuffle();
-            solution_generator->store();
             generators.push_back(solution_generator);
 
             const Cost initialCost = schedule_cost_function->calculateCost(temporaryRun.getSchedule());
@@ -215,15 +180,5 @@ namespace Scheduler
         auto best_cost_iter = std::min_element(costs.begin(), costs.end());
 		ScheduleVariant& best_variant = schedules.at(std::distance(costs.begin(), best_cost_iter));
 		best_variant.apply();
-    }
-
-    void MultiAgentSimulatedAnnealingTSPSolver::setPopulationScale(size_t populationScale)
-    {
-        population_scale = std::max(static_cast<std::size_t>(2), populationScale);
-    }
-
-    void MultiAgentSimulatedAnnealingTSPSolver::setThreadsNumber(std::size_t threadsNumber)
-    {
-        this->threads_number = threadsNumber;
     }
 }

@@ -32,7 +32,6 @@ public:
 
     void enableMutation (MutationType mutation);
     void disableMutation (MutationType mutation);
-    void shuffle ();
     void discard ();
     void store ();
     std::size_t checkpoint ();
@@ -96,18 +95,24 @@ public:
 
 protected:
     typedef std::vector<std::size_t> VectorSizeT;
+    typedef std::pair<Run::WorkStopIterator,Run::WorkStopIterator> WorkStopIteratorPair;
 
     void neighbour (const VectorSizeT& anotherRun);
-    void neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b, bool alternative);
+    void neighbour (std::size_t idA, std::size_t idB);
+    void neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b);
 
     void addEdgeWithBlockReverse(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithBlockReverseSimple(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithBlockReverseComplex(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
 
-    void addEdgeWithBlockReverse(std::size_t a, std::size_t b);
     void addEdgeWithBlockInsert(std::size_t a, std::size_t b);
-
+    
+    bool checkEdge(std::size_t idA, std::size_t idB) const;
+    
+    MutationType selectMutation(Run::WorkStopIterator a, Run::WorkStopIterator b);
 
     std::vector<VectorSizeT> optimized_populations;
     std::unordered_map<std::size_t, Run::WorkStopIterator> ids;
