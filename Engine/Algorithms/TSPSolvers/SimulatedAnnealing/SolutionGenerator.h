@@ -32,7 +32,6 @@ public:
 
     void enableMutation (MutationType mutation);
     void disableMutation (MutationType mutation);
-    void shuffle ();
     void discard ();
     void store ();
     std::size_t checkpoint ();

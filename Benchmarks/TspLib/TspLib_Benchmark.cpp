@@ -413,7 +413,7 @@ public:
         greedy_solver.setRoutingService(routing_service);
         tsp_solver.addTSPSolver(greedy_solver);
 
-        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
         sa_solver.setMarkovChainLengthScale(1.f);
@@ -431,7 +431,7 @@ public:
 
     virtual const char* getAlgorithmName() override
     {
-        return "MTASA_Fast";
+        return "Greedy >> SA_Fast";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
@@ -453,7 +453,7 @@ public:
         greedy_solver.setRoutingService(routing_service);
         tsp_solver.addTSPSolver(greedy_solver);
 
-        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
         sa_solver.setMarkovChainLengthScale(1.f);
@@ -471,7 +471,7 @@ public:
 
     virtual const char* getAlgorithmName() override
     {
-        return "MTASA_Normal";
+        return "Greedy >> SA_Normal";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
@@ -483,7 +483,7 @@ public:
     MTASA_SlowTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
         : TspLibTestInstance(datasets, publisher)
     {
-        temperature_scheduler.reset(new SlowTemperatureScheduler(120, std::log(std::pow(10,-10)), 10000, 0.25f));
+        temperature_scheduler.reset(new SlowTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000, 0.25f));
     }
 
     virtual TSPSolver& createTSPSolver() override
@@ -493,7 +493,7 @@ public:
         greedy_solver.setRoutingService(routing_service);
         tsp_solver.addTSPSolver(greedy_solver);
 
-        MultiAgentSimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<MultiAgentSimulatedAnnealingTSPSolver>();
+        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
         sa_solver.setMarkovChainLengthScale(1.f);
@@ -511,7 +511,7 @@ public:
 
     virtual const char* getAlgorithmName() override
     {
-        return "MTASA_Slow";
+        return "Greedy >> SA_Slow";
     }
 private:
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;

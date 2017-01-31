@@ -24,38 +24,23 @@ namespace Scheduler
         void setTemperatureScheduler(TemperatureScheduler& temperature_scheduler_template);
         void setMarkovChainLengthScale(float markovScale);
         void setMutations(std::initializer_list<SolutionGenerator::MutationType> mutations);
+        void setThreadsNumber(std::size_t threadsNumber);
+        void setPopulationScale(std::size_t populationScale);
+        void addTSPSolver(const TSPSolver& aTSPSolver);
 
         static constexpr const char* staticGetName() { return "SimulatedAnnealing"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
-    protected:
+    private:
         bool acceptance(Cost delta, float random, float temperature) const;
         std::size_t markovChainLength (std::size_t stopsCount) const;
 
 		Optional<const ScheduleCostFunction&> schedule_cost_function;
         Optional<TemperatureScheduler&> temperature_scheduler_template;
-        float markov_chain_length_scale;
-
         std::set<SolutionGenerator::MutationType> allowed_mutations;
-	};
-
-    class SIMULATEDANNEALINGTSPSOLVER_EXPORT MultiAgentSimulatedAnnealingTSPSolver : public SimulatedAnnealingTSPSolver
-    {
-    public:
-        MultiAgentSimulatedAnnealingTSPSolver();
-        virtual void optimize(Run& run) const override;
-
-        void setThreadsNumber(std::size_t threadsNumber);
-        void setPopulationScale(std::size_t populationScale);
-        
-        void addTSPSolver(const TSPSolver& aTSPSolver);
-
-        static constexpr const char* staticGetName() { return "MultiAgentSimulatedAnnealing"; }
-        virtual const char* getName() const override { return staticGetName(); };
-		
-    private:
         std::vector<ReferenceWrapper<const TSPSolver>> tsp_solvers;
-        
+
+        float markov_chain_length_scale;
         std::size_t population_scale;
         std::size_t threads_number;
     };
