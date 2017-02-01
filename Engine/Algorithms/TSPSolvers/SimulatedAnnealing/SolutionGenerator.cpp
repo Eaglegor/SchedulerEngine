@@ -273,8 +273,11 @@ InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run &run) :
 void InstanceBasedSolutionGenerator::neighbour()
 {
     has_permutation = false;
-    const std::size_t from = index_distribution(random_engine, index_param_t(0, optimized_populations.size() - 1));
-    neighbour(optimized_populations.at(from));
+    std::size_t from = index_distribution(random_engine, index_param_t(0, optimized_populations_ref->size() - 2));
+    if (from >= self_index_in_populations) {
+        ++from;
+    }
+    neighbour(optimized_populations_ref->at(from));
 }
 
 void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGenerator::VectorSizeT& anotherRun)
@@ -423,18 +426,10 @@ void InstanceBasedSolutionGenerator::addEdgeWithVertexSwap(Run::WorkStopIterator
     }
 }
 
-void InstanceBasedSolutionGenerator::setPopulations(std::vector<ReferenceWrapper<Run>> populations)
+void InstanceBasedSolutionGenerator::setPopulations(const PopulationsT & populations, std::size_t selfIndexInPopulations)
 {
-    this->optimized_populations.clear();
-    for (Run& runRef : populations) {
-        if (&run != &runRef) {
-            VectorSizeT vector_of_idx;
-            for (auto & workStop : runRef.getWorkStops()) {
-                vector_of_idx.push_back(workStop.getOperation().getId());
-            }
-            this->optimized_populations.emplace_back(vector_of_idx);
-        }
-    }
+    this->optimized_populations_ref = &populations;
+    this->self_index_in_populations = selfIndexInPopulations;
 }
 
 bool InstanceBasedSolutionGenerator::checkEdge(std::size_t idA, std::size_t idB) const

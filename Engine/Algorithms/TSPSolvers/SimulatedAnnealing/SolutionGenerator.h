@@ -88,13 +88,15 @@ private:
 class InstanceBasedSolutionGenerator : public SolutionGenerator
 {
 public:
+    typedef std::vector<std::size_t> VectorSizeT;
+    typedef std::vector<VectorSizeT> PopulationsT;
+
     explicit InstanceBasedSolutionGenerator (Run& run);
 
     virtual void neighbour () override;
-    void setPopulations(std::vector<ReferenceWrapper<Run>> populations);
+    void setPopulations(const PopulationsT & populations, std::size_t selfIndexInPopulations);
 
 protected:
-    typedef std::vector<std::size_t> VectorSizeT;
     typedef std::pair<Run::WorkStopIterator,Run::WorkStopIterator> WorkStopIteratorPair;
 
     void neighbour (const VectorSizeT& anotherRun);
@@ -114,8 +116,9 @@ protected:
     
     MutationType selectMutation(Run::WorkStopIterator a, Run::WorkStopIterator b);
 
-    std::vector<VectorSizeT> optimized_populations;
+    PopulationsT const * optimized_populations_ref;
     std::unordered_map<std::size_t, Run::WorkStopIterator> ids;
+    std::size_t self_index_in_populations;
 };
 
 }
