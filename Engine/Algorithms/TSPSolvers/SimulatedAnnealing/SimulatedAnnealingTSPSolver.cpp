@@ -35,7 +35,7 @@ namespace Scheduler
 
     bool SimulatedAnnealingTSPSolver::acceptance(Cost delta, float random, float temperature) const
     {
-        //const float normalized_value = 1 / (1 + std::exp(delta.getValue() / temperature_scheduler->getTemperature()));
+        //const float normalized_value = 1 / (1 + std::exp(delta.getValue() / temperature));
         const float normalized_value = std::exp(-delta.getValue() / temperature);
         return random <= normalized_value;
     }
@@ -70,7 +70,7 @@ namespace Scheduler
 
     void SimulatedAnnealingTSPSolver::setPopulationScale(size_t populationScale)
     {
-        population_scale = std::max(static_cast<std::size_t>(2), populationScale);
+        population_scale = std::max(static_cast<std::size_t>(1), populationScale);
     }
 
     void SimulatedAnnealingTSPSolver::setThreadsNumber(std::size_t threadsNumber)
@@ -125,13 +125,18 @@ namespace Scheduler
         }
 
         const std::size_t T = threads_number;
-        for (std::size_t g = 0; g < generators.size() / T; ++g) {
-            auto concurrent_populations = runs;
-            concurrent_populations.erase(std::next(concurrent_populations.begin(), g * T), std::next(concurrent_populations.begin(), g * T + T));
-            for (size_t i = 0; i < T; ++i) {
-                generators.at(g * T + i)->setPopulations(concurrent_populations);
+
+        InstanceBasedSolutionGenerator::PopulationsT populations;
+        InstanceBasedSolutionGenerator::PopulationsT populations_write;
+        for (Run& runRef : runs) {
+            InstanceBasedSolutionGenerator::VectorSizeT vector_of_idx;
+            for (auto & workStop : runRef.getWorkStops()) {
+                vector_of_idx.push_back(workStop.getOperation().getId());
             }
+            populations.emplace_back(vector_of_idx);
         }
+        populations_write.resize(populations.size());
+
 
         std::random_device random_device;
         std::mt19937_64 random_engine(random_device());
@@ -145,9 +150,7 @@ namespace Scheduler
                 #pragma omp parallel for num_threads(threads_number) if (threads_number > 1)
                 for (int m = 0; m < T; ++m) {
                     auto solution_generator = generators[g * T + m];
-                    auto concurrent_populations = runs;
-                    concurrent_populations.erase(std::next(concurrent_populations.begin(), g * T), std::next(concurrent_populations.begin(), g * T + T));
-                    solution_generator->setPopulations(concurrent_populations);
+                    solution_generator->setPopulations(populations, g * T + m);
                     auto runRef = runs[g * T + m];
                     Cost &best_cost = costs[g * T + m];
                     for (size_t s = 0; s < S && !stop; ++s) {
@@ -171,10 +174,16 @@ namespace Scheduler
                             }
                         }
                     }
+                    InstanceBasedSolutionGenerator::VectorSizeT & vector_of_idx = populations_write[g * T + m];
+                    vector_of_idx.clear();
+                    for (auto & workStop : runRef.get().getWorkStops()) {
+                        vector_of_idx.push_back(workStop.getOperation().getId());
+                    }
                     stop = true;
                 }
             }
             temperature_scheduler->changeTemperature();
+            std::swap(populations, populations_write);
         }
 
         auto best_cost_iter = std::min_element(costs.begin(), costs.end());
