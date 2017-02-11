@@ -4,7 +4,7 @@
 #include <Services/Routing/TspLibRoutingService/TspLibRoutingService.h>
 #include <Persistence/SceneLoaders/TspLibSceneLoader/TspLibSceneLoader.h>
 #include <chrono>
-
+#include <boost/program_options.hpp>
 #include <cmath>
 #include <iostream>
 #include <sstream>
@@ -169,6 +169,7 @@ const char* COST_KPI_NAME = "Mean Cost";
 const char* VARIATION_KPI_NAME = "Variation";
 const char* AVERAGE_TIME_KPI_NAME = "Average time (ms)";
 const char* TOTAL_DEVIATION = "Deviation";
+static size_t number_of_iterations = 10;
 
 using namespace Scheduler;
 
@@ -228,7 +229,6 @@ protected:
 		result.dataset_name = datasets[id];
 
 		long long nanoseconds = 0;
-        const size_t number_of_iterations = 10;
 
         for (size_t i = 0; i < number_of_iterations; ++i)
 		{
@@ -397,85 +397,93 @@ public:
     }
 };
 
-class MTASA_FastTspLibInstance : public TspLibTestInstance
+class SimulatedAnnealingTspLibInstance : public TspLibTestInstance
 {
 public:
-    MTASA_FastTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
-        : TspLibTestInstance(datasets, publisher)
+    struct Options
     {
-        temperature_scheduler.reset(new FastTemperatureScheduler(60, std::log(std::pow(10,-10)), 1000, 0.25f));
+        struct TemperatureSchedulerOptions
+        {
+            enum class Type
+            {
+                ListNormal,
+                ListFast,
+                ListSlow
+            } type;
+            std::size_t list_size;
+            std::size_t list_max_iterations;
+            float initial_probability;
+            float ratio;
+            TemperatureSchedulerOptions() :
+            type(Type::ListNormal),
+            list_size(120),
+            list_max_iterations(1000),
+            initial_probability(std::log(std::pow(10,-10))),
+            ratio(0.25f) {}
+        } temperature_scheduler_options;
+        float markov_chain_length_scale;
+        std::size_t population_scale;
+        std::size_t threads_number;
+        Options() : markov_chain_length_scale(1.f), population_scale(8), threads_number(1) {}
+    };
+    
+    SimulatedAnnealingTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TspLibTestInstance(datasets, publisher) {}
+    
+    void setOptions (const Options & options)
+    {
+        this->options = options;
     }
 
     virtual TSPSolver& createTSPSolver() override
     {
-        ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
-        GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
-        greedy_solver.setRoutingService(routing_service);
-        tsp_solver.addTSPSolver(greedy_solver);
-
         SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
-        sa_solver.setScheduleCostFunction(cost_function);
+        setTemperatureScheduler(options.temperature_scheduler_options);
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
-        sa_solver.setMarkovChainLengthScale(1.f);
-        sa_solver.setPopulationScale(1);
-        sa_solver.setThreadsNumber(4);
+        sa_solver.setScheduleCostFunction(cost_function);
+        sa_solver.setMarkovChainLengthScale(options.markov_chain_length_scale);
+        sa_solver.setPopulationScale(options.population_scale);
+        sa_solver.setThreadsNumber(options.threads_number);
         sa_solver.setMutations({
                                    SolutionGenerator::MutationType::BlockReverse,
                                    SolutionGenerator::MutationType::VertexInsert,
                                    SolutionGenerator::MutationType::BlockInsert
                                 });
         sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<ScrambleTSPSolver>());
-        sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<TransparentTSPSolver>());
-        tsp_solver.addTSPSolver(sa_solver);
-        return tsp_solver;
+        
+        return sa_solver;
     }
 
     virtual const char* getAlgorithmName() override
     {
-        return "Greedy >> SA_Fast";
+        return "SimulatedAnnealing";
     }
 private:
+    void setTemperatureScheduler(const Options::TemperatureSchedulerOptions & options)
+    {
+        switch (options.type) {
+            case Options::TemperatureSchedulerOptions::Type::ListFast:
+                temperature_scheduler.reset(new FastTemperatureScheduler(options.list_size,
+                                                                         options.initial_probability,
+                                                                         options.list_max_iterations,
+                                                                         options.ratio));
+                break;
+            case Options::TemperatureSchedulerOptions::Type::ListSlow:
+                temperature_scheduler.reset(new SlowTemperatureScheduler(options.list_size,
+                                                                         options.initial_probability,
+                                                                         options.list_max_iterations,
+                                                                         options.ratio));
+                break;
+            case Options::TemperatureSchedulerOptions::Type::ListNormal:
+            default:
+                temperature_scheduler.reset(new ListTemperatureScheduler(options.list_size,
+                                                                         options.initial_probability,
+                                                                         options.list_max_iterations));
+                break;
+        }
+    }
     std::unique_ptr<TemperatureScheduler> temperature_scheduler;
-};
-
-class MTASA_NormalTspLibInstance : public TspLibTestInstance
-{
-public:
-    MTASA_NormalTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
-        : TspLibTestInstance(datasets, publisher)
-    {
-        temperature_scheduler.reset(new ListTemperatureScheduler(120, std::log(std::pow(10,-10)), 1000));
-    }
-
-    virtual TSPSolver& createTSPSolver() override
-    {
-        ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
-        GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
-        greedy_solver.setRoutingService(routing_service);
-        tsp_solver.addTSPSolver(greedy_solver);
-
-        SimulatedAnnealingTSPSolver& sa_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
-        sa_solver.setScheduleCostFunction(cost_function);
-        sa_solver.setTemperatureScheduler(*temperature_scheduler);
-        sa_solver.setMarkovChainLengthScale(1.f);
-        sa_solver.setPopulationScale(2);
-        sa_solver.setThreadsNumber(4);
-        sa_solver.setMutations({
-                                   SolutionGenerator::MutationType::BlockReverse,
-                                   SolutionGenerator::MutationType::VertexInsert,
-                                   SolutionGenerator::MutationType::BlockInsert
-                                });
-        sa_solver.addTSPSolver(engine.getAlgorithmsManager().createAlgorithm<ScrambleTSPSolver>());
-        tsp_solver.addTSPSolver(sa_solver);
-        return tsp_solver;
-    }
-
-    virtual const char* getAlgorithmName() override
-    {
-        return "Greedy >> SA_Normal";
-    }
-private:
-    std::unique_ptr<TemperatureScheduler> temperature_scheduler;
+    Options options;
 };
 
 class OneRelocate_TspLibInstance : public TspLibTestInstance
@@ -616,66 +624,161 @@ public:
 	}
 };
 
+static std::string light_datasets_name = "light";
+static std::string medium_datasets_name = "medium";
+static std::string heavy_datasets_name = "heavy";
+static std::string huge_datasets_name = "huge";
+
+static std::string optimal_solver_name = "optimal";
+static std::string greedy_solver_name = "greedy";
+static std::string two_opt_solver_name = "two-opt";
+static std::string one_relocate_solver_name = "one-relocate";
+static std::string hybrid_solver_name = "hybrid-opt";
+static std::string sa_solver_name = "sa";
+static std::string suint_solver_name = "suint";
+static std::string double_suint_solver_name = "suint-double";
+
+std::map<std::string, SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type> sa_temperature_scheduler_map = {
+    {"list-normal", SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListNormal},
+    {"list-fast", SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListFast},
+    {"list-slow", SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListSlow}
+};
+
+std::map<std::string, std::vector<std::string>> datasets_map = {
+    {light_datasets_name, std::ref(light_datasets)},
+    {medium_datasets_name, std::ref(medium_datasets)},
+    {heavy_datasets_name, std::ref(heavy_datasets)},
+    {huge_datasets_name, std::ref(huge_datasets)}};
+
+struct CmdLineOptions
+{
+    std::vector<std::string> dataset_names;
+    std::vector<std::string> solver_names;
+    std::string output_file_name;
+    std::size_t number_of_iterations;
+    SimulatedAnnealingTspLibInstance::Options sa_options;
+};
+
+bool parseCommandLine (int argc, char **argv, CmdLineOptions & cmd_line_options)
+{
+    std::string sa_temperature_scheduler_name;
+    boost::program_options::options_description options_description("Allowed options");
+    options_description.add_options()
+    ("help", "produce help message")
+    ("datasets-name,D",
+     boost::program_options::value<std::vector<std::string>>(&cmd_line_options.dataset_names),
+     "set dataset name")
+    ("solver-name,S",
+     boost::program_options::value<std::vector<std::string>>(&cmd_line_options.solver_names),
+     "set solver name")
+    ("iterations-number,N",
+     boost::program_options::value<std::size_t>(&cmd_line_options.number_of_iterations)->default_value(10),
+     "set number of iterations")
+    ("output-file-name,O",
+     boost::program_options::value<std::string>(&cmd_line_options.output_file_name),
+     "output file name")
+    ("sa-population-scale",
+     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.population_scale)->default_value(cmd_line_options.sa_options.population_scale),
+     "simulated annealing population scale per thread")
+    ("sa-threads-number",
+     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.threads_number)->default_value(cmd_line_options.sa_options.threads_number),
+     "simulated annealing threads number")
+    ("sa-markov-chain-length-scale",
+     boost::program_options::value<float>(&cmd_line_options.sa_options.markov_chain_length_scale)->default_value(cmd_line_options.sa_options.markov_chain_length_scale),
+     "simulated annealing markov chain lenght scale")
+    ("sa-temperature-scheduler-name",
+     boost::program_options::value<std::string>(&sa_temperature_scheduler_name)->default_value("list-normal"),
+     "simulated annealing temperature scheduler name")
+    ("sa-list-temperature-scheduler-size",
+     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.temperature_scheduler_options.list_size)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.list_size),
+     "simulated annealing list temperature scheduler size")
+    ("sa-list-temperature-scheduler-limit",
+     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.temperature_scheduler_options.list_max_iterations)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.list_max_iterations),
+     "simulated annealing list temperature scheduler iterations limit")
+    ("sa-list-temperature-scheduler-ratio",
+     boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.ratio)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.ratio),
+     "simulated annealing list temperature scheduler ratio")
+    ("sa-list-temperature-scheduler-probability",
+     boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.initial_probability)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.initial_probability),
+     "simulated annealing list temperature scheduler natural log initial probability");
+    
+    boost::program_options::variables_map vm;
+    boost::program_options::store(boost::program_options::parse_command_line(argc, argv, options_description), vm);
+    boost::program_options::notify(vm);
+    
+    if (vm.count("help")) {
+        std::cout << options_description << std::endl;
+        return false;
+    }
+    
+    cmd_line_options.sa_options.temperature_scheduler_options.type = sa_temperature_scheduler_map.at(sa_temperature_scheduler_name);
+    return true;
+}
+
 int main(int argc, char **argv)
 {
-	LoggingManager::configure("logging.cfg");
-
+    LoggingManager::configure("logging.cfg");
+    
+    CmdLineOptions cmd_line_options;
+    if (!parseCommandLine(argc, argv, cmd_line_options)) {
+        return 1;
+    }
+    
+    number_of_iterations = cmd_line_options.number_of_iterations;
+    
 	std::unique_ptr<Scheduler::BenchmarkPublisher> publisher;
-	if (argc > 1)
+	if (!cmd_line_options.output_file_name.empty())
 	{
-		publisher.reset(new MarkdownBenchmarkPublisher(argv[1]));
+		publisher.reset(new MarkdownBenchmarkPublisher(cmd_line_options.output_file_name));
 	}
 	else
 	{
 		publisher.reset(new StdoutBenchmarkPublisher());
 	}
 
-    auto datasets = {light_datasets/*, medium_datasets*/};
-    for (const auto &dataset : datasets) {
-		
-        {
-            Optimal_TspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
-            Greedy_TspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
-            Greedy_2Opt_TspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
-            Greedy_TwoOpt_OneRelocate_TspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
-            Greedy_HybridOpt_TspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
-            MTASA_FastTspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-
-        {
-            MTASA_NormalTspLibInstance test(dataset, *publisher);
-            test.run();
-        }
-		
-        {
-			SuIntTspLibInstance test(dataset, *publisher);
-			test.run();
-        }
-        
-        {
-			DoubleSuIntTspLibInstance test(dataset, *publisher);
-			test.run();
+    for (const auto &dataset_name : cmd_line_options.dataset_names) {
+        const auto & dataset = datasets_map.at(dataset_name);
+        for (const auto & solver_name : cmd_line_options.solver_names) {
+            if (solver_name == optimal_solver_name) {
+                Optimal_TspLibInstance test(dataset, *publisher);
+                test.run();
+            }
+            
+            if (solver_name == greedy_solver_name) {
+                Greedy_TspLibInstance test(dataset, *publisher);
+                test.run();
+            }
+            
+            if (solver_name == two_opt_solver_name) {
+                Greedy_2Opt_TspLibInstance test(dataset, *publisher);
+                test.run();
+            }
+            
+            if (solver_name == one_relocate_solver_name) {
+                Greedy_TwoOpt_OneRelocate_TspLibInstance test(dataset, *publisher);
+                test.run();
+            }
+            
+            if (solver_name == hybrid_solver_name) {
+                Greedy_HybridOpt_TspLibInstance test(dataset, *publisher);
+                test.run();
+            }
+            
+            if (solver_name == sa_solver_name) {
+                SimulatedAnnealingTspLibInstance test(dataset, *publisher);
+                test.setOptions(cmd_line_options.sa_options);
+                test.run();
+            }
+            
+            if (solver_name == suint_solver_name) {
+                SuIntTspLibInstance test(dataset, *publisher);
+                test.run();
+            }
+            
+            if (solver_name == double_suint_solver_name) {
+                DoubleSuIntTspLibInstance test(dataset, *publisher);
+                test.run();
+            }
         }
     }
 	publisher->publish();
