@@ -26,7 +26,6 @@ namespace Scheduler
         void setMutations(std::initializer_list<SolutionGenerator::MutationType> mutations);
         void setThreadsNumber(std::size_t threadsNumber);
         void setPopulationScale(std::size_t populationScale);
-        void addTSPSolver(const TSPSolver& aTSPSolver);
 
         static constexpr const char* staticGetName() { return "SimulatedAnnealing"; }
 		virtual const char* getName() const override { return staticGetName(); };
@@ -38,7 +37,6 @@ namespace Scheduler
 		Optional<const ScheduleCostFunction&> schedule_cost_function;
         Optional<TemperatureScheduler&> temperature_scheduler_template;
         std::set<SolutionGenerator::MutationType> allowed_mutations;
-        std::vector<ReferenceWrapper<const TSPSolver>> tsp_solvers;
 
         float markov_chain_length_scale;
         std::size_t population_scale;

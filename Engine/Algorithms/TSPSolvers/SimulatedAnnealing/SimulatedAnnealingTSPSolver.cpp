@@ -78,11 +78,6 @@ namespace Scheduler
         this->threads_number = threadsNumber;
     }
 
-    void SimulatedAnnealingTSPSolver::addTSPSolver(const Scheduler::TSPSolver &aTSPSolver)
-    {
-        tsp_solvers.emplace_back(aTSPSolver);
-    }
-
     void SimulatedAnnealingTSPSolver::optimize(Run& run) const
     {
         if (!schedule_cost_function) return;
@@ -110,14 +105,13 @@ namespace Scheduler
 
             Run& temporaryRun = temporarySchedule.getSchedule()->getRuns().at(runIdx);
             runs.push_back(temporaryRun);
-
-            const TSPSolver& tsp_solver = tsp_solvers.at(idx % tsp_solvers.size());
-            tsp_solver.optimize(temporaryRun);
             
             auto solution_generator = std::make_shared<InstanceBasedSolutionGenerator>(temporaryRun);
             for (const auto mutation : allowed_mutations) {
                 solution_generator->enableMutation(mutation);
             }
+            solution_generator->shuffle();
+            solution_generator->store();
             generators.push_back(solution_generator);
 
             const Cost initialCost = schedule_cost_function->calculateCost(temporaryRun.getSchedule());
@@ -156,7 +150,7 @@ namespace Scheduler
                     for (size_t s = 0; s < S && !stop; ++s) {
                         solution_generator->neighbour();
                         const Cost cost = solution_generator->hasPermutation() ? schedule_cost_function->calculateCost(runRef.get().getSchedule()) : best_cost;
-                        if (cost < best_cost) {
+                        if (cost <= best_cost) {
                             best_cost = cost;
                             solution_generator->store();
                         } else {

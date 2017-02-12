@@ -41,6 +41,12 @@ void SolutionGenerator::store ()
     scene_editor.commit();
 }
 
+void SolutionGenerator::shuffle ()
+{
+    has_permutation = true;
+    scene_editor.performAction<ScrambleWorkStops>(run, run.getWorkStops().begin(), run.getWorkStops().end());
+}
+
 size_t SolutionGenerator::checkpoint ()
 {
     return scene_editor.checkpoint();
@@ -273,11 +279,11 @@ InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run &run) :
 void InstanceBasedSolutionGenerator::neighbour()
 {
     has_permutation = false;
-    std::size_t from = index_distribution(random_engine, index_param_t(0, optimized_populations_ref->size() - 2));
+    std::size_t from = index_distribution(random_engine, index_param_t(0, populations_ptr->size() - 2));
     if (from >= self_index_in_populations) {
         ++from;
     }
-    neighbour(optimized_populations_ref->at(from));
+    neighbour(populations_ptr->at(from));
 }
 
 void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGenerator::VectorSizeT& anotherRun)
@@ -428,7 +434,7 @@ void InstanceBasedSolutionGenerator::addEdgeWithVertexSwap(Run::WorkStopIterator
 
 void InstanceBasedSolutionGenerator::setPopulations(const PopulationsT & populations, std::size_t selfIndexInPopulations)
 {
-    this->optimized_populations_ref = &populations;
+    this->populations_ptr = &populations;
     this->self_index_in_populations = selfIndexInPopulations;
 }
 
