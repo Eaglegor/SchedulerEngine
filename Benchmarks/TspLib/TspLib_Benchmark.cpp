@@ -712,9 +712,12 @@ bool parseCommandLine (int argc, char **argv, CmdLineOptions & cmd_line_options)
     ("sa-temperature-scheduler-end-probability",
      boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.end_probability)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.end_probability),
      "simulated annealing temperature scheduler natural log end probability");
+
+    boost::program_options::positional_options_description p;
+    p.add("output-file-name", -1);
     
     boost::program_options::variables_map vm;
-    boost::program_options::store(boost::program_options::parse_command_line(argc, argv, options_description), vm);
+    boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(options_description).positional(p).run(), vm);
     boost::program_options::notify(vm);
     
     if (vm.count("help")) {
@@ -722,7 +725,23 @@ bool parseCommandLine (int argc, char **argv, CmdLineOptions & cmd_line_options)
         return false;
     }
     
+    if (cmd_line_options.dataset_names.empty()) {
+        cmd_line_options.dataset_names.push_back(light_datasets_name);
+    }
+
+    if (cmd_line_options.solver_names.empty()) {
+        cmd_line_options.solver_names.insert(cmd_line_options.solver_names.end(), { optimal_solver_name,
+                                                                                    greedy_solver_name,
+                                                                                    two_opt_solver_name,
+                                                                                    one_relocate_solver_name,
+                                                                                    hybrid_solver_name,
+                                                                                    sa_solver_name,
+                                                                                    suint_solver_name,
+                                                                                    double_suint_solver_name });
+    }
+    
     cmd_line_options.sa_options.temperature_scheduler_options.type = sa_temperature_scheduler_map.at(sa_temperature_scheduler_name);
+
     return true;
 }
 
