@@ -62,15 +62,15 @@ SolutionGenerator::MutationType SolutionGenerator::selectRandomMutation()
     const float random_value = float_distribution(random_engine, float_param_t(0.f, 1.f));
     const float s = 1.f / allowed_mutations.size();
     float v = s;
-    MutationType mutationType = *allowed_mutations.begin();
+    MutationType mutation_type = *allowed_mutations.begin();
     for (auto m : allowed_mutations) {
         if (random_value < v) {
-            mutationType = m;
+            mutation_type = m;
             break;
         }
         v += s;
     }
-    return mutationType;
+    return mutation_type;
 }
 
 void SolutionGenerator::blockInsert(std::size_t i, std::size_t j, std::size_t k)
@@ -269,9 +269,7 @@ void SolutionGeneratorClassic::vertexSwap()
 InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run &run) :
     SolutionGenerator(run)
 {
-    for (Run::WorkStopIterator it = run.getWorkStops().begin();
-         it != run.getWorkStops().end();
-         ++it) {
+    for (Run::WorkStopIterator it = run.getWorkStops().begin(); it != run.getWorkStops().end(); ++it) {
         ids[it->getOperation().getId()] = it;
     }
 }
@@ -286,26 +284,26 @@ void InstanceBasedSolutionGenerator::neighbour()
     neighbour(populations_ptr->at(from));
 }
 
-void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGenerator::VectorSizeT& anotherRun)
+void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGenerator::VectorSizeT& another_run)
 {
     const std::size_t source_edge = index_distribution(random_engine, index_param_t(0, N));
-    const std::size_t operation_a_id = source_edge == 0 ? std::numeric_limits<std::size_t>::max() : anotherRun.at(source_edge - 1);
-    const std::size_t operation_b_id = source_edge == N ? std::numeric_limits<std::size_t>::max() : anotherRun.at(source_edge);
+    const std::size_t operation_a_id = source_edge == 0 ? std::numeric_limits<std::size_t>::max() : another_run.at(source_edge - 1);
+    const std::size_t operation_b_id = source_edge == N ? std::numeric_limits<std::size_t>::max() : another_run.at(source_edge);
     neighbour(operation_a_id, operation_b_id);
     assert(checkEdge(operation_a_id, operation_b_id));
 }
 
-void InstanceBasedSolutionGenerator::neighbour (std::size_t idA, std::size_t idB)
+void InstanceBasedSolutionGenerator::neighbour (std::size_t a_id, std::size_t b_id)
 {
-    if (idA == std::numeric_limits<std::size_t>::max()) {
-        const auto operation_b_it = ids.at(idB);
+    if (a_id == std::numeric_limits<std::size_t>::max()) {
+        const auto operation_b_it = ids.at(b_id);
         neighbour(run.getWorkStops().end(), operation_b_it);
-    } else if (idB == std::numeric_limits<std::size_t>::max()) {
-        const auto operation_a_it = ids.at(idA);
+    } else if (b_id == std::numeric_limits<std::size_t>::max()) {
+        const auto operation_a_it = ids.at(a_id);
         neighbour(operation_a_it, run.getWorkStops().end());
     } else {
-        const auto iter_a = ids.at(idA);
-        const auto iter_b = ids.at(idB);
+        const auto iter_a = ids.at(a_id);
+        const auto iter_b = ids.at(b_id);
         neighbour(iter_a, iter_b);
     }
 }
@@ -348,8 +346,9 @@ SolutionGenerator::MutationType InstanceBasedSolutionGenerator::selectMutation(R
 
 void InstanceBasedSolutionGenerator::addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b)
 {
-    addEdgeWithBlockInsert(std::distance(run.getWorkStops().begin(), a == run.getWorkStops().end() ? run.getWorkStops().begin() : std::next(a)),
-                           std::distance(run.getWorkStops().begin(), b));
+    const std::size_t a_idx = (a == run.getWorkStops().end() ? 0 : (std::distance(run.getWorkStops().begin(), a) + 1));
+    const std::size_t b_idx = std::distance(run.getWorkStops().begin(), b);
+    addEdgeWithBlockInsert(a_idx, b_idx);
 }
 
 void InstanceBasedSolutionGenerator::addEdgeWithBlockInsert(std::size_t a, std::size_t b)
@@ -432,22 +431,22 @@ void InstanceBasedSolutionGenerator::addEdgeWithVertexSwap(Run::WorkStopIterator
     }
 }
 
-void InstanceBasedSolutionGenerator::setPopulations(const PopulationsT & populations, std::size_t selfIndexInPopulations)
+void InstanceBasedSolutionGenerator::setPopulations(const PopulationsT & populations, std::size_t self_index)
 {
     this->populations_ptr = &populations;
-    this->self_index_in_populations = selfIndexInPopulations;
+    this->self_index_in_populations = self_index;
 }
 
-bool InstanceBasedSolutionGenerator::checkEdge(std::size_t idA, std::size_t idB) const
+bool InstanceBasedSolutionGenerator::checkEdge(std::size_t a_id, std::size_t b_id) const
 {
     bool result = false;
-    if (idA == std::numeric_limits<std::size_t>::max()) {
-        result = run.getWorkStops().front().getOperation().getId() == idB;
+    if (a_id == std::numeric_limits<std::size_t>::max()) {
+        result = run.getWorkStops().front().getOperation().getId() == b_id;
         if (!result) {
             std::cout << "fail at first" << std::endl;
         }
-    } else if (idB == std::numeric_limits<std::size_t>::max()) {
-        result = run.getWorkStops().back().getOperation().getId() == idA;
+    } else if (b_id == std::numeric_limits<std::size_t>::max()) {
+        result = run.getWorkStops().back().getOperation().getId() == a_id;
         if (!result) {
             std::cout << "fail at last" << std::endl;
         }
@@ -455,11 +454,11 @@ bool InstanceBasedSolutionGenerator::checkEdge(std::size_t idA, std::size_t idB)
         auto it = std::find_if(run.getWorkStops().begin(),
                                run.getWorkStops().end(),
                                [&] (const WorkStop & workStop) {
-                                   return workStop.getOperation().getId() == idA;
+                                   return workStop.getOperation().getId() == a_id;
                                });
         result = (it != run.getWorkStops().end() &&
                   it != std::prev(run.getWorkStops().end()) &&
-                  std::next(it)->getOperation().getId() == idB);
+                  std::next(it)->getOperation().getId() == b_id);
         if (!result) {
             std::cout << "fail at mid" << std::endl;
         }
