@@ -24,15 +24,15 @@ namespace Scheduler
         void setTemperatureScheduler(TemperatureScheduler& temperature_scheduler_template);
         void setMarkovChainLengthScale(float markovScale);
         void setMutations(std::initializer_list<SolutionGenerator::MutationType> mutations);
-        void setThreadsNumber(std::size_t threadsNumber);
-        void setPopulationScale(std::size_t populationScale);
+        void setThreadsNumber(std::size_t threads_number);
+        void setPopulationScale(std::size_t population_scale);
 
         static constexpr const char* staticGetName() { return "SimulatedAnnealing"; }
 		virtual const char* getName() const override { return staticGetName(); };
 
     private:
         bool acceptance(Cost delta, float random, float temperature) const;
-        std::size_t markovChainLength (std::size_t stopsCount) const;
+        std::size_t markovChainLength (std::size_t stops_count) const;
 
 		Optional<const ScheduleCostFunction&> schedule_cost_function;
         Optional<TemperatureScheduler&> temperature_scheduler_template;

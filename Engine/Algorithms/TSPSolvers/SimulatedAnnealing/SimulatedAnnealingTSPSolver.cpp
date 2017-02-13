@@ -35,7 +35,6 @@ namespace Scheduler
 
     bool SimulatedAnnealingTSPSolver::acceptance(Cost delta, float random, float temperature) const
     {
-        //const float normalized_value = 1 / (1 + std::exp(delta.getValue() / temperature));
         const float normalized_value = std::exp(-delta.getValue() / temperature);
         return random <= normalized_value;
     }
@@ -50,9 +49,9 @@ namespace Scheduler
         this->temperature_scheduler_template = temperature_function;
     }
 
-    void SimulatedAnnealingTSPSolver::setMarkovChainLengthScale(float markovScale)
+    void SimulatedAnnealingTSPSolver::setMarkovChainLengthScale(float markov_scale)
     {
-        this->markov_chain_length_scale = markovScale;
+        this->markov_chain_length_scale = markov_scale;
     }
 
     void SimulatedAnnealingTSPSolver::setMutations(std::initializer_list<SolutionGenerator::MutationType> mutations)
@@ -61,21 +60,20 @@ namespace Scheduler
         this->allowed_mutations.insert(mutations.begin(), mutations.end());
     }
 
-    std::size_t SimulatedAnnealingTSPSolver::markovChainLength(std::size_t stopsCount) const
+    std::size_t SimulatedAnnealingTSPSolver::markovChainLength(std::size_t stops_count) const
     {
-        //const size_t M = std::nearbyint(stopsCount * std::log(stopsCount) * markov_chain_length_scale);
-        const size_t M = std::nearbyint(stopsCount * markov_chain_length_scale);
+        const size_t M = std::nearbyint(stops_count * markov_chain_length_scale);
         return std::max(std::size_t(1), M);
     }
 
-    void SimulatedAnnealingTSPSolver::setPopulationScale(size_t populationScale)
+    void SimulatedAnnealingTSPSolver::setPopulationScale(size_t population_scale)
     {
-        population_scale = std::max(static_cast<std::size_t>(1), populationScale);
+        this->population_scale = std::max(static_cast<std::size_t>(1), population_scale);
     }
 
-    void SimulatedAnnealingTSPSolver::setThreadsNumber(std::size_t threadsNumber)
+    void SimulatedAnnealingTSPSolver::setThreadsNumber(std::size_t threads_number)
     {
-        this->threads_number = threadsNumber;
+        this->threads_number = threads_number;
     }
 
     void SimulatedAnnealingTSPSolver::optimize(Run& run) const
@@ -91,8 +89,8 @@ namespace Scheduler
         auto temperature_scheduler = std::unique_ptr<TemperatureScheduler>(temperature_scheduler_template->clone());
         temperature_scheduler->initialize(run, schedule_cost_function.get());
 
-        auto runIter = run.getSchedule().findRun(run);
-        const std::size_t runIdx = std::distance<Schedule::ConstRunIterator>(run.getSchedule().getRuns().begin(), runIter);
+        auto run_iter = run.getSchedule().findRun(run);
+        const std::size_t run_idx = std::distance<Schedule::ConstRunIterator>(run.getSchedule().getRuns().begin(), run_iter);
 		
         std::vector<ScheduleVariant> schedules;
         std::vector<ReferenceWrapper<Run>> runs;
@@ -101,12 +99,12 @@ namespace Scheduler
         const std::size_t population_size = threads_number * population_scale;
         for (std::size_t idx = 0; idx < population_size; ++idx) {
             schedules.emplace_back(run.getSchedule());
-            ScheduleVariant& temporarySchedule = schedules.back();
+            ScheduleVariant& temporary_schedule = schedules.back();
 
-            Run& temporaryRun = temporarySchedule.getSchedule()->getRuns().at(runIdx);
-            runs.push_back(temporaryRun);
+            Run& temporary_run = temporary_schedule.getSchedule()->getRuns().at(run_idx);
+            runs.push_back(temporary_run);
             
-            auto solution_generator = std::make_shared<InstanceBasedSolutionGenerator>(temporaryRun);
+            auto solution_generator = std::make_shared<InstanceBasedSolutionGenerator>(temporary_run);
             for (const auto mutation : allowed_mutations) {
                 solution_generator->enableMutation(mutation);
             }
@@ -114,17 +112,17 @@ namespace Scheduler
             solution_generator->store();
             generators.push_back(solution_generator);
 
-            const Cost initialCost = schedule_cost_function->calculateCost(temporaryRun.getSchedule());
-            costs.push_back(initialCost);
+            const Cost initial_cost = schedule_cost_function->calculateCost(temporary_run.getSchedule());
+            costs.push_back(initial_cost);
         }
 
         const std::size_t T = threads_number;
 
         InstanceBasedSolutionGenerator::PopulationsT populations;
         InstanceBasedSolutionGenerator::PopulationsT populations_write;
-        for (Run& runRef : runs) {
+        for (Run& run_ref : runs) {
             InstanceBasedSolutionGenerator::VectorSizeT vector_of_idx;
-            for (auto & workStop : runRef.getWorkStops()) {
+            for (auto & workStop : run_ref.getWorkStops()) {
                 vector_of_idx.push_back(workStop.getOperation().getId());
             }
             populations.emplace_back(vector_of_idx);
@@ -136,22 +134,25 @@ namespace Scheduler
         std::mt19937_64 random_engine(random_device());
         std::uniform_real_distribution<float> float_distribution(0.f, 1.f);
 
+        Cost total_best_cost = costs.front();
         const std::size_t M = population_size;
         const std::size_t S = markovChainLength(run.getWorkStops().size());
         while (!temperature_scheduler->isFinish()) {
             for (std::size_t g = 0; g < M / T; ++g) {
-                bool stop = false;
                 #pragma omp parallel for num_threads(threads_number) if (threads_number > 1)
                 for (int m = 0; m < T; ++m) {
                     auto solution_generator = generators[g * T + m];
                     solution_generator->setPopulations(populations, g * T + m);
-                    auto runRef = runs[g * T + m];
+                    auto run_ref = runs[g * T + m];
                     Cost &best_cost = costs[g * T + m];
-                    for (size_t s = 0; s < S && !stop; ++s) {
+                    for (size_t s = 0; s < S; ++s) {
                         solution_generator->neighbour();
-                        const Cost cost = solution_generator->hasPermutation() ? schedule_cost_function->calculateCost(runRef.get().getSchedule()) : best_cost;
-                        if (cost <= best_cost) {
+                        const Cost cost = solution_generator->hasPermutation() ? schedule_cost_function->calculateCost(run_ref.get().getSchedule()) : best_cost;
+                        if (cost < best_cost) {
                             best_cost = cost;
+                            if (best_cost < total_best_cost) {
+                                total_best_cost = best_cost;
+                            }
                             solution_generator->store();
                         } else {
                             const float random_value = float_distribution(random_engine);
@@ -170,10 +171,9 @@ namespace Scheduler
                     }
                     InstanceBasedSolutionGenerator::VectorSizeT & vector_of_idx = populations_write[g * T + m];
                     vector_of_idx.clear();
-                    for (auto & workStop : runRef.get().getWorkStops()) {
+                    for (auto & workStop : run_ref.get().getWorkStops()) {
                         vector_of_idx.push_back(workStop.getOperation().getId());
                     }
-                    stop = true;
                 }
             }
             temperature_scheduler->changeTemperature();
