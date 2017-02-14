@@ -33,7 +33,7 @@ namespace Scheduler
     void ListTemperatureScheduler::initialize(Run& run, const ScheduleCostFunction& cost_function)
     {
         std::priority_queue<float> new_values;
-        const auto costs = create_initial_costs(run, cost_function, values_length);
+        const auto costs = create_initial_costs(run, cost_function, std::min(values_length, run.getWorkStops().size()));
         auto best_cost = *costs.begin();
         for (const auto &cost : costs) {
             const float t = -fabs((cost - best_cost).getValue()) / this->initial_probability;
