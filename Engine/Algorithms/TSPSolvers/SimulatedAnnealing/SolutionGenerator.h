@@ -110,8 +110,6 @@ protected:
     void addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
-
-    void addEdgeWithBlockInsert(std::size_t a, std::size_t b);
     
     bool checkEdge(std::size_t id1, std::size_t id2) const;
     
