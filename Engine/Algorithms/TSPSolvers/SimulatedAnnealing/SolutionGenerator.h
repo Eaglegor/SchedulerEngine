@@ -105,8 +105,8 @@ protected:
     void neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b);
 
     void addEdgeWithBlockReverse(Run::WorkStopIterator a, Run::WorkStopIterator b);
-    void addEdgeWithBlockReverseSimple(Run::WorkStopIterator a, Run::WorkStopIterator b);
-    void addEdgeWithBlockReverseComplex(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithBlockReverseDirect(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithBlockReverseCircular(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);

@@ -365,13 +365,13 @@ void InstanceBasedSolutionGenerator::addEdgeWithBlockReverse(Run::WorkStopIterat
 {
     if (a == run.getWorkStops().end() ||
         std::distance(run.getWorkStops().begin(), a) < std::distance(run.getWorkStops().begin(), b)) {
-        addEdgeWithBlockReverseSimple(a, b);
+        addEdgeWithBlockReverseDirect(a, b);
     } else {
-        addEdgeWithBlockReverseComplex(a, b);
+        addEdgeWithBlockReverseCircular(a, b);
     }
 }
 
-void InstanceBasedSolutionGenerator::addEdgeWithBlockReverseSimple(Run::WorkStopIterator a, Run::WorkStopIterator b)
+void InstanceBasedSolutionGenerator::addEdgeWithBlockReverseDirect(Run::WorkStopIterator a, Run::WorkStopIterator b)
 {
     if (a == std::prev(run.getWorkStops().end()) || b == run.getWorkStops().end()) {
         blockReverse(a, b);
@@ -388,9 +388,18 @@ void InstanceBasedSolutionGenerator::addEdgeWithBlockReverseSimple(Run::WorkStop
     }
 }
 
-void InstanceBasedSolutionGenerator::addEdgeWithBlockReverseComplex(Run::WorkStopIterator a, Run::WorkStopIterator b)
+void InstanceBasedSolutionGenerator::addEdgeWithBlockReverseCircular(Run::WorkStopIterator a, Run::WorkStopIterator b)
 {
     addEdgeWithBlockInsert(a, b);
+    return;
+    
+    auto begin = run.getWorkStops().begin();
+    blockReverse(run.getWorkStops().begin(), std::next(b));
+    if (a != std::prev(run.getWorkStops().end())) {
+        blockReverse(std::next(a), run.getWorkStops().end());
+        blockInsert(std::next(a), run.getWorkStops().end(), run.getWorkStops().begin());
+    }
+    blockInsert(b, std::next(begin), run.getWorkStops().end());
 }
 
 void InstanceBasedSolutionGenerator::addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b)
