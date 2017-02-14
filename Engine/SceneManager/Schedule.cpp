@@ -179,6 +179,11 @@ namespace Scheduler {
 		return stops;
 	}
 
+	bool Schedule::empty() const
+	{
+		return runs.empty();
+	}
+
 	std::pair<Schedule::RunIterator, Schedule::RunDestructor> Schedule::detachRun(ConstRunIterator pos)
 	{
 		Run& r = *pos;
