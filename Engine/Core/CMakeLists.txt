@@ -30,6 +30,7 @@ target_link_libraries(Core
 	SweepVRPSolver
 	CWSavingsVRPSolver
 	SimpleEAVRPSolver
+	AnchorInsertionVRPSolver
     
 	SimpleTwoOptTSPSolver
 	SimulatedAnnealingTSPSolver

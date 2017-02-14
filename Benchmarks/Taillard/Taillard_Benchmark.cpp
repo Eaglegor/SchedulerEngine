@@ -29,6 +29,7 @@
 #include <Engine/Algorithms/TSPSolvers/SuInt/SuIntTSPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/CWSavings/CWSavingsVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Evolutionary/SingleObjective/SimpleEA/SimpleEAVRPSolver.h>
+#include <Engine/Algorithms/VRPSolvers/AnchorInsertion/AnchorInsertionVRPSolver.h>
 
 std::vector<std::string> datasets
 {
@@ -153,7 +154,7 @@ protected:
 		size_t scheduled_orders = 0;
 		size_t total_orders = 0;
 
-		for (size_t i = 0; i < 10; ++i)
+		for (size_t i = 0; i < 1; ++i)
 		{
 			Scene& scene = scene_loader.loadScene(std::string(TAILLARD_BENCHMARK_DATA_ROOT) + "/" + datasets[id] + ".dat");
 
@@ -209,7 +210,7 @@ protected:
 
 		result.kpi.emplace(SCHEDULED_ORDERS_KPI_NAME, std::to_string(scheduled_orders) + " / " + std::to_string(total_orders));
 		result.kpi.emplace(COST_KPI_NAME, std::to_string(cost.getValue()) + " (" + std::to_string(deviation * 100) + "%) ");
-		result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(nanoseconds / 10000000.0f));
+		result.kpi.emplace(AVERAGE_TIME_KPI_NAME, std::to_string(nanoseconds / 1000000.0f));
 		result.kpi.emplace(USED_VEHICLES_KPI_NAME, std::to_string(used_vehicles) + (used_vehicles != optimal_used_vehicles ? ( " ("+ (used_vehicles > optimal_used_vehicles ? std::string("+") : std::string("")) + std::to_string(used_vehicles - optimal_used_vehicles) +")" ) : ""));
 
 		total_cost += cost.getValue();
@@ -449,6 +450,52 @@ private:
     }
 };
 
+class AnchorInsertion_TaillardTestInstance : public TaillardTestInstance
+{
+public:
+    AnchorInsertion_TaillardTestInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TaillardTestInstance(datasets, publisher)
+    {
+    }
+
+    virtual VRPSolver& createVRPSolver() override
+    {
+        ChainVRPSolver& chain_solver = engine.getAlgorithmsManager().createAlgorithm<ChainVRPSolver>();
+
+        AnchorInsertionVRPSolver& vrp_solver = engine.getAlgorithmsManager().createAlgorithm<AnchorInsertionVRPSolver>();
+		vrp_solver.setIterationsLimit(100);
+		vrp_solver.setRepairAlgorithm(engine.getAlgorithmsManager().createAlgorithm<TransparentVRPSolver>());
+		vrp_solver.setRoutingService(routing_service);
+		vrp_solver.setCostFunction(cost_function);
+        chain_solver.appendSolver(vrp_solver);
+
+        TSPOnlyVRPSolver& tsponly_solver = engine.getAlgorithmsManager().createAlgorithm<TSPOnlyVRPSolver>(createTSPSolver());
+        chain_solver.appendSolver(tsponly_solver);
+
+        return chain_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "AnchorInsertion";
+    }
+private:
+    TSPSolver& createTSPSolver ()
+    {
+        ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
+
+        GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+        greedy_solver.setRoutingService(routing_service);
+        tsp_solver.addTSPSolver(greedy_solver);
+
+        SuIntTSPSolver& suint_solver = engine.getAlgorithmsManager().createAlgorithm<SuIntTSPSolver>();
+        suint_solver.setCostFunction(engine.getAlgorithmsManager().createCostFunction<TotalDistanceScheduleCostFunction>());
+        tsp_solver.addTSPSolver(suint_solver);
+
+        return tsp_solver;
+    }
+};
+
 int main(int argc, char **argv)
 {
 	std::unique_ptr<Scheduler::BenchmarkPublisher> publisher;
@@ -479,10 +526,15 @@ int main(int argc, char **argv)
     {
         CWSavings_TaillardTestInstance test(datasets, *publisher);
         test.run();
-    }*/
+    }
     
     {
         SimpleEA_TaillardTestInstance test(datasets, *publisher);
+        test.run();
+    }*/
+	
+	{
+        AnchorInsertion_TaillardTestInstance test(datasets, *publisher);
         test.run();
     }
 	

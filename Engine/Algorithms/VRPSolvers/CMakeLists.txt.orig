@@ -1,0 +1,8 @@
+add_subdirectory(Utilitary)
+add_subdirectory(Sweep)
+add_subdirectory(CWSavings)
+<<<<<<< HEAD
+add_subdirectory(AnchorInsertion)
+=======
+add_subdirectory(Evolutionary)
+>>>>>>> MOEA

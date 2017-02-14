@@ -14,8 +14,9 @@
 #include <Engine/SceneEditor/Actions/AllocateOrder.h>
 #include <Engine/SceneEditor/Actions/CreateRun.h>
 #include <Engine/SceneManager/CostFunctions/SceneCostFunction.h>
+#include <Engine/Routing/RoutingService.h>
 #include <set>
-#include "Engine/SceneManager/Vehicle.h"
+#include <Engine/SceneManager/Vehicle.h>
 
 namespace Scheduler
 {
@@ -60,6 +61,7 @@ namespace Scheduler
 			
 			void reset()
 			{
+				insertions.clear();
 				for (Schedule& schedule : scene.getSchedules())
 				{
 					for (Run& run : schedule.getRuns())
@@ -82,7 +84,7 @@ namespace Scheduler
 								Route ik = routing_service.calculateRoute(route_start.getSite(), order_location.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
 								Route kj = routing_service.calculateRoute(order_location.getSite(), route_end.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
 
-								insertion.estimated_cost = (-ij.getDuration() + ik.getDuration() + kj.getDuration()).getValue() * schedule.getPerformer().getDurationUnitCost().getValue() - UNPLANNED_ORDER_PENALTY;
+								insertion.estimated_cost = (-ij.getDuration() + ik.getDuration() + kj.getDuration()).getValue() /** schedule.getPerformer().getDurationUnitCost().getValue()*/ - UNPLANNED_ORDER_PENALTY;
 
 								insertions.insert(insertion);
 							}
@@ -117,8 +119,8 @@ namespace Scheduler
 				
 				scene_editor.performAction<AllocateOrder>(run, insertion.position, *insertion.order);
 				
-				Cost resulting_cost = cost_function.calculateCost(scene);
-				if(resulting_cost > current_best_cost)
+				//Cost resulting_cost = cost_function.calculateCost(scene);
+				if(!run.getSchedule().isValid() /*resulting_cost > current_best_cost*/)
 				{
 					scene_editor.rollbackToCheckpoint(checkpoint);
 					return false;
@@ -164,6 +166,7 @@ namespace Scheduler
 			
 			void reset()
 			{
+				anchors.clear();
 				for(const Order& order : scene.getContext().getOrders())
 				{
 					if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation().get())) continue;
@@ -206,7 +209,7 @@ namespace Scheduler
 					if (max_duration < ij.getDuration()) max_duration = ij.getDuration();
 				}
 
-				sum_duration /= max_duration.getValue();
+				sum_duration /= max_duration.getValue() == 0 ? 1 : max_duration.getValue();
 
 				return 1.0f / static_cast<float>(sum_duration.getValue());
 			}
@@ -289,11 +292,12 @@ namespace Scheduler
 			Optional<Anchor> anchor = anchor_suggestor.suggestAnchor();
 			
 			Optional<Insertion> insertion = insertion_suggestor.suggestInsertion();
-			while(insertion && insertion->estimated_cost < anchor->estimated_cost)
+			while(insertion && (!anchor || insertion->estimated_cost < anchor->estimated_cost))
 			{
 				bool successful_insertion = insertion_actor.apply(insertion.get(), current_best_cost);
 				
 				if(successful_insertion) {
+					scene_editor.commit();
 					repair_actor.apply();
 					insertion_suggestor.reset();
 					anchor = anchor_suggestor.suggestAnchor();
@@ -302,11 +306,18 @@ namespace Scheduler
 				insertion = insertion_suggestor.suggestInsertion();
 			}
 			
-			bool successful_anchor = anchor_actor.apply(anchor.get());
-			if(successful_anchor) {
-				repair_actor.apply();
-				insertion_suggestor.reset();
+			if(anchor)
+			{
+				bool successful_anchor = anchor_actor.apply(anchor.get());
+				if(successful_anchor) {
+					scene_editor.commit();
+					repair_actor.apply();
+					insertion_suggestor.reset();
+					anchor_suggestor.reset();
+				}
 			}
+			
+			std::cout << iterations_count << std::endl;
 			
 			if (!anchor && !insertion) finished = true;
 			if(iterations_limit != 0 && ++iterations_count >= iterations_limit) finished = true;

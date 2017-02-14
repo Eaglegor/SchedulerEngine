@@ -5,12 +5,12 @@
 #include <AnchorInsertionVRPSolver.h>
 #include <cstdint>
 #include <memory>
-#include "Engine/Engine/Services/RoutingService.h"
 
 namespace Scheduler
 {
 	class TSPSolver;
 	class SceneCostFunction;
+	class RoutingService;
 
     class ANCHORINSERTIONVRPSOLVER_EXPORT AnchorInsertionVRPSolver : public VRPSolver
 	{
