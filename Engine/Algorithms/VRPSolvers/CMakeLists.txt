@@ -1,4 +1,5 @@
 add_subdirectory(Utilitary)
 add_subdirectory(Sweep)
 add_subdirectory(CWSavings)
+add_subdirectory(Evolutionary)
 add_subdirectory(AnchorInsertion)

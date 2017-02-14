@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
 #include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/Transparent/TransparentVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/Chain/ChainVRPSolver.h>
 #include <Engine/AlgorithmsManager/AlgorithmsManager.h>

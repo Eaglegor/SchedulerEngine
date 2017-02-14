@@ -11,7 +11,7 @@
 #include <Engine/Algorithms/VRPSolvers/Utilitary/Chain/ChainVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/Sweep/SweepVRPSolver.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/CostFunctions/TotalDistance/TotalDistanceSceneCostFunction.h>
 #include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <Engine/SceneManager/Scene.h>
@@ -26,7 +26,9 @@
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Chain/ChainTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Greedy/GreedyTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
+#include <Engine/Algorithms/TSPSolvers/SuInt/SuIntTSPSolver.h>
 #include <Engine/Algorithms/VRPSolvers/CWSavings/CWSavingsVRPSolver.h>
+#include <Engine/Algorithms/VRPSolvers/Evolutionary/SingleObjective/SimpleEA/SimpleEAVRPSolver.h>
 
 std::vector<std::string> datasets
 {
@@ -398,6 +400,55 @@ private:
     }
 };
 
+class SimpleEA_TaillardTestInstance : public TaillardTestInstance
+{
+public:
+    SimpleEA_TaillardTestInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
+        : TaillardTestInstance(datasets, publisher)
+    {
+    }
+
+    virtual VRPSolver& createVRPSolver() override
+    {
+        ChainVRPSolver& chain_solver = engine.getAlgorithmsManager().createAlgorithm<ChainVRPSolver>();
+
+        SimpleEAVRPSolver& ea_solver = engine.getAlgorithmsManager().createAlgorithm<SimpleEAVRPSolver>();
+		ea_solver.setIterationsLimit(100);
+		ea_solver.setPopulationSize(100);
+        chain_solver.appendSolver(ea_solver);
+
+        TSPOnlyVRPSolver& tsponly_solver = engine.getAlgorithmsManager().createAlgorithm<TSPOnlyVRPSolver>(createTSPSolver());
+        chain_solver.appendSolver(tsponly_solver);
+
+        return chain_solver;
+    }
+
+    virtual const char* getAlgorithmName() override
+    {
+        return "SimpleEA";
+    }
+private:
+    TSPSolver& createTSPSolver2Opt ()
+    {
+        ChainTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<ChainTSPSolver>();
+
+        GreedyTSPSolver& greedy_solver = engine.getAlgorithmsManager().createAlgorithm<GreedyTSPSolver>();
+        greedy_solver.setRoutingService(routing_service);
+        tsp_solver.addTSPSolver(greedy_solver);
+
+        SuIntTSPSolver& suint_solver = engine.getAlgorithmsManager().createAlgorithm<SuIntTSPSolver>();
+        suint_solver.setCostFunction(engine.getAlgorithmsManager().createCostFunction<TotalDistanceScheduleCostFunction>());
+        tsp_solver.addTSPSolver(suint_solver);
+
+        return tsp_solver;
+    }
+
+    TSPSolver& createTSPSolver ()
+    {
+        return createTSPSolver2Opt();
+    }
+};
+
 int main(int argc, char **argv)
 {
 	std::unique_ptr<Scheduler::BenchmarkPublisher> publisher;
@@ -415,7 +466,7 @@ int main(int argc, char **argv)
 		test.run();
 	}
 
-	{
+	/*{
 		Transparent_TaillardTestInstance test(datasets, *publisher);
 		test.run();
     }
@@ -427,6 +478,11 @@ int main(int argc, char **argv)
     
     {
         CWSavings_TaillardTestInstance test(datasets, *publisher);
+        test.run();
+    }*/
+    
+    {
+        SimpleEA_TaillardTestInstance test(datasets, *publisher);
         test.run();
     }
 	

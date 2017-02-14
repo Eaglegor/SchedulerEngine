@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
 #include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>

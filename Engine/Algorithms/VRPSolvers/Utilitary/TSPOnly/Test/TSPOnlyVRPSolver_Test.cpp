@@ -8,7 +8,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <Engine/AlgorithmsManager/TSPSolver.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
 
 class MockTSPSolver : public Scheduler::TSPSolver

@@ -1,5 +1,5 @@
 add_executable(Taillard_Benchmark Taillard_Benchmark.cpp)
 
-target_link_libraries(Taillard_Benchmark Engine TaillardRoutingService TaillardSceneLoader)
+target_link_libraries(Taillard_Benchmark Core TaillardRoutingService TaillardSceneLoader)
 set_target_properties(Taillard_Benchmark PROPERTIES FOLDER "Benchmarks/Taillard")
 add_definitions(-DTAILLARD_BENCHMARK_DATA_ROOT="${CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY}/Data/CVRP/Taillard" -DCATCH_CONFIG_MAIN)

@@ -1,21 +1,56 @@
-add_library(Engine SHARED
-	
+add_library(Core SHARED
 	Engine.h
 	Engine.cpp
-	
-	Services/RoutingService.h
 )
 
-target_link_libraries(Engine 
+target_link_libraries(Core
     SceneManager 
 	SceneEditor
     AlgorithmsManager
     MemoryManager
+    
+    PerformerAssignedVehicleBinder
+    
+	DefaultRouteActualizationAlgorithm
+    DefaultDurationActualizationAlgorithm
+    DefaultArrivalTimeActualizationAlgorithm
+	
+	ChainScheduleValidationAlgorithm
+	ValidRunsScheduleValidationAlgorithm
+	
+	ChainRunValidationAlgorithm
+	OverloadRunValidationAlgorithm
+	ValidStopsRunValidationAlgorithm
+	
+	ChainStopValidationAlgorithm
+    
+    TransparentVRPSolver
+    ChainVRPSolver
+    TSPOnlyVRPSolver
+	SweepVRPSolver
+	CWSavingsVRPSolver
+	SimpleEAVRPSolver
+    
+	SimpleTwoOptTSPSolver
+	SimulatedAnnealingTSPSolver
+	GreedyTSPSolver
+	ChainTSPSolver
+	OneRelocateTSPSolver
+	BestOfTSPSolver
+	HybridOptTSPSolver
+	SuIntTSPSolver
+	TransparentTSPSolver
+	ReverseTSPSolver
+	IterativeTSPSolver
+	ScrambleTSPSolver
+	RotateTSPSolver
+	
+	TotalDistanceCostFunctions
 )
 
-set_target_properties(Engine PROPERTIES FOLDER "Engine")
+set_target_properties(Core PROPERTIES FOLDER "Core")
 
-cotire(Engine)
+cotire(Core)
 
 include(GenerateExportHeader)
-generate_export_header(Engine EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/Engine_export.h)
+generate_export_header(Core EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/Core_export.h)

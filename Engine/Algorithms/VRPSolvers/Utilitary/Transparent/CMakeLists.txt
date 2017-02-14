@@ -21,7 +21,7 @@ if(CPP_SCHEDULER_TESTS)
 	set_property(SOURCE Test/TransparentVRPSolver_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
 		
 	add_test(NAME TransparentVRPSolver_Test COMMAND $<TARGET_FILE:TransparentVRPSolver_Test>)
-	target_link_libraries(TransparentVRPSolver_Test Engine CrowFlyRoutingService)
+	target_link_libraries(TransparentVRPSolver_Test Core CrowFlyRoutingService)
 	set_target_properties(TransparentVRPSolver_Test PROPERTIES FOLDER "Engine/Algorithms/VRPSolvers/Utilitary/Tests/")
 	
 	cotire(TransparentVRPSolver_Test)
