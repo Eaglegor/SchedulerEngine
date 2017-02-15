@@ -26,7 +26,7 @@ if(CPP_SCHEDULER_TESTS)
 	set_property(SOURCE Test/DefaultArrivalTimeActualizationAlgorithm_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
 		
 	add_test(NAME DefaultArrivalTimeActualizationAlgorithm_Test COMMAND $<TARGET_FILE:DefaultArrivalTimeActualizationAlgorithm_Test>)
-	target_link_libraries(DefaultArrivalTimeActualizationAlgorithm_Test Engine CrowFlyRoutingService)
+	target_link_libraries(DefaultArrivalTimeActualizationAlgorithm_Test Core CrowFlyRoutingService)
 	set_target_properties(DefaultArrivalTimeActualizationAlgorithm_Test PROPERTIES FOLDER "Engine/Algorithms/ScheduleActualization/ArrivalTime/Tests/")
 	
 	cotire(DefaultArrivalTimeActualizationAlgorithm_Test)

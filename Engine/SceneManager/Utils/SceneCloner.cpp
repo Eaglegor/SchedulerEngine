@@ -4,11 +4,13 @@
 #include "../WorkStop.h"
 #include "../Vehicle.h"
 #include "../Scene.h"
+#include "../SceneContext.h"
 #include <unordered_map>
 #include <type_traits>
 
-namespace Scheduler {
-		void SceneCloner::cloneScheduleState(const Schedule& from, Schedule& to) 
+namespace Scheduler 
+{
+		void SceneCloner::cloneScheduleProperties(const Schedule& from, Schedule& to)
 		{
 			to.setActualizationModel(from.getActualizationModel());
 			to.setValidationModel(from.getValidationModel());
@@ -16,7 +18,10 @@ namespace Scheduler {
 			to.setShift(from.getShift());
 			to.constraints() = from.constraints();
 			to.setRunVehicleBinder(from.getRunVehicleBinder());
-			
+		}
+	
+		void SceneCloner::cloneScheduleAssignments(const Schedule& from, Schedule& to)
+		{
 			to.clear();
 			
 			for (Run& r : from.getRuns())
@@ -44,6 +49,38 @@ namespace Scheduler {
 				}
 				new_run.getEndStop().setDuration(r.getEndStop().getDuration());
 				new_run.getEndStop().setAllocationTime(r.getEndStop().getAllocationTime());
+			}
+		}
+	
+		void SceneCloner::cloneScheduleState(const Schedule& from, Schedule& to) 
+		{
+			cloneScheduleProperties(from, to);
+			cloneScheduleAssignments(from, to);			
+		}
+	
+		void SceneCloner::cloneSceneSchedulesPool(const Scene& from, Scene& to)
+		{
+			assert(from.getContext() == to.getContext());
+			assert(to.getSchedules().empty());
+			
+			for(const Schedule& from_schedule :from.getSchedules())
+			{
+				Schedule& to_schedule = to.createSchedule(from_schedule.getPerformer());
+				cloneScheduleProperties(from_schedule, to_schedule);
+			}
+		}
+
+		void SceneCloner::cloneSceneAssignments(const Scene& from, Scene& to)
+		{
+			assert(from.getContext() == to.getContext());
+			assert(from.getSchedules().size() == to.getSchedules().size());
+			
+			auto from_iter = from.getSchedules().begin();
+			auto to_iter = to.getSchedules().begin();
+			
+			for( ; from_iter != from.getSchedules().end() && to_iter != to.getSchedules().end(); ++from_iter, ++to_iter)
+			{
+				cloneScheduleAssignments(*from_iter, *to_iter);
 			}
 		}
 }

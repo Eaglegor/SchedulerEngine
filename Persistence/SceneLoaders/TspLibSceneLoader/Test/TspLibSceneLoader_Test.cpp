@@ -2,7 +2,7 @@
 
 #include <Services/Routing/TspLibRoutingService/TspLibRoutingService.h>
 #include <Persistence/SceneLoaders/TspLibSceneLoader/TspLibSceneLoader.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Location.h>
 #include <Engine/SceneManager/SceneContext.h>

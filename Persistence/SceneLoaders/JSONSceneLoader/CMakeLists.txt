@@ -23,7 +23,7 @@ IF(Boost_FOUND)
 	target_link_libraries(JSONSceneLoader ${Boost_LIBRARIES})
 ENDIF()
 
-target_link_libraries(JSONSceneLoader Engine)
+target_link_libraries(JSONSceneLoader Core)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     get_filename_component(DLL ${Boost_DATE_TIME_LIBRARY_DEBUG} NAME)

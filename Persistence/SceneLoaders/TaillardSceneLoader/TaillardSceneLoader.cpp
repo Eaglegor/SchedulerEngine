@@ -20,7 +20,7 @@
 #include <Engine/SceneManager/ScheduleValidationModel.h>
 #include <Engine/Algorithms/Validation/Schedule/ValidRuns/ValidRunsScheduleValidationAlgorithm.h>
 #include <Engine/Algorithms/Validation/Run/Overload/OverloadRunValidationAlgorithm.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 
 namespace Scheduler
 {

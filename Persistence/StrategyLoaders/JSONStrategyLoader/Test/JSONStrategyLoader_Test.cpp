@@ -5,7 +5,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <fstream>
 #include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 
 TEST_CASE("Persistence - StrategyLoaders - JSONStrategyLoader", "[integration][functional][persistence]")
 {

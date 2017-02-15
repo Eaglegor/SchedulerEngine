@@ -74,6 +74,8 @@ namespace Scheduler
 		const StopsList& getStops() const;
 		StopsList& getStops();
 		
+		bool empty() const;
+
 		RunIterator destroyRun(ConstRunIterator pos);
 		
 		std::pair<RunIterator, RunDestructor> detachRun(ConstRunIterator pos);

@@ -36,7 +36,7 @@ if(CPP_SCHEDULER_TESTS)
 	set_property(SOURCE Test/SceneEditor_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
 		
 	add_test(NAME SceneEditor_Test COMMAND $<TARGET_FILE:SceneEditor_Test> WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
-	target_link_libraries(SceneEditor_Test Engine CrowFlyRoutingService JSONSceneLoader)
+	target_link_libraries(SceneEditor_Test Core CrowFlyRoutingService JSONSceneLoader)
 	set_target_properties(SceneEditor_Test PROPERTIES FOLDER "Engine/Tests/")
 	
 	add_custom_command(TARGET SceneEditor_Test POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestScene.json ${EXECUTABLE_OUTPUT_PATH}/TestData/SceneEditor_Test/TestScene.json)

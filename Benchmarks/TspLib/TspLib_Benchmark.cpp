@@ -11,7 +11,7 @@
 
 #include "../Publishers/StdoutBenchmarkPublisher.h"
 #include "../Publishers/MarkdownBenchmarkPublisher.h"
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Engine/CostFunctions/TotalDistance/TotalDistanceScheduleCostFunction.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/AlgorithmsManager/AlgorithmsManager.h>
@@ -633,7 +633,7 @@ int main(int argc, char **argv)
     auto datasets = {light_datasets/*, medium_datasets*/};
     for (const auto &dataset : datasets) {
 		
-        {
+       /* {
             Optimal_TspLibInstance test(dataset, *publisher);
             test.run();
         }
@@ -676,7 +676,7 @@ int main(int argc, char **argv)
         {
 			DoubleSuIntTspLibInstance test(dataset, *publisher);
 			test.run();
-        }
+        }*/
     }
 	publisher->publish();
 }
