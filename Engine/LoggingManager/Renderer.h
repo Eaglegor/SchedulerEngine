@@ -11,6 +11,7 @@ namespace Scheduler
 
 	class Frame
 	{
+	public:
 		virtual ~Frame() {}
 
 		virtual void addRun(const Run& run) = 0;

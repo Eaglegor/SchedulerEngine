@@ -4,6 +4,7 @@ catch/1.3.0@TyRoXx/stable
 cotire/1.7.6@smspillaz/cotire
 libxml2/2.9.3@lasote/stable
 spdlog/0.1@memsharded/testing
+libpng/1.6.23@lasote/stable
 
 [options]
 Boost:shared=True
