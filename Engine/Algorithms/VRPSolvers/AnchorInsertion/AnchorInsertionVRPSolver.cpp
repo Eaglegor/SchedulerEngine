@@ -49,9 +49,9 @@ namespace Scheduler
 		public:
 			InsertionSuggestor(Scene &scene, const RoutingService& routing_service):
 			scene(scene),
-			routing_service(routing_service)
+			routing_service(routing_service),
+			current_iterator(insertions.end())
 			{
-				reset();
 			}
 		
 			Optional<Insertion> suggestInsertion()
@@ -147,7 +147,8 @@ namespace Scheduler
 		public:
 			AnchorSuggestor(Scene& scene, const RoutingService& routing_service):
 			scene(scene),
-			routing_service(routing_service)
+			routing_service(routing_service),
+			current_iterator(anchors.end())
 			{
 				reset();
 			}
@@ -285,6 +286,7 @@ namespace Scheduler
 		{
 			finished = true;
 			
+			anchor_suggestor.reset();
 			Optional<Anchor> anchor = anchor_suggestor.suggestAnchor();
 			
 			if(anchor)
@@ -299,6 +301,8 @@ namespace Scheduler
 						frame.addScene(scene);
 						frame.draw();
 					}
+					
+					insertion_suggestor.reset(anchor_run.get());
 					
 					Optional<Insertion> insertion = insertion_suggestor.suggestInsertion();
 					while(insertion)
