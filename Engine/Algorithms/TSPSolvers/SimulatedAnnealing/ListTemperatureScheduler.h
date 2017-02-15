@@ -33,8 +33,8 @@ namespace Scheduler
 
         std::vector<float> adapt_values;
     private:
-        const std::size_t values_length;
         const std::size_t max_iterations_number;
+        const std::size_t values_length;
         const float initial_probability;
         std::priority_queue<float> values;
         std::size_t iteration_counter;

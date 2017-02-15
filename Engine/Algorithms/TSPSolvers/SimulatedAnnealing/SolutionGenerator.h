@@ -34,6 +34,7 @@ public:
     void disableMutation (MutationType mutation);
     void discard ();
     void store ();
+    void shuffle ();
     std::size_t checkpoint ();
     void rollbackTo (std::size_t checkpoint);
     bool hasPermutation () const;
@@ -94,31 +95,31 @@ public:
     explicit InstanceBasedSolutionGenerator (Run& run);
 
     virtual void neighbour () override;
-    void setPopulations(const PopulationsT & populations, std::size_t selfIndexInPopulations);
+    void setPopulations(const PopulationsT & populations, std::size_t self_index);
 
 protected:
     typedef std::pair<Run::WorkStopIterator,Run::WorkStopIterator> WorkStopIteratorPair;
 
-    void neighbour (const VectorSizeT& anotherRun);
-    void neighbour (std::size_t idA, std::size_t idB);
+    void neighbour (const VectorSizeT& another_run);
+    void neighbour (std::size_t id1, std::size_t id2);
     void neighbour (Run::WorkStopIterator a, Run::WorkStopIterator b);
 
     void addEdgeWithBlockReverse(Run::WorkStopIterator a, Run::WorkStopIterator b);
-    void addEdgeWithBlockReverseSimple(Run::WorkStopIterator a, Run::WorkStopIterator b);
-    void addEdgeWithBlockReverseComplex(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithBlockReverseDirect(Run::WorkStopIterator a, Run::WorkStopIterator b);
+    void addEdgeWithBlockReverseCircular(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
-
-    void addEdgeWithBlockInsert(std::size_t a, std::size_t b);
     
-    bool checkEdge(std::size_t idA, std::size_t idB) const;
+    bool checkEdge(std::size_t id1, std::size_t id2) const;
     
     MutationType selectMutation(Run::WorkStopIterator a, Run::WorkStopIterator b);
 
-    PopulationsT const * optimized_populations_ref;
+    PopulationsT const * populations_ptr;
     std::unordered_map<std::size_t, Run::WorkStopIterator> ids;
     std::size_t self_index_in_populations;
+
+    Logger& logger;
 };
 
 }

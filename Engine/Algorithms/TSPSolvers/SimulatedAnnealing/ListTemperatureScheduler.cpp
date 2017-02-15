@@ -6,12 +6,12 @@
 namespace Scheduler
 {
     ListTemperatureScheduler::ListTemperatureScheduler () :
-        max_iterations_number(1000), values_length(90), iteration_counter(0), initial_probability(-20.72f)
+        max_iterations_number(1000), values_length(90), initial_probability(-20.72f), iteration_counter(0)
     {
     }
 
     ListTemperatureScheduler::ListTemperatureScheduler(std::size_t aLength, float aInitialProbability, std::size_t iterationsCount) :
-        max_iterations_number(iterationsCount), values_length(aLength), iteration_counter(0), initial_probability(aInitialProbability)
+        max_iterations_number(iterationsCount), values_length(aLength), initial_probability(aInitialProbability), iteration_counter(0)
     {
     }
 
@@ -33,7 +33,7 @@ namespace Scheduler
     void ListTemperatureScheduler::initialize(Run& run, const ScheduleCostFunction& cost_function)
     {
         std::priority_queue<float> new_values;
-        const auto costs = create_initial_costs(run, cost_function, values_length);
+        const auto costs = create_initial_costs(run, cost_function, std::min(values_length, run.getWorkStops().size()));
         auto best_cost = *costs.begin();
         for (const auto &cost : costs) {
             const float t = -fabs((cost - best_cost).getValue()) / this->initial_probability;
