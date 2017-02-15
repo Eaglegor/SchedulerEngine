@@ -1,5 +1,4 @@
 #include "SolutionGenerator.h"
-#include <iostream>
 #include <limits>
 #include <Engine/SceneEditor/Actions/SwapWorkStops.h>
 #include <Engine/SceneEditor/Actions/ReverseWorkStops.h>
@@ -267,7 +266,8 @@ void SolutionGeneratorClassic::vertexSwap()
 
 
 InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run &run) :
-    SolutionGenerator(run)
+    SolutionGenerator(run),
+    logger(LoggingManager::getLogger("InstanceBasedSolutionGenerator"))
 {
     for (Run::WorkStopIterator it = run.getWorkStops().begin(); it != run.getWorkStops().end(); ++it) {
         ids[it->getOperation().getId()] = it;
@@ -390,16 +390,8 @@ void InstanceBasedSolutionGenerator::addEdgeWithBlockReverseDirect(Run::WorkStop
 
 void InstanceBasedSolutionGenerator::addEdgeWithBlockReverseCircular(Run::WorkStopIterator a, Run::WorkStopIterator b)
 {
+    //real circular reverse not good by quality / performance
     addEdgeWithBlockInsert(a, b);
-    return;
-    
-    auto begin = run.getWorkStops().begin();
-    blockReverse(run.getWorkStops().begin(), std::next(b));
-    if (a != std::prev(run.getWorkStops().end())) {
-        blockReverse(std::next(a), run.getWorkStops().end());
-        blockInsert(std::next(a), run.getWorkStops().end(), run.getWorkStops().begin());
-    }
-    blockInsert(b, std::next(begin), run.getWorkStops().end());
 }
 
 void InstanceBasedSolutionGenerator::addEdgeWithVertexInsert(Run::WorkStopIterator a, Run::WorkStopIterator b)
@@ -447,12 +439,12 @@ bool InstanceBasedSolutionGenerator::checkEdge(std::size_t a_id, std::size_t b_i
     if (a_id == std::numeric_limits<std::size_t>::max()) {
         result = run.getWorkStops().front().getOperation().getId() == b_id;
         if (!result) {
-            std::cout << "fail at first" << std::endl;
+            LOG_ERROR(logger, "check edge first - {} failed", b_id);
         }
     } else if (b_id == std::numeric_limits<std::size_t>::max()) {
         result = run.getWorkStops().back().getOperation().getId() == a_id;
         if (!result) {
-            std::cout << "fail at last" << std::endl;
+            LOG_ERROR(logger, "check edge {} - last failed", a_id);
         }
     } else {
         auto it = std::find_if(run.getWorkStops().begin(),
@@ -464,7 +456,7 @@ bool InstanceBasedSolutionGenerator::checkEdge(std::size_t a_id, std::size_t b_i
                   it != std::prev(run.getWorkStops().end()) &&
                   std::next(it)->getOperation().getId() == b_id);
         if (!result) {
-            std::cout << "fail at mid" << std::endl;
+            LOG_ERROR(logger, "check edge {} - {} failed", a_id, b_id);
         }
     }
     return result;

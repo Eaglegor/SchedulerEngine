@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <SimulatedAnnealingTSPSolver_export.h>
 #include <Engine/Utils/Optional.h>
+#include <Engine/LoggingManager/LoggingManager.h>
 #include "SolutionGenerator.h"
 
 namespace Scheduler
@@ -37,6 +38,8 @@ namespace Scheduler
 		Optional<const ScheduleCostFunction&> schedule_cost_function;
         Optional<TemperatureScheduler&> temperature_scheduler_template;
         std::set<SolutionGenerator::MutationType> allowed_mutations;
+
+        Logger& logger;
 
         float markov_chain_length_scale;
         std::size_t population_scale;

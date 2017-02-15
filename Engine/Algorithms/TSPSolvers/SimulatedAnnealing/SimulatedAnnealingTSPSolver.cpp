@@ -16,6 +16,7 @@ namespace Scheduler
                           SolutionGenerator::MutationType::BlockReverse,
                           SolutionGenerator::MutationType::VertexInsert,
                           SolutionGenerator::MutationType::VertexSwap}),
+        logger(LoggingManager::getLogger("SimulatedAnnealingTSPSolver")),
         markov_chain_length_scale(1.f),
         population_scale(2),
         threads_number(1)
@@ -24,8 +25,22 @@ namespace Scheduler
 
     void SimulatedAnnealingTSPSolver::optimize(Schedule& schedule) const
     {
-        if (!schedule_cost_function) return;
-        if (!temperature_scheduler_template) return;
+        TRACEABLE_SECTION(__optimize__, "optimize(Schedule&)", logger);
+
+        if (!schedule_cost_function) {
+            LOG_WARNING(logger, "Cost function is not set. Can't solve TSP.");
+            return;
+        }
+
+        if (!temperature_scheduler_template) {
+            LOG_WARNING(logger, "Temperature scheduler is not set. Can't solve TSP.");
+            return;
+        }
+
+        if (allowed_mutations.empty()) {
+            LOG_WARNING(logger, "Allowed mutations is not set. Can't solve TSP.");
+            return;
+        }
 
         for(Run& run : schedule.getRuns())
         {
@@ -78,13 +93,31 @@ namespace Scheduler
 
     void SimulatedAnnealingTSPSolver::optimize(Run& run) const
     {
-        if (!schedule_cost_function) return;
-        if (!temperature_scheduler_template) return;
-        if (allowed_mutations.empty()) return;
+        TRACEABLE_SECTION(__optimize__, "optimize(Run&)", logger);
 
-        if (run.getWorkStops().size() <= 1) {
+        if (!schedule_cost_function) {
+            LOG_WARNING(logger, "Cost function is not set. Can't solve TSP.");
             return;
         }
+
+        if (!temperature_scheduler_template) {
+            LOG_WARNING(logger, "Temperature scheduler is not set. Can't solve TSP.");
+            return;
+        }
+
+        if (allowed_mutations.empty()) {
+            LOG_WARNING(logger, "Allowed mutations is not set. Can't solve TSP.");
+            return;
+        }
+
+        if (run.getWorkStops().size() <= 1) {
+            LOG_WARNING(logger, "Too small run size. Can't solve TSP.");
+            return;
+        }
+
+        LOG_DEBUG(logger, "optimize run for {} stops at {} agents", run.getWorkStops().size(), threads_number * population_scale);
+
+        LOG_TRACE(logger, "initializing");
 
         auto temperature_scheduler = std::unique_ptr<TemperatureScheduler>(temperature_scheduler_template->clone());
         temperature_scheduler->initialize(run, schedule_cost_function.get());
@@ -134,10 +167,19 @@ namespace Scheduler
         std::mt19937_64 random_engine(random_device());
         std::uniform_real_distribution<float> float_distribution(0.f, 1.f);
 
-        Cost total_best_cost = costs.front();
         const std::size_t M = population_size;
         const std::size_t S = markovChainLength(run.getWorkStops().size());
+        std::size_t number_of_iterations = 0;
+        std::size_t total_acceptance_number = 0;
+        std::size_t total_mutations_number = 0;
+        std::size_t total_best_costs_number = 0;
+        TRACEABLE_SECTION(__main_loop__,  "main loop", logger);
         while (!temperature_scheduler->isFinish()) {
+            TRACEABLE_SECTION(__outer_iteration__, "outer iteration", logger);
+            LOG_DEBUG(logger, "set temperature to {} on iteration {}", temperature_scheduler->getTemperature(), number_of_iterations);
+            std::size_t acceptance_number = 0;
+            std::size_t mutations_number = 0;
+            std::size_t best_costs_number = 0;
             for (std::size_t g = 0; g < M / T; ++g) {
                 #pragma omp parallel for num_threads(threads_number) if (threads_number > 1)
                 for (int m = 0; m < T; ++m) {
@@ -148,12 +190,11 @@ namespace Scheduler
                     for (size_t s = 0; s < S; ++s) {
                         solution_generator->neighbour();
                         const Cost cost = solution_generator->hasPermutation() ? schedule_cost_function->calculateCost(run_ref.get().getSchedule()) : best_cost;
+                        mutations_number += (solution_generator->hasPermutation() ? 1 : 0);
                         if (cost < best_cost) {
                             best_cost = cost;
-                            if (best_cost < total_best_cost) {
-                                total_best_cost = best_cost;
-                            }
                             solution_generator->store();
+                            ++best_costs_number;
                         } else {
                             const float random_value = float_distribution(random_engine);
                             const Cost delta = cost - best_cost;
@@ -161,6 +202,7 @@ namespace Scheduler
                                 #pragma omp critical
                                 {
                                     temperature_scheduler->adapt(delta, random_value);
+                                    ++acceptance_number;
                                 }
                                 best_cost = cost;
                                 solution_generator->store();
@@ -176,9 +218,20 @@ namespace Scheduler
                     }
                 }
             }
+            LOG_DEBUG(logger, "iteration number {} acceptances is {} mutations is {} best costs {}", number_of_iterations, acceptance_number, mutations_number, best_costs_number);
             temperature_scheduler->changeTemperature();
             std::swap(populations, populations_write);
+            ++number_of_iterations;
+            total_acceptance_number += acceptance_number;
+            total_mutations_number += mutations_number;
+            total_best_costs_number += best_costs_number;
         }
+
+        LOG_DEBUG(logger, "final temperature is {} on iteration {}", temperature_scheduler->getTemperature(), number_of_iterations);
+        LOG_DEBUG(logger, "total number of iterations {}", number_of_iterations * M * S);
+        LOG_DEBUG(logger, "total number of acceptance {}", total_acceptance_number);
+        LOG_DEBUG(logger, "total number of mutations {}", total_mutations_number);
+        LOG_DEBUG(logger, "total number of best cost {}", total_best_costs_number);
 
         auto best_cost_iter = std::min_element(costs.begin(), costs.end());
 		ScheduleVariant& best_variant = schedules.at(std::distance(costs.begin(), best_cost_iter));

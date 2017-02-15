@@ -118,6 +118,8 @@ protected:
     PopulationsT const * populations_ptr;
     std::unordered_map<std::size_t, Run::WorkStopIterator> ids;
     std::size_t self_index_in_populations;
+
+    Logger& logger;
 };
 
 }
