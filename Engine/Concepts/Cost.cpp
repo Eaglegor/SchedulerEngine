@@ -27,6 +27,12 @@ namespace Scheduler
 		return *this;
 	}
 
+	Cost& Cost::operator=(const value_type &rhs)
+	{
+		this->value = rhs;
+		return *this;
+	}
+
 	Cost Cost::operator+(const Cost &rhs) const
 	{
 		return Cost(value + rhs.value);

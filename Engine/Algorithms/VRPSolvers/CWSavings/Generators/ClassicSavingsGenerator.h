@@ -7,7 +7,7 @@
 #include <Engine/SceneManager/Depot.h>
 #include <Engine/SceneManager/SceneContext.h>
 #include <Engine/Concepts/RoutingProfile.h>
-#include <Engine/Engine/Services/RoutingService.h>
+#include <Engine/Routing/RoutingService.h>
 #include "../Savings/ClassicSaving.h"
 
 namespace Scheduler

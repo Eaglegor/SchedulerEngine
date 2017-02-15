@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 #include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/SceneContext.h>

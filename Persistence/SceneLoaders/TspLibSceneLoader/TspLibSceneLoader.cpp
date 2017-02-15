@@ -18,7 +18,7 @@
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/SceneContext.h>
 #include <Engine/Algorithms/ScheduleActualization/Route/Default/DefaultRouteActualizationAlgorithm.h>
-#include <Engine/Engine/Engine.h>
+#include <Engine/Core/Engine.h>
 
 namespace Scheduler
 {

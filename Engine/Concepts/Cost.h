@@ -39,6 +39,7 @@ namespace Scheduler
 		Cost& operator-=(const Cost &rhs);
 
 		Cost& operator=(const Cost &rhs);
+		Cost& operator=(const value_type &rhs);
 
 		Cost operator-() const;
 
