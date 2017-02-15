@@ -633,7 +633,7 @@ int main(int argc, char **argv)
     auto datasets = {light_datasets/*, medium_datasets*/};
     for (const auto &dataset : datasets) {
 		
-        {
+       /* {
             Optimal_TspLibInstance test(dataset, *publisher);
             test.run();
         }
@@ -676,7 +676,7 @@ int main(int argc, char **argv)
         {
 			DoubleSuIntTspLibInstance test(dataset, *publisher);
 			test.run();
-        }
+        }*/
     }
 	publisher->publish();
 }

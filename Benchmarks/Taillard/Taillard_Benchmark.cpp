@@ -106,7 +106,6 @@ public:
 
 	virtual VRPSolver& createVRPSolver() = 0;
 	virtual const char* getAlgorithmName() = 0;
-
 	void run()
 	{
 		std::cout << "############# Testing solver: "  << getAlgorithmName() << " ####################" << std::endl;
@@ -200,7 +199,7 @@ protected:
 				scheduled_orders += occurances;
 			}
 
-            std::cout << "#" << std::flush;
+			std::cout << "#" << std::flush;
 		}
 		
 
@@ -516,7 +515,7 @@ int main(int argc, char **argv)
 	/*{
 		Transparent_TaillardTestInstance test(datasets, *publisher);
 		test.run();
-    }
+    }*/
 
     {
         Sweep_TaillardTestInstance test(datasets, *publisher);
@@ -528,7 +527,7 @@ int main(int argc, char **argv)
         test.run();
     }
     
-    {
+    /*{
         SimpleEA_TaillardTestInstance test(datasets, *publisher);
         test.run();
     }*/

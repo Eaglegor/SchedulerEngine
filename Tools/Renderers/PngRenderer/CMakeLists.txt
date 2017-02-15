@@ -4,11 +4,7 @@ add_library(PngRenderer SHARED
 
 set_target_properties(PngRenderer PROPERTIES FOLDER "Tools/Renderers")
 
-find_package(PNG)
-
-include_directories(${PNG_INCLUDE_DIRS})
-#add_definitions(PngRenderer ${PNG_DEFINITIONS})
-target_link_libraries(PngRenderer SceneManager ${PNG_LIBRARIES})
+target_link_libraries(PngRenderer SceneManager)
 
 cotire(PngRenderer)
 

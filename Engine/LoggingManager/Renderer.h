@@ -20,7 +20,7 @@ namespace Scheduler
 		virtual void addText(const String& text) = 0;
 		virtual void addTitle(const String& text) = 0;
 		virtual void addLine(const Site& from, const Site& to) = 0;
-		virtual void addPoint(const Site& pt) = 0;
+		virtual void addPoint(const Site& pt, float radius = 3) = 0;
 
 		virtual void draw() = 0;
 	};
