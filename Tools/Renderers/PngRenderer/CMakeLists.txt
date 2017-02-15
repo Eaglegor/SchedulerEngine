@@ -4,6 +4,11 @@ add_library(PngRenderer SHARED
 
 set_target_properties(PngRenderer PROPERTIES FOLDER "Tools/Renderers")
 
+FIND_PACKAGE(Boost COMPONENTS REQUIRED filesystem)
+IF(Boost_FOUND)
+	target_link_libraries(PngRenderer ${Boost_LIBRARIES})
+ENDIF()
+
 target_link_libraries(PngRenderer SceneManager)
 
 cotire(PngRenderer)

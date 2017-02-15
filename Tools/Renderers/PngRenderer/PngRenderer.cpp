@@ -7,6 +7,7 @@
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/SceneContext.h>
+#include <boost/filesystem.hpp>
 
 namespace Scheduler
 {
@@ -225,6 +226,7 @@ namespace Scheduler
 	width(width),
 	height(height)
 	{
+		boost::filesystem::create_directories(output_path);
 	}
 
 	Frame& PngRenderer::nextFrame()
