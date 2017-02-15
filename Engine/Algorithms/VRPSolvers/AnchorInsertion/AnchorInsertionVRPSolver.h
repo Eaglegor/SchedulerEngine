@@ -8,6 +8,8 @@
 
 namespace Scheduler
 {
+
+class Renderer;
 	class TSPSolver;
 	class SceneCostFunction;
 	class RoutingService;
@@ -26,11 +28,13 @@ namespace Scheduler
 		void setCostFunction(const SceneCostFunction& cost_function);
 		void setIterationsLimit(std::size_t iterations_limit);
 		void setRoutingService(const RoutingService& routing_service);
+		void setDebugRenderer(Renderer& renderer);
 
 	private:
 		Optional<const VRPSolver&> repair_algorithm;
 		Optional<const SceneCostFunction&> cost_function;
 		Optional<const RoutingService&> routing_service;
+		Optional<Renderer&> debug_renderer;
 		std::size_t iterations_limit;
 	};
 }

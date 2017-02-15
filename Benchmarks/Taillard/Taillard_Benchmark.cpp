@@ -517,7 +517,7 @@ int main(int argc, char **argv)
 		test.run();
     }*/
 
-    {
+    /*{
         Sweep_TaillardTestInstance test(datasets, *publisher);
         test.run();
     }
@@ -525,7 +525,7 @@ int main(int argc, char **argv)
     {
         CWSavings_TaillardTestInstance test(datasets, *publisher);
         test.run();
-    }
+    }*/
     
     /*{
         SimpleEA_TaillardTestInstance test(datasets, *publisher);
