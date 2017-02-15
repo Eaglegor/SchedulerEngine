@@ -80,7 +80,7 @@ namespace Scheduler
 								insertion.order = &order;
 								insertion.position = run.findWorkStop(stop);
 								
-								Route ij = stop.getNextRoute();
+								Route ij = routing_service.calculateRoute(route_start.getSite(), route_end.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
 								Route ik = routing_service.calculateRoute(route_start.getSite(), order_location.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
 								Route kj = routing_service.calculateRoute(order_location.getSite(), route_end.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
 
