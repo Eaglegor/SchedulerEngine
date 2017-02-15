@@ -6,6 +6,8 @@
 #include <Engine/Concepts/Site.h>
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/SceneContext.h>
+#include <boost/filesystem.hpp>
 
 namespace Scheduler
 {
@@ -101,6 +103,10 @@ namespace Scheduler
 
 	void PngFrame::addScene(const Scene& scene)
 	{
+		for(const Order& order: scene.getContext().getOrders())
+		{
+			if(order.getWorkOperation()) addPoint(order.getWorkOperation()->getLocation().getSite());
+		}
 		for(const Schedule &schedule : scene.getSchedules())
 		{
 			addSchedule(schedule);
@@ -220,6 +226,7 @@ namespace Scheduler
 	width(width),
 	height(height)
 	{
+		boost::filesystem::create_directories(output_path);
 	}
 
 	Frame& PngRenderer::nextFrame()

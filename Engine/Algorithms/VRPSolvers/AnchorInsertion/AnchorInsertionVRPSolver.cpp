@@ -17,6 +17,7 @@
 #include <Engine/Routing/RoutingService.h>
 #include <set>
 #include <Engine/SceneManager/Vehicle.h>
+#include <Engine/LoggingManager/Renderer.h>
 
 namespace Scheduler
 {
@@ -48,9 +49,9 @@ namespace Scheduler
 		public:
 			InsertionSuggestor(Scene &scene, const RoutingService& routing_service):
 			scene(scene),
-			routing_service(routing_service)
+			routing_service(routing_service),
+			current_iterator(insertions.end())
 			{
-				reset();
 			}
 		
 			Optional<Insertion> suggestInsertion()
@@ -59,39 +60,32 @@ namespace Scheduler
 				return *current_iterator++;
 			}
 			
-			void reset()
+			void reset(Run& run)
 			{
 				insertions.clear();
-				for (Schedule& schedule : scene.getSchedules())
+				for (WorkStop& stop : run.getWorkStops())
 				{
-					for (Run& run : schedule.getRuns())
+					for(const Order& order : scene.getContext().getOrders())
 					{
-						for (WorkStop& stop : run.getWorkStops())
-						{
-							for(const Order& order : scene.getContext().getOrders())
-							{
-								if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation().get())) continue;
+						if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation().get())) continue;
 
-								const Location &order_location = order.getWorkOperation()->getLocation();
-								const Location &route_start = std::prev(run.findStop(stop))->getLocation();
-								const Location &route_end = stop.getLocation();
+						const Location &order_location = order.getWorkOperation()->getLocation();
+						const Location &route_start = std::prev(run.findStop(stop))->getLocation();
+						const Location &route_end = stop.getLocation();
 
-								Insertion insertion;
-								insertion.order = &order;
-								insertion.position = run.findWorkStop(stop);
-								
-								Route ij = routing_service.calculateRoute(route_start.getSite(), route_end.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
-								Route ik = routing_service.calculateRoute(route_start.getSite(), order_location.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
-								Route kj = routing_service.calculateRoute(order_location.getSite(), route_end.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
+						Insertion insertion;
+						insertion.order = &order;
+						insertion.position = run.findWorkStop(stop);
+						
+						Route ij = routing_service.calculateRoute(route_start.getSite(), route_end.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
+						Route ik = routing_service.calculateRoute(route_start.getSite(), order_location.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
+						Route kj = routing_service.calculateRoute(order_location.getSite(), route_end.getSite(), RoutingProfile() /* run.getVehicle()->getRoutingProfile()*/);
 
-								insertion.estimated_cost = (-ij.getDuration() + ik.getDuration() + kj.getDuration()).getValue() /** schedule.getPerformer().getDurationUnitCost().getValue()*/ - UNPLANNED_ORDER_PENALTY;
+						insertion.estimated_cost = (-ij.getDuration() + ik.getDuration() + kj.getDuration()).getValue() /** schedule.getPerformer().getDurationUnitCost().getValue()*/ - UNPLANNED_ORDER_PENALTY;
 
-								insertions.insert(insertion);
-							}
-						}
+						insertions.insert(insertion);
 					}
 				}
-
 				current_iterator = insertions.begin();
 			}
 			
@@ -153,7 +147,8 @@ namespace Scheduler
 		public:
 			AnchorSuggestor(Scene& scene, const RoutingService& routing_service):
 			scene(scene),
-			routing_service(routing_service)
+			routing_service(routing_service),
+			current_iterator(anchors.end())
 			{
 				reset();
 			}
@@ -228,7 +223,7 @@ namespace Scheduler
 			scene_editor(scene_editor)
 			{}
 
-			bool apply(const Anchor& anchor)
+			Optional<Run&> apply(const Anchor& anchor)
 			{
 				Schedule& schedule = *anchor.schedule;
 				const Location &depot_location = schedule.getPerformer().getDepot()->getLocation();
@@ -241,12 +236,12 @@ namespace Scheduler
 
 				if(schedule.isValid())
 				{
-					return true;
+					return run;
 				}
 				else
 				{
 					scene_editor.rollbackToCheckpoint(checkpoint);
-					return false;
+					return None;
 				}
 			}
 			
@@ -289,37 +284,46 @@ namespace Scheduler
 		
 		while(!finished)
 		{
-			Optional<Anchor> anchor = anchor_suggestor.suggestAnchor();
+			finished = true;
 			
-			Optional<Insertion> insertion = insertion_suggestor.suggestInsertion();
-			while(insertion && (!anchor || insertion->estimated_cost < anchor->estimated_cost))
-			{
-				bool successful_insertion = insertion_actor.apply(insertion.get(), current_best_cost);
-				
-				if(successful_insertion) {
-					scene_editor.commit();
-					repair_actor.apply();
-					insertion_suggestor.reset();
-					anchor = anchor_suggestor.suggestAnchor();
-				}
-
-				insertion = insertion_suggestor.suggestInsertion();
-			}
+			anchor_suggestor.reset();
+			Optional<Anchor> anchor = anchor_suggestor.suggestAnchor();
 			
 			if(anchor)
 			{
-				bool successful_anchor = anchor_actor.apply(anchor.get());
-				if(successful_anchor) {
-					scene_editor.commit();
-					repair_actor.apply();
-					insertion_suggestor.reset();
-					anchor_suggestor.reset();
+				Optional<Run&> anchor_run = anchor_actor.apply(anchor.get());
+				
+				if(anchor_run)
+				{
+					if(debug_renderer) {
+						finished = false;
+						Frame& frame = debug_renderer->nextFrame();
+						frame.addScene(scene);
+						frame.draw();
+					}
+					
+					insertion_suggestor.reset(anchor_run.get());
+					
+					Optional<Insertion> insertion = insertion_suggestor.suggestInsertion();
+					while(insertion)
+					{
+						bool successful_insertion = insertion_actor.apply(insertion.get(), current_best_cost);
+						if(successful_insertion)
+						{
+							insertion_suggestor.reset(anchor_run.get());
+							
+							if(debug_renderer) {
+								Frame& frame = debug_renderer->nextFrame();
+								frame.addScene(scene);
+								frame.draw();
+							}
+						}
+						
+						insertion = insertion_suggestor.suggestInsertion();
+					}
 				}
 			}
-			
-			std::cout << iterations_count << std::endl;
-			
-			if (!anchor && !insertion) finished = true;
+		
 			if(iterations_limit != 0 && ++iterations_count >= iterations_limit) finished = true;
 		}
 	}
@@ -343,4 +347,10 @@ namespace Scheduler
 	{
 		this->routing_service = routing_service;
 	}
+	
+	void AnchorInsertionVRPSolver::setDebugRenderer(Renderer& renderer)
+	{
+		this->debug_renderer = renderer;
+	}
+
 }
