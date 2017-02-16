@@ -58,6 +58,10 @@ void SolutionGenerator::rollbackTo (std::size_t checkpoint)
 
 SolutionGenerator::MutationType SolutionGenerator::selectRandomMutation()
 {
+    if (run.getWorkStops().size() <= 2) {
+        return MutationType::VertexSwap;
+    }
+
     const float random_value = float_distribution(random_engine, float_param_t(0.f, 1.f));
     const float s = 1.f / allowed_mutations.size();
     float v = s;

@@ -425,9 +425,9 @@ public:
             ratio(0.25f) {}
         } temperature_scheduler_options;
         float markov_chain_length_scale;
-        std::size_t population_scale;
+        std::size_t population_size;
         std::size_t threads_number;
-        Options() : markov_chain_length_scale(1.f), population_scale(8), threads_number(1) {}
+        Options() : markov_chain_length_scale(1.f), population_size(8), threads_number(1) {}
     };
     
     SimulatedAnnealingTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
@@ -445,7 +445,7 @@ public:
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setMarkovChainLengthScale(options.markov_chain_length_scale);
-        sa_solver.setPopulationScale(options.population_scale);
+        sa_solver.setPopulationSize(options.population_size);
         sa_solver.setThreadsNumber(options.threads_number);
         sa_solver.setMutations({
                                    SolutionGenerator::MutationType::BlockReverse,
@@ -685,9 +685,9 @@ bool parseCommandLine (int argc, char **argv, CmdLineOptions & cmd_line_options)
     ("output-file-name,O",
      boost::program_options::value<std::string>(&cmd_line_options.output_file_name),
      "output file name")
-    ("sa-population-scale",
-     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.population_scale)->default_value(cmd_line_options.sa_options.population_scale),
-     "simulated annealing population scale per thread")
+    ("sa-population-size",
+     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.population_size)->default_value(cmd_line_options.sa_options.population_size),
+     "simulated annealing population size")
     ("sa-threads-number",
      boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.threads_number)->default_value(cmd_line_options.sa_options.threads_number),
      "simulated annealing threads number")
