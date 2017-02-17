@@ -6,7 +6,7 @@
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/SceneManager/ScheduleVariant.h>
-#include "SolutionGenerator.h"
+#include "InstanceBasedSolutionGenerator.h"
 #include "TemperatureScheduler.h"
 
 namespace Scheduler
