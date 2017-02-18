@@ -23,10 +23,10 @@ namespace Scheduler
 
 		void setScheduleCostFunction(const ScheduleCostFunction& cost_function);
         void setTemperatureScheduler(TemperatureScheduler& temperature_scheduler_template);
-        void setMarkovChainLengthScale(float markovScale);
+        void setMarkovChainLengthScale(float markov_scale);
         void setMutations(std::initializer_list<SolutionGenerator::MutationType> mutations);
         void setThreadsNumber(std::size_t threads_number);
-        void setPopulationScale(std::size_t population_scale);
+        void setPopulationSize(std::size_t population_size);
 
         static constexpr const char* staticGetName() { return "SimulatedAnnealing"; }
 		virtual const char* getName() const override { return staticGetName(); };
@@ -42,7 +42,7 @@ namespace Scheduler
         Logger& logger;
 
         float markov_chain_length_scale;
-        std::size_t population_scale;
+        std::size_t population_size;
         std::size_t threads_number;
     };
 }

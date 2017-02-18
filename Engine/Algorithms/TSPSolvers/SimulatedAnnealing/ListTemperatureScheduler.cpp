@@ -6,12 +6,12 @@
 namespace Scheduler
 {
     ListTemperatureScheduler::ListTemperatureScheduler () :
-        max_iterations_number(1000), values_length(90), initial_probability(-20.72f), iteration_counter(0)
+        list_size(90), iterations_limit(1000), initial_probability(-20.72f), iteration_counter(0)
     {
     }
 
-    ListTemperatureScheduler::ListTemperatureScheduler(std::size_t aLength, float aInitialProbability, std::size_t iterationsCount) :
-        max_iterations_number(iterationsCount), values_length(aLength), initial_probability(aInitialProbability), iteration_counter(0)
+    ListTemperatureScheduler::ListTemperatureScheduler(std::size_t alength, std::size_t iterations_count, float ainitial_probability) :
+        list_size(alength), iterations_limit(iterations_count), initial_probability(ainitial_probability), iteration_counter(0)
     {
     }
 
@@ -21,20 +21,17 @@ namespace Scheduler
             return;
         }
 
-        if (!adapt_values.empty()) {
-            values.pop();
-            values.push(new_value());
-        }
-
+        values.pop();
+        values.push(new_value());
         adapt_values.clear();
         ++iteration_counter;
     }
 
     void ListTemperatureScheduler::initialize(Run& run, const ScheduleCostFunction& cost_function)
     {
-        std::priority_queue<float> new_values;
-        const auto costs = create_initial_costs(run, cost_function, std::min(values_length, run.getWorkStops().size()));
+        const auto costs = create_initial_costs(run, cost_function, list_size);
         auto best_cost = *costs.begin();
+        std::priority_queue<float> new_values;
         for (const auto &cost : costs) {
             const float t = -fabs((cost - best_cost).getValue()) / this->initial_probability;
             new_values.push(t);
@@ -61,7 +58,7 @@ namespace Scheduler
 
     bool ListTemperatureScheduler::isFinish() const
     {
-        const bool finish = (iteration_counter >= max_iterations_number || getTemperature() <= 0.f);
+        const bool finish = (iteration_counter >= iterations_limit || getTemperature() <= 0.f);
         return finish;
     }
 
@@ -78,58 +75,5 @@ namespace Scheduler
     ListTemperatureScheduler* ListTemperatureScheduler::clone() const
     {
         return new ListTemperatureScheduler(*this);
-    }
-
-    FastTemperatureScheduler::FastTemperatureScheduler() : ListTemperatureScheduler(), first_ratio(1.f)
-    {}
-
-    FastTemperatureScheduler::FastTemperatureScheduler(std::size_t aLength, float aInitialProbability, std::size_t iterationsCount, float quality) :
-        ListTemperatureScheduler(aLength, aInitialProbability, iterationsCount), first_ratio(quality)
-    {}
-
-    float FastTemperatureScheduler::new_value()
-    {
-        if (adapt_values.empty()) {
-            return 0.f;
-        }
-
-        std::size_t ofs = first_ratio * adapt_values.size();
-        ofs = std::min(adapt_values.size(), ofs);
-        ofs = std::max(std::size_t(1), ofs);
-        std::partial_sort(adapt_values.begin(), std::next(adapt_values.begin(), ofs), adapt_values.end());
-        const float new_value = std::accumulate(adapt_values.begin(), std::next(adapt_values.begin(), ofs), 0.f) / ofs;
-        return new_value;
-    }
-
-    FastTemperatureScheduler* FastTemperatureScheduler::clone() const
-    {
-        return new FastTemperatureScheduler(*this);
-    }
-
-    SlowTemperatureScheduler::SlowTemperatureScheduler() : ListTemperatureScheduler(), first_ratio(0.f)
-    {}
-
-    SlowTemperatureScheduler::SlowTemperatureScheduler(std::size_t aLength, float aInitialProbability, std::size_t iterationsCount, float speed) :
-        ListTemperatureScheduler(aLength, aInitialProbability, iterationsCount), first_ratio(speed)
-    {}
-
-    float SlowTemperatureScheduler::new_value()
-    {
-        if (adapt_values.empty()) {
-            return 0.f;
-        }
-
-        std::size_t ofs = first_ratio * adapt_values.size();
-        ofs = std::min(adapt_values.size(), ofs);
-        ofs = std::max(std::size_t(1), ofs);
-
-        std::partial_sort(adapt_values.begin(), std::next(adapt_values.begin(), ofs), adapt_values.end(), std::greater<float>());
-        const float new_value = std::accumulate(adapt_values.begin(), std::next(adapt_values.begin(), ofs), 0.f) / ofs;
-        return new_value;
-    }
-
-    SlowTemperatureScheduler* SlowTemperatureScheduler::clone() const
-    {
-        return new SlowTemperatureScheduler(*this);
     }
 }

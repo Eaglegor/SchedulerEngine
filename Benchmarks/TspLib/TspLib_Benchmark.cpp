@@ -20,6 +20,9 @@
 #include <Engine/Algorithms/TSPSolvers/SimpleTwoOpt/SimpleTwoOptTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/HybridOpt/HybridOptTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/ListTemperatureScheduler.h>
+#include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/FastListTemperatureScheduler.h>
+#include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SlowListTemperatureScheduler.h>
+#include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/DefaultTemperatureScheduler.h>
 #include <Engine/Algorithms/TSPSolvers/SimulatedAnnealing/SimulatedAnnealingTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/BestOf/BestOfTSPSolver.h>
 #include <Engine/Algorithms/TSPSolvers/Utilitary/Transparent/TransparentTSPSolver.h>
@@ -411,23 +414,23 @@ public:
                 ListSlow,
                 Default
             } type;
-            std::size_t list_size;
             std::size_t max_iterations;
+            std::size_t list_size;
             float initial_probability;
             float end_probability;
-            float ratio;
+            float list_ratio;
             TemperatureSchedulerOptions() :
-            type(Type::ListNormal),
-            list_size(120),
-            max_iterations(1000),
-            initial_probability(std::log(std::pow(10,-10))),
-            end_probability(std::log(std::pow(10,-50))),
-            ratio(0.25f) {}
+                type(Type::ListNormal),
+                max_iterations(1000),
+                list_size(120),
+                initial_probability(std::log(std::pow(10,-10))),
+                end_probability(std::log(std::pow(10,-50))),
+                list_ratio(0.25f) {}
         } temperature_scheduler_options;
         float markov_chain_length_scale;
-        std::size_t population_scale;
+        std::size_t population_size;
         std::size_t threads_number;
-        Options() : markov_chain_length_scale(1.f), population_scale(8), threads_number(1) {}
+        Options() : markov_chain_length_scale(1.f), population_size(8), threads_number(1) {}
     };
     
     SimulatedAnnealingTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
@@ -445,7 +448,7 @@ public:
         sa_solver.setTemperatureScheduler(*temperature_scheduler);
         sa_solver.setScheduleCostFunction(cost_function);
         sa_solver.setMarkovChainLengthScale(options.markov_chain_length_scale);
-        sa_solver.setPopulationScale(options.population_scale);
+        sa_solver.setPopulationSize(options.population_size);
         sa_solver.setThreadsNumber(options.threads_number);
         sa_solver.setMutations({
                                    SolutionGenerator::MutationType::BlockReverse,
@@ -465,21 +468,21 @@ private:
     {
         switch (options.type) {
             case Options::TemperatureSchedulerOptions::Type::ListFast:
-                temperature_scheduler.reset(new FastTemperatureScheduler(options.list_size,
-                                                                         options.initial_probability,
+                temperature_scheduler.reset(new FastListTemperatureScheduler(options.list_size,
                                                                          options.max_iterations,
-                                                                         options.ratio));
+                                                                         options.initial_probability,
+                                                                         options.list_ratio));
                 break;
             case Options::TemperatureSchedulerOptions::Type::ListSlow:
-                temperature_scheduler.reset(new SlowTemperatureScheduler(options.list_size,
-                                                                         options.initial_probability,
+                temperature_scheduler.reset(new SlowListTemperatureScheduler(options.list_size,
                                                                          options.max_iterations,
-                                                                         options.ratio));
+                                                                         options.initial_probability,
+                                                                         options.list_ratio));
                 break;
             case Options::TemperatureSchedulerOptions::Type::ListNormal:
                 temperature_scheduler.reset(new ListTemperatureScheduler(options.list_size,
-                                                                         options.initial_probability,
-                                                                         options.max_iterations));
+                                                                         options.max_iterations,
+                                                                         options.initial_probability));
             break;
             case Options::TemperatureSchedulerOptions::Type::Default:
             default:
@@ -663,55 +666,55 @@ struct CmdLineOptions
 bool parseCommandLine (int argc, char **argv, CmdLineOptions & cmd_line_options)
 {
     static std::map<std::string, SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type> sa_temperature_scheduler_map = {
-        {"list-normal", SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListNormal},
-        {"list-fast", SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListFast},
-        {"list-slow", SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListSlow},
-        {"default", SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::Default}
+        {ListTemperatureScheduler::staticGetName(), SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListNormal},
+        {FastListTemperatureScheduler::staticGetName(), SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListFast},
+        {SlowListTemperatureScheduler::staticGetName(), SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::ListSlow},
+        {DefaultTemperatureScheduler::staticGetName(), SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::Default}
     };
 
     std::string sa_temperature_scheduler_name;
     boost::program_options::options_description options_description("Allowed options");
     options_description.add_options()
-    ("help", "produce help message")
-    ("datasets-name,D",
-     boost::program_options::value<std::vector<std::string>>(&cmd_line_options.dataset_names),
-     "set dataset name")
-    ("solver-name,S",
-     boost::program_options::value<std::vector<std::string>>(&cmd_line_options.solver_names),
-     "set solver name")
-    ("iterations-number,N",
-     boost::program_options::value<std::size_t>(&cmd_line_options.number_of_iterations)->default_value(10),
-     "set number of iterations")
-    ("output-file-name,O",
-     boost::program_options::value<std::string>(&cmd_line_options.output_file_name),
-     "output file name")
-    ("sa-population-scale",
-     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.population_scale)->default_value(cmd_line_options.sa_options.population_scale),
-     "simulated annealing population scale per thread")
-    ("sa-threads-number",
-     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.threads_number)->default_value(cmd_line_options.sa_options.threads_number),
-     "simulated annealing threads number")
-    ("sa-markov-chain-length-scale",
-     boost::program_options::value<float>(&cmd_line_options.sa_options.markov_chain_length_scale)->default_value(cmd_line_options.sa_options.markov_chain_length_scale),
-     "simulated annealing markov chain lenght scale")
-    ("sa-temperature-scheduler-name",
-     boost::program_options::value<std::string>(&sa_temperature_scheduler_name)->default_value("list-normal"),
-     "simulated annealing temperature scheduler name")
-    ("sa-list-temperature-scheduler-size",
-     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.temperature_scheduler_options.list_size)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.list_size),
-     "simulated annealing list temperature scheduler size")
-    ("sa-temperature-scheduler-limit",
-     boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.temperature_scheduler_options.max_iterations)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.max_iterations),
-     "simulated annealing temperature scheduler iterations limit")
-    ("sa-list-temperature-scheduler-ratio",
-     boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.ratio)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.ratio),
-     "simulated annealing list temperature scheduler ratio")
-    ("sa-temperature-scheduler-initial-probability",
-     boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.initial_probability)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.initial_probability),
-     "simulated annealing temperature scheduler natural log initial probability")
-    ("sa-temperature-scheduler-end-probability",
-     boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.end_probability)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.end_probability),
-     "simulated annealing temperature scheduler natural log end probability");
+            ("help", "produce help message")
+            ("datasets-name,D",
+             boost::program_options::value<std::vector<std::string>>(&cmd_line_options.dataset_names),
+             "set dataset name")
+            ("solver-name,S",
+             boost::program_options::value<std::vector<std::string>>(&cmd_line_options.solver_names),
+             "set solver name")
+            ("iterations-number,N",
+             boost::program_options::value<std::size_t>(&cmd_line_options.number_of_iterations)->default_value(10),
+             "set number of iterations")
+            ("output-file-name,O",
+             boost::program_options::value<std::string>(&cmd_line_options.output_file_name),
+             "output file name")
+            ("sa-population-size",
+             boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.population_size)->default_value(cmd_line_options.sa_options.population_size),
+             "simulated annealing population size")
+            ("sa-threads-number",
+             boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.threads_number)->default_value(cmd_line_options.sa_options.threads_number),
+             "simulated annealing threads number")
+            ("sa-markov-chain-length-scale",
+             boost::program_options::value<float>(&cmd_line_options.sa_options.markov_chain_length_scale)->default_value(cmd_line_options.sa_options.markov_chain_length_scale),
+             "simulated annealing markov chain lenght scale")
+            ("sa-temperature-scheduler-name",
+             boost::program_options::value<std::string>(&sa_temperature_scheduler_name)->default_value("list-normal"),
+             "simulated annealing temperature scheduler name")
+            ("sa-temperature-scheduler-limit",
+             boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.temperature_scheduler_options.max_iterations)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.max_iterations),
+             "simulated annealing temperature scheduler iterations limit")
+            ("sa-temperature-scheduler-initial-probability",
+             boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.initial_probability)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.initial_probability),
+             "simulated annealing temperature scheduler natural log initial probability")
+            ("sa-temperature-scheduler-end-probability",
+             boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.end_probability)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.end_probability),
+             "simulated annealing temperature scheduler natural log end probability")
+            ("sa-list-temperature-scheduler-size",
+             boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.temperature_scheduler_options.list_size)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.list_size),
+             "simulated annealing list temperature scheduler size")
+            ("sa-list-temperature-scheduler-ratio",
+             boost::program_options::value<float>(&cmd_line_options.sa_options.temperature_scheduler_options.list_ratio)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.list_ratio),
+             "simulated annealing list temperature scheduler ratio");
 
     boost::program_options::positional_options_description p;
     p.add("output-file-name", -1);

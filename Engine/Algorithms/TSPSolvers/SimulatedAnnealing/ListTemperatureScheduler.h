@@ -12,9 +12,9 @@ namespace Scheduler
     class SIMULATEDANNEALINGTSPSOLVER_EXPORT ListTemperatureScheduler : public TemperatureScheduler
     {
     public:
-        ListTemperatureScheduler ();
-        ListTemperatureScheduler (std::size_t values_length, float initialProbability, std::size_t maxIterationsCount);
-        virtual ListTemperatureScheduler* clone () const override;
+        ListTemperatureScheduler();
+        ListTemperatureScheduler(std::size_t list_size, std::size_t iterations_limit, float initial_probability);
+        virtual ListTemperatureScheduler* clone() const override;
         virtual float getTemperature() const override;
         virtual bool isFinish() const override;
 
@@ -33,34 +33,10 @@ namespace Scheduler
 
         std::vector<float> adapt_values;
     private:
-        const std::size_t max_iterations_number;
-        const std::size_t values_length;
+        const std::size_t list_size;
+        const std::size_t iterations_limit;
         const float initial_probability;
         std::priority_queue<float> values;
         std::size_t iteration_counter;
-    };
-
-    class SIMULATEDANNEALINGTSPSOLVER_EXPORT FastTemperatureScheduler : public ListTemperatureScheduler
-    {
-    public:
-        FastTemperatureScheduler ();
-        FastTemperatureScheduler (std::size_t values_length, float initialProbability, std::size_t maxIterationsCount, float quality = 0.f);
-        virtual FastTemperatureScheduler* clone () const override;
-    protected:
-        virtual float new_value() override;
-    private:
-        const float first_ratio;
-    };
-
-    class SIMULATEDANNEALINGTSPSOLVER_EXPORT SlowTemperatureScheduler : public ListTemperatureScheduler
-    {
-    public:
-        SlowTemperatureScheduler ();
-        SlowTemperatureScheduler (std::size_t values_length, float initialProbability, std::size_t maxIterationsCount, float speed = 0.f);
-        virtual SlowTemperatureScheduler* clone () const override;
-    protected:
-        virtual float new_value() override;
-    private:
-        const float first_ratio;
     };
 }
