@@ -2,6 +2,7 @@
 
 #include "SolutionGenerator.h"
 #include <unordered_map>
+#include <limits>
 
 namespace Scheduler
 {
@@ -9,8 +10,12 @@ namespace Scheduler
 class InstanceBasedSolutionGenerator : public SolutionGenerator
 {
 public:
-    typedef std::vector<std::size_t> VectorSizeT;
+    typedef std::uint32_t StopIdT;
+    typedef std::pair<StopIdT,StopIdT> EdgeT;
+    typedef std::vector<EdgeT> VectorSizeT;
     typedef std::vector<VectorSizeT> PopulationsT;
+
+    static constexpr StopIdT start_stop_id = std::numeric_limits<StopIdT>::max();
 
     explicit InstanceBasedSolutionGenerator(Run& run);
 
@@ -21,7 +26,7 @@ protected:
     typedef std::pair<Run::WorkStopIterator,Run::WorkStopIterator> WorkStopIteratorPair;
 
     void neighbour(const VectorSizeT& another_run);
-    void neighbour(std::size_t id1, std::size_t id2);
+    void neighbour(StopIdT id1, StopIdT id2);
     void neighbour(Run::WorkStopIterator a, Run::WorkStopIterator b);
 
     void addEdgeWithBlockReverse(Run::WorkStopIterator a, Run::WorkStopIterator b);
@@ -31,12 +36,12 @@ protected:
     void addEdgeWithVertexSwap(Run::WorkStopIterator a, Run::WorkStopIterator b);
     void addEdgeWithBlockInsert(Run::WorkStopIterator a, Run::WorkStopIterator b);
 
-    bool checkEdge(std::size_t id1, std::size_t id2) const;
+    bool checkEdge(StopIdT id1, StopIdT id2) const;
 
     MutationType selectMutation(Run::WorkStopIterator a, Run::WorkStopIterator b);
 
     PopulationsT const * populations_ptr;
-    std::unordered_map<std::size_t, Run::WorkStopIterator> ids;
+    std::unordered_map<StopIdT, Run::WorkStopIterator> ids;
     std::size_t self_index_in_populations;
 
     Logger& logger;

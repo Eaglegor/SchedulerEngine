@@ -119,8 +119,8 @@ namespace Scheduler
 
         LOG_TRACE(logger, "initializing");
 
-        auto temperature_scheduler = std::unique_ptr<TemperatureScheduler>(temperature_scheduler_template->clone());
-        temperature_scheduler->initialize(run, schedule_cost_function.get());
+        std::shared_ptr<TemperatureScheduler> temperature_scheduler0( temperature_scheduler_template->clone() );
+        temperature_scheduler0->initialize(run, schedule_cost_function.get());
 
         auto run_iter = run.getSchedule().findRun(run);
         const std::size_t run_idx = std::distance<Schedule::ConstRunIterator>(run.getSchedule().getRuns().begin(), run_iter);
@@ -129,6 +129,7 @@ namespace Scheduler
         std::vector<ReferenceWrapper<Run>> runs;
         std::vector<Cost> costs;
         std::vector<std::shared_ptr<InstanceBasedSolutionGenerator>> generators;
+        std::vector<std::shared_ptr<TemperatureScheduler>> temperature_schedulers;
         const std::size_t N = population_size;
         for (std::size_t idx = 0; idx < N; ++idx) {
             schedules.emplace_back(run.getSchedule());
@@ -147,18 +148,23 @@ namespace Scheduler
 
             const Cost initial_cost = schedule_cost_function->calculateCost(temporary_run.getSchedule());
             costs.push_back(initial_cost);
+
+            std::shared_ptr<TemperatureScheduler> temperature_scheduler_a( temperature_scheduler0->clone() );
+            temperature_schedulers.push_back(temperature_scheduler_a);
         }
 
         InstanceBasedSolutionGenerator::PopulationsT populations;
-        InstanceBasedSolutionGenerator::PopulationsT populations_write;
         for (Run& run_ref : runs) {
             InstanceBasedSolutionGenerator::VectorSizeT vector_of_idx;
+            InstanceBasedSolutionGenerator::StopIdT last_id = InstanceBasedSolutionGenerator::start_stop_id;
             for (auto & workStop : run_ref.getWorkStops()) {
-                vector_of_idx.push_back(workStop.getOperation().getId());
+                const InstanceBasedSolutionGenerator::StopIdT operation_id = workStop.getOperation().getId();
+                vector_of_idx.emplace_back(last_id, operation_id);
+                last_id = operation_id;
             }
+            vector_of_idx.emplace_back(last_id, InstanceBasedSolutionGenerator::start_stop_id);
             populations.emplace_back(vector_of_idx);
         }
-        populations_write.resize(populations.size());
 
         std::random_device random_device;
         std::mt19937_64 random_engine(random_device());
@@ -172,22 +178,32 @@ namespace Scheduler
         const std::size_t S = markovChainLength(run.getWorkStops().size());
         const std::size_t T = std::min(threads_number, population_size);(void)T;//used for openmp
         TRACEABLE_SECTION(__main_loop__,  "main loop", logger);
-        while (!temperature_scheduler->isFinish()) {
+        while (std::count_if(temperature_schedulers.begin(),
+                             temperature_schedulers.end(),
+                             [] (const std::shared_ptr<TemperatureScheduler> & ts) { return !ts->isFinish(); })) {
             TRACEABLE_SECTION(__outer_iteration__, "outer iteration", logger);
-            LOG_DEBUG(logger, "set temperature to {} on iteration {}", temperature_scheduler->getTemperature(), number_of_iterations);
             std::size_t acceptance_number = 0;
             std::size_t mutations_number = 0;
             std::size_t best_costs_number = 0;
             #pragma omp parallel for num_threads(T) if (T > 1)
             for (std::size_t i = 0; i < N; ++i) {
+                auto temp_sched = temperature_schedulers[i];
+                if (temp_sched->isFinish()) {
+                    continue;
+                }
+                LOG_DEBUG(logger, "set temperature to {} on iteration {}", temp_sched->getTemperature(), number_of_iterations);
                 auto solution_generator = generators[i];
                 solution_generator->setPopulations(populations, i);
                 auto run_ref = runs[i];
                 Cost &best_cost = costs[i];
                 for (size_t s = 0; s < S; ++s) {
                     solution_generator->neighbour();
-                    const Cost cost = solution_generator->hasPermutation() ? schedule_cost_function->calculateCost(run_ref.get().getSchedule()) : best_cost;
-                    mutations_number += (solution_generator->hasPermutation() ? 1 : 0);
+                    if (!solution_generator->hasPermutation()) {
+                        continue;
+                    }
+
+                    const Cost cost = schedule_cost_function->calculateCost(run_ref.get().getSchedule());
+                    ++mutations_number;
                     if (cost < best_cost) {
                         best_cost = cost;
                         solution_generator->store();
@@ -195,12 +211,9 @@ namespace Scheduler
                     } else {
                         const float random_value = float_distribution(random_engine);
                         const Cost delta = cost - best_cost;
-                        if (acceptance(delta, random_value, temperature_scheduler->getTemperature())) {
-                            #pragma omp critical
-                            {
-                                temperature_scheduler->adapt(delta, random_value);
-                                ++acceptance_number;
-                            }
+                        if (acceptance(delta, random_value, temp_sched->getTemperature())) {
+                            temp_sched->adapt(delta, random_value);
+                            ++acceptance_number;
                             best_cost = cost;
                             solution_generator->store();
                         } else {
@@ -208,15 +221,20 @@ namespace Scheduler
                         }
                     }
                 }
-                InstanceBasedSolutionGenerator::VectorSizeT & vector_of_idx = populations_write[i];
-                vector_of_idx.clear();
+
+                InstanceBasedSolutionGenerator::VectorSizeT & vector_of_idx = populations[i];
+                std::size_t idx = 0;
+                InstanceBasedSolutionGenerator::StopIdT last_id = InstanceBasedSolutionGenerator::start_stop_id;
                 for (auto & workStop : run_ref.get().getWorkStops()) {
-                    vector_of_idx.push_back(workStop.getOperation().getId());
+                    const InstanceBasedSolutionGenerator::StopIdT operation_id = workStop.getOperation().getId();
+                    vector_of_idx.at(idx++) = std::make_pair(last_id, operation_id);
+                    last_id = operation_id;
                 }
+                vector_of_idx.back() = std::make_pair(last_id, InstanceBasedSolutionGenerator::start_stop_id);
+
+                temp_sched->changeTemperature();
             }
             LOG_DEBUG(logger, "iteration number {} acceptances is {} mutations is {} best costs {}", number_of_iterations, acceptance_number, mutations_number, best_costs_number);
-            temperature_scheduler->changeTemperature();
-            std::swap(populations, populations_write);
             ++number_of_iterations;
             total_acceptance_number += acceptance_number;
             total_mutations_number += mutations_number;

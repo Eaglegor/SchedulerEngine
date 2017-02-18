@@ -1,8 +1,9 @@
 #include "InstanceBasedSolutionGenerator.h"
-#include <limits>
 
 namespace Scheduler
 {
+
+constexpr InstanceBasedSolutionGenerator::StopIdT InstanceBasedSolutionGenerator::start_stop_id;
 
 InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run &run) :
     SolutionGenerator(run),
@@ -26,16 +27,16 @@ void InstanceBasedSolutionGenerator::neighbour()
 void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGenerator::VectorSizeT& another_run)
 {
     const std::size_t source_edge = index_distribution(random_engine, index_param_t(0, N));
-    const std::size_t operation_a_id = (source_edge == 0 ? std::numeric_limits<std::size_t>::max() : another_run.at(source_edge - 1));
-    const std::size_t operation_b_id = (source_edge == N ? std::numeric_limits<std::size_t>::max() : another_run.at(source_edge));
+    StopIdT operation_a_id = another_run.at(source_edge).first;
+    StopIdT operation_b_id = another_run.at(source_edge).second;
     neighbour(operation_a_id, operation_b_id);
     assert(checkEdge(operation_a_id, operation_b_id));
 }
 
-void InstanceBasedSolutionGenerator::neighbour (std::size_t a_id, std::size_t b_id)
+void InstanceBasedSolutionGenerator::neighbour (StopIdT a_id, StopIdT b_id)
 {
-    const auto iter_a = (a_id != std::numeric_limits<std::size_t>::max() ? ids.at(a_id) : run.getWorkStops().end());
-    const auto iter_b = (b_id != std::numeric_limits<std::size_t>::max() ? ids.at(b_id) : run.getWorkStops().end());
+    const auto iter_a = (a_id != start_stop_id ? ids.at(a_id) : run.getWorkStops().end());
+    const auto iter_b = (b_id != start_stop_id ? ids.at(b_id) : run.getWorkStops().end());
     neighbour(iter_a, iter_b);
 }
 
@@ -172,15 +173,15 @@ void InstanceBasedSolutionGenerator::setPopulations(const PopulationsT & populat
     this->self_index_in_populations = self_index;
 }
 
-bool InstanceBasedSolutionGenerator::checkEdge(std::size_t a_id, std::size_t b_id) const
+bool InstanceBasedSolutionGenerator::checkEdge(StopIdT a_id, StopIdT b_id) const
 {
     bool result = false;
-    if (a_id == std::numeric_limits<std::size_t>::max()) {
+    if (a_id == start_stop_id) {
         result = run.getWorkStops().front().getOperation().getId() == b_id;
         if (!result) {
             LOG_ERROR(logger, "check edge first - {} failed", b_id);
         }
-    } else if (b_id == std::numeric_limits<std::size_t>::max()) {
+    } else if (b_id == start_stop_id) {
         result = run.getWorkStops().back().getOperation().getId() == a_id;
         if (!result) {
             LOG_ERROR(logger, "check edge {} - last failed", a_id);
