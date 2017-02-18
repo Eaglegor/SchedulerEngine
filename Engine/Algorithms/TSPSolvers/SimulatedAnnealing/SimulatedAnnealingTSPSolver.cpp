@@ -241,8 +241,7 @@ namespace Scheduler
             total_best_costs_number += best_costs_number;
         }
 
-        LOG_DEBUG(logger, "final temperature is {} on iteration {}", temperature_scheduler->getTemperature(), number_of_iterations);
-        LOG_DEBUG(logger, "total number of iterations {}", number_of_iterations * M * S);
+        LOG_DEBUG(logger, "total number of iterations {}", number_of_iterations);
         LOG_DEBUG(logger, "total number of acceptance {}", total_acceptance_number);
         LOG_DEBUG(logger, "total number of mutations {}", total_mutations_number);
         LOG_DEBUG(logger, "total number of best cost {}", total_best_costs_number);
