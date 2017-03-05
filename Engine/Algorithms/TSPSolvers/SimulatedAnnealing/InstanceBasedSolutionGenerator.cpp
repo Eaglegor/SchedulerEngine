@@ -17,11 +17,8 @@ InstanceBasedSolutionGenerator::InstanceBasedSolutionGenerator(Run &run) :
 void InstanceBasedSolutionGenerator::neighbour()
 {
     has_permutation = false;
-    std::size_t from = index_distribution(random_engine, index_param_t(0, populations_ptr->size() - 2));
-    if (from >= self_index_in_populations) {
-        ++from;
-    }
-    neighbour(populations_ptr->at(from));
+    std::size_t from = index_distribution(random_engine, index_param_t(0, populations.size() - 1));
+    neighbour(*populations.at(from));
 }
 
 void InstanceBasedSolutionGenerator::neighbour (const InstanceBasedSolutionGenerator::VectorSizeT& another_run)
@@ -167,10 +164,9 @@ void InstanceBasedSolutionGenerator::addEdgeWithVertexSwap(Run::WorkStopIterator
     }
 }
 
-void InstanceBasedSolutionGenerator::setPopulations(const PopulationsT & populations, std::size_t self_index)
+void InstanceBasedSolutionGenerator::addInstance(const InstanceBasedSolutionGenerator& instance)
 {
-    this->populations_ptr = &populations;
-    this->self_index_in_populations = self_index;
+    populations.push_back(&instance.edges);
 }
 
 bool InstanceBasedSolutionGenerator::checkEdge(StopIdT a_id, StopIdT b_id) const
@@ -200,6 +196,27 @@ bool InstanceBasedSolutionGenerator::checkEdge(StopIdT a_id, StopIdT b_id) const
         }
     }
     return result;
+}
+
+void InstanceBasedSolutionGenerator::updateEdges()
+{
+    if (edges.empty()) {
+        edges.resize(run.getWorkStops().size() + 1);
+    }
+    std::size_t idx = 0;
+    InstanceBasedSolutionGenerator::StopIdT last_id = InstanceBasedSolutionGenerator::start_stop_id;
+    for (auto & workStop : run.getWorkStops()) {
+        const InstanceBasedSolutionGenerator::StopIdT operation_id = workStop.getOperation().getId();
+        edges.at(idx++) = std::make_pair(last_id, operation_id);
+        last_id = operation_id;
+    }
+    edges.back() = std::make_pair(last_id, InstanceBasedSolutionGenerator::start_stop_id);
+}
+
+void InstanceBasedSolutionGenerator::store()
+{
+    SolutionGenerator::store();
+    updateEdges();
 }
 
 }

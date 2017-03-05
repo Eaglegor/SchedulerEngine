@@ -325,7 +325,7 @@ private:
     {
         SimulatedAnnealingTSPSolver& tsp_solver = engine.getAlgorithmsManager().createAlgorithm<SimulatedAnnealingTSPSolver>();
         tsp_solver.setScheduleCostFunction(engine.getAlgorithmsManager().createCostFunction<TotalDistanceScheduleCostFunction>());
-		scheduler.reset(new ListTemperatureScheduler(120, std::log(std::pow(10, -3)), 1000));
+        scheduler.reset(new ListTemperatureScheduler(120, 1000, std::log(std::pow(10, -3))));
         tsp_solver.setTemperatureScheduler(*scheduler);
         tsp_solver.setMarkovChainLengthScale(2.f);
         return tsp_solver;
