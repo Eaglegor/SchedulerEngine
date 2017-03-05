@@ -10,20 +10,20 @@ namespace Scheduler
 class InstanceBasedSolutionGenerator : public SolutionGenerator
 {
 public:
-    typedef std::uint32_t StopIdT;
-    typedef std::pair<StopIdT,StopIdT> EdgeT;
-    typedef std::vector<EdgeT> VectorSizeT;
-    typedef std::vector<VectorSizeT> PopulationsT;
-
-    static constexpr StopIdT start_stop_id = std::numeric_limits<StopIdT>::max();
-
     explicit InstanceBasedSolutionGenerator(Run& run);
 
     virtual void neighbour() override;
-    void setPopulations(const PopulationsT & populations, std::size_t self_index);
+    void addInstance(const InstanceBasedSolutionGenerator& instance);
+    void store();
 
 protected:
+    typedef std::uint32_t StopIdT;
+    typedef std::pair<StopIdT,StopIdT> EdgeT;
+    typedef std::vector<EdgeT> VectorSizeT;
+    typedef std::vector<const VectorSizeT *> PopulationsT;
     typedef std::pair<Run::WorkStopIterator,Run::WorkStopIterator> WorkStopIteratorPair;
+
+    static constexpr StopIdT start_stop_id = std::numeric_limits<StopIdT>::max();
 
     void neighbour(const VectorSizeT& another_run);
     void neighbour(StopIdT id1, StopIdT id2);
@@ -38,11 +38,13 @@ protected:
 
     bool checkEdge(StopIdT id1, StopIdT id2) const;
 
+    void updateEdges();
+
     MutationType selectMutation(Run::WorkStopIterator a, Run::WorkStopIterator b);
 
-    PopulationsT const * populations_ptr;
+    PopulationsT populations;
+    VectorSizeT edges;
     std::unordered_map<StopIdT, Run::WorkStopIterator> ids;
-    std::size_t self_index_in_populations;
 
     Logger& logger;
 };

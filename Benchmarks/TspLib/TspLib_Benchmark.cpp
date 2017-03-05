@@ -430,7 +430,8 @@ public:
         float markov_chain_length_scale;
         std::size_t population_size;
         std::size_t threads_number;
-        Options() : markov_chain_length_scale(1.f), population_size(8), threads_number(1) {}
+        SimulatedAnnealingTSPSolver::MultithreadingType multithreading_type;
+        Options() : markov_chain_length_scale(1.f), population_size(8), threads_number(1), multithreading_type(SimulatedAnnealingTSPSolver::MultithreadingType::Auto) {}
     };
     
     SimulatedAnnealingTspLibInstance(const std::vector<std::string>& datasets, BenchmarkPublisher& publisher)
@@ -455,6 +456,7 @@ public:
                                    SolutionGenerator::MutationType::VertexInsert,
                                    SolutionGenerator::MutationType::BlockInsert
                                 });
+        sa_solver.setMultithreadingType(options.multithreading_type);
         
         return sa_solver;
     }
@@ -672,7 +674,14 @@ bool parseCommandLine (int argc, char **argv, CmdLineOptions & cmd_line_options)
         {DefaultTemperatureScheduler::staticGetName(), SimulatedAnnealingTspLibInstance::Options::TemperatureSchedulerOptions::Type::Default}
     };
 
+    static std::map<std::string, SimulatedAnnealingTSPSolver::MultithreadingType> sa_multithreading_type_map = {
+        {"Auto", SimulatedAnnealingTSPSolver::MultithreadingType::Auto},
+        {"Independent", SimulatedAnnealingTSPSolver::MultithreadingType::Independent},
+        {"Iterative", SimulatedAnnealingTSPSolver::MultithreadingType::Iterative}
+    };
+
     std::string sa_temperature_scheduler_name;
+    std::string sa_multithreading_type;
     boost::program_options::options_description options_description("Allowed options");
     options_description.add_options()
             ("help", "produce help message")
@@ -694,11 +703,14 @@ bool parseCommandLine (int argc, char **argv, CmdLineOptions & cmd_line_options)
             ("sa-threads-number",
              boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.threads_number)->default_value(cmd_line_options.sa_options.threads_number),
              "simulated annealing threads number")
+            ("sa-multithreading-type",
+             boost::program_options::value<std::string>(&sa_multithreading_type)->default_value("Auto"),
+             "simulated annealing multithreading type")
             ("sa-markov-chain-length-scale",
              boost::program_options::value<float>(&cmd_line_options.sa_options.markov_chain_length_scale)->default_value(cmd_line_options.sa_options.markov_chain_length_scale),
              "simulated annealing markov chain lenght scale")
             ("sa-temperature-scheduler-name",
-             boost::program_options::value<std::string>(&sa_temperature_scheduler_name)->default_value("list-normal"),
+             boost::program_options::value<std::string>(&sa_temperature_scheduler_name)->default_value(ListTemperatureScheduler::staticGetName()),
              "simulated annealing temperature scheduler name")
             ("sa-temperature-scheduler-limit",
              boost::program_options::value<std::size_t>(&cmd_line_options.sa_options.temperature_scheduler_options.max_iterations)->default_value(cmd_line_options.sa_options.temperature_scheduler_options.max_iterations),
@@ -744,6 +756,7 @@ bool parseCommandLine (int argc, char **argv, CmdLineOptions & cmd_line_options)
     }
     
     cmd_line_options.sa_options.temperature_scheduler_options.type = sa_temperature_scheduler_map.at(sa_temperature_scheduler_name);
+    cmd_line_options.sa_options.multithreading_type = sa_multithreading_type_map.at(sa_multithreading_type);
 
     return true;
 }

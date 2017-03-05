@@ -59,11 +59,10 @@ void SolutionGeneratorClassic::blockInsert()
 
 void SolutionGeneratorClassic::blockReverse()
 {
-    std::size_t i = index_distribution(random_engine, index_param_t(0, N));
-    const std::size_t L = (i == 0 || i == N) ? 2 : 3;
-    std::size_t j = index_distribution(random_engine, index_param_t(0, N - L));
-    if ((j + 1) >= i) {
-        j += L;
+    std::size_t i = index_distribution(random_engine, index_param_t(0, N - 1));
+    std::size_t j = index_distribution(random_engine, index_param_t(0, N - 1));
+    if (j >= i) {
+        ++j;
     }
     const std::size_t ri = std::min(i, j);
     const std::size_t rj = std::max(i, j);
@@ -74,7 +73,7 @@ void SolutionGeneratorClassic::blockReverse()
 void SolutionGeneratorClassic::vertexInsert()
 {
     std::size_t i = index_distribution(random_engine, index_param_t(0, N - 1));
-    std::size_t j = index_distribution(random_engine, index_param_t(0, N - 2));
+    std::size_t j = index_distribution(random_engine, index_param_t(0, N - 1));
     if (j >= i) {
         ++j;
     }
