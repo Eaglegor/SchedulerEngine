@@ -7,7 +7,7 @@ namespace Scheduler
 	{
 	}
 
-	Cost::Cost(float value)
+	Cost::Cost(value_type value)
 	    : value(value)
 	{
 	}
@@ -17,12 +17,12 @@ namespace Scheduler
 	{
 	}
 
-	float Cost::getValue( ) const
+	value_type Cost::getValue( ) const
 	{
 		return value;
 	}
 
-	void Cost::setValue(float value)
+	void Cost::setValue(value_type value)
 	{
 		this->value = value;
 	}
@@ -96,23 +96,23 @@ namespace Scheduler
 		return Cost(-value);
 	}
 
-	Cost Cost::operator*(float multiplier) const
+	Cost Cost::operator*(value_type multiplier) const
 	{
 		return Cost(this->value * multiplier);
 	}
 
-	Cost& Cost::operator*=(float multiplier)
+	Cost& Cost::operator*=(value_type multiplier)
 	{
 		this->value *= multiplier;
 		return *this;
 	}
-
-	Cost Cost::operator/(float divider) const
+	
+	Cost Cost::operator/(value_type divider) const
 	{
 		return Cost(this->value / divider);
 	}
 
-	Cost& Cost::operator/=(float divider)
+	Cost& Cost::operator/=(value_type divider)
 	{
 		this->value /= divider;
 		return *this;
