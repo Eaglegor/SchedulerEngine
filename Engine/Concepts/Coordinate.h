@@ -161,8 +161,8 @@ namespace Scheduler
 
 		/**
 		 * @brief Creates the new coordinate from the floating point value
-		 * @details Converts the passed floating point value to the fixed 
-		 * point representation and then creates new coordinate from it
+		 * @details {Converts the passed floating point value to the fixed 
+		 * point representation and then creates new coordinate from it}
 		 * @return New coordinate initialized by passed value
 		 */
 		static Coordinate createFromFloat(float value);

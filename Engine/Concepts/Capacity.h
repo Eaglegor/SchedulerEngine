@@ -137,7 +137,7 @@ namespace Scheduler
 		
 		/**
 		 * @brief Subtracts the values of mathing dimensions of rhs from the values of this
-		 * * @details Updates the values of this so that (*this[i] = *this[i] - rhs[i])
+		 * @details Updates the values of this so that (*this[i] = *this[i] - rhs[i])
 		 * @param rhs Another capacity
 		 * @return Reference to this
 		 */

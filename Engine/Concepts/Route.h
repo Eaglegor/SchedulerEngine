@@ -86,8 +86,8 @@ namespace Scheduler
 		/** 
 		 * @brief Equality operator
 		 * @param rhs Another route
-		 * @return true if this and rhs represent the route between the same start and end points and
-		 * have equal distance and duration
+		 * @return {true if this and rhs represent the route between the same start and end points and
+		 * have equal distance and duration}
 		 */
 		bool operator==(const Route& rhs) const;
 
