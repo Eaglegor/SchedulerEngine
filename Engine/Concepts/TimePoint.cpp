@@ -8,7 +8,7 @@ namespace Scheduler
 	{
 	}
 
-	TimePoint::TimePoint(std::time_t value)
+	TimePoint::TimePoint(value_type value)
 	    : value(value)
 	{
 	}
@@ -24,12 +24,12 @@ namespace Scheduler
 		return *this;
 	}
 
-	std::time_t TimePoint::getValue( ) const
+	value_type TimePoint::getValue( ) const
 	{
 		return this->value;
 	}
 
-	void TimePoint::setValue(std::time_t value)
+	void TimePoint::setValue(value_type value)
 	{
 		this->value = value;
 	}
@@ -93,7 +93,7 @@ namespace Scheduler
 
 	TimePoint TimePoint::max( )
 	{
-		return TimePoint(std::numeric_limits<std::time_t>::max( ));
+		return TimePoint(std::numeric_limits<value_type>::max( ));
 	}
 
 	TimePoint TimePoint::min( )
