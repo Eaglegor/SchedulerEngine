@@ -16,7 +16,9 @@
 
 namespace Scheduler
 {
-	class Operation;
+        class Operation;
+        class DepotOperation;
+	class WorkOperation;
 	class Attribute;
 	class Location;
 	class Depot;
@@ -26,26 +28,25 @@ namespace Scheduler
     public:
 		struct Context
 		{
-			SceneObjectsFactory<Operation> &operations_factory;
+			SceneObjectsFactory<WorkOperation> &work_operations_factory;
+                        SceneObjectsFactory<DepotOperation> &depot_operations_factory;
 		};
 		
-		Order(std::size_t id, const Context& context, Optional<const Depot&> depot);
+		Order(std::size_t id, const Context& context, const Location& work_operation_location);
 		~Order();
 
-        std::size_t getId() const;
+                std::size_t getId() const;
 
-        const String& getName() const;
+                const String& getName() const;
 		void setName(const String& name);
 
-		Optional<const Operation&> getStartOperation() const;
-		Optional<const Operation&> getWorkOperation() const;
-        Optional<const Operation&> getEndOperation() const;
+		Optional<const DepotOperation&> getStartOperation() const;
+		const WorkOperation& getWorkOperation() const;
+                Optional<const DepotOperation&> getEndOperation() const;
 
-		Optional<const Depot&> getDepot() const;
-
-		Operation& createStartOperation(const Location& location);
-		Operation& createWorkOperation(const Location& location);
-		Operation& createEndOperation(const Location& location);
+		DepotOperation& createStartOperation();
+		WorkOperation& getWorkOperation();
+		DepotOperation& createEndOperation();
 
 		const OrderConstraints& constraints() const;
 		OrderConstraints& constraints();
@@ -56,17 +57,15 @@ namespace Scheduler
 		bool operator!=(const Order& rhs) const;
 
     private:
-        std::size_t id;
-		Context context;
+                std::size_t id;
+                Context context;
 		
-        String name;
+                String name;
 
-        Optional<Operation&> start_operation;
-        Optional<Operation&> work_operation;
-        Optional<Operation&> end_operation;
+                Optional<DepotOperation&> start_operation;
+                WorkOperation& work_operation;
+                Optional<DepotOperation&> end_operation;
 		
-		Optional<const Depot&> depot;
-
 		OrderConstraints order_constraints;
     };
 }

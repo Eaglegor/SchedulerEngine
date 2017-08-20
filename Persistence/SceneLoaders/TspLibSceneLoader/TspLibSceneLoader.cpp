@@ -11,7 +11,7 @@
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/Vehicle.h>
-#include <Engine/SceneManager/Operation.h>
+#include <Engine/SceneManager/WorkOperation.h>
 #include <Engine/SceneManager/Order.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
@@ -49,13 +49,14 @@ namespace Scheduler
 		Performer& performer = scene_context.createPerformer();
 		performer.setName("Performer");
 
-		std::vector<ReferenceWrapper<Operation>> operations;
+		std::vector<ReferenceWrapper<WorkOperation>> operations;
 		
 		for (std::size_t i = 1; i < nodes_count; ++i)
 		{
 			Location& location = scene_context.createLocation(Site(Coordinate(i), Coordinate(0)));
 			
-			Operation& operation = scene_context.createFreeOperation(location);
+                        Order& order = scene_context.createOrder(location);
+                        WorkOperation& operation = order.getWorkOperation();
 			operation.setName(String("Operation" + std::to_string(i)));
 			operation.setDuration(Duration(0));
 			operations.push_back(operation);
@@ -78,7 +79,7 @@ namespace Scheduler
 
 		for (std::size_t i = 0; i < operations.size(); ++i)
 		{
-			run.createWorkStop(run.getWorkStops().end(), operations[i]);
+			run.allocateOrder(run.getWorkStops().end(), operations[i].get().getOrder());
 		}
 
 		return scene;

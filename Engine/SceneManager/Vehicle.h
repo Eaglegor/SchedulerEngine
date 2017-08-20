@@ -17,15 +17,13 @@
 
 namespace Scheduler
 {
-	class Depot;
-	
     class SCENEMANAGER_EXPORT Vehicle
     {
     public:
 		using Attribute = Scheduler::Attribute;
 		using AttributesSet = std::unordered_set<ReferenceWrapper<const Attribute>>;
 		
-		Vehicle(std::size_t id, Optional<const Depot&> depot);
+		Vehicle(std::size_t id);
 
         std::size_t getId() const;
 
@@ -47,8 +45,6 @@ namespace Scheduler
 		void addAttribute(const Attribute& attribute);
 		void removeAttribute(const Attribute& attribute);
 		void clearAttributes();
-
-		Optional<const Depot&> getDepot() const;
 		
 		const VehicleConstraints& constraints() const;
 		VehicleConstraints& constraints();
@@ -69,7 +65,5 @@ namespace Scheduler
 		AttributesSet attributes;
 
 		VehicleConstraints vehicle_constraints;
-		
-		Optional<const Depot&> depot;
     };
 }

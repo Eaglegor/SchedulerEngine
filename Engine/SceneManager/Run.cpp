@@ -8,6 +8,7 @@
 #include "Algorithms/Validation/Validator.h"
 #include "WorkStop.h"
 #include "Schedule.h"
+#include "WorkOperation.h"
 #include <algorithm>
 #include <Engine/Utils/AutoCastRange.h>
 #include "Listeners/StructuralChangesObserver.h"
@@ -56,12 +57,12 @@ namespace Scheduler {
         return vehicle;
     }
 
-    const RunBoundaryStop& Run::getStartStop() const 
+    const DepotStop& Run::getStartStop() const 
     {
         return start_stop;
     }
 
-    RunBoundaryStop& Run::getStartStop() 
+    DepotStop& Run::getStartStop() 
 	{
         return start_stop;
     }
@@ -86,17 +87,17 @@ namespace Scheduler {
 		return stops;
 	}
 	
-    const RunBoundaryStop& Run::getEndStop() const 
+    const DepotStop& Run::getEndStop() const 
     {
         return end_stop;
     }
 
-	RunBoundaryStop& Run::getEndStop() 
+	DepotStop& Run::getEndStop() 
 	{
         return end_stop;
     }
 
-    void Run::allocateStartOperation(const Operation &operation) 
+    void Run::allocateStartOperation(const DepotOperation &operation) 
 	{
 		assert(!is_detached);
 		
@@ -105,11 +106,11 @@ namespace Scheduler {
 		context.structural_changes_observer.afterStartOperationAdded(stops.begin(), operation);
     }
     
-    Run::WorkStopIterator Run::createWorkStop(ConstWorkStopIterator pos, const Operation &operation) 
+    Run::WorkStopIterator Run::allocateOrder(ConstWorkStopIterator pos, const Order &order) 
 	{
 		assert(!is_detached);
 		
-		WorkStop &stop = *context.stops_factory.createObject(Stop::Context{duration_actualizer, context.arrival_time_actualizer}, *this, operation);
+		WorkStop &stop = *context.stops_factory.createObject(Stop::Context{duration_actualizer, context.arrival_time_actualizer}, *this, order.getWorkOperation());
 		
 		auto iter = casted_work_stops.insert(pos, stop);
 
@@ -118,12 +119,15 @@ namespace Scheduler {
 
 		context.structural_changes_observer.afterWorkStopCreated(iter);
 		
+                if(order.getStartOperation()) allocateStartOperation(order.getStartOperation().get());
+                if(order.getEndOperation()) allocateEndOperation(order.getEndOperation().get());
+                
 		assert(isConsistent());
 		
         return iter;
     }
 
-    void Run::allocateEndOperation(const Operation &operation) 
+    void Run::allocateEndOperation(const DepotOperation &operation) 
 	{
 		assert(!is_detached);
 		
@@ -132,7 +136,7 @@ namespace Scheduler {
 		context.structural_changes_observer.afterEndOperationAdded(std::prev(stops.end()), operation);
     }
 
-    void Run::unallocateStartOperation(const Operation &operation) 
+    void Run::unallocateStartOperation(const DepotOperation &operation) 
 	{
 		assert(!is_detached);
 		
@@ -141,15 +145,19 @@ namespace Scheduler {
         start_stop.removeOperation(operation);
     }
 
-    Run::WorkStopsList::iterator Run::destroyWorkStop(WorkStopsList::const_iterator pos) 
+    Run::WorkStopsList::iterator Run::unallocateOrder(WorkStopsList::const_iterator pos) 
 	{
 		assert(!is_detached);
 		
+                const Order& order = pos->getOperation().getOrder();
+                if(order.getEndOperation()) unallocateEndOperation(order.getEndOperation().get());
+                if(order.getStartOperation()) unallocateStartOperation(order.getStartOperation().get());
+                
 		context.structural_changes_observer.beforeWorkStopDestroyed(pos);
 		
 		auto iter = casted_work_stops.erase(pos);
 		
-        context.stops_factory.destroyObject(const_cast<WorkStop*>(&*pos));
+                context.stops_factory.destroyObject(const_cast<WorkStop*>(&*pos));
 		
 		context.arrival_time_actualizer.setDirty(true);
 		duration_actualizer.setDirty(true);
@@ -159,7 +167,7 @@ namespace Scheduler {
 		return iter;
     }
 
-    void Run::unallocateEndOperation(const Operation &operation) 
+    void Run::unallocateEndOperation(const DepotOperation &operation) 
 	{
 		assert(!is_detached);
 		

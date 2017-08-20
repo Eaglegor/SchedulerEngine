@@ -59,8 +59,8 @@ namespace Scheduler
 
 	bool CWSavingsVRPSolver::performAction(Scene& scene, SceneEditor& editor, const Order& i, const Order& j) const
 	{
-		auto i_stop_iter = scene.query().operationStopMapping().findWorkStop(i.getWorkOperation().get());
-		auto j_stop_iter = scene.query().operationStopMapping().findWorkStop(j.getWorkOperation().get());
+		auto i_stop_iter = scene.query().operationStopMapping().findWorkStop(i.getWorkOperation());
+		auto j_stop_iter = scene.query().operationStopMapping().findWorkStop(j.getWorkOperation());
 		
 		if(!CWSavingsPrechecks::isValidSaving(i_stop_iter, j_stop_iter)) 
 		{
@@ -73,7 +73,7 @@ namespace Scheduler
 			{
 				if(schedule.getRuns().empty())
 				{
-					Run& run = *editor.performAction<CreateRun>(schedule, schedule.getRuns().end(), schedule.getPerformer().getDepot()->getLocation(), schedule.getPerformer().getDepot()->getLocation());
+					Run& run = *editor.performAction<CreateRun>(schedule, schedule.getRuns().end(), schedule.getPerformer().constraints().depot().get().getLocation(), schedule.getPerformer().constraints().depot().get().getLocation());
 					editor.performAction<AllocateOrder>(run, run.getWorkStops().end(), i);
 					if(i != j) editor.performAction<AllocateOrder>(run, run.getWorkStops().end(), j);
 					break;

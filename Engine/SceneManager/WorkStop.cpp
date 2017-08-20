@@ -2,19 +2,20 @@
 
 #include <Engine/Utils/Collections/Algorithms.h>
 #include <Engine/SceneManager/Operation.h>
+#include "WorkOperation.h"
 
 #include "StopVisitor.h"
 #include "ConstStopVisitor.h"
 
 namespace Scheduler
 {
-	WorkStop::WorkStop(std::size_t id, const Stop::Context& context, Run& run, const Operation& operation) :
+	WorkStop::WorkStop(std::size_t id, const Stop::Context& context, Run& run, const WorkOperation& operation) :
 		Stop(context, run),
 		id(id),
 		operation(operation)
 	{}
 
-	const Operation &WorkStop::getOperation() const
+	const WorkOperation &WorkStop::getOperation() const
 	{
 		return operation;
 	}

@@ -1,8 +1,10 @@
 #include "FirstTimeWindowSelector.h"
 #include <Engine/SceneManager/WorkStop.h>
-#include <Engine/SceneManager/RunBoundaryStop.h>
+#include <Engine/SceneManager/DepotStop.h>
 #include <Engine/SceneManager/ConstStopVisitor.h>
 #include <Engine/SceneManager/Operation.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 
 namespace Scheduler
 {
@@ -18,7 +20,7 @@ namespace Scheduler
 			out_time_window = time_windows.get()[0];
 		}
 
-		virtual void dispatch(const RunBoundaryStop& run_boundary_stop) override
+		virtual void dispatch(const DepotStop& run_boundary_stop) override
 		{
 			if (run_boundary_stop.getOperations().empty()) return;
 

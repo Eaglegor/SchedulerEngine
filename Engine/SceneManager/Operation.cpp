@@ -2,9 +2,8 @@
 
 namespace Scheduler
 {
-    Operation::Operation(std::size_t id, const Location& location, Optional<const Order&> order) :
+    Operation::Operation(std::size_t id, const Order& order) :
             id(id),
-            location(location),
             order(order)
     {
     }
@@ -17,15 +16,11 @@ namespace Scheduler
         return id;
     }
 
-    const Location& Operation::getLocation() const {
-        return location;
-    }
-
     const Duration& Operation::getDuration() const {
         return duration;
     }
 
-    Optional<const Order&> Operation::getOrder() const {
+    const Order& Operation::getOrder() const {
         return order;
     }
 
@@ -39,12 +34,12 @@ namespace Scheduler
 
 	const OperationConstraints & Operation::constraints() const
 	{
-		return operations_constraints;
+		return operation_constraints;
 	}
 
 	OperationConstraints & Operation::constraints()
 	{
-		return operations_constraints;
+		return operation_constraints;
 	}
 	
 	bool Operation::operator==(const Operation& rhs) const

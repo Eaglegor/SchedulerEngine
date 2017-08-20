@@ -12,7 +12,7 @@ namespace Scheduler
 		listeners.erase(listener);
 	}
 	
-	void StructuralChangesObserver::afterStartOperationAdded(Run::ConstStopIterator iter, const Operation& operation)
+	void StructuralChangesObserver::afterStartOperationAdded(Run::ConstStopIterator iter, const DepotOperation& operation)
 	{
 		for(StructuralChangesListener& listener : listeners)
 		{
@@ -20,7 +20,7 @@ namespace Scheduler
 		}
 	}
 	
-	void StructuralChangesObserver::beforeStartOperationRemoved(Run::ConstStopIterator iter, const Operation& operation)
+	void StructuralChangesObserver::beforeStartOperationRemoved(Run::ConstStopIterator iter, const DepotOperation& operation)
 	{
 		for(StructuralChangesListener& listener : listeners)
 		{
@@ -28,7 +28,7 @@ namespace Scheduler
 		}
 	}
 	
-	void StructuralChangesObserver::afterEndOperationAdded(Run::ConstStopIterator iter, const Operation& operation)
+	void StructuralChangesObserver::afterEndOperationAdded(Run::ConstStopIterator iter, const DepotOperation& operation)
 	{
 		for(StructuralChangesListener& listener : listeners)
 		{
@@ -36,7 +36,7 @@ namespace Scheduler
 		}
 	}
 	
-	void StructuralChangesObserver::beforeEndOperationRemoved(Run::ConstStopIterator iter, const Operation& operation)
+	void StructuralChangesObserver::beforeEndOperationRemoved(Run::ConstStopIterator iter, const DepotOperation& operation)
 	{
 		for(StructuralChangesListener& listener : listeners)
 		{

@@ -8,6 +8,7 @@
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/SceneContext.h>
 #include <boost/filesystem.hpp>
+#include <Engine/SceneManager/WorkOperation.h>
 
 namespace Scheduler
 {
@@ -105,7 +106,7 @@ namespace Scheduler
 	{
 		for(const Order& order: scene.getContext().getOrders())
 		{
-			if(order.getWorkOperation()) addPoint(order.getWorkOperation()->getLocation().getSite());
+			addPoint(order.getWorkOperation().getLocation().getSite());
 		}
 		for(const Schedule &schedule : scene.getSchedules())
 		{

@@ -51,7 +51,7 @@ namespace Scheduler
 			
 			Schedule& current_schedule = scene.getSchedules()[i];
 			
-			const Location& depot_location = current_schedule.getPerformer().getDepot()->getLocation();
+			const Location& depot_location = current_schedule.getPerformer().constraints().depot().get().getLocation();
 			Run& current_run = *current_schedule.createRun(current_schedule.getRuns().end(), depot_location, depot_location);
 			
 			for(int j = range_begin; j < range_end; ++j)

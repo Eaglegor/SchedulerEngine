@@ -14,6 +14,8 @@
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/WorkStop.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -193,42 +195,36 @@ namespace Scheduler
 			vehicles.emplace(vehicle_desc.name, vehicle);
 		}
 
-		std::unordered_map<std::string, ReferenceWrapper<Operation>> operations;
-		for (const OperationDesc &operation_desc: scene_desc.free_operations)
-		{
-			Operation& operation = scene_context.createFreeOperation(locations.at(operation_desc.location));
-			parseOperation(operation_desc, operation, settings);
-			operations.emplace(operation_desc.name, operation);
-		}
+		std::unordered_map<std::string, ReferenceWrapper<WorkOperation>> work_operations;
+                std::unordered_map<std::string, ReferenceWrapper<DepotOperation>> depot_operations;
 
-		for(const OrderDesc &order_desc : scene_desc.orders)
+                for(const OrderDesc &order_desc : scene_desc.orders)
 		{
-			Order& order = scene_context.createOrder();
-
+                    
+                        const OperationDesc& work_operation_desc = order_desc.work_operations.front();
+                        Order& order = scene_context.createOrder(locations.at(work_operation_desc.location));
+                        
+                        WorkOperation& work_operation = order.getWorkOperation();
+                        parseOperation(work_operation_desc, work_operation, settings);
+                        work_operation.setName((std::string(order.getName()) + "." + std::string(work_operation.getName())));
+                        work_operations.emplace(work_operation.getName(), work_operation);
+                    
 			order.setName(order_desc.name);
 			
 			if(order_desc.start_operation)
 			{
-				Operation& operation = order.createStartOperation(locations.at(order_desc.start_operation.get().location));
+				DepotOperation& operation = order.createStartOperation();
 				parseOperation(order_desc.start_operation.get(), operation, settings);
 				operation.setName((std::string(order.getName()) + "." + std::string(operation.getName())));
-				operations.emplace(operation.getName(), operation);
+				depot_operations.emplace(operation.getName(), operation);
 			}
 
-			for (const OperationDesc &operation_desc : order_desc.work_operations)
-			{
-				Operation& operation = order.createWorkOperation(locations.at(operation_desc.location));
-				parseOperation(operation_desc, operation, settings);
-				operation.setName((std::string(order.getName()) + "." + std::string(operation.getName())));
-				operations.emplace(operation.getName(), operation);
-			}
-			
 			if (order_desc.end_operation)
 			{
-				Operation& operation = order.createEndOperation(locations.at(order_desc.end_operation.get().location));
+				DepotOperation& operation = order.createEndOperation();
 				parseOperation(order_desc.end_operation.get(), operation, settings);
 				operation.setName((std::string(order.getName()) + "." + std::string(operation.getName())));
-				operations.emplace(operation.getName(), operation);
+				depot_operations.emplace(operation.getName(), operation);
 			}
 		}
 
@@ -260,20 +256,10 @@ namespace Scheduler
 				Vehicle& vehicle = vehicles.at(run_desc.vehicle);
 				run.setVehicle(vehicle);
 
-				for(const StopDesc &stop_desc : run_desc.start_operations)
-				{
-					run.allocateStartOperation(operations.at(stop_desc.operation));
-				}
-
 				for(const StopDesc &stop_desc : run_desc.work_operations)
 				{
-					Stop& stop = *run.createWorkStop(run.getWorkStops().end(), operations.at(stop_desc.operation));
+					Stop& stop = *run.allocateOrder(run.getWorkStops().end(), work_operations.at(stop_desc.operation).get().getOrder());
 					stop.setAllocationTime(createTimeWindow(stop_desc.allocation_time, settings));
-				}
-
-				for(const StopDesc &stop_desc : run_desc.end_operations)
-				{
-					run.allocateEndOperation(operations.at(stop_desc.operation));
 				}
 			}
 		}

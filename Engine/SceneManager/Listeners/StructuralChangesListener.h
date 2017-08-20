@@ -17,11 +17,11 @@ namespace Scheduler
 		virtual void afterRunCreated(Schedule::ConstRunIterator iter){}
 		virtual void beforeRunDestroyed(Schedule::ConstRunIterator iter){}
 		
-		virtual void afterStartOperationAdded(Run::ConstStopIterator iter, const Operation& operation){}
-		virtual void beforeStartOperationRemoved(Run::ConstStopIterator iter, const Operation& operation){}
+		virtual void afterStartOperationAdded(Run::ConstStopIterator iter, const DepotOperation& operation){}
+		virtual void beforeStartOperationRemoved(Run::ConstStopIterator iter, const DepotOperation& operation){}
 		
-		virtual void afterEndOperationAdded(Run::ConstStopIterator iter, const Operation& operation){}
-		virtual void beforeEndOperationRemoved(Run::ConstStopIterator iter, const Operation& operation){}
+		virtual void afterEndOperationAdded(Run::ConstStopIterator iter, const DepotOperation& operation){}
+		virtual void beforeEndOperationRemoved(Run::ConstStopIterator iter, const DepotOperation& operation){}
 		
 		virtual void beforeWorkStopsSwapped(Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator second){}
 		virtual void beforeWorkStopsReversed(Run::ConstWorkStopIterator range_begin, Run::ConstWorkStopIterator range_end){}

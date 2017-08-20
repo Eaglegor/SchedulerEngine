@@ -1,10 +1,9 @@
 #include "Performer.h"
 
 namespace Scheduler {
-    Performer::Performer(std::size_t id, Optional<const Depot&> depot):
-    id(id),
-    depot(depot)
-	{
+    Performer::Performer(std::size_t id):
+    id(id)
+    {
     }
 
     std::size_t Performer::getId() const 
@@ -70,11 +69,6 @@ namespace Scheduler {
 	PerformerConstraints & Performer::constraints()
 	{
 		return performer_constraints;
-	}
-	
-	Optional<const Depot&> Performer::getDepot() const
-	{
-		return depot;
 	}
 	
 	bool Performer::operator==(const Performer& rhs) const

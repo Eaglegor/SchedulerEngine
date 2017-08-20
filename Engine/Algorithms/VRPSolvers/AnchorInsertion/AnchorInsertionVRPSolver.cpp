@@ -13,6 +13,8 @@
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/SceneEditor/Actions/AllocateOrder.h>
 #include <Engine/SceneEditor/Actions/CreateRun.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 #include <Engine/SceneManager/CostFunctions/SceneCostFunction.h>
 #include <Engine/Routing/RoutingService.h>
 #include <set>
@@ -67,9 +69,9 @@ namespace Scheduler
 				{
 					for(const Order& order : scene.getContext().getOrders())
 					{
-						if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation().get())) continue;
+						if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation())) continue;
 
-						const Location &order_location = order.getWorkOperation()->getLocation();
+						const Location &order_location = order.getWorkOperation().getLocation();
 						const Location &route_start = std::prev(run.findStop(stop))->getLocation();
 						const Location &route_end = stop.getLocation();
 
@@ -164,7 +166,7 @@ namespace Scheduler
 				anchors.clear();
 				for(const Order& order : scene.getContext().getOrders())
 				{
-					if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation().get())) continue;
+					if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation())) continue;
 					
 					for(Schedule &schedule : scene.getSchedules())
 					{
@@ -175,8 +177,8 @@ namespace Scheduler
 						anchor.schedule = &schedule;
 						anchor.estimated_density = calculateDensity(order);
 						
-						const Location &depot_location = schedule.getPerformer().getDepot()->getLocation();
-						const Location &order_location = order.getWorkOperation()->getLocation();
+						const Location &depot_location = schedule.getPerformer().constraints().depot().get().getLocation();
+						const Location &order_location = order.getWorkOperation().getLocation();
 						Route di = routing_service.calculateRoute(depot_location.getSite(), order_location.getSite(), RoutingProfile());
 						Route id = routing_service.calculateRoute(order_location.getSite(), depot_location.getSite(), RoutingProfile());
 						anchor.estimated_cost = (di.getDuration() + id.getDuration()).getValue() - UNPLANNED_ORDER_PENALTY + VEHICLE_ACTIVATION_COST;
@@ -196,9 +198,9 @@ namespace Scheduler
 
 				for(const Order& order : scene.getContext().getOrders())
 				{
-					if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation().get())) continue;
+					if (scene.query().operationStopMapping().findWorkStop(order.getWorkOperation())) continue;
 
-					Route ij = routing_service.calculateRoute(anchor.getWorkOperation()->getLocation().getSite(), order.getWorkOperation()->getLocation().getSite(), RoutingProfile());
+					Route ij = routing_service.calculateRoute(anchor.getWorkOperation().getLocation().getSite(), order.getWorkOperation().getLocation().getSite(), RoutingProfile());
 					sum_duration += ij.getDuration();
 
 					if (max_duration < ij.getDuration()) max_duration = ij.getDuration();
@@ -226,7 +228,7 @@ namespace Scheduler
 			Optional<Run&> apply(const Anchor& anchor)
 			{
 				Schedule& schedule = *anchor.schedule;
-				const Location &depot_location = schedule.getPerformer().getDepot()->getLocation();
+				const Location &depot_location = schedule.getPerformer().constraints().depot().get().getLocation();
 
 				int checkpoint = scene_editor.checkpoint();
 

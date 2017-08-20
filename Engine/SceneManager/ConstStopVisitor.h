@@ -3,7 +3,7 @@
 namespace Scheduler
 {
 	class WorkStop;
-	class RunBoundaryStop;
+	class DepotStop;
 
 	class ConstStopVisitor
 	{
@@ -11,6 +11,6 @@ namespace Scheduler
 		virtual ~ConstStopVisitor() {}
 
 		virtual void dispatch(const WorkStop& work_stop) = 0;
-		virtual void dispatch(const RunBoundaryStop& run_boundary_stop) = 0;
+		virtual void dispatch(const DepotStop& run_boundary_stop) = 0;
 	};
 }

@@ -1,6 +1,8 @@
 #include "OperationStopMappingQuery.h"
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Utils/Iterators.h>
+#include "../DepotOperation.h"
+#include "../WorkOperation.h"
 #include <iterator>
 
 namespace Scheduler
@@ -25,7 +27,7 @@ namespace Scheduler
 		return iter->second;
 	}
 
-	Optional<Run::ConstWorkStopIterator> OperationStopMappingQuery::findWorkStop(const Operation& operation) const
+	Optional<Run::ConstWorkStopIterator> OperationStopMappingQuery::findWorkStop(const WorkOperation& operation) const
 	{
 		if(dirty) const_cast<OperationStopMappingQuery*>(this)->update();
 		auto iter = work_stops.find(operation);
@@ -49,28 +51,28 @@ namespace Scheduler
 		work_stops.erase(iter->getOperation());
 	}
 	
-	void OperationStopMappingQuery::afterStartOperationAdded(Run::ConstStopIterator iter, const Operation& operation)
+	void OperationStopMappingQuery::afterStartOperationAdded(Run::ConstStopIterator iter, const DepotOperation& operation)
 	{
 		if(dirty) return;
 		
 		stops.emplace(operation, iter);
 	}
 	
-	void OperationStopMappingQuery::beforeStartOperationRemoved(Run::ConstStopIterator iter, const Operation& operation)
+	void OperationStopMappingQuery::beforeStartOperationRemoved(Run::ConstStopIterator iter, const DepotOperation& operation)
 	{
 		if(dirty) return;
 		
 		stops.erase(operation);
 	}
 
-	void OperationStopMappingQuery::afterEndOperationAdded(Run::ConstStopIterator iter, const Operation& operation)
+	void OperationStopMappingQuery::afterEndOperationAdded(Run::ConstStopIterator iter, const DepotOperation& operation)
 	{
 		if(dirty) return;
 		
 		stops.emplace(operation, iter);
 	}
 	
-	void OperationStopMappingQuery::beforeEndOperationRemoved(Run::ConstStopIterator iter, const Operation& operation)
+	void OperationStopMappingQuery::beforeEndOperationRemoved(Run::ConstStopIterator iter, const DepotOperation& operation)
 	{
 		if(dirty) return;
 		
@@ -105,7 +107,7 @@ namespace Scheduler
 		{
 			for(const Run& run : schedule.getRuns())
 			{
-				for(const Operation& operation : run.getStartStop().getOperations())
+				for(const DepotOperation& operation : run.getStartStop().getOperations())
 				{
 					stops.emplace(operation, run.getStops().begin());
 				}
@@ -114,7 +116,7 @@ namespace Scheduler
 					stops.emplace(iter->getOperation(), iter.base());
 					work_stops.emplace(iter->getOperation(), iter);
 				}
-				for(const Operation& operation : run.getEndStop().getOperations())
+				for(const DepotOperation& operation : run.getEndStop().getOperations())
 				{
 					stops.emplace(operation, std::prev(run.getStops().end()));
 				}

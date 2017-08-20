@@ -4,6 +4,8 @@
 #include <Engine/SceneEditor/Actions/MoveWorkStop.h>
 #include <Engine/SceneEditor/Actions/ScrambleWorkStops.h>
 #include <Engine/SceneEditor/Actions/RotateWorkStops.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 
 namespace Scheduler
 {

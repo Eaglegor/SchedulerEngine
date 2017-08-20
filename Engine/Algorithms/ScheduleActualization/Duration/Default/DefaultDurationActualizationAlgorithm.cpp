@@ -6,7 +6,9 @@
 #include <Engine/Concepts/Duration.h>
 #include <Engine/SceneManager/StopVisitor.h>
 #include <Engine/SceneManager/WorkStop.h>
-#include <Engine/SceneManager/RunBoundaryStop.h>
+#include <Engine/SceneManager/DepotStop.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 
 #include <assert.h>
 
@@ -22,10 +24,10 @@ namespace Scheduler
 			out_duration = work_stop.getOperation().getDuration();
 		}
 
-		virtual void dispatch(RunBoundaryStop &run_boundary_stop) override
+		virtual void dispatch(DepotStop &run_boundary_stop) override
 		{
 			Duration total_duration;
-			for (const Operation& operation : run_boundary_stop.getOperations())
+			for (const DepotOperation& operation : run_boundary_stop.getOperations())
 			{
 				total_duration += operation.getDuration();
 			}

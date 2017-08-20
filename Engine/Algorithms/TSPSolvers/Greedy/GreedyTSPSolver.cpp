@@ -8,6 +8,8 @@
 #include <Engine/SceneManager/Location.h>
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/SceneManager/Utils/InvariantWorkStopsList.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 #include <algorithm>
 
 namespace Scheduler
