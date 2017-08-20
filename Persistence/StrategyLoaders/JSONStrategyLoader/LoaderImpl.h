@@ -1,14 +1,14 @@
 #pragma once
 
 #include <boost/property_tree/ptree.hpp>
-#include <unordered_map>
 #include <memory>
+#include <unordered_map>
 
+#include "Loaders/RunCostFunctions/RunCostFunctionLoader.h"
+#include "Loaders/SceneCostFunctions/SceneCostFunctionLoader.h"
+#include "Loaders/ScheduleCostFunctions/ScheduleCostFunctionLoader.h"
 #include "Loaders/TSPSolvers/TSPSolverLoader.h"
 #include "Loaders/VRPSolvers/VRPSolverLoader.h"
-#include "Loaders/RunCostFunctions/RunCostFunctionLoader.h"
-#include "Loaders/ScheduleCostFunctions/ScheduleCostFunctionLoader.h"
-#include "Loaders/SceneCostFunctions/SceneCostFunctionLoader.h"
 
 namespace Scheduler
 {
@@ -27,39 +27,39 @@ namespace Scheduler
 		SceneCostFunction& loadSceneCostFunction(const boost::property_tree::ptree& props);
 
 	private:
-		template<typename T>
-		void registerVRPSolverLoader()
+		template <typename T>
+		void registerVRPSolverLoader( )
 		{
-			auto loader = std::make_shared<T>();
-			vrp_solver_loaders.emplace(loader->getName(), loader);
+			auto loader = std::make_shared<T>( );
+			vrp_solver_loaders.emplace(loader->getName( ), loader);
 		}
 
-		template<typename T>
-		void registerTSPSolverLoader()
+		template <typename T>
+		void registerTSPSolverLoader( )
 		{
-			auto loader = std::make_shared<T>();
-			tsp_solver_loaders.emplace(loader->getName(), loader);
+			auto loader = std::make_shared<T>( );
+			tsp_solver_loaders.emplace(loader->getName( ), loader);
 		}
 
-		template<typename T>
-		void registerRunCostFunctionLoader()
+		template <typename T>
+		void registerRunCostFunctionLoader( )
 		{
-			auto loader = std::make_shared<T>();
-			run_cost_function_loaders.emplace(loader->getName(), loader);
+			auto loader = std::make_shared<T>( );
+			run_cost_function_loaders.emplace(loader->getName( ), loader);
 		}
 
-		template<typename T>
-		void registerScheduleCostFunctionLoader()
+		template <typename T>
+		void registerScheduleCostFunctionLoader( )
 		{
-			auto loader = std::make_shared<T>();
-			schedule_cost_function_loaders.emplace(loader->getName(), loader);
+			auto loader = std::make_shared<T>( );
+			schedule_cost_function_loaders.emplace(loader->getName( ), loader);
 		}
 
-		template<typename T>
-		void registerSceneCostFunctionLoader()
+		template <typename T>
+		void registerSceneCostFunctionLoader( )
 		{
-			auto loader = std::make_shared<T>();
-			scene_cost_function_loaders.emplace(loader->getName(), loader);
+			auto loader = std::make_shared<T>( );
+			scene_cost_function_loaders.emplace(loader->getName( ), loader);
 		}
 
 		AlgorithmsManager& algorithms_manager;

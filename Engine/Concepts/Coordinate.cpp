@@ -3,17 +3,22 @@
 namespace Scheduler
 {
 
-	Coordinate::Coordinate() : value(0)
-	{ }
-
-	Coordinate::Coordinate(FixedPointType value): value(value)
+	Coordinate::Coordinate( )
+	    : value(0)
 	{
 	}
 
-	Coordinate::Coordinate(const Coordinate &rhs) : value(rhs.value)
-	{ }
+	Coordinate::Coordinate(FixedPointType value)
+	    : value(value)
+	{
+	}
 
-	FixedPointType Coordinate::getValue() const
+	Coordinate::Coordinate(const Coordinate& rhs)
+	    : value(rhs.value)
+	{
+	}
+
+	FixedPointType Coordinate::getValue( ) const
 	{
 		return value;
 	}
@@ -23,48 +28,48 @@ namespace Scheduler
 		this->value = value;
 	}
 
-	Coordinate& Coordinate::operator=(const Coordinate &rhs)
+	Coordinate& Coordinate::operator=(const Coordinate& rhs)
 	{
 		this->value = rhs.value;
 		return *this;
 	}
 
-	bool Coordinate::operator==(const Coordinate &rhs) const
+	bool Coordinate::operator==(const Coordinate& rhs) const
 	{
 		return value == rhs.value;
 	}
 
-	bool Coordinate::operator!=(const Coordinate &rhs) const
+	bool Coordinate::operator!=(const Coordinate& rhs) const
 	{
 		return !(*this == rhs);
 	}
 
-	bool Coordinate::operator<(const Coordinate &rhs) const
+	bool Coordinate::operator<(const Coordinate& rhs) const
 	{
 		return value < rhs.value;
 	}
 
-	bool Coordinate::operator<=(const Coordinate &rhs) const
+	bool Coordinate::operator<=(const Coordinate& rhs) const
 	{
 		return *this < rhs || *this == rhs;
 	}
 
-	bool Coordinate::operator>(const Coordinate &rhs) const
+	bool Coordinate::operator>(const Coordinate& rhs) const
 	{
 		return value > rhs.value;
 	}
 
-	bool Coordinate::operator>=(const Coordinate &rhs) const
+	bool Coordinate::operator>=(const Coordinate& rhs) const
 	{
 		return *this > rhs || *this == rhs;
 	}
 
-	Coordinate Coordinate::operator+(const Coordinate &rhs) const
+	Coordinate Coordinate::operator+(const Coordinate& rhs) const
 	{
 		return Coordinate(value + rhs.value);
 	}
 
-	Coordinate& Coordinate::operator+=(const Coordinate &rhs)
+	Coordinate& Coordinate::operator+=(const Coordinate& rhs)
 	{
 		this->value += rhs.value;
 		return *this;
@@ -75,12 +80,12 @@ namespace Scheduler
 		return Coordinate(toFixedPoint<PRECISION>(value));
 	}
 
-	Coordinate Coordinate::operator-(const Coordinate &rhs) const
+	Coordinate Coordinate::operator-(const Coordinate& rhs) const
 	{
 		return Coordinate(value - rhs.value);
 	}
 
-	Coordinate& Coordinate::operator-=(const Coordinate &rhs)
+	Coordinate& Coordinate::operator-=(const Coordinate& rhs)
 	{
 		this->value -= rhs.value;
 		return *this;
@@ -108,7 +113,7 @@ namespace Scheduler
 		return *this;
 	}
 
-	Coordinate Coordinate::operator-() const
+	Coordinate Coordinate::operator-( ) const
 	{
 		return Coordinate(-value);
 	}

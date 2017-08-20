@@ -1,23 +1,24 @@
 #include "Depot.h"
 
-namespace Scheduler 
+namespace Scheduler
 {
-	Depot::Depot(std::size_t id, const Location& location):
-	id(id),
-	location(location)
-	{}
+	Depot::Depot(std::size_t id, const Location& location)
+	    : id(id),
+	      location(location)
+	{
+	}
 
-	std::size_t Depot::getId() const
+	std::size_t Depot::getId( ) const
 	{
 		return id;
 	}
 
-	const Location& Depot::getLocation() const
+	const Location& Depot::getLocation( ) const
 	{
 		return location;
 	}
-	
-	const String& Depot::getName() const
+
+	const String& Depot::getName( ) const
 	{
 		return name;
 	}
@@ -26,12 +27,12 @@ namespace Scheduler
 	{
 		this->name = name;
 	}
-	
+
 	bool Depot::operator==(const Depot& rhs) const
 	{
 		return id == rhs.id && this == &rhs;
 	}
-	
+
 	bool Depot::operator!=(const Depot& rhs) const
 	{
 		return !(*this == rhs);

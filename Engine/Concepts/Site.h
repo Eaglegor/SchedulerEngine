@@ -1,30 +1,82 @@
 #pragma once
 
-#include <cmath>
 #include "Coordinate.h"
+#include <cmath>
 
 #include <Concepts_export.h>
 
 namespace Scheduler
 {
+	/** 
+	 * @brief Represents a pair of geographic coordinates (latitude and longitude)
+	 */
 	class CONCEPTS_EXPORT Site
 	{
 	public:
-		Site();
-		Site(const Site &rhs);
+		/** 
+		 * @brief Default constructor
+		 * @details Constructs the site representing the geographic location (0,0)
+		 */
+		Site( );
+
+		/** 
+		 * @brief Copy constructor
+		 * @param rhs Source site
+		 */
+		Site(const Site& rhs);
+
+		/** 
+		 * @brief Values constructor
+		 * @param latitude Latitude of geographic location
+		 * @param longitude Longitude of geographic location
+		 */
 		Site(Coordinate latitude, Coordinate longitude);
 
-		Coordinate getLatitude() const;
-		Coordinate getLongitude() const;
+		/** 
+		 * @brief Gets the latitude
+		 * @return Coordinate representing latitude value
+		 */
+		Coordinate getLatitude( ) const;
 
-		void setLatitude(const Coordinate &latitude);
-		void setLongitude(const Coordinate &longitude);
+		/** 
+		 * @brief Gets the latitude
+		 * @return Coordinate representing the longitude value
+		 */
+		Coordinate getLongitude( ) const;
 
-		bool operator==(const Site &rhs) const;
-		bool operator!=(const Site &rhs) const;
+		/** 
+		 * @brief Sets the latitude
+		 * @param latitude Latitude value
+		 */
+		void setLatitude(const Coordinate& latitude);
 
-		Site& operator=(const Site &rhs);
-		
+		/** 
+		 * @brief Sets the longitude
+		 * @param longitude Longitude value
+		 */
+		void setLongitude(const Coordinate& longitude);
+
+		/** 
+		 * @brief Equality operator
+		 * @param rhs Another site
+		 * @return true if both latitude and longitude of this and rhs are equal
+		 */
+		bool operator==(const Site& rhs) const;
+
+		/** 
+		 * @brief Inequality operator
+		 * @param rhs Another site
+		 * @return true if !(*this == rhs)
+		 */
+		bool operator!=(const Site& rhs) const;
+
+		/** 
+		 * @brief Assignment operator
+		 * @param rhs Another site
+		 * @return Reference to this
+		 */
+		Site& operator=(const Site& rhs);
+
 	private:
 		Coordinate latitude;
 		Coordinate longitude;

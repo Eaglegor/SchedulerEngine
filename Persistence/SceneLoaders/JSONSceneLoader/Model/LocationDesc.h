@@ -11,10 +11,10 @@ namespace Scheduler
 		float longitude;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<SiteDesc>
 	{
-		SiteDesc operator()(const boost::property_tree::ptree &tree)
+		SiteDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			SiteDesc desc;
 			REQUIRED_SET(tree, desc, name);

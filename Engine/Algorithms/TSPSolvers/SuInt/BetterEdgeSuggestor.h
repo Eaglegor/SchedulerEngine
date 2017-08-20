@@ -1,11 +1,11 @@
 #pragma once
 
 #include "EdgeSuggestor.h"
-#include <vector>
-#include <Engine/SceneManager/Operation.h>
 #include <Engine/Concepts/Distance.h>
 #include <Engine/LoggingManager/LoggingManager.h>
+#include <Engine/SceneManager/Operation.h>
 #include <Engine/SceneManager/Stop.h>
+#include <vector>
 
 namespace Scheduler
 {
@@ -17,9 +17,9 @@ namespace Scheduler
 	public:
 		BetterEdgeSuggestor(Run& run, const RoutingService& routing_service);
 
-		virtual std::vector<SuggestedEdge> next() override;
-		virtual bool hasNext() override;
-		virtual void reset() override;
+		virtual std::vector<SuggestedEdge> next( ) override;
+		virtual bool hasNext( ) override;
+		virtual void reset( ) override;
 
 	private:
 		struct Entry

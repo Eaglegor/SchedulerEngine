@@ -1,32 +1,31 @@
 #pragma once
 
-#include "../Schedule.h"
 #include "../Run.h"
+#include "../Schedule.h"
 
 namespace Scheduler
 {
-	template<typename T>
+	template <typename T>
 	typename T::iterator removeIteratorConstness(typename T::const_iterator iter)
 	{
 		return iter;
 	};
-	
-	template<>
+
+	template <>
 	Schedule::StopsList::iterator removeIteratorConstness<Schedule::StopsList>(Schedule::StopsList::const_iterator iter)
 	{
-		return iter.unconst();
+		return iter.unconst( );
 	};
-	
-	template<>
+
+	template <>
 	Run::StopsList::iterator removeIteratorConstness<Run::StopsList>(Run::StopsList::const_iterator iter)
 	{
-		return iter.unconst();
+		return iter.unconst( );
 	};
-	
-	template<>
+
+	template <>
 	Run::WorkStopsList::iterator removeIteratorConstness<Run::WorkStopsList>(Run::WorkStopsList::const_iterator iter)
 	{
-		return Run::WorkStopsList::iterator(iter.base().unconst());
-	};	
-	
+		return Run::WorkStopsList::iterator(iter.base( ).unconst( ));
+	};
 }

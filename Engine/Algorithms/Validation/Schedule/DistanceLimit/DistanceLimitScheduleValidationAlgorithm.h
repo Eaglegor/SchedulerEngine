@@ -1,8 +1,8 @@
 #pragma once
 
+#include <DistanceLimitScheduleValidationAlgorithm_export.h>
 #include <Engine/Concepts/Distance.h>
 #include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
-#include <DistanceLimitScheduleValidationAlgorithm_export.h>
 
 namespace Scheduler
 {
@@ -10,8 +10,14 @@ namespace Scheduler
 	{
 	public:
 		virtual void validate(const Schedule& schedule, ViolationsConsumer& violations_consumer) const override;
-		
-		constexpr static const char* staticGetName(){return "DistanceLimit";}
-		virtual const char* getName() const override{return staticGetName();}
+
+		constexpr static const char* staticGetName( )
+		{
+			return "DistanceLimit";
+		}
+		virtual const char* getName( ) const override
+		{
+			return staticGetName( );
+		}
 	};
 }

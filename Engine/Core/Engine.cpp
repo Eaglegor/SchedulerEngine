@@ -2,17 +2,17 @@
 
 namespace Scheduler
 {
-	MemoryManager& Engine::getMemoryManager()
+	MemoryManager& Engine::getMemoryManager( )
 	{
 		return memory_manager;
 	}
-	
-	SceneManager& Engine::getSceneManager()
+
+	SceneManager& Engine::getSceneManager( )
 	{
 		return scene_manager;
 	}
-	
-	AlgorithmsManager& Engine::getAlgorithmsManager()
+
+	AlgorithmsManager& Engine::getAlgorithmsManager( )
 	{
 		return algorithms_manager;
 	}

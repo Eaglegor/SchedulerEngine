@@ -4,6 +4,6 @@
 
 namespace Scheduler
 {
-	template<typename T>
+	template <typename T>
 	using ImmutableList = const std::list<T>;
 }

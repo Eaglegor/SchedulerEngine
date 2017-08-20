@@ -8,14 +8,14 @@ namespace Scheduler
 		OPERATION_TIME_WINDOWS_VIOLATION,
 		PERFORMER_SKILLS_REQUIREMENTS_VIOLATION,
 		VEHICLE_ATTRIBUTES_REQUIREMENTS_VIOLATION,
-		
+
 		// Run violations
 		RUN_DISTANCE_LIMIT_VIOLATION,
 		RUN_DRIVING_TIME_LIMIT_VIOLATION,
 		RUN_WORKING_TIME_LIMIT_VIOLATION,
 		VEHICLE_AVAILABILITY_WINDOWS_VIOLATION,
 		VEHICLE_CAPACITY_VIOLATION,
-		
+
 		// Schedule violations
 		PERFORMER_AVAILABILITY_WINDOWS_VIOLATION,
 		SCHEDULE_DISTANCE_LIMIT_VIOLATION,
@@ -23,15 +23,17 @@ namespace Scheduler
 		SCHEDULE_SHIFT_END_LOCATION_VIOLATION,
 		SCHEDULE_SHIFT_START_LOCATION_VIOLATION,
 		SCHEDULE_WORKING_TIME_LIMIT_VIOLATION
-		
+
 		// Scene violations
 	};
-	
+
 	class ConstraintViolation
 	{
 	public:
-		virtual ~ConstraintViolation(){}
-		
-		virtual ConstraintViolationType getType() const = 0;
+		virtual ~ConstraintViolation( )
+		{
+		}
+
+		virtual ConstraintViolationType getType( ) const = 0;
 	};
 };

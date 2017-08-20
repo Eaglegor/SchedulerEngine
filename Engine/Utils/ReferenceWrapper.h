@@ -4,36 +4,36 @@
 
 namespace std
 {
-	template<typename T>
+	template <typename T>
 	struct hash<reference_wrapper<T>>
 	{
-		size_t operator()(const reference_wrapper<T>& x) const
+		size_t operator( )(const reference_wrapper<T>& x) const
 		{
-			return std::hash<size_t>()(reinterpret_cast<size_t>(&x.get()));
+			return std::hash<size_t>( )(reinterpret_cast<size_t>(&x.get( )));
 		}
 	};
-	
-	template<typename T>
-	bool operator==(const reference_wrapper<T> &lhs, const reference_wrapper<T> &rhs)
+
+	template <typename T>
+	bool operator==(const reference_wrapper<T>& lhs, const reference_wrapper<T>& rhs)
 	{
-		return &lhs.get() == &rhs.get();
+		return &lhs.get( ) == &rhs.get( );
 	}
-	
-	template<typename T>
-	bool operator==(const reference_wrapper<T> &lhs, const T &rhs)
+
+	template <typename T>
+	bool operator==(const reference_wrapper<T>& lhs, const T& rhs)
 	{
-		return &lhs.get() == &rhs;
+		return &lhs.get( ) == &rhs;
 	}
-	
-	template<typename T>
-	bool operator==(const reference_wrapper<const T> &lhs, const T &rhs)
+
+	template <typename T>
+	bool operator==(const reference_wrapper<const T>& lhs, const T& rhs)
 	{
-		return &lhs.get() == &rhs;
+		return &lhs.get( ) == &rhs;
 	}
 }
 
 namespace Scheduler
 {
-	template<typename T>
+	template <typename T>
 	using ReferenceWrapper = std::reference_wrapper<T>;
 }

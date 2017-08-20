@@ -9,7 +9,9 @@ namespace Scheduler
 	class EdgeIntroducer
 	{
 	public:
-		virtual ~EdgeIntroducer(){}
+		virtual ~EdgeIntroducer( )
+		{
+		}
 
 		virtual bool introduce(const SuggestedEdge& edge) = 0;
 	};

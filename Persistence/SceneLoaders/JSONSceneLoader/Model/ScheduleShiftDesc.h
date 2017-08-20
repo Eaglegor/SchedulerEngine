@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Persistence/Utils/PtreeDeserializer.h>
 #include "TimeWindowDesc.h"
+#include <Persistence/Utils/PtreeDeserializer.h>
 
 namespace Scheduler
 {
@@ -13,10 +13,10 @@ namespace Scheduler
 		boost::optional<std::string> end_location;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<ScheduleShiftDesc>
 	{
-		ScheduleShiftDesc operator()(const boost::property_tree::ptree &tree)
+		ScheduleShiftDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			ScheduleShiftDesc desc;
 			REQUIRED_SET(tree, desc, time_window);

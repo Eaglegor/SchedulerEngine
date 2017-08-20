@@ -2,11 +2,13 @@
 
 namespace Scheduler
 {
-    class CostFunction
-    {
-        public:
-            virtual ~CostFunction(){}
+	class CostFunction
+	{
+	public:
+		virtual ~CostFunction( )
+		{
+		}
 
-            virtual const char* getName() const = 0;
-    };
+		virtual const char* getName( ) const = 0;
+	};
 }

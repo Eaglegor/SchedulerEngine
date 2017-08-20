@@ -1,20 +1,19 @@
 #include <catch.hpp>
 
-#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
-#include <Engine/SceneManager/SceneManager.h>
-#include <Engine/SceneManager/Scene.h>
-#include <Engine/SceneManager/Performer.h>
-#include <Engine/SceneManager/SceneContext.h>
-#include <Engine/SceneManager/Schedule.h>
+#include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
 #include <Engine/AlgorithmsManager/AlgorithmsManager.h>
 #include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <Engine/Core/Engine.h>
-#include <Engine/Algorithms/VRPSolvers/Utilitary/TSPOnly/TSPOnlyVRPSolver.h>
+#include <Engine/SceneManager/Performer.h>
+#include <Engine/SceneManager/Scene.h>
+#include <Engine/SceneManager/SceneContext.h>
+#include <Engine/SceneManager/SceneManager.h>
+#include <Engine/SceneManager/Schedule.h>
+#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
 
 class MockTSPSolver : public Scheduler::TSPSolver
 {
 public:
-
 	virtual void optimize(Scheduler::Schedule& schedule) const override
 	{
 		was_called = true;
@@ -25,12 +24,12 @@ public:
 		was_called = true;
 	}
 
-	virtual const char* getName() const override
+	virtual const char* getName( ) const override
 	{
 		return "Mock";
 	}
 
-	bool wasCalled()
+	bool wasCalled( )
 	{
 		return was_called;
 	}
@@ -41,27 +40,27 @@ private:
 
 TEST_CASE("Strategies - VRPSolvers - DummyVRPSolver", "[unit][functional][vrp_solvers]")
 {
-    using namespace Scheduler;
+	using namespace Scheduler;
 
 	CrowFlyRoutingService routing_service;
 
 	Engine engine;
 
-    SceneManager& sm = engine.getSceneManager();
+	SceneManager& sm = engine.getSceneManager( );
 
-	SceneContext& scene_context = sm.createSceneContext();
-	Performer& performer = scene_context.createPerformer();
+	SceneContext& scene_context = sm.createSceneContext( );
+	Performer& performer        = scene_context.createPerformer( );
 
-	Scene& scene = sm.createScene(scene_context);
+	Scene& scene       = sm.createScene(scene_context);
 	Schedule& schedule = scene.createSchedule(performer);
-	
-	AlgorithmsManager& am = engine.getAlgorithmsManager();
 
-	MockTSPSolver& tsp_solver = am.createAlgorithm<MockTSPSolver>();
+	AlgorithmsManager& am = engine.getAlgorithmsManager( );
+
+	MockTSPSolver& tsp_solver = am.createAlgorithm<MockTSPSolver>( );
 
 	TSPOnlyVRPSolver& solver = am.createAlgorithm<TSPOnlyVRPSolver>(tsp_solver);
 
 	solver.optimize(scene);
 
-	REQUIRE(tsp_solver.wasCalled());
+	REQUIRE(tsp_solver.wasCalled( ));
 }

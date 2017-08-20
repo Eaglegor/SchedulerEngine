@@ -3,14 +3,14 @@
 
 namespace Scheduler
 {
-	template<typename T>
+	template <typename T>
 	using Optional = boost::optional<T>;
-	
-	template<typename T>
+
+	template <typename T>
 	bool operator==(const Optional<const T&>& lhs, const T& rhs)
 	{
-		return lhs.get() == rhs;
+		return lhs.get( ) == rhs;
 	}
-	
-	static const boost::none_t &None = boost::none;
+
+	static const boost::none_t& None = boost::none;
 }

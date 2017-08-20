@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../EdgeIntroducer.h"
-#include <Engine/LoggingManager/LoggingManager.h>
 #include <Engine/Concepts/Cost.h>
-#include <vector>
+#include <Engine/LoggingManager/LoggingManager.h>
 #include <memory>
+#include <vector>
 
 namespace Scheduler
 {
@@ -18,8 +18,8 @@ namespace Scheduler
 
 		virtual bool introduce(const SuggestedEdge& edge) override;
 
-		template<typename IntroducerType, typename... Args>
-		void addIntroducer(Args&&...args)
+		template <typename IntroducerType, typename... Args>
+		void addIntroducer(Args&&... args)
 		{
 			std::shared_ptr<EdgeIntroducer> introducer = std::make_shared<IntroducerType>(std::forward<Args>(args)...);
 			introducers.push_back(introducer);

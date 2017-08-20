@@ -11,7 +11,13 @@ namespace Scheduler
 	public:
 		virtual Cost calculateCost(const Run& run) const override;
 
-		static constexpr const char* staticGetName() { return "TotalDistance"; }
-		virtual const char* getName() const override { return staticGetName(); };
+		static constexpr const char* staticGetName( )
+		{
+			return "TotalDistance";
+		}
+		virtual const char* getName( ) const override
+		{
+			return staticGetName( );
+		};
 	};
 }

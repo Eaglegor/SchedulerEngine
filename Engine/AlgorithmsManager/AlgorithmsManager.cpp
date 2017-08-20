@@ -3,13 +3,13 @@
 
 namespace Scheduler
 {
-	AlgorithmsManager::AlgorithmsManager():
-		algorithms_factory( Pool::LARGE_OBJECT, 10),
-		cost_functions_factory(Pool::LARGE_OBJECT, 10)
+	AlgorithmsManager::AlgorithmsManager( )
+	    : algorithms_factory(Pool::LARGE_OBJECT, 10),
+	      cost_functions_factory(Pool::LARGE_OBJECT, 10)
 	{
 	}
 
-	AlgorithmsManager::~AlgorithmsManager()
+	AlgorithmsManager::~AlgorithmsManager( )
 	{
 		for(Algorithm& algorithm : algorithms)
 		{

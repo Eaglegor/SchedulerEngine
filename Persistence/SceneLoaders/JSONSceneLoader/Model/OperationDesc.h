@@ -16,10 +16,10 @@ namespace Scheduler
 		boost::optional<std::string> duration_format;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<OperationDesc>
 	{
-		OperationDesc operator()(const boost::property_tree::ptree &tree)
+		OperationDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			OperationDesc desc;
 			REQUIRED_SET(tree, desc, name);

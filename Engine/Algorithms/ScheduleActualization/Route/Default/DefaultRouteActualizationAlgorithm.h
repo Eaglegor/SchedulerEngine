@@ -13,13 +13,19 @@ namespace Scheduler
 	{
 	public:
 		explicit DefaultRouteActualizationAlgorithm(const RoutingService& routing_service);
-		DefaultRouteActualizationAlgorithm(const RoutingService& routing_service, const RoutingProfile &default_routing_profile);
+		DefaultRouteActualizationAlgorithm(const RoutingService& routing_service, const RoutingProfile& default_routing_profile);
 
-		static constexpr const char* staticGetName() { return "Default"; }
-		virtual const char* getName() const override { return staticGetName(); };
+		static constexpr const char* staticGetName( )
+		{
+			return "Default";
+		}
+		virtual const char* getName( ) const override
+		{
+			return staticGetName( );
+		};
 
 		virtual void actualize(Stop& stop) const override;
-		
+
 	private:
 		const RoutingService& routing_service;
 		RoutingProfile default_routing_profile;

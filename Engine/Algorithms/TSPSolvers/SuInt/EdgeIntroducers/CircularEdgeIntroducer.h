@@ -11,7 +11,7 @@ namespace Scheduler
 		CircularEdgeIntroducer(Run& run, const ScheduleCostFunction& cost_function, SceneEditor& scene_editor);
 
 		virtual bool introduce(const SuggestedEdge& edge) override;
-		
+
 	private:
 		using Iterator = Run::WorkStopsList::iterator;
 

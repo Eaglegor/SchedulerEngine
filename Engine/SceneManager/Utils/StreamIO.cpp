@@ -1,7 +1,7 @@
 #include "StreamIO.h"
 
 
-namespace Scheduler 
+namespace Scheduler
 {
 	std::ostream& operator<<(std::ostream& stream, const Scheduler::Depot& depot)
 	{

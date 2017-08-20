@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Action.h"
-#include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
+#include <Engine/SceneManager/Schedule.h>
 #include <Engine/Utils/Optional.h>
 #include <SceneEditor_export.h>
 
@@ -12,12 +12,12 @@ namespace Scheduler
 	{
 	public:
 		AllocateOrder(Run& run, Run::ConstWorkStopIterator pos, const Order& order);
-		
-		virtual Run::WorkStopIterator perform() override;
-		virtual void rollback() override;
-		
+
+		virtual Run::WorkStopIterator perform( ) override;
+		virtual void rollback( ) override;
+
 	private:
-                bool performed;
+		bool performed;
 		Run& run;
 		Run::ConstWorkStopIterator pos;
 		const Order& order;

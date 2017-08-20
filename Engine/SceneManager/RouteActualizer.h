@@ -10,13 +10,13 @@ namespace Scheduler
 	public:
 		explicit RouteActualizer(Stop& stop);
 
-		void actualize() const;
+		void actualize( ) const;
 
 		void setDirty(bool dirty);
-		
+
 	private:
-		inline const RouteActualizationAlgorithm& getAlgorithm() const;
-		
+		inline const RouteActualizationAlgorithm& getAlgorithm( ) const;
+
 		Stop& stop;
 		mutable bool is_dirty;
 	};

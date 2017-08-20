@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
-#include <Persistence/Utils/PtreeDeserializer.h>
 #include <Engine/Utils/Collections/Algorithms.h>
+#include <Persistence/Utils/PtreeDeserializer.h>
+#include <string>
 
 namespace Scheduler
 {
@@ -13,10 +13,10 @@ namespace Scheduler
 		std::string end_time;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<TimeWindowDesc>
 	{
-		TimeWindowDesc operator()(const boost::property_tree::ptree &tree)
+		TimeWindowDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			TimeWindowDesc desc;
 			OPTIONAL_SET(tree, desc, format);

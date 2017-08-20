@@ -4,11 +4,11 @@
 
 namespace Scheduler
 {
-    class Stop;
-    
-    class RouteActualizationAlgorithm : public Algorithm
-    {
-        public:
-            virtual void actualize(Stop& stop) const = 0;
-    };
+	class Stop;
+
+	class RouteActualizationAlgorithm : public Algorithm
+	{
+	public:
+		virtual void actualize(Stop& stop) const = 0;
+	};
 }

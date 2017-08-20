@@ -11,6 +11,6 @@ namespace Scheduler
 	{
 	public:
 		virtual void optimize(Schedule& schedule) const = 0;
-		virtual void optimize(Run& run) const = 0;
+		virtual void optimize(Run& run) const           = 0;
 	};
 }

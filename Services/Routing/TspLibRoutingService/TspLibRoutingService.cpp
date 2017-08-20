@@ -1,39 +1,39 @@
 #include "TspLibRoutingService.h"
 
-#include <assert.h>
 #include <Engine/Concepts/Speed.h>
 #include <Engine/Concepts/SpeedDurationDistanceOperations.h>
 #include <Engine/Math/FloatEpsilon.h>
+#include <assert.h>
 
 #include <cstring>
 
 namespace Scheduler
 {
-	TspLibRoutingService::TspLibRoutingService():
-		routes(nullptr),
-		nodes_count(0)
+	TspLibRoutingService::TspLibRoutingService( )
+	    : routes(nullptr),
+	      nodes_count(0)
 	{
 	}
 
-	TspLibRoutingService::~TspLibRoutingService()
+	TspLibRoutingService::~TspLibRoutingService( )
 	{
 		if(routes) delete[] routes;
 	}
 
 	void TspLibRoutingService::init(size_t nodes_count)
 	{
-		if (routes) delete[] routes;
+		if(routes) delete[] routes;
 
 		this->nodes_count = nodes_count;
-		this->routes = new float[nodes_count * nodes_count];
+		this->routes      = new float[nodes_count * nodes_count];
 		memset(this->routes, 0, sizeof(*routes) * nodes_count * nodes_count);
 	}
 
 	Route TspLibRoutingService::calculateRoute(const Site& from, const Site& to, const RoutingProfile& routing_profile) const
 	{
-		std::size_t from_index = from.getLatitude().getValue();
-		std::size_t to_index = to.getLatitude().getValue();
-		
+		std::size_t from_index = from.getLatitude( ).getValue( );
+		std::size_t to_index   = to.getLatitude( ).getValue( );
+
 		float distance = routes[from_index * nodes_count + to_index];
 
 		Route r;

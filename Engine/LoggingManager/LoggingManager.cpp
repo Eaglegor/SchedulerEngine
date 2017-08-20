@@ -9,16 +9,16 @@ namespace Scheduler
 	Logger& LoggingManager::getLogger(const char* name)
 	{
 		std::shared_ptr<spdlog::logger> logger = spdlog::get(name);
-		if (!logger)
+		if(!logger)
 		{
-			logger = std::make_shared<spdlog::logger>(name, sinks.begin(), sinks.end());
+			logger = std::make_shared<spdlog::logger>(name, sinks.begin( ), sinks.end( ));
 			logger->set_level(log_level);
 			spdlog::register_logger(logger);
 		}
-		return *logger.get();
+		return *logger.get( );
 	}
 
-	void LoggingManager::configure(const char * config_filename)
+	void LoggingManager::configure(const char* config_filename)
 	{
 		log_level = spdlog::level::trace;
 		//sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());

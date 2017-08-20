@@ -1,9 +1,9 @@
 #pragma once
 
 #include "MemoryStore.h"
-#include <list>
 #include <boost/pool/pool.hpp>
 #include <boost/thread/mutex.hpp>
+#include <list>
 
 #include <MemoryManager_export.h>
 
@@ -13,8 +13,8 @@ namespace Scheduler
 	{
 	public:
 		PoolMemoryStore(std::size_t chunk_size, std::size_t initial_capacity, bool enable_mutex);
-		virtual ~PoolMemoryStore();
-		
+		virtual ~PoolMemoryStore( );
+
 		virtual void* allocate(size_t memory_size) override;
 		virtual void deallocate(void* ptr) override;
 

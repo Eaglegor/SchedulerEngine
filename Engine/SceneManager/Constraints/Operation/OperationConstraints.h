@@ -1,13 +1,13 @@
 #pragma once
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "../ConstraintHolder.h"
 #include <Engine/Concepts/Capacity.h>
 #include <Engine/Utils/ReferenceWrapper.h>
 
-#include <SceneManager_export.h>
 #include <Engine/Concepts/TimeWindow.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
@@ -16,22 +16,22 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT OperationConstraints
 	{
 	public:
-		using TimeWindowsConstraint = ConstraintHolder<std::vector<TimeWindow>>;
-		using DemandConstraint = ConstraintHolder<Capacity>;
-		using PerformerSkillsRequirements = ConstraintHolder<std::vector<ReferenceWrapper<const Attribute>>>;
+		using TimeWindowsConstraint         = ConstraintHolder<std::vector<TimeWindow>>;
+		using DemandConstraint              = ConstraintHolder<Capacity>;
+		using PerformerSkillsRequirements   = ConstraintHolder<std::vector<ReferenceWrapper<const Attribute>>>;
 		using VehicleAttributesRequirements = ConstraintHolder<std::vector<ReferenceWrapper<const Attribute>>>;
 
-		const TimeWindowsConstraint& timeWindows() const;
-		TimeWindowsConstraint& timeWindows();
+		const TimeWindowsConstraint& timeWindows( ) const;
+		TimeWindowsConstraint& timeWindows( );
 
-		const DemandConstraint& demand() const;
-		DemandConstraint& demand();
+		const DemandConstraint& demand( ) const;
+		DemandConstraint& demand( );
 
-		const VehicleAttributesRequirements& vehicleAttributesRequirements() const;
-		VehicleAttributesRequirements& vehicleAttributesRequirements();
+		const VehicleAttributesRequirements& vehicleAttributesRequirements( ) const;
+		VehicleAttributesRequirements& vehicleAttributesRequirements( );
 
-		const PerformerSkillsRequirements& performerSkillsRequirements() const;
-		PerformerSkillsRequirements& performerSkillsRequirements();
+		const PerformerSkillsRequirements& performerSkillsRequirements( ) const;
+		PerformerSkillsRequirements& performerSkillsRequirements( );
 
 	private:
 		TimeWindowsConstraint time_windows_constraint;

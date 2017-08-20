@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Persistence/Utils/PtreeDeserializer.h>
+#include "FleetDesc.h"
 #include "LoaderSettings.h"
 #include "LocationDesc.h"
 #include "OrderDesc.h"
-#include "FleetDesc.h"
 #include "ScheduleDesc.h"
+#include <Persistence/Utils/PtreeDeserializer.h>
 
 namespace Scheduler
 {
@@ -19,10 +19,10 @@ namespace Scheduler
 		std::vector<ScheduleDesc> schedules;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<SceneDesc>
 	{
-		SceneDesc operator()(const boost::property_tree::ptree &tree)
+		SceneDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			SceneDesc desc;
 			OPTIONAL_SET(tree, desc, settings);

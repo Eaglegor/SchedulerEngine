@@ -1,66 +1,66 @@
 #pragma once
 
-#include <memory>
-#include <assert.h>
 #include <Engine/Utils/Optional.h>
+#include <assert.h>
+#include <memory>
 
 namespace Scheduler
 {
-    template<typename T>
-    class ConstraintHolder
-    {
-        public:
-			void set(const T& constraint)
-			{
-				this->constraint = std::make_shared<T>(constraint);
-			}
+	template <typename T>
+	class ConstraintHolder
+	{
+	public:
+		void set(const T& constraint)
+		{
+			this->constraint = std::make_shared<T>(constraint);
+		}
 
-			const T& get() const
-			{
-				assert(constraint);
-				return *constraint;
-			}
+		const T& get( ) const
+		{
+			assert(constraint);
+			return *constraint;
+		}
 
-			operator const T&() const
-			{
-				return *constraint;
-			}
+		operator const T&( ) const
+		{
+			return *constraint;
+		}
 
-			bool isSet() const 
-			{
-				return constraint != nullptr;
-			}
+		bool isSet( ) const
+		{
+			return constraint != nullptr;
+		}
 
-		private:
-			std::shared_ptr<T> constraint;
+	private:
+		std::shared_ptr<T> constraint;
 	};
-        
-        template<typename T>
-        class ConstraintHolder<const T&>
-        {
-            public:
-                            void set(const T& constraint)
-                            {
-                                    this->constraint = constraint;
-                            }
 
-                            const T& get() const
-                            {
-                                    assert(constraint);
-                                    return constraint.get();
-                            }
+	template <typename T>
+	class ConstraintHolder<const T&>
+	{
+	public:
+		void set(const T& constraint)
+		{
+			this->constraint = constraint;
+		}
 
-                            operator const T&() const
-                            {
-                                    return constraint.get();
-                            }
+		const T& get( ) const
+		{
+			assert(constraint);
+			return constraint.get( );
+		}
 
-                            bool isSet() const 
-                            {
-                                    return constraint;
-                            }
+		operator const T&( ) const
+		{
+			return constraint.get( );
+		}
 
-                    private:
-                            Optional<const T&>  constraint;
-            };
+		bool isSet( ) const
+		{
+			return constraint;
+		}
+
+	private:
+		Optional<const T&> constraint;
+	};
 }

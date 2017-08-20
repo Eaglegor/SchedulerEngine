@@ -15,7 +15,7 @@ namespace Scheduler
 		JSONSceneLoader(Engine& engine, RoutingService& rs);
 
 		Scene& loadScene(std::istream& stream);
-		Scene& loadScene(const std::string &filename);
+		Scene& loadScene(const std::string& filename);
 
 	private:
 		Engine& engine;

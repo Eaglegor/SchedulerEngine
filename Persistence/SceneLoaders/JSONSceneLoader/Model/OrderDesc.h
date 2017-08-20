@@ -12,14 +12,14 @@ namespace Scheduler
 		std::vector<std::string> vehicle_requirements;
 		std::vector<std::string> performer_skill_requirements;
 		boost::optional<OperationDesc> start_operation;
-		std::vector<OperationDesc>  work_operations;
-		boost::optional<OperationDesc>  end_operation;
+		std::vector<OperationDesc> work_operations;
+		boost::optional<OperationDesc> end_operation;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<OrderDesc>
 	{
-		OrderDesc operator()(const boost::property_tree::ptree &tree)
+		OrderDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			OrderDesc desc;
 			REQUIRED_SET(tree, desc, name);

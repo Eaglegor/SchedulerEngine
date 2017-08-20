@@ -11,7 +11,7 @@ TEST_CASE("Concepts - Basic - RoutingProfile", "[unit][functional][concepts]")
 	{
 		RoutingProfile r;
 
-		REQUIRE(r.getAverageSpeed() == Units::speedPerHour(60.0f));
+		REQUIRE(r.getAverageSpeed( ) == Units::speedPerHour(60.0f));
 	}
 
 	SECTION("Copy constructor")
@@ -23,8 +23,8 @@ TEST_CASE("Concepts - Basic - RoutingProfile", "[unit][functional][concepts]")
 		RoutingProfile r2(r);
 		RoutingProfile r3 = r2;
 
-		REQUIRE(r.getAverageSpeed() == r2.getAverageSpeed());
-		REQUIRE(r2.getAverageSpeed() == r3.getAverageSpeed());
+		REQUIRE(r.getAverageSpeed( ) == r2.getAverageSpeed( ));
+		REQUIRE(r2.getAverageSpeed( ) == r3.getAverageSpeed( ));
 	}
 
 	SECTION("Getters and setters")
@@ -33,7 +33,7 @@ TEST_CASE("Concepts - Basic - RoutingProfile", "[unit][functional][concepts]")
 
 		r.setAverageSpeed(Units::speedPerHour(45.0f));
 
-		REQUIRE(r.getAverageSpeed() == Units::speedPerHour(45.0f));
+		REQUIRE(r.getAverageSpeed( ) == Units::speedPerHour(45.0f));
 	}
 
 	SECTION("Comparison operators")
@@ -58,5 +58,4 @@ TEST_CASE("Concepts - Basic - RoutingProfile", "[unit][functional][concepts]")
 
 		REQUIRE(r1 == r2);
 	}
-
 }

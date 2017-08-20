@@ -1,8 +1,8 @@
 #pragma once
 
+#include <ChainRunValidationAlgorithm_export.h>
 #include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <Engine/Utils/ReferenceWrapper.h>
-#include <ChainRunValidationAlgorithm_export.h>
 #include <list>
 
 namespace Scheduler
@@ -11,9 +11,15 @@ namespace Scheduler
 	{
 	public:
 		virtual void validate(const Run& run, ViolationsConsumer& violations_consumer) const override;
-		
-		constexpr static const char* staticGetName(){return "Chain";}
-		virtual const char* getName() const override{return staticGetName();}
+
+		constexpr static const char* staticGetName( )
+		{
+			return "Chain";
+		}
+		virtual const char* getName( ) const override
+		{
+			return staticGetName( );
+		}
 
 		virtual void addAlgorithm(const RunValidationAlgorithm& algorithm);
 

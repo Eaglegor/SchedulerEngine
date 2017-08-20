@@ -6,9 +6,9 @@
 
 namespace Scheduler
 {
-    class SCENEMANAGER_EXPORT DepotOperation:  public Operation
-    {
-    public:
-        DepotOperation(std::size_t id, const Order& order);
-    };
+	class SCENEMANAGER_EXPORT DepotOperation : public Operation
+	{
+	public:
+		DepotOperation(std::size_t id, const Order& order);
+	};
 }

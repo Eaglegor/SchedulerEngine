@@ -7,12 +7,12 @@ namespace Scheduler
 	class CallableVisitorProxy
 	{
 	public:
-		template<typename VisitorType, typename ObjectType, typename... VisitorArgs>
-		static typename VisitorType::ReturnType call(ObjectType& type, VisitorArgs&&...visitor_args)
+		template <typename VisitorType, typename ObjectType, typename... VisitorArgs>
+		static typename VisitorType::ReturnType call(ObjectType& type, VisitorArgs&&... visitor_args)
 		{
 			VisitorType visitor(std::forward<VisitorArgs>(visitor_args)...);
 			type.acceptVisitor(visitor);
-			return visitor.getRetVal();
+			return visitor.getRetVal( );
 		}
 	};
 }

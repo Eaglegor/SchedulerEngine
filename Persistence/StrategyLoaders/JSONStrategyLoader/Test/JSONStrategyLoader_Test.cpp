@@ -1,11 +1,11 @@
 #include <catch.hpp>
 
-#include <Persistence/StrategyLoaders/JSONStrategyLoader/JSONStrategyLoader.h>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <fstream>
-#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
 #include <Engine/Core/Engine.h>
+#include <Persistence/StrategyLoaders/JSONStrategyLoader/JSONStrategyLoader.h>
+#include <Services/Routing/CrowFlyRoutingService/CrowFlyRoutingService.h>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <fstream>
 
 TEST_CASE("Persistence - StrategyLoaders - JSONStrategyLoader", "[integration][functional][persistence]")
 {
@@ -15,15 +15,15 @@ TEST_CASE("Persistence - StrategyLoaders - JSONStrategyLoader", "[integration][f
 	CrowFlyRoutingService rs;
 	Engine engine;
 
-	AlgorithmsManager& am = engine.getAlgorithmsManager();
+	AlgorithmsManager& am = engine.getAlgorithmsManager( );
 
 	std::ifstream ifile;
 	ifile.open("TestData/JSONStrategyLoader_Test/TestStrategy1.json");
-	REQUIRE(ifile.is_open());
+	REQUIRE(ifile.is_open( ));
 
 	JSONStrategyLoader loader(am);
-	
+
 	loader.loadVRPStrategy(ifile);
 
-	ifile.close();
+	ifile.close( );
 }

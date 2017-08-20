@@ -4,6 +4,6 @@
 
 namespace Scheduler
 {
-	template<typename T>
+	template <typename T>
 	using ImmutableUnorderedSet = const std::unordered_set<T>;
 }
