@@ -4,36 +4,37 @@
 
 namespace Scheduler
 {
-    class Stop;
-    
-    template<typename T, typename Actualizer>
-    class Actualizable
-    {
-        public:
-			explicit Actualizable(const Actualizer& actualizer):
-			actualizer(actualizer)
-			{}
+	class Stop;
 
-            const T& get() const
-            {
-                actualizer.get().actualize();
-                return value;
-            }
+	template <typename T, typename Actualizer>
+	class Actualizable
+	{
+	public:
+		explicit Actualizable(const Actualizer& actualizer)
+		    : actualizer(actualizer)
+		{
+		}
 
-            Actualizable& operator=(const T& value)
-            {
-                this->value = value;
-				return *this;
-            }
-            
-            void setActualizer(const Actualizer &actualizer)
-            {
-                this->actualizer = actualizer;
-            }
+		const T& get( ) const
+		{
+			actualizer.get( ).actualize( );
+			return value;
+		}
 
-        private:
-            T value;
-			
-			ReferenceWrapper<const Actualizer> actualizer;
-    };
+		Actualizable& operator=(const T& value)
+		{
+			this->value = value;
+			return *this;
+		}
+
+		void setActualizer(const Actualizer& actualizer)
+		{
+			this->actualizer = actualizer;
+		}
+
+	private:
+		T value;
+
+		ReferenceWrapper<const Actualizer> actualizer;
+	};
 }

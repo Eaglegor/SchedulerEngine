@@ -6,24 +6,24 @@
 
 namespace Scheduler
 {
-	template<typename T>
+	template <typename T>
 	class MallocAllocator
 	{
 	public:
 		typedef T value_type;
 
-		MallocAllocator() : 
-			memory_store(MemoryManager::createMallocMemoryStore())
+		MallocAllocator( )
+		    : memory_store(MemoryManager::createMallocMemoryStore( ))
 		{
 		}
 
-		template<typename U>
+		template <typename U>
 		MallocAllocator(const MallocAllocator<U>& rhs)
 		{
-			this->memory_store = MemoryManager::createMallocMemoryStore();
+			this->memory_store = MemoryManager::createMallocMemoryStore( );
 		}
 
-		~MallocAllocator()
+		~MallocAllocator( )
 		{
 			MemoryManager::destroyMemoryStore(memory_store);
 		}

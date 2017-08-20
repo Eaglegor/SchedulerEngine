@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Persistence/Utils/PtreeDeserializer.h>
 #include "TimeWindowDesc.h"
+#include <Persistence/Utils/PtreeDeserializer.h>
 
 namespace Scheduler
 {
@@ -11,10 +11,10 @@ namespace Scheduler
 		TimeWindowDesc allocation_time;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<StopDesc>
 	{
-		StopDesc operator()(const boost::property_tree::ptree &tree)
+		StopDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			StopDesc desc;
 			REQUIRED_SET(tree, desc, operation);

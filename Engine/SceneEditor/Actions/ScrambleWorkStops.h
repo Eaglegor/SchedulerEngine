@@ -2,12 +2,12 @@
 
 #include "../Action.h"
 
-#include <cstddef>
-#include <SceneEditor_export.h>
-#include <Engine/Utils/Collections/ImmutableVector.h>
-#include <Engine/SceneManager/Run.h>
-#include <stack>
 #include "SwapWorkStops.h"
+#include <Engine/SceneManager/Run.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include <SceneEditor_export.h>
+#include <cstddef>
+#include <stack>
 
 namespace Scheduler
 {
@@ -15,17 +15,17 @@ namespace Scheduler
 	class Run;
 	class WorkStop;
 
-    class SCENEEDITOR_EXPORT ScrambleWorkStops : public Action<void>
+	class SCENEEDITOR_EXPORT ScrambleWorkStops : public Action<void>
 	{
 	public:
-        ScrambleWorkStops(Run& run, Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator last);
+		ScrambleWorkStops(Run& run, Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator last);
 
-		virtual void perform() override;
-		virtual void rollback() override;
+		virtual void perform( ) override;
+		virtual void rollback( ) override;
 
 	private:
 		Run& run;
-        std::vector<SwapWorkStops> swaps;
+		std::vector<SwapWorkStops> swaps;
 		Run::ConstWorkStopIterator first;
 		Run::ConstWorkStopIterator last;
 		bool performed;

@@ -4,11 +4,11 @@
 
 namespace Scheduler
 {
-    class Run;
-    
-    class DurationActualizationAlgorithm : public Algorithm
-    {
-        public:
-            virtual void actualize(Run& run) const = 0;
-    };
+	class Run;
+
+	class DurationActualizationAlgorithm : public Algorithm
+	{
+	public:
+		virtual void actualize(Run& run) const = 0;
+	};
 }

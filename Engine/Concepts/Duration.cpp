@@ -3,16 +3,22 @@
 namespace Scheduler
 {
 
-	Duration::Duration() : value(0)
-	{ }
+	Duration::Duration( )
+	    : value(0)
+	{
+	}
 
-	Duration::Duration(std::time_t value) : value(value)
-	{ }
+	Duration::Duration(std::time_t value)
+	    : value(value)
+	{
+	}
 
-	Duration::Duration(const Duration &rhs) : value(rhs.value)
-	{ }
+	Duration::Duration(const Duration& rhs)
+	    : value(rhs.value)
+	{
+	}
 
-	std::time_t Duration::getValue() const
+	std::time_t Duration::getValue( ) const
 	{
 		return value;
 	}
@@ -22,65 +28,65 @@ namespace Scheduler
 		this->value = value;
 	}
 
-	Duration& Duration::operator=(const Duration &rhs)
+	Duration& Duration::operator=(const Duration& rhs)
 	{
 		this->value = rhs.value;
 		return *this;
 	}
 
-	Duration Duration::operator+(const Duration &rhs) const
+	Duration Duration::operator+(const Duration& rhs) const
 	{
 		return Duration(value + rhs.value);
 	}
 
-	Duration Duration::operator-(const Duration &rhs) const
+	Duration Duration::operator-(const Duration& rhs) const
 	{
 		return Duration(value - rhs.value);
 	}
 
-	Duration& Duration::operator+=(const Duration &rhs)
+	Duration& Duration::operator+=(const Duration& rhs)
 	{
 		value += rhs.value;
 		return *this;
 	}
 
-	Duration& Duration::operator-=(const Duration &rhs)
+	Duration& Duration::operator-=(const Duration& rhs)
 	{
 		value -= rhs.value;
 		return *this;
 	}
 
-	bool Duration::operator<(const Duration &rhs) const
+	bool Duration::operator<(const Duration& rhs) const
 	{
 		return value < rhs.value;
 	}
 
-	bool Duration::operator<=(const Duration &rhs) const
+	bool Duration::operator<=(const Duration& rhs) const
 	{
 		return *this == rhs || *this < rhs;
 	}
 
-	bool Duration::operator>(const Duration &rhs) const
+	bool Duration::operator>(const Duration& rhs) const
 	{
 		return value > rhs.value;
 	}
 
-	bool Duration::operator>=(const Duration &rhs) const
+	bool Duration::operator>=(const Duration& rhs) const
 	{
 		return *this == rhs || *this > rhs;
 	}
 
-	bool Duration::operator==(const Duration &rhs) const
+	bool Duration::operator==(const Duration& rhs) const
 	{
 		return value == rhs.value;
 	}
 
-	bool Duration::operator!=(const Duration &rhs) const
+	bool Duration::operator!=(const Duration& rhs) const
 	{
 		return !(*this == rhs);
 	}
 
-	Duration Duration::operator-() const
+	Duration Duration::operator-( ) const
 	{
 		return Duration(-value);
 	}
@@ -107,8 +113,8 @@ namespace Scheduler
 		return *this;
 	}
 
-	Duration Duration::max()
+	Duration Duration::max( )
 	{
-		return Duration(std::numeric_limits<std::time_t>::max());
+		return Duration(std::numeric_limits<std::time_t>::max( ));
 	}
 }

@@ -8,9 +8,9 @@ namespace Scheduler
 	Cost TotalDistanceSceneCostFunction::calculateCost(const Scene& scene) const
 	{
 		Cost total_cost(0);
-		for (const Schedule& schedule: scene.getSchedules())
+		for(const Schedule& schedule : scene.getSchedules( ))
 		{
-			total_cost += TotalDistanceScheduleCostFunction().calculateCost(schedule);
+			total_cost += TotalDistanceScheduleCostFunction( ).calculateCost(schedule);
 		}
 		return total_cost;
 	}

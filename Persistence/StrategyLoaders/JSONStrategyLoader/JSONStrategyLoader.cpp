@@ -1,25 +1,25 @@
 #include "JSONStrategyLoader.h"
 
-#include <assert.h>
 #include <Engine/AlgorithmsManager/AlgorithmsManager.h>
+#include <assert.h>
 #include <fstream>
 
 #include "LoaderImpl.h"
 
-#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace Scheduler
 {
-	JSONStrategyLoader::JSONStrategyLoader(AlgorithmsManager& algorithms_manager):
-	algorithms_manager(algorithms_manager)
+	JSONStrategyLoader::JSONStrategyLoader(AlgorithmsManager& algorithms_manager)
+	    : algorithms_manager(algorithms_manager)
 	{
 	}
 
 	const VRPSolver& JSONStrategyLoader::loadVRPStrategy(std::istream& stream) const
 	{
-		assert(stream.good());
-		
+		assert(stream.good( ));
+
 		LoaderImpl loader_impl(algorithms_manager);
 
 		boost::property_tree::ptree desc;
@@ -35,7 +35,7 @@ namespace Scheduler
 		std::ifstream file;
 		file.open(filename);
 
-		assert(file.is_open());
+		assert(file.is_open( ));
 
 		return loadVRPStrategy(file);
 	}

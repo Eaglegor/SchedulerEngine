@@ -9,8 +9,14 @@ namespace Scheduler
 	{
 	public:
 		virtual void validate(const Run& run, ViolationsConsumer& violations_consumer) const override;
-		
-		constexpr static const char* staticGetName(){return "ValidStops";}
-		virtual const char* getName() const override{return staticGetName();}
+
+		constexpr static const char* staticGetName( )
+		{
+			return "ValidStops";
+		}
+		virtual const char* getName( ) const override
+		{
+			return staticGetName( );
+		}
 	};
 }

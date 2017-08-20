@@ -8,40 +8,40 @@ namespace Scheduler
 	class VehicleCapacityViolation : public ConstraintViolation
 	{
 	public:
-		VehicleCapacityViolation(const Run& run, const Capacity& excess, Run::ConstStopIterator pos):
-		run(run),
-		excess(excess),
-		pos(pos)
+		VehicleCapacityViolation(const Run& run, const Capacity& excess, Run::ConstStopIterator pos)
+		    : run(run),
+		      excess(excess),
+		      pos(pos)
 		{
 		}
-		
-		VehicleCapacityViolation(const VehicleCapacityViolation &rhs):
-		run(rhs.run),
-		excess(rhs.excess),
-		pos(rhs.pos)
+
+		VehicleCapacityViolation(const VehicleCapacityViolation& rhs)
+		    : run(rhs.run),
+		      excess(rhs.excess),
+		      pos(rhs.pos)
 		{
 		}
-		
-		const Run& getRun() const
+
+		const Run& getRun( ) const
 		{
 			return run;
 		}
-		
-		const Capacity& getExcess() const
+
+		const Capacity& getExcess( ) const
 		{
 			return excess;
 		}
-		
-		Run::ConstStopIterator getExcessPosition() const
+
+		Run::ConstStopIterator getExcessPosition( ) const
 		{
 			return pos;
 		}
-		
-		virtual ConstraintViolationType getType() const override
+
+		virtual ConstraintViolationType getType( ) const override
 		{
 			return ConstraintViolationType::VEHICLE_CAPACITY_VIOLATION;
 		}
-		
+
 	private:
 		const Run& run;
 		Capacity excess;

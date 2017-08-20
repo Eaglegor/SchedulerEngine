@@ -8,11 +8,11 @@ namespace Scheduler
 {
 	SceneCostFunction& TotalDistanceSceneCostFunctionLoader::load(const boost::property_tree::ptree& settings, LoaderImpl& loader_instance, AlgorithmsManager& algorithms_manager)
 	{
-		return algorithms_manager.createCostFunction<TotalDistanceSceneCostFunction>();
+		return algorithms_manager.createCostFunction<TotalDistanceSceneCostFunction>( );
 	}
 
-	const char* TotalDistanceSceneCostFunctionLoader::getName() const
+	const char* TotalDistanceSceneCostFunctionLoader::getName( ) const
 	{
-		return TotalDistanceSceneCostFunction::staticGetName();
+		return TotalDistanceSceneCostFunction::staticGetName( );
 	}
 }

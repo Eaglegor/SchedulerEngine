@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Persistence/Utils/PtreeDeserializer.h>
 #include "TimeWindowDesc.h"
+#include <Persistence/Utils/PtreeDeserializer.h>
 
 namespace Scheduler
 {
@@ -14,10 +14,10 @@ namespace Scheduler
 		boost::optional<float> activation_cost;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<PerformerDesc>
 	{
-		PerformerDesc operator()(const boost::property_tree::ptree &tree)
+		PerformerDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			PerformerDesc desc;
 			REQUIRED_SET(tree, desc, name);

@@ -12,18 +12,18 @@ namespace Scheduler
 			VALID,
 			INVALID
 		};
-		
+
 		virtual ValidationContinuancePolicy genericConsumeViolation(const ConstraintViolation& violation) override
 		{
 			result = Validator::ValidationResult::INVALID;
 			return ValidationContinuancePolicy::INTERRUPT;
 		}
-		
-		ValidationResult getValidationResult() const
+
+		ValidationResult getValidationResult( ) const
 		{
 			return result;
 		}
-		
+
 	private:
 		ValidationResult result = ValidationResult::VALID;
 	};

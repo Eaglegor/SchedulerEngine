@@ -8,9 +8,11 @@ namespace Scheduler
 	class StopVisitor
 	{
 	public:
-		virtual ~StopVisitor() {}
+		virtual ~StopVisitor( )
+		{
+		}
 
-		virtual void dispatch(WorkStop& work_stop) = 0;
+		virtual void dispatch(WorkStop& work_stop)          = 0;
 		virtual void dispatch(DepotStop& run_boundary_stop) = 0;
 	};
 }

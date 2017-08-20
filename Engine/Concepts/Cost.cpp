@@ -2,16 +2,22 @@
 
 namespace Scheduler
 {
-	Cost::Cost() : value(0)
-	{ }
+	Cost::Cost( )
+	    : value(0)
+	{
+	}
 
-	Cost::Cost(float value) : value(value)
-	{ }
+	Cost::Cost(float value)
+	    : value(value)
+	{
+	}
 
-	Cost::Cost(const Cost &cost) : value(cost.value)
-	{ }
+	Cost::Cost(const Cost& cost)
+	    : value(cost.value)
+	{
+	}
 
-	float Cost::getValue() const
+	float Cost::getValue( ) const
 	{
 		return value;
 	}
@@ -21,71 +27,71 @@ namespace Scheduler
 		this->value = value;
 	}
 
-	Cost& Cost::operator=(const Cost &rhs)
+	Cost& Cost::operator=(const Cost& rhs)
 	{
 		this->value = rhs.value;
 		return *this;
 	}
 
-	Cost& Cost::operator=(const value_type &rhs)
+	Cost& Cost::operator=(const value_type& rhs)
 	{
 		this->value = rhs;
 		return *this;
 	}
 
-	Cost Cost::operator+(const Cost &rhs) const
+	Cost Cost::operator+(const Cost& rhs) const
 	{
 		return Cost(value + rhs.value);
 	}
 
-	Cost Cost::operator-(const Cost &rhs) const
+	Cost Cost::operator-(const Cost& rhs) const
 	{
 		return Cost(value - rhs.value);
 	}
 
-	Cost& Cost::operator+=(const Cost &rhs)
+	Cost& Cost::operator+=(const Cost& rhs)
 	{
 		this->value += rhs.value;
 		return *this;
 	}
 
-	Cost& Cost::operator-=(const Cost &rhs)
+	Cost& Cost::operator-=(const Cost& rhs)
 	{
 		this->value -= rhs.value;
 		return *this;
 	}
 
-	bool Cost::operator==(const Cost &rhs) const
+	bool Cost::operator==(const Cost& rhs) const
 	{
 		return fabs(this->value - rhs.value) <= FLOAT_EPSILON;
 	}
 
-	bool Cost::operator!=(const Cost &rhs) const
+	bool Cost::operator!=(const Cost& rhs) const
 	{
 		return !(*this == rhs);
 	}
 
-	bool Cost::operator>(const Cost &rhs) const
+	bool Cost::operator>(const Cost& rhs) const
 	{
 		return this->value > rhs.value;
 	}
 
-	bool Cost::operator<(const Cost &rhs) const
+	bool Cost::operator<(const Cost& rhs) const
 	{
 		return this->value < rhs.value;
 	}
 
-	bool Cost::operator>=(const Cost &rhs) const
+	bool Cost::operator>=(const Cost& rhs) const
 	{
 		return *this == rhs || *this > rhs;
 	}
 
-	bool Cost::operator<=(const Cost &rhs) const
+	bool Cost::operator<=(const Cost& rhs) const
 	{
 		return *this == rhs || *this < rhs;
 	}
 
-	Cost Cost::operator-() const
+	Cost Cost::operator-( ) const
 	{
 		return Cost(-value);
 	}

@@ -5,20 +5,18 @@
 namespace Scheduler
 {
 
-class SolutionGeneratorClassic : public SolutionGenerator
-{
-public:
+	class SolutionGeneratorClassic : public SolutionGenerator
+	{
+	public:
+		explicit SolutionGeneratorClassic(Run& run);
 
-    explicit SolutionGeneratorClassic(Run& run);
+		virtual void neighbour( ) override;
 
-    virtual void neighbour() override;
-
-private:
-    void randomMutation();
-    void blockInsert();
-    void blockReverse();
-    void vertexInsert();
-    void vertexSwap();
-};
-
+	private:
+		void randomMutation( );
+		void blockInsert( );
+		void blockReverse( );
+		void vertexInsert( );
+		void vertexSwap( );
+	};
 }

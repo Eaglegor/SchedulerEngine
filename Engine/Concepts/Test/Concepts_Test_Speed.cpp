@@ -15,7 +15,7 @@ TEST_CASE("Concepts - Basic - Speed", "[unit][functional][concepts]")
 	{
 		Speed s;
 
-		REQUIRE(s.getValue() == Distance(0));
+		REQUIRE(s.getValue( ) == Distance(0));
 	}
 
 	SECTION("Copy constructor")
@@ -25,15 +25,15 @@ TEST_CASE("Concepts - Basic - Speed", "[unit][functional][concepts]")
 		Speed s2(s);
 		Speed s3 = s;
 
-		REQUIRE(s.getValue() == s2.getValue());
-		REQUIRE(s2.getValue() == s3.getValue());
+		REQUIRE(s.getValue( ) == s2.getValue( ));
+		REQUIRE(s2.getValue( ) == s3.getValue( ));
 	}
 
 	SECTION("Value constructor")
 	{
 		Speed s(Distance(6));
 
-		REQUIRE(s.getValue() == Distance(6));
+		REQUIRE(s.getValue( ) == Distance(6));
 	}
 
 	SECTION("Getters and setters")
@@ -42,7 +42,7 @@ TEST_CASE("Concepts - Basic - Speed", "[unit][functional][concepts]")
 
 		s.setValue(Distance(8));
 
-		REQUIRE(s.getValue() == Distance(8));
+		REQUIRE(s.getValue( ) == Distance(8));
 	}
 
 	SECTION("Comparison operators")
@@ -83,31 +83,31 @@ TEST_CASE("Concepts - Basic - Speed", "[unit][functional][concepts]")
 		{
 			Speed s3 = (s1 + s2);
 
-			REQUIRE(s3.getValue() == s1.getValue() + s2.getValue());
+			REQUIRE(s3.getValue( ) == s1.getValue( ) + s2.getValue( ));
 		}
 
 		{
 			Speed s3 = (s1 - s2);
 
-			REQUIRE(s3.getValue() == s1.getValue() - s2.getValue());
+			REQUIRE(s3.getValue( ) == s1.getValue( ) - s2.getValue( ));
 		}
 
 		{
 			Speed s3 = -s1;
 
-			REQUIRE(s3.getValue() == -s1.getValue());
+			REQUIRE(s3.getValue( ) == -s1.getValue( ));
 		}
 
 		{
-			Speed s3 = s1 * s2.getValue().getValue();
+			Speed s3 = s1 * s2.getValue( ).getValue( );
 
-			REQUIRE(s3.getValue() == s1.getValue() * s2.getValue().getValue());
+			REQUIRE(s3.getValue( ) == s1.getValue( ) * s2.getValue( ).getValue( ));
 		}
 
 		{
-			Speed s3 = s1 / s2.getValue().getValue();
+			Speed s3 = s1 / s2.getValue( ).getValue( );
 
-			REQUIRE(s3.getValue() == s1.getValue() / s2.getValue().getValue());
+			REQUIRE(s3.getValue( ) == s1.getValue( ) / s2.getValue( ).getValue( ));
 		}
 	}
 
@@ -116,24 +116,21 @@ TEST_CASE("Concepts - Basic - Speed", "[unit][functional][concepts]")
 		Speed s1(Distance(1));
 		Speed s2(Distance(5));
 
-		s1+=s2;
-		s1+=s2;
+		s1 += s2;
+		s1 += s2;
 
-		REQUIRE(s1.getValue() == Distance(11));
+		REQUIRE(s1.getValue( ) == Distance(11));
 
-		s1-=s2;
+		s1 -= s2;
 
-		REQUIRE(s1.getValue() == Distance(6));
+		REQUIRE(s1.getValue( ) == Distance(6));
 
-		s1*=2.0f;
+		s1 *= 2.0f;
 
-		REQUIRE(s1.getValue() == Distance(12));
+		REQUIRE(s1.getValue( ) == Distance(12));
 
-		s1/=2.0f;
+		s1 /= 2.0f;
 
-		REQUIRE(s1.getValue() == Distance(6));
+		REQUIRE(s1.getValue( ) == Distance(6));
 	}
-
-
-
 }

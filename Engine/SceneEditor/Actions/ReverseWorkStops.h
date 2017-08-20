@@ -2,10 +2,10 @@
 
 #include "../Action.h"
 
-#include <cstddef>
-#include <SceneEditor_export.h>
-#include <Engine/Utils/Collections/ImmutableVector.h>
 #include <Engine/SceneManager/Run.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include <SceneEditor_export.h>
+#include <cstddef>
 
 namespace Scheduler
 {
@@ -18,8 +18,8 @@ namespace Scheduler
 	public:
 		ReverseWorkStops(Run& run, Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator last);
 
-		virtual void perform() override;
-		virtual void rollback() override;
+		virtual void perform( ) override;
+		virtual void rollback( ) override;
 
 	private:
 		Run& run;

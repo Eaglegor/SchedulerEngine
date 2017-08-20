@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Persistence/Utils/PtreeDeserializer.h>
-#include "TimeWindowDesc.h"
-#include "ScheduleShiftDesc.h"
 #include "RunDesc.h"
+#include "ScheduleShiftDesc.h"
+#include "TimeWindowDesc.h"
+#include <Persistence/Utils/PtreeDeserializer.h>
 
 namespace Scheduler
 {
@@ -14,10 +14,10 @@ namespace Scheduler
 		std::vector<RunDesc> runs;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<ScheduleDesc>
 	{
-		ScheduleDesc operator()(const boost::property_tree::ptree &tree)
+		ScheduleDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			ScheduleDesc desc;
 			REQUIRED_SET(tree, desc, performer);

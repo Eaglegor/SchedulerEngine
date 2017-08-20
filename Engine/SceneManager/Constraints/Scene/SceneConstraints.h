@@ -7,8 +7,6 @@ namespace Scheduler
 	class SCENEMANAGER_EXPORT SceneConstraints
 	{
 	public:
-
 	private:
-
 	};
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Persistence/Utils/PtreeDeserializer.h>
 #include "StopDesc.h"
+#include <Persistence/Utils/PtreeDeserializer.h>
 
 namespace Scheduler
 {
@@ -15,10 +15,10 @@ namespace Scheduler
 		std::vector<StopDesc> end_operations;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<RunDesc>
 	{
-		RunDesc operator()(const boost::property_tree::ptree &tree)
+		RunDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			RunDesc desc;
 			REQUIRED_SET(tree, desc, vehicle);

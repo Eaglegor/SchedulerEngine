@@ -4,11 +4,11 @@
 
 namespace Scheduler
 {
-    class Schedule;
-    
-    class ArrivalTimeActualizationAlgorithm : public Algorithm
-    {
-        public:
-            virtual void actualize(Schedule& schedule) const = 0;
-    };
+	class Schedule;
+
+	class ArrivalTimeActualizationAlgorithm : public Algorithm
+	{
+	public:
+		virtual void actualize(Schedule& schedule) const = 0;
+	};
 }

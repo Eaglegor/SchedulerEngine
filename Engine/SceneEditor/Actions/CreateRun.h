@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../Action.h"
-#include <boost/optional.hpp>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/Utils/Optional.h>
 #include <SceneEditor_export.h>
+#include <boost/optional.hpp>
 
 namespace Scheduler
 {
@@ -12,10 +12,10 @@ namespace Scheduler
 	{
 	public:
 		CreateRun(Schedule& schedule, Schedule::ConstRunIterator pos, const Location& from, const Location& to);
-		
-		virtual Schedule::RunIterator perform() override;
-		virtual void rollback() override;
-		
+
+		virtual Schedule::RunIterator perform( ) override;
+		virtual void rollback( ) override;
+
 	private:
 		Schedule& schedule;
 		Schedule::ConstRunIterator pos;

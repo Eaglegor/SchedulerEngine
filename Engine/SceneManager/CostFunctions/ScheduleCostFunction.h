@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Engine/Concepts/Cost.h>
 #include <Engine/AlgorithmsManager/CostFunction.h>
+#include <Engine/Concepts/Cost.h>
 
 namespace Scheduler
 {

@@ -1,22 +1,22 @@
 #include "ReverseTSPSolver.h"
-#include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
+#include <Engine/SceneManager/Schedule.h>
 
 namespace Scheduler
 {
-	const char* ReverseTSPSolver::getName() const
+	const char* ReverseTSPSolver::getName( ) const
 	{
-		return staticGetName();
+		return staticGetName( );
 	}
-	
-	const char* ReverseTSPSolver::staticGetName()
+
+	const char* ReverseTSPSolver::staticGetName( )
 	{
 		return "Reverse";
 	}
 
 	void ReverseTSPSolver::optimize(Schedule& schedule) const
 	{
-		for(Run& r : schedule.getRuns())
+		for(Run& r : schedule.getRuns( ))
 		{
 			optimize(r);
 		}
@@ -24,6 +24,6 @@ namespace Scheduler
 
 	void ReverseTSPSolver::optimize(Run& run) const
 	{
-		run.reverseWorkStops();
+		run.reverseWorkStops( );
 	}
 }

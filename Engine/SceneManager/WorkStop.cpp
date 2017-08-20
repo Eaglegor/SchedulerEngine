@@ -1,28 +1,29 @@
 #include "WorkStop.h"
 
-#include <Engine/Utils/Collections/Algorithms.h>
-#include <Engine/SceneManager/Operation.h>
 #include "WorkOperation.h"
+#include <Engine/SceneManager/Operation.h>
+#include <Engine/Utils/Collections/Algorithms.h>
 
-#include "StopVisitor.h"
 #include "ConstStopVisitor.h"
+#include "StopVisitor.h"
 
 namespace Scheduler
 {
-	WorkStop::WorkStop(std::size_t id, const Stop::Context& context, Run& run, const WorkOperation& operation) :
-		Stop(context, run),
-		id(id),
-		operation(operation)
-	{}
+	WorkStop::WorkStop(std::size_t id, const Stop::Context& context, Run& run, const WorkOperation& operation)
+	    : Stop(context, run),
+	      id(id),
+	      operation(operation)
+	{
+	}
 
-	const WorkOperation &WorkStop::getOperation() const
+	const WorkOperation& WorkStop::getOperation( ) const
 	{
 		return operation;
 	}
 
-	const Location& WorkStop::getLocation() const
+	const Location& WorkStop::getLocation( ) const
 	{
-		return operation.getLocation();
+		return operation.getLocation( );
 	}
 
 	void WorkStop::acceptVisitor(StopVisitor& visitor)
@@ -34,15 +35,14 @@ namespace Scheduler
 	{
 		visitor.dispatch(*this);
 	}
-	
+
 	bool WorkStop::operator==(const WorkStop& rhs) const
 	{
 		return id == rhs.id && this == &rhs;
 	}
-	
+
 	bool WorkStop::operator!=(const WorkStop& rhs) const
 	{
 		return !(*this == rhs);
 	}
-	
 }

@@ -1,96 +1,100 @@
 #pragma once
 
-#include <memory>
 #include <Engine/Concepts/Distance.h>
 #include <Engine/Concepts/Duration.h>
+#include <memory>
 
-#include <SceneManager_export.h>
-#include <Engine/Concepts/Site.h>
 #include "../ConstraintHolder.h"
+#include <Engine/Concepts/Site.h>
 #include <Engine/SceneManager/Location.h>
+#include <SceneManager_export.h>
 
 namespace Scheduler
 {
 	class SCENEMANAGER_EXPORT ScheduleConstraints
 	{
+	public:
+		class LocationConstraint
+		{
 		public:
-			class LocationConstraint
+			explicit LocationConstraint(const Location& location)
+			    : location(location){};
+			LocationConstraint(const LocationConstraint& rhs)
+			    : location(rhs.location)
 			{
-			public:
-				explicit LocationConstraint(const Location& location):location(location){};
-				LocationConstraint(const LocationConstraint &rhs):location(rhs.location){}
-				
-				operator const Location&() const
-				{
-					return location;
-				}
-				
-				const Location& get() const
-				{
-					return location;
-				}
-				
-				bool operator==(const LocationConstraint& rhs) const
-				{
-					return location == rhs.location;
-				}
-				
-				bool operator==(const Location& rhs) const
-				{
-					return location == rhs;
-				}
-				
-			private:
-				const Location& location;
-			};
-			
-			using ScheduleDistanceLimitConstraint = ConstraintHolder<Distance>;
-			using RunDistanceLimitConstraint = ConstraintHolder<Distance>;
+			}
 
-			using ScheduleDrivingTimeLimitConstraint = ConstraintHolder<Duration>;
-			using RunDrivingTimeLimitConstraint = ConstraintHolder<Duration>;
+			operator const Location&( ) const
+			{
+				return location;
+			}
 
-			using ScheduleWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
-			using RunWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
+			const Location& get( ) const
+			{
+				return location;
+			}
 
-			using ScheduleShiftStartLocationConstraint = ConstraintHolder<LocationConstraint>;
-			using ScheduleShiftEndLocationConstraint = ConstraintHolder<LocationConstraint>;
+			bool operator==(const LocationConstraint& rhs) const
+			{
+				return location == rhs.location;
+			}
 
-			const ScheduleDistanceLimitConstraint& scheduleDistanceLimit() const;
-			ScheduleDistanceLimitConstraint& scheduleDistanceLimit();
-
-			const RunDistanceLimitConstraint& runDistanceLimit() const;
-			RunDistanceLimitConstraint& runDistanceLimit();
-
-			const ScheduleDrivingTimeLimitConstraint& scheduleDrivingTimeLimit() const;
-			ScheduleDrivingTimeLimitConstraint& scheduleDrivingTimeLimit();
-
-			const RunDrivingTimeLimitConstraint& runDrivingTimeLimit() const;
-			RunDrivingTimeLimitConstraint& runDrivingTimeLimit();
-
-			const ScheduleWorkingTimeLimitConstraint& scheduleWorkingTimeLimit() const;
-			ScheduleWorkingTimeLimitConstraint& scheduleWorkingTimeLimit();
-
-			const RunWorkingTimeLimitConstraint& runWorkingTimeLimit() const;
-			RunWorkingTimeLimitConstraint& runWorkingTimeLimit();
-
-			const ScheduleShiftStartLocationConstraint& shiftStartLocation() const;
-			ScheduleShiftStartLocationConstraint& shiftStartLocation();
-
-			const ScheduleShiftEndLocationConstraint& shiftEndLocation() const;
-			ScheduleShiftEndLocationConstraint& shiftEndLocation();
+			bool operator==(const Location& rhs) const
+			{
+				return location == rhs;
+			}
 
 		private:
-			ScheduleDistanceLimitConstraint schedule_distance_limit_constraint;
-			RunDistanceLimitConstraint run_distance_limit_constraint;
+			const Location& location;
+		};
 
-			ScheduleDrivingTimeLimitConstraint schedule_driving_time_limit_constraint;
-			RunDrivingTimeLimitConstraint run_driving_time_limit_constraint;
+		using ScheduleDistanceLimitConstraint = ConstraintHolder<Distance>;
+		using RunDistanceLimitConstraint      = ConstraintHolder<Distance>;
 
-			ScheduleWorkingTimeLimitConstraint schedule_working_time_limit_constraint;
-			RunWorkingTimeLimitConstraint run_working_time_limit_constraint;
+		using ScheduleDrivingTimeLimitConstraint = ConstraintHolder<Duration>;
+		using RunDrivingTimeLimitConstraint      = ConstraintHolder<Duration>;
 
-			ScheduleShiftStartLocationConstraint schedule_shift_start_location_constraint;
-			ScheduleShiftEndLocationConstraint schedule_shift_end_location_constraint;
+		using ScheduleWorkingTimeLimitConstraint = ConstraintHolder<Duration>;
+		using RunWorkingTimeLimitConstraint      = ConstraintHolder<Duration>;
+
+		using ScheduleShiftStartLocationConstraint = ConstraintHolder<LocationConstraint>;
+		using ScheduleShiftEndLocationConstraint   = ConstraintHolder<LocationConstraint>;
+
+		const ScheduleDistanceLimitConstraint& scheduleDistanceLimit( ) const;
+		ScheduleDistanceLimitConstraint& scheduleDistanceLimit( );
+
+		const RunDistanceLimitConstraint& runDistanceLimit( ) const;
+		RunDistanceLimitConstraint& runDistanceLimit( );
+
+		const ScheduleDrivingTimeLimitConstraint& scheduleDrivingTimeLimit( ) const;
+		ScheduleDrivingTimeLimitConstraint& scheduleDrivingTimeLimit( );
+
+		const RunDrivingTimeLimitConstraint& runDrivingTimeLimit( ) const;
+		RunDrivingTimeLimitConstraint& runDrivingTimeLimit( );
+
+		const ScheduleWorkingTimeLimitConstraint& scheduleWorkingTimeLimit( ) const;
+		ScheduleWorkingTimeLimitConstraint& scheduleWorkingTimeLimit( );
+
+		const RunWorkingTimeLimitConstraint& runWorkingTimeLimit( ) const;
+		RunWorkingTimeLimitConstraint& runWorkingTimeLimit( );
+
+		const ScheduleShiftStartLocationConstraint& shiftStartLocation( ) const;
+		ScheduleShiftStartLocationConstraint& shiftStartLocation( );
+
+		const ScheduleShiftEndLocationConstraint& shiftEndLocation( ) const;
+		ScheduleShiftEndLocationConstraint& shiftEndLocation( );
+
+	private:
+		ScheduleDistanceLimitConstraint schedule_distance_limit_constraint;
+		RunDistanceLimitConstraint run_distance_limit_constraint;
+
+		ScheduleDrivingTimeLimitConstraint schedule_driving_time_limit_constraint;
+		RunDrivingTimeLimitConstraint run_driving_time_limit_constraint;
+
+		ScheduleWorkingTimeLimitConstraint schedule_working_time_limit_constraint;
+		RunWorkingTimeLimitConstraint run_working_time_limit_constraint;
+
+		ScheduleShiftStartLocationConstraint schedule_shift_start_location_constraint;
+		ScheduleShiftEndLocationConstraint schedule_shift_end_location_constraint;
 	};
 }

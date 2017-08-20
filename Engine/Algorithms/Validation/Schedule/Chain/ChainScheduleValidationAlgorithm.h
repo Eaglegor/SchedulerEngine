@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <ChainScheduleValidationAlgorithm_export.h>
+#include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <list>
 
@@ -14,9 +14,15 @@ namespace Scheduler
 
 		virtual void addAlgorithm(const ScheduleValidationAlgorithm& algorithm);
 
-		constexpr static const char* staticGetName(){return "Chain";}
-		virtual const char* getName() const override{return staticGetName();}
-		
+		constexpr static const char* staticGetName( )
+		{
+			return "Chain";
+		}
+		virtual const char* getName( ) const override
+		{
+			return staticGetName( );
+		}
+
 	private:
 		std::list<ReferenceWrapper<const ScheduleValidationAlgorithm>> algorithms;
 	};

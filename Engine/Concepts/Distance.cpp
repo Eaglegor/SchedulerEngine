@@ -2,16 +2,22 @@
 
 namespace Scheduler
 {
-	Distance::Distance() : value(0)
-	{ }
+	Distance::Distance( )
+	    : value(0)
+	{
+	}
 
-	Distance::Distance(float value) : value(value)
-	{ }
+	Distance::Distance(float value)
+	    : value(value)
+	{
+	}
 
-	Distance::Distance(const Distance &rhs) : value(rhs.value)
-	{ }
+	Distance::Distance(const Distance& rhs)
+	    : value(rhs.value)
+	{
+	}
 
-	float Distance::getValue() const
+	float Distance::getValue( ) const
 	{
 		return value;
 	}
@@ -21,65 +27,65 @@ namespace Scheduler
 		this->value = value;
 	}
 
-	Distance& Distance::operator=(const Distance &rhs)
+	Distance& Distance::operator=(const Distance& rhs)
 	{
 		this->value = rhs.value;
 		return *this;
 	}
 
-	Distance Distance::operator+(const Distance &rhs) const
+	Distance Distance::operator+(const Distance& rhs) const
 	{
 		return Distance(value + rhs.value);
 	}
 
-	Distance Distance::operator-(const Distance &rhs) const
+	Distance Distance::operator-(const Distance& rhs) const
 	{
 		return Distance(value - rhs.value);
 	}
 
-	Distance& Distance::operator+=(const Distance &rhs)
+	Distance& Distance::operator+=(const Distance& rhs)
 	{
 		this->value += rhs.value;
 		return *this;
 	}
 
-	Distance& Distance::operator-=(const Distance &rhs)
+	Distance& Distance::operator-=(const Distance& rhs)
 	{
 		this->value -= rhs.value;
 		return *this;
 	}
 
-	bool Distance::operator==(const Distance &rhs) const
+	bool Distance::operator==(const Distance& rhs) const
 	{
 		return fabs(this->value - rhs.value) <= FLOAT_EPSILON;
 	}
 
-	bool Distance::operator!=(const Distance &rhs) const
+	bool Distance::operator!=(const Distance& rhs) const
 	{
 		return !(*this == rhs);
 	}
 
-	bool Distance::operator>(const Distance &rhs) const
+	bool Distance::operator>(const Distance& rhs) const
 	{
 		return this->value > rhs.value;
 	}
 
-	bool Distance::operator<(const Distance &rhs) const
+	bool Distance::operator<(const Distance& rhs) const
 	{
 		return this->value < rhs.value;
 	}
 
-	bool Distance::operator>=(const Distance &rhs) const
+	bool Distance::operator>=(const Distance& rhs) const
 	{
 		return *this == rhs || *this > rhs;
 	}
 
-	bool Distance::operator<=(const Distance &rhs) const
+	bool Distance::operator<=(const Distance& rhs) const
 	{
 		return *this == rhs || *this < rhs;
 	}
 
-	Distance Distance::operator-() const
+	Distance Distance::operator-( ) const
 	{
 		return Distance(-value);
 	}

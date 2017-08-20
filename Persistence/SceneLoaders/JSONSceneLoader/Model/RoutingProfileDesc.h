@@ -10,10 +10,10 @@ namespace Scheduler
 		float average_speed;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<RoutingProfileDesc>
 	{
-		RoutingProfileDesc operator()(const boost::property_tree::ptree &tree)
+		RoutingProfileDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			RoutingProfileDesc desc;
 			REQUIRED_SET(tree, desc, vehicle_type);

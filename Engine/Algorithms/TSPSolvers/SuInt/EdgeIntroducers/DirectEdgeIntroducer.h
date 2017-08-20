@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../EdgeIntroducer.h"
-#include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
+#include <Engine/SceneManager/Run.h>
 
 namespace Scheduler
 {

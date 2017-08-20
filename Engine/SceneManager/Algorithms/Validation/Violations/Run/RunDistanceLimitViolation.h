@@ -6,33 +6,33 @@
 namespace Scheduler
 {
 	class Run;
-	
+
 	class RunDistanceLimitViolation : public ConstraintViolation
 	{
 	public:
-		RunDistanceLimitViolation(const Run& run, const Distance excess):
-		run(run),
-		excess(excess)
+		RunDistanceLimitViolation(const Run& run, const Distance excess)
+		    : run(run),
+		      excess(excess)
 		{
 		}
-		
-		RunDistanceLimitViolation(const RunDistanceLimitViolation& rhs):
-		run(rhs.run),
-		excess(rhs.excess)
+
+		RunDistanceLimitViolation(const RunDistanceLimitViolation& rhs)
+		    : run(rhs.run),
+		      excess(rhs.excess)
 		{
 		}
-		
-		const Run& getRun() const
+
+		const Run& getRun( ) const
 		{
 			return run;
 		}
-		
-		const Distance& getExcess() const
+
+		const Distance& getExcess( ) const
 		{
 			return excess;
 		}
-		
-		virtual ConstraintViolationType getType() const override
+
+		virtual ConstraintViolationType getType( ) const override
 		{
 			return ConstraintViolationType::RUN_DISTANCE_LIMIT_VIOLATION;
 		}

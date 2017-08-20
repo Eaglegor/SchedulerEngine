@@ -1,6 +1,6 @@
 ﻿---
 BasedOnStyle: LLVM
-AccessModifierOffset: '0'
+AccessModifierOffset: '-4'
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: 'true'
 AlignConsecutiveDeclarations: 'false'
@@ -18,10 +18,11 @@ AlwaysBreakBeforeMultilineStrings: 'true'
 AlwaysBreakTemplateDeclarations: 'true'
 BinPackArguments: 'true'
 BinPackParameters: 'true'
-BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Custom
+BreakBeforeBraces: Allman
+BreakBeforeBinaryOperators: 'false'
 BreakBeforeTernaryOperators: 'false'
 BreakConstructorInitializersBeforeComma: 'false'
+ColumnLimit: 0
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
 DerivePointerAlignment: 'false'
 IndentCaseLabels: 'true'
@@ -39,5 +40,6 @@ SpaceInEmptyParentheses: 'true'
 Standard: Cpp11
 TabWidth: '4'
 UseTab: ForIndentation
+
 
 ...

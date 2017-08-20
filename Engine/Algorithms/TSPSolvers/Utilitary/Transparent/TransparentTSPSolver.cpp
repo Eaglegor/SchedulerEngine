@@ -2,12 +2,12 @@
 
 namespace Scheduler
 {
-	const char* TransparentTSPSolver::getName() const
+	const char* TransparentTSPSolver::getName( ) const
 	{
-		return staticGetName();
+		return staticGetName( );
 	}
-	
-	const char* TransparentTSPSolver::staticGetName()
+
+	const char* TransparentTSPSolver::staticGetName( )
 	{
 		return "Transparent";
 	}

@@ -10,8 +10,14 @@ namespace Scheduler
 	class DEFAULTDURATIONACTUALIZATIONALGORITHM_EXPORT DefaultDurationActualizationAlgorithm : public DurationActualizationAlgorithm
 	{
 	public:
-		static constexpr const char* staticGetName() { return "Default"; }
-		virtual const char* getName() const { return staticGetName(); };
+		static constexpr const char* staticGetName( )
+		{
+			return "Default";
+		}
+		virtual const char* getName( ) const
+		{
+			return staticGetName( );
+		};
 
 		virtual void actualize(Run& run) const override;
 	};

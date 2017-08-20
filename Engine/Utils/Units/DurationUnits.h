@@ -41,5 +41,4 @@ namespace Scheduler
 			return hours(hours_count) + minutes(minutes_count) + seconds(seconds_count);
 		}
 	}
-
 }

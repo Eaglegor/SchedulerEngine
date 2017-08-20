@@ -2,11 +2,11 @@
 
 #include "../Action.h"
 
-#include <cstddef>
-#include <SceneEditor_export.h>
-#include <Engine/Utils/Collections/ImmutableVector.h>
-#include <Engine/SceneManager/Run.h>
 #include "MoveWorkStops.h"
+#include <Engine/SceneManager/Run.h>
+#include <Engine/Utils/Collections/ImmutableVector.h>
+#include <SceneEditor_export.h>
+#include <cstddef>
 
 namespace Scheduler
 {
@@ -17,10 +17,10 @@ namespace Scheduler
 	class SCENEEDITOR_EXPORT RotateWorkStops : public Action<void>
 	{
 	public:
-        RotateWorkStops(Run& run, Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator middle, Run::ConstWorkStopIterator last);
+		RotateWorkStops(Run& run, Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator middle, Run::ConstWorkStopIterator last);
 
-		virtual void perform() override;
-		virtual void rollback() override;
+		virtual void perform( ) override;
+		virtual void rollback( ) override;
 
 	private:
 		MoveWorkStops backend;

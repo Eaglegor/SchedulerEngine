@@ -12,10 +12,10 @@ namespace Scheduler
 		std::vector<VehicleDesc> vehicles;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<FleetDesc>
 	{
-		FleetDesc operator()(const boost::property_tree::ptree &tree)
+		FleetDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			FleetDesc desc;
 			REQUIRED_SET(tree, desc, performers);

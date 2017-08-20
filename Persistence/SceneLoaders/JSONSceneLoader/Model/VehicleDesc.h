@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Persistence/Utils/PtreeDeserializer.h>
-#include "TimeWindowDesc.h"
 #include "RoutingProfileDesc.h"
-#include <vector>
+#include "TimeWindowDesc.h"
+#include <Persistence/Utils/PtreeDeserializer.h>
 #include <boost/optional.hpp>
+#include <vector>
 
 namespace Scheduler
 {
@@ -20,10 +20,10 @@ namespace Scheduler
 		RoutingProfileDesc routing_profile;
 	};
 
-	template<>
+	template <>
 	struct PtreeDeserializer<VehicleDesc>
 	{
-		VehicleDesc operator()(const boost::property_tree::ptree &tree)
+		VehicleDesc operator( )(const boost::property_tree::ptree& tree)
 		{
 			VehicleDesc desc;
 			REQUIRED_SET(tree, desc, name);

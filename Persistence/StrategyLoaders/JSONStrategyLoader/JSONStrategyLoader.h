@@ -1,8 +1,8 @@
 #pragma once
 
+#include <Engine/Utils/String.h>
 #include <istream>
 #include <string>
-#include <Engine/Utils/String.h>
 
 #include <JSONStrategyLoader_export.h>
 
@@ -16,8 +16,8 @@ namespace Scheduler
 	public:
 		explicit JSONStrategyLoader(AlgorithmsManager& strategies_manager);
 
-		const VRPSolver& loadVRPStrategy(std::istream &stream) const;
-		const VRPSolver& loadVRPStrategy(const String &filename) const;
+		const VRPSolver& loadVRPStrategy(std::istream& stream) const;
+		const VRPSolver& loadVRPStrategy(const String& filename) const;
 
 	private:
 		AlgorithmsManager& algorithms_manager;

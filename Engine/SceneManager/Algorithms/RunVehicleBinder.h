@@ -4,12 +4,12 @@
 
 namespace Scheduler
 {
-    class Vehicle;
-    class Run;
+	class Vehicle;
+	class Run;
 
-    class RunVehicleBinder : public Algorithm
-    {
-    public:
-        virtual bool bindVehicle(Run& run) const = 0;
-    };
+	class RunVehicleBinder : public Algorithm
+	{
+	public:
+		virtual bool bindVehicle(Run& run) const = 0;
+	};
 }

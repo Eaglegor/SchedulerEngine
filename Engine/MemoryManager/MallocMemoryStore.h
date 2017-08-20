@@ -11,6 +11,5 @@ namespace Scheduler
 	public:
 		virtual void* allocate(size_t memory_size) override;
 		virtual void deallocate(void* ptr) override;
-
 	};
 }

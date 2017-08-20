@@ -1,8 +1,8 @@
 #pragma once
 
+#include <ChainVRPSolver_export.h>
 #include <Engine/AlgorithmsManager/VRPSolver.h>
 #include <Engine/Utils/ReferenceWrapper.h>
-#include <ChainVRPSolver_export.h>
 #include <list>
 
 namespace Scheduler
@@ -14,8 +14,14 @@ namespace Scheduler
 
 		void appendSolver(const VRPSolver& solver);
 
-		static constexpr const char* staticGetName() { return "Chain"; }
-		virtual const char* getName() const override { return staticGetName(); };
+		static constexpr const char* staticGetName( )
+		{
+			return "Chain";
+		}
+		virtual const char* getName( ) const override
+		{
+			return staticGetName( );
+		};
 
 	private:
 		std::list<ReferenceWrapper<const VRPSolver>> solvers_chain;
