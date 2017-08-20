@@ -23,4 +23,14 @@ namespace Scheduler
 	{
 		return availability_windows_constraint;
 	}
+	
+	const VehicleConstraints::DepotConstraint& VehicleConstraints::depot() const
+	{
+		return depot_constraint;
+	}
+
+	VehicleConstraints::DepotConstraint& VehicleConstraints::depot()
+	{
+		return depot_constraint;
+	}
 }

@@ -1,6 +1,7 @@
 #include "SceneContext.h"
 
-#include "Operation.h"
+#include "DepotOperation.h"
+#include "WorkOperation.h"
 #include "Order.h"
 #include "Location.h"
 #include "Vehicle.h"
@@ -30,13 +31,6 @@ namespace Scheduler
 		return scene_constraints;
 	}
 	
-	Operation& SceneContext::createFreeOperation(const Location &location)
-	{
-		Operation& operation = *operations_factory.createObject(location, None);
-        free_operations.push_back(operation);
-        return operation;
-	}
-	
 	Location& SceneContext::createLocation(const Site& site)
 	{
 		Location& location = *locations_factory.createObject(site);
@@ -44,25 +38,25 @@ namespace Scheduler
 		return location;
 	}
 	
-	Order& SceneContext::createOrder(Optional<const Depot&> depot)
+	Order& SceneContext::createOrder(const Location& location)
 	{
-		Order::Context context{operations_factory};
+		Order::Context context{work_operations_factory, depot_operations_factory};
 		
-		Order& order = *orders_factory.createObject(context, depot);
-        orders.push_back(order);
-        return order;
+		Order& order = *orders_factory.createObject(context, location);
+                orders.push_back(order);
+                return order;
 	}
 	
-	Performer& SceneContext::createPerformer(Optional<const Depot&> depot)
+	Performer& SceneContext::createPerformer()
 	{
-		Performer& performer = *performers_factory.createObject(depot);
+		Performer& performer = *performers_factory.createObject();
 		performers.push_back(performer);
 		return performer;
 	}
 	
-	Vehicle& SceneContext::createVehicle(Optional<const Depot&> depot)
+	Vehicle& SceneContext::createVehicle()
 	{
-		Vehicle& vehicle = *vehicles_factory.createObject(depot);
+		Vehicle& vehicle = *vehicles_factory.createObject();
 		vehicles.push_back(vehicle);
 		return vehicle;
 	}
@@ -72,11 +66,6 @@ namespace Scheduler
 		Depot& depot = *depots_factory.createObject(location);
 		depots.push_back(depot);
 		return depot;
-	}
-	
-	const SceneContext::OperationsList& SceneContext::getFreeOperations() const
-	{
-		return free_operations;
 	}
 	
 	const SceneContext::LocationsList& SceneContext::getLocations() const
@@ -126,11 +115,6 @@ namespace Scheduler
         for(const Order& order : orders)
         {
             orders_factory.destroyObject(const_cast<Order*>(&order));
-        }
-
-        for(const Operation& operation : free_operations)
-        {
-            operations_factory.destroyObject(const_cast<Operation*>(&operation));
         }
 
         for(const Vehicle& vehicle : vehicles)

@@ -9,7 +9,8 @@
 #include <Engine/SceneManager/Scene.h>
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/Vehicle.h>
-#include <Engine/SceneManager/Operation.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/Depot.h>
 #include <Engine/SceneManager/Order.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/SceneManager/Run.h>
@@ -62,32 +63,34 @@ namespace Scheduler
 		validation_model.setScheduleValidationAlgorithm(valid_runs_algorithm);
 		validation_model.setRunValidationAlgorithm(overload_check_algorithm);
 
-		Depot& depot = scene_context.createDepot(scene_context.createLocation(depot_location));
+		const Depot& depot = scene_context.createDepot(scene_context.createLocation(depot_location));
 		
 		for (size_t i = 0; i < customers_number; ++i)
 		{
-			Vehicle& vehicle = scene_context.createVehicle(depot);
+			Vehicle& vehicle = scene_context.createVehicle();
 			{
+                                vehicle.constraints().depot().set(depot);
 				std::string name = "Vehicle" + std::to_string(i);
 				vehicle.setName(name);
 				vehicle.constraints().capacity().set(Capacity(vehicle_capacity, 0, 0, 0));
 			}
-			Performer& performer = scene_context.createPerformer(depot);
+			Performer& performer = scene_context.createPerformer();
 			{
+                                performer.constraints().depot().set(depot);
 				std::string name = "Driver" + std::to_string(i);
 				performer.setName(name);
 			}
 			vehicle_binder.assign(performer, vehicle);
 			
-			Order& order = scene_context.createOrder();
+                        stream >> customer_number >> x >> y >> demand;
+                        Location& location = scene_context.createLocation(Site(Coordinate(x), Coordinate(y)));
+                        
+			Order& order = scene_context.createOrder(location);
 			{
 				std::string name = "Order" + std::to_string(i);
 				order.setName(name);
 				
-				stream >> customer_number >> x >> y >> demand;
-
-				Location& location = scene_context.createLocation(Site(Coordinate(x), Coordinate(y)));
-				Operation& work_operation = order.createWorkOperation(location);
+				WorkOperation& work_operation = order.getWorkOperation();
 				{
 					std::string op_name = name + ".Work";
 					work_operation.setName(op_name);

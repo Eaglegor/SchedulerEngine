@@ -4,9 +4,11 @@
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/WorkStop.h>
-#include <Engine/SceneManager/RunBoundaryStop.h>
+#include <Engine/SceneManager/DepotStop.h>
 #include <Engine/SceneManager/ConstStopVisitor.h>
 #include <Engine/Utils/Collections/Algorithms.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 #include <Engine/SceneManager/Algorithms/Validation/ViolationsConsumer.h>
 
 namespace Scheduler
@@ -37,7 +39,7 @@ namespace Scheduler
 			}
 		}
 
-		virtual void dispatch(const RunBoundaryStop& run_boundary_stop) override
+		virtual void dispatch(const DepotStop& run_boundary_stop) override
 		{
 			for (const Operation& operation : run_boundary_stop.getOperations())
 			{

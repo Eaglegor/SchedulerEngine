@@ -18,15 +18,13 @@
 
 namespace Scheduler
 {
-	class Depot;
-	
     class SCENEMANAGER_EXPORT Performer
     {
     public:
 		using Skill = Attribute;
 		using SkillsSet = std::unordered_set<ReferenceWrapper<const Skill>>;
 		
-		Performer(std::size_t id, Optional<const Depot&> depot);
+		Performer(std::size_t id);
 
 		std::size_t getId() const;
 		
@@ -44,8 +42,6 @@ namespace Scheduler
 		void removeSkill(const Skill& skill);
 		void clearSkills();
 
-		Optional<const Depot&> getDepot() const;
-		
 		const PerformerConstraints& constraints() const;
 		PerformerConstraints& constraints();
 		
@@ -61,8 +57,6 @@ namespace Scheduler
 
 		SkillsSet skills;
 
-		Optional<const Depot&> depot;
-		
 		PerformerConstraints performer_constraints;
 	};
 }

@@ -4,7 +4,7 @@
 #include <Engine/Utils/Collections/ImmutableVector.h>
 #include "SceneObjectsFactory.h"
 #include "Operation.h"
-#include "RunBoundaryStop.h"
+#include "DepotStop.h"
 #include <Engine/Utils/Collections/LinkedPointersList.h>
 #include <Engine/Utils/Collections/LinkedPointersSublist.h>
 #include <Engine/Utils/Collections/RangeTypeAdapter.h>
@@ -63,8 +63,8 @@ namespace Scheduler
 		Optional<const Vehicle&> getVehicle() const;
 		void setVehicle(Optional<const Vehicle&> vehicle);
 
-		const RunBoundaryStop& getStartStop() const;
-		RunBoundaryStop& getStartStop();
+		const DepotStop& getStartStop() const;
+		  DepotStop& getStartStop();
 
 		const WorkStopsList& getWorkStops() const;
 		WorkStopsList& getWorkStops();
@@ -72,16 +72,11 @@ namespace Scheduler
 		const StopsList& getStops() const;
 		StopsList& getStops();
 
-		const RunBoundaryStop& getEndStop() const;
-		RunBoundaryStop& getEndStop();
+		const DepotStop& getEndStop() const;
+		DepotStop& getEndStop();
 
-		void allocateStartOperation(const Operation &operation);
-		WorkStopIterator createWorkStop(ConstWorkStopIterator pos, const Operation &operation);
-		void allocateEndOperation(const Operation &operation);
-
-		void unallocateStartOperation(const Operation &operation);
-		WorkStopIterator destroyWorkStop(ConstWorkStopIterator pos);
-		void unallocateEndOperation(const Operation &operation);
+		WorkStopIterator allocateOrder(ConstWorkStopIterator pos, const Order& order);
+		WorkStopIterator unallocateOrder(ConstWorkStopIterator pos);
 		
 		void swapWorkStops(ConstWorkStopIterator first, ConstWorkStopIterator second);
 		void reverseWorkStops();
@@ -102,6 +97,12 @@ namespace Scheduler
 		ConstWorkStopIterator findWorkStop(const WorkStop& stop) const;
 		
 	private:
+                void allocateStartOperation(const DepotOperation &operation);
+                void allocateEndOperation(const DepotOperation &operation);
+                
+		void unallocateStartOperation(const DepotOperation &operation);
+                void unallocateEndOperation(const DepotOperation &operation);
+            
 		bool isDetached() const;
 		void detach();
 		void attach(Schedule::StopsList::const_iterator pos);
@@ -115,8 +116,8 @@ namespace Scheduler
 		Schedule& schedule;
 		Optional<const Vehicle&> vehicle;
 
-		RunBoundaryStop start_stop;
-		RunBoundaryStop end_stop;
+		  DepotStop start_stop;
+		  DepotStop end_stop;
 
 		DurationActualizer duration_actualizer;
 

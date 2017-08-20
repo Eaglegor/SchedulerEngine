@@ -291,8 +291,8 @@ TEST_CASE("SceneManager - Scene - Run - Boundary stops")
 	Operation& end_operation1 = scene_context.createFreeOperation(end_location);
 	Operation& end_operation2 = scene_context.createFreeOperation(end_location);
 	
-	RunBoundaryStop& start_stop = run.getStartStop();
-	RunBoundaryStop& end_stop = run.getEndStop();
+	   DepotStop& start_stop = run.getStartStop();
+	   DepotStop& end_stop = run.getEndStop();
 	
 	run.allocateStartOperation(start_operation1);
 	run.allocateEndOperation(end_operation1);

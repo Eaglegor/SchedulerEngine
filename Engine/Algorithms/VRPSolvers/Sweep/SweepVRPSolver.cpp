@@ -16,6 +16,8 @@
 #include <Engine/SceneEditor/SceneEditor.h>
 #include <Engine/SceneEditor/Actions/AllocateOrder.h>
 #include <Engine/SceneEditor/Actions/CreateRun.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 
 namespace Scheduler
 {
@@ -38,7 +40,7 @@ namespace Scheduler
             }
             float angle (const Order& order) const
             {
-                return angle(order.getWorkOperation()->getLocation().getSite());
+                return angle(order.getWorkOperation().getLocation().getSite());
             }
             float angle (const Site& location) const
             {
@@ -62,10 +64,7 @@ namespace Scheduler
         std::vector<ReferenceWrapper<const Order>> sorted_orders;
 		
         for (const Order& order : orders) {
-			if(order.getWorkOperation())
-			{
-				sorted_orders.emplace_back(order);
-			}
+                sorted_orders.emplace_back(order);
         }
 
         if (sorted_orders.empty()) {
@@ -75,7 +74,7 @@ namespace Scheduler
         SceneEditor scene_editor;
         
         for (Schedule& schedule : schedules) {
-            const Location &depot_location = schedule.getPerformer().getDepot()->getLocation();
+            const Location &depot_location = schedule.getPerformer().constraints().depot().get().getLocation();
             ByAngle by_angle(depot_location.getSite());
             std::sort(sorted_orders.begin(), sorted_orders.end(), by_angle);
             Run& run = *schedule.createRun(schedule.getRuns().end(), depot_location, depot_location);

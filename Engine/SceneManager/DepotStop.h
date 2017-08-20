@@ -9,17 +9,19 @@
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT RunBoundaryStop : public Stop
+        class DepotOperation;
+    
+	class SCENEMANAGER_EXPORT DepotStop : public Stop
 	{
 	public:
-		using OperationsSet = std::unordered_set<ReferenceWrapper<const Operation> >;
+		using OperationsSet = std::unordered_set<ReferenceWrapper<const DepotOperation> >;
 		
-		RunBoundaryStop(const Stop::Context& context, const Location& location, Run& run);
+		  DepotStop(const Stop::Context& context, const Location& location, Run& run);
 
-		void addOperation(const Operation& operation);
-		void removeOperation(const Operation& operation);
+		void addOperation(const DepotOperation& operation);
+		void removeOperation(const DepotOperation& operation);
 
-		bool containsOperation(const Operation& operation) const;
+		bool containsOperation(const DepotOperation& operation) const;
 
 		virtual const Location& getLocation() const override;
 

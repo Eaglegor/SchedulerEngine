@@ -4,6 +4,7 @@
 #include "../WorkStop.h"
 #include "../Vehicle.h"
 #include "../Scene.h"
+#include "../WorkOperation.h"
 #include "../SceneContext.h"
 #include <unordered_map>
 #include <type_traits>
@@ -29,24 +30,16 @@ namespace Scheduler
 				Run& new_run = *(to.createRun(to.getRuns().end(), r.getStartStop().getLocation(), r.getEndStop().getLocation()));
 				new_run.setVehicle(r.getVehicle());
 				
-				for (const Operation& operation : r.getStartStop().getOperations())
-				{
-					new_run.allocateStartOperation(operation);
-				}
-				new_run.getStartStop().setDuration(r.getStartStop().getDuration());
-				new_run.getStartStop().setAllocationTime(r.getStartStop().getAllocationTime());
-
 				for (const WorkStop& stop : r.getWorkStops())
 				{
-					WorkStop& new_stop = *new_run.createWorkStop(new_run.getWorkStops().end(), stop.getOperation());
+					WorkStop& new_stop = *new_run.allocateOrder(new_run.getWorkStops().end(), stop.getOperation().getOrder());
 					new_stop.setDuration(stop.getDuration());
 					new_stop.setAllocationTime(stop.getAllocationTime());
 				}
 
-				for (const Operation& operation : r.getEndStop().getOperations())
-				{
-					new_run.allocateEndOperation(operation);
-				}
+				new_run.getStartStop().setDuration(r.getStartStop().getDuration());
+				new_run.getStartStop().setAllocationTime(r.getStartStop().getAllocationTime());
+				
 				new_run.getEndStop().setDuration(r.getEndStop().getDuration());
 				new_run.getEndStop().setAllocationTime(r.getEndStop().getAllocationTime());
 			}

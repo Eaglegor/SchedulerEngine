@@ -1,4 +1,4 @@
-#include "RunBoundaryStop.h"
+#include "DepotStop.h"
 
 #include <Engine/SceneManager/Operation.h>
 #include <assert.h>
@@ -9,51 +9,51 @@
 #include "ArrivalTimeActualizer.h"
 #include "DurationActualizer.h"
 #include <Engine/SceneManager/Location.h>
+#include "DepotOperation.h"
 
 namespace Scheduler
 {
-	RunBoundaryStop::RunBoundaryStop(const Stop::Context& context, const Location& location, Run &run):
+	DepotStop::DepotStop(const Stop::Context& context, const Location& location, Run &run):
 		Stop(context, run),
 		location(location)
 	{
 	}
 
-	void RunBoundaryStop::addOperation(const Operation& operation)
+	void DepotStop::addOperation(const DepotOperation& operation)
 	{
-		assert(location == operation.getLocation());
 		operations.emplace(operation);
 		context.arrival_time_actualizer.setDirty(true);
 		context.duration_actualizer.setDirty(true);
 	}
 
-	void RunBoundaryStop::removeOperation(const Operation& operation)
+	void DepotStop::removeOperation(const DepotOperation& operation)
 	{
 		operations.erase(operation);
 		context.arrival_time_actualizer.setDirty(true);
 		context.duration_actualizer.setDirty(true);
 	}
 
-	bool RunBoundaryStop::containsOperation(const Operation &operation) const
+	bool DepotStop::containsOperation(const DepotOperation &operation) const
 	{
 		return util::contains_key(operations, operation);
 	}
 
-	const Location& RunBoundaryStop::getLocation() const
+	const Location& DepotStop::getLocation() const
 	{
 		return location;
 	}
 
-	const RunBoundaryStop::OperationsSet& RunBoundaryStop::getOperations() const
+	const DepotStop::OperationsSet& DepotStop::getOperations() const
 	{
 		return operations;
 	}
 
-	void RunBoundaryStop::acceptVisitor(StopVisitor& visitor)
+	void DepotStop::acceptVisitor(StopVisitor& visitor)
 	{
 		visitor.dispatch(*this);
 	}
 
-	void RunBoundaryStop::acceptVisitor(ConstStopVisitor& visitor) const
+	void DepotStop::acceptVisitor(ConstStopVisitor& visitor) const
 	{
 		visitor.dispatch(*this);
 	}

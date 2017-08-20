@@ -6,8 +6,12 @@
 #include <Engine/SceneManager/Performer.h>
 #include <Engine/SceneManager/Depot.h>
 #include <Engine/SceneManager/SceneContext.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 #include <Engine/Concepts/RoutingProfile.h>
 #include <Engine/Routing/RoutingService.h>
+#include <Engine/SceneManager/DepotOperation.h>
+#include <Engine/SceneManager/WorkOperation.h>
 #include "../Savings/ClassicSaving.h"
 
 namespace Scheduler
@@ -29,14 +33,11 @@ namespace Scheduler
 			
 			for(const Order& i : scene.getContext().getOrders())
 			{
-				if(!i.getWorkOperation()) continue;
 				for(const Order& j : scene.getContext().getOrders())
 				{
-					if(!j.getWorkOperation()) continue;
-					
-					Site i_site = i.getWorkOperation()->getLocation().getSite();
-					Site j_site = j.getWorkOperation()->getLocation().getSite();
-					Site d_site = schedule.getPerformer().getDepot()->getLocation().getSite();		
+					Site i_site = i.getWorkOperation().getLocation().getSite();
+					Site j_site = j.getWorkOperation().getLocation().getSite();
+					Site d_site = schedule.getPerformer().constraints().depot().get().getLocation().getSite();		
 					
 					Distance id = routing_service.calculateRoute(i_site, d_site, default_routing_profile).getDistance();
 					Distance dj = routing_service.calculateRoute(d_site, j_site, default_routing_profile).getDistance();

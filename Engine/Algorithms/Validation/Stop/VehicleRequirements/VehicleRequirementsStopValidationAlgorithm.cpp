@@ -5,10 +5,12 @@
 #include <Engine/SceneManager/Stop.h>
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Vehicle.h>
-#include <Engine/SceneManager/RunBoundaryStop.h>
+#include <Engine/SceneManager/DepotStop.h>
 #include <Engine/SceneManager/ConstStopVisitor.h>
 #include <Engine/Utils/Collections/Algorithms.h>
 #include <Engine/Utils/Optional.h>
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 #include <Engine/SceneManager/Algorithms/Validation/ViolationsConsumer.h>
 
 namespace Scheduler
@@ -23,7 +25,7 @@ namespace Scheduler
 
 		virtual void dispatch(const WorkStop& work_stop) override
 		{
-			const Scheduler::Operation& operation = work_stop.getOperation();
+			const Scheduler::WorkOperation& operation = work_stop.getOperation();
 			Scheduler::Optional<const Scheduler::Vehicle&> vehicle = work_stop.getRun().getVehicle();
 			
 			if (vehicle && operation.constraints().vehicleAttributesRequirements().isSet())
@@ -39,9 +41,9 @@ namespace Scheduler
 			}
 		}
 
-		virtual void dispatch(const Scheduler::RunBoundaryStop& run_boundary_stop) override
+		virtual void dispatch(const Scheduler::DepotStop& run_boundary_stop) override
 		{
-			for (const Scheduler::Operation& operation : run_boundary_stop.getOperations())
+			for (const Scheduler::DepotOperation& operation : run_boundary_stop.getOperations())
 			{
 				Scheduler::Optional<const Scheduler::Vehicle&> vehicle = run_boundary_stop.getRun().getVehicle();
 				if (vehicle && operation.constraints().vehicleAttributesRequirements().isSet())

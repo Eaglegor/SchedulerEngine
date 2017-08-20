@@ -15,11 +15,11 @@
 
 namespace Scheduler
 {
-	/// Class representing single operation which needs to be done to complete the order
     class SCENEMANAGER_EXPORT Operation
     {
     public:
-        Operation(std::size_t id, const Location& location, Optional<const Order&> order);
+        Operation(std::size_t id, const Order& order);
+        virtual ~Operation() {}
 
         const String& getName() const;
 
@@ -29,27 +29,26 @@ namespace Scheduler
 
         const Duration& getDuration() const;
 
-        Optional<const Order&> getOrder() const;
+        const Order& getOrder() const;
 
         void setName(const String& name);
 
         void setDuration(const Duration &duration);
 
-		const OperationConstraints& constraints() const;
-		OperationConstraints& constraints();
+        const OperationConstraints& constraints() const;
+        OperationConstraints& constraints();
 
-		bool operator==(const Operation& rhs) const;
-		bool operator!=(const Operation& rhs) const;
-		
-	private:
+        bool operator==(const Operation& rhs) const;
+        bool operator!=(const Operation& rhs) const;
+
+    private:
         std::size_t id;
         String name;
 
-        const Location& location;
         Duration duration;
 
-        Optional<const Order&> order;
+        const Order& order;
 
-		OperationConstraints operations_constraints;
+        OperationConstraints operation_constraints;
     };
 }

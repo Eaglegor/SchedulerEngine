@@ -1,28 +1,25 @@
 add_library(SceneManager SHARED
 	
-	Attribute.h
-	Attribute.cpp
+	Attribute.h Attribute.cpp
 	
-	Operation.h
-	Operation.cpp
+	Operation.h Operation.cpp
 	
-	Order.h
-	Order.cpp
+	WorkOperation.h WorkOperation.cpp
 	
-	Performer.h
-	Performer.cpp
+	DepotOperation.h DepotOperation.cpp
 	
-	Run.h
-	Run.cpp
+	Order.h Order.cpp
+	
+	Performer.h Performer.cpp
+	
+	Run.h Run.cpp
 	
 	Scene.h Scene.cpp
 	SceneContext.h SceneContext.cpp
 	
-	SceneManager.h
-	SceneManager.cpp
+	SceneManager.h SceneManager.cpp
 	
-	Schedule.h
-	Schedule.cpp
+	Schedule.h Schedule.cpp
 	
 	Depot.h Depot.cpp
 	Location.h Location.cpp
@@ -37,17 +34,14 @@ add_library(SceneManager SHARED
     
 	ScheduleValidationModel.h ScheduleValidationModel.cpp
 	
-	Stop.h
-	Stop.cpp
+	Stop.h Stop.cpp
 	
-	StopVisitor.h
-    ConstStopVisitor.h
+	StopVisitor.h  ConstStopVisitor.h
 	
-	RunBoundaryStop.h RunBoundaryStop.cpp
+	DepotStop.h DepotStop.cpp
 	WorkStop.h WorkStop.cpp
 	
-	Vehicle.h
-	Vehicle.cpp
+	Vehicle.h Vehicle.cpp
 	
 	SceneObjectsFactory.h
 

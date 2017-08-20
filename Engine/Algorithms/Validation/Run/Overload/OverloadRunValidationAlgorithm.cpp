@@ -4,6 +4,8 @@
 #include <Engine/SceneManager/WorkStop.h>
 #include <Engine/SceneManager/Vehicle.h>
 #include <Engine/SceneManager/Operation.h>
+#include <Engine/SceneManager/DepotOperation.h>
+#include <Engine/SceneManager/WorkOperation.h>
 #include <Engine/SceneManager/Algorithms/Validation/ViolationsConsumer.h>
 
 namespace Scheduler

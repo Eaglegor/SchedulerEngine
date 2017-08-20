@@ -1,4 +1,6 @@
 #include "InstanceBasedSolutionGenerator.h"
+#include <Engine/SceneManager/WorkOperation.h>
+#include <Engine/SceneManager/DepotOperation.h>
 
 namespace Scheduler
 {

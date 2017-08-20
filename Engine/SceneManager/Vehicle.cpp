@@ -2,9 +2,8 @@
 
 namespace Scheduler
 {
-	Vehicle::Vehicle(std::size_t id, Optional<const Depot&> depot): 
-	id(id),
-	depot(depot)
+	Vehicle::Vehicle(std::size_t id): 
+	id(id)
 	{
 	}
 
@@ -91,11 +90,6 @@ namespace Scheduler
 	VehicleConstraints& Vehicle::constraints()
 	{
 		return vehicle_constraints;
-	}
-	
-	Optional<const Depot&> Vehicle::getDepot() const
-	{
-		return depot;
 	}
 	
 	bool Vehicle::operator==(const Vehicle& rhs) const

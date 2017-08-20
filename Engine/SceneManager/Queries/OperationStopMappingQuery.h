@@ -19,16 +19,16 @@ namespace Scheduler
 		~OperationStopMappingQuery();
 		
 		Optional<Run::ConstStopIterator> findStop(const Operation& operation) const;
-		Optional<Run::ConstWorkStopIterator> findWorkStop(const Operation& operation) const;
+		Optional<Run::ConstWorkStopIterator> findWorkStop(const WorkOperation& operation) const;
 		
 		virtual void afterWorkStopCreated(Run::ConstWorkStopIterator iter) override;
 		virtual void beforeWorkStopDestroyed(Run::ConstWorkStopIterator iter) override;
 		
-		virtual void afterStartOperationAdded(Run::ConstStopIterator iter, const Operation& operation) override;
-		virtual void beforeStartOperationRemoved(Run::ConstStopIterator iter, const Operation& operation) override;
+		virtual void afterStartOperationAdded(Run::ConstStopIterator iter, const DepotOperation& operation) override;
+		virtual void beforeStartOperationRemoved(Run::ConstStopIterator iter, const DepotOperation& operation) override;
 		
-		virtual void afterEndOperationAdded(Run::ConstStopIterator iter, const Operation& operation) override;
-		virtual void beforeEndOperationRemoved(Run::ConstStopIterator iter, const Operation& operation) override;
+		virtual void afterEndOperationAdded(Run::ConstStopIterator iter, const DepotOperation& operation) override;
+		virtual void beforeEndOperationRemoved(Run::ConstStopIterator iter, const DepotOperation& operation) override;
 		
 		virtual void beforeRunDestroyed(Schedule::ConstRunIterator iter) override;
 		

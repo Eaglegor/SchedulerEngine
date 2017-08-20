@@ -12,7 +12,8 @@
 
 namespace Scheduler
 {
-	class Operation;
+	class WorkOperation;
+        class DepotOperation;
 	class Order;
 	class Performer;
 	class Vehicle;
@@ -28,7 +29,6 @@ namespace Scheduler
 			using ReferencesVector = std::vector<ReferenceWrapper<T>>;
 		
 		public:
-			using OperationsList = ReferencesVector<const Operation>;
 			using OrdersList = ReferencesVector<const Order>;
 			using PerformersList = ReferencesVector<const Performer>;
 			using VehiclesList = ReferencesVector<const Vehicle>;
@@ -41,7 +41,6 @@ namespace Scheduler
 			
 			std::size_t getId() const;
 			
-			const OperationsList& getFreeOperations() const;
 			const OrdersList& getOrders() const;
 			const PerformersList& getPerformers() const;
 			const VehiclesList& getVehicles() const;
@@ -49,10 +48,9 @@ namespace Scheduler
 			const DepotsList& getDepots() const;
 			const AttributesMap& getAttributes() const;
 
-			Operation& createFreeOperation(const Location &location);
-			Order& createOrder(Optional<const Depot&> depot = None);
-			Performer& createPerformer(Optional<const Depot&> depot = None);
-			Vehicle& createVehicle(Optional<const Depot&> depot = None);
+			Order& createOrder(const Location& location);
+			Performer& createPerformer();
+			Vehicle& createVehicle();
 			Location& createLocation(const Site& site);
 			Depot& createDepot(const Location &location);
 			const Attribute& createAttribute(const String& name);
@@ -66,7 +64,6 @@ namespace Scheduler
 		private:
 			std::size_t id;
 
-			OperationsList free_operations;
 			OrdersList orders;
 			LocationsList locations;
 
@@ -76,7 +73,8 @@ namespace Scheduler
 
 			AttributesMap attributes;
 			
-			SceneObjectsFactory<Operation> operations_factory;
+			SceneObjectsFactory<WorkOperation> work_operations_factory;
+                        SceneObjectsFactory<DepotOperation> depot_operations_factory;
 			SceneObjectsFactory<Order> orders_factory;
 			SceneObjectsFactory<Vehicle> vehicles_factory;
 			SceneObjectsFactory<Performer> performers_factory;

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <assert.h>
+#include <Engine/Utils/Optional.h>
 
 namespace Scheduler
 {
@@ -33,4 +34,33 @@ namespace Scheduler
 		private:
 			std::shared_ptr<T> constraint;
 	};
+        
+        template<typename T>
+        class ConstraintHolder<const T&>
+        {
+            public:
+                            void set(const T& constraint)
+                            {
+                                    this->constraint = constraint;
+                            }
+
+                            const T& get() const
+                            {
+                                    assert(constraint);
+                                    return constraint.get();
+                            }
+
+                            operator const T&() const
+                            {
+                                    return constraint.get();
+                            }
+
+                            bool isSet() const 
+                            {
+                                    return constraint;
+                            }
+
+                    private:
+                            Optional<const T&>  constraint;
+            };
 }
