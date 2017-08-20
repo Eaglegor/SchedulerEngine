@@ -15,19 +15,3 @@ cotire(DefaultArrivalTimeActualizationAlgorithm)
 
 include(GenerateExportHeader)
 generate_export_header(DefaultArrivalTimeActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DefaultArrivalTimeActualizationAlgorithm_export.h)
-
-if(CPP_SCHEDULER_TESTS)
-	add_executable(DefaultArrivalTimeActualizationAlgorithm_Test 
-	
-		Test/DefaultArrivalTimeActualizationAlgorithm_Test.cpp
-		
-		)
-		
-	set_property(SOURCE Test/DefaultArrivalTimeActualizationAlgorithm_Test.cpp PROPERTY COMPILE_DEFINITIONS "CATCH_CONFIG_MAIN")
-		
-	add_test(NAME DefaultArrivalTimeActualizationAlgorithm_Test COMMAND $<TARGET_FILE:DefaultArrivalTimeActualizationAlgorithm_Test>)
-	target_link_libraries(DefaultArrivalTimeActualizationAlgorithm_Test Core CrowFlyRoutingService)
-	set_target_properties(DefaultArrivalTimeActualizationAlgorithm_Test PROPERTIES FOLDER "Engine/Algorithms/ScheduleActualization/ArrivalTime/Tests/")
-	
-	cotire(DefaultArrivalTimeActualizationAlgorithm_Test)
-endif()
