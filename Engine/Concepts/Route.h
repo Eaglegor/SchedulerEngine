@@ -16,6 +16,7 @@ namespace Scheduler
 	public:
 		/** 
 		 * @brief Default constructor
+		 * @detais Result is a zero-length route between the geographical points (0,0) and (0,0)
 		 */
 		Route( );
 
