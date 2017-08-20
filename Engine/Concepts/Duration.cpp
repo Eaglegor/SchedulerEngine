@@ -8,7 +8,7 @@ namespace Scheduler
 	{
 	}
 
-	Duration::Duration(std::time_t value)
+	Duration::Duration(value_type value)
 	    : value(value)
 	{
 	}
@@ -18,12 +18,12 @@ namespace Scheduler
 	{
 	}
 
-	std::time_t Duration::getValue( ) const
+	value_type Duration::getValue( ) const
 	{
 		return value;
 	}
 
-	void Duration::setValue(std::time_t value)
+	void Duration::setValue(value_type value)
 	{
 		this->value = value;
 	}
@@ -91,23 +91,23 @@ namespace Scheduler
 		return Duration(-value);
 	}
 
-	Duration Duration::operator*(long multiplier) const
+	Duration Duration::operator*(value_type multiplier) const
 	{
 		return Duration(this->value * multiplier);
 	}
 
-	Duration& Duration::operator*=(long multiplier)
+	Duration& Duration::operator*=(value_type multiplier)
 	{
 		this->value *= multiplier;
 		return *this;
 	}
 
-	Duration Duration::operator/(long divider) const
+	Duration Duration::operator/(value_type divider) const
 	{
 		return Duration(this->value / divider);
 	}
 
-	Duration& Duration::operator/=(long divider)
+	Duration& Duration::operator/=(value_type divider)
 	{
 		this->value /= divider;
 		return *this;
@@ -115,6 +115,6 @@ namespace Scheduler
 
 	Duration Duration::max( )
 	{
-		return Duration(std::numeric_limits<std::time_t>::max( ));
+		return Duration(std::numeric_limits<value_type>::max( ));
 	}
 }
