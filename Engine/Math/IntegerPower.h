@@ -4,6 +4,11 @@
 
 namespace Scheduler
 {
+	/**
+	 * @defgroup IntegerPower Collection of templates for integer power calculation in the compile-time
+	 * @{
+	 */
+
 	template <unsigned long long N, unsigned int P, int Odd = (P & 1)>
 	struct IntegerPower;
 
@@ -24,4 +29,6 @@ namespace Scheduler
 	{
 		static const unsigned long long val = 1;
 	};
+
+	/**@}*/
 }
