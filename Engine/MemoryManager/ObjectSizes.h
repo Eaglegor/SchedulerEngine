@@ -2,6 +2,9 @@
 
 namespace Scheduler
 {
+	/** 
+	 * @brief This namespace contains some predefined object sizes to be used with pool memory allocators
+	 */
 	namespace Pool
 	{
 		constexpr static size_t TINY_OBJECT   = 48;
