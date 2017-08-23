@@ -5,27 +5,68 @@
 
 namespace Scheduler
 {
+	/** 
+	 * @brief Represents range between 2 iterators in the container
+	 * 
+	 * @details {Range is a part of the container limited by 2 iterators. It behaves like the 
+	 * standalone container and all structural changes (insertions, removals) are automatically forwarded 
+	 * to the underlying container. Since range itself behaves as another container, nested ranges may be introduced where the 
+	 * changes are forwarded in the cascade way.}
+	 * 
+	 * @warning {Since the structure of the underlying container isn't known the size() operation can't be performed 
+	 * in constant time using only the iterators. The size variable is used to avoid the slow linear operations.
+	 * This variable is updated on all modifying operations made through the range interface. But the direct modifications
+	 * of the underlying container aren't mirrored in the range and may leave it in the inconsistend state}
+	 * 	 
+	 */
 	template <typename BaseContainer>
 	class Range
 	{
 	public:
+		/// The type of the base container
 		using base_container = BaseContainer;
 
+		/// Iterator type
 		using iterator               = typename base_container::iterator;
+
+		/// Const iterator type
 		using const_iterator         = typename base_container::const_iterator;
+
+		/// Reverse iterator type
 		using reverse_iterator       = typename base_container::reverse_iterator;
+
+		/// Const reverse iterator type
 		using const_reverse_iterator = typename base_container::const_reverse_iterator;
 
+		/// Value type
 		using value_type      = typename base_container::value_type;
+
+		/// Reference type
 		using reference       = typename base_container::reference;
+
+		/// Const reference type
 		using const_reference = typename base_container::const_reference;
 
+		/** 
+		 * @brief Default construtor
+		 * 
+		 * @note Resulting range will have no parent so it won't be useful for anything
+		 */
 		Range( )
 		    : parent(nullptr),
 		      constant_time_size(0)
 		{
 		}
 
+		/** 
+		 * @brief Constructs the range limited by 2 iterator
+		 * 
+		 * @param parent The underlying container
+		 * @param begin_iterator The left inclusive bound of range
+		 * @param end_iterator The right exclusive bound of range
+		 * 
+		 * @note The size variable is set by std::distance(begin_iterator, end_iterator)
+		 */
 		Range(base_container* parent, iterator begin_iterator, iterator end_iterator)
 		    : parent(parent),
 		      begin_iterator(begin_iterator),
@@ -34,6 +75,19 @@ namespace Scheduler
 		{
 		}
 
+		/**
+		 * @brief Constructs the range limited by 2 iterators
+		 * 
+		 * @param parent The underlying container
+		 * @param begin_iterator The left inclusive bound of range
+		 * @param end_iterator The right exclusive bound of range
+		 * @param n The distance between begin_iterator and end_iterator
+		 * 
+		 * @warning {The value of n isn't checked.
+		 * Passing the value not matching the distance between begin_iterator and end_iterator will
+		 * create the range with inconsistent state that causes the undefined behavior}
+		 * 
+		 */
 		Range(base_container* parent, iterator begin_iterator, iterator end_iterator, size_t n)
 		    : parent(parent),
 		      begin_iterator(begin_iterator),
@@ -42,6 +96,11 @@ namespace Scheduler
 		{
 		}
 
+		/** 
+		 * @brief Move constructor
+		 * 
+		 * @param rhs The range to move
+		 */
 		Range(Range&& rhs)
 		    : parent(rhs.parent),
 		      begin_iterator(rhs.begin_iterator),
@@ -54,6 +113,13 @@ namespace Scheduler
 			rhs.constant_time_size = 0;
 		}
 
+		/** 
+		 * @brief Move assignment operator
+		 * 
+		 * @param rhs The range to transfer the state from
+		 * 
+		 * @return Reference to this
+		 */
 		Range& operator=(Range&& rhs)
 		{
 			parent             = rhs.parent;
@@ -68,98 +134,191 @@ namespace Scheduler
 			return *this;
 		}
 
+		/** 
+		 * @brief Accesses the first element
+		 * 
+		 * @return The const reference to the first element
+		 */
 		const_reference front( ) const
 		{
 			return *begin_iterator;
 		}
 
+		/** 
+		 * @brief Accesses the first element
+		 * 
+		 * @return The reference to the first element
+		 */
 		reference front( )
 		{
 			return *begin_iterator;
 		}
 
+		/** 
+		 * @brief Accesses the last element
+		 * 
+		 * @return The const reference to the last element
+		 */
 		const_reference back( ) const
 		{
 			if(begin_iterator == end_iterator) return *end_iterator;
 			return *std::prev(end_iterator);
 		}
 
+		/** 
+		 * @brief Accesses the last element
+		 * 
+		 * @return The reference to the last element
+		 */
 		reference back( )
 		{
 			if(begin_iterator == end_iterator) return *end_iterator;
 			return *std::prev(end_iterator);
 		}
 
+		/** 
+		 * @brief Returns the iterator to the beginning
+		 * 
+		 * @return Iterator to the first element
+		 */
 		iterator begin( )
 		{
 			return begin_iterator;
 		}
 
+		/** 
+		 * @brief Returns the const iterator to the beginning
+		 * 
+		 * @return Const iterator to the first element
+		 */
 		const_iterator begin( ) const
 		{
 			return begin_iterator;
 		}
 
+		/**
+		 * @brief Returns the const iterator to the beginning
+		 * 
+		 * @return Const iterator to the first element
+		 */
 		const_iterator cbegin( ) const
 		{
 			return begin_iterator;
 		}
 
+		/** 
+		 * @brief Returns an iterator to the end
+		 * 
+		 * @return Iterator to the element following the last element.
+		 */
 		iterator end( )
 		{
 			return end_iterator;
 		}
 
+		/** 
+		 * @brief Returns an const iterator to the end
+		 * 
+		 * @return Const iterator to the element following the last element.
+		 */
 		const_iterator end( ) const
 		{
 			return end_iterator;
 		}
 
+		/** 
+		 * @brief Returns an const iterator to the end
+		 * 
+		 * @return Const iterator to the element following the last element.
+		 */
 		const_iterator cend( ) const
 		{
 			return end_iterator;
 		}
 
+		/** 
+		 * @brief Returns an reverse iterator to the beginning
+		 * 
+		 * @return Reverse iterator to the first element.
+		 */
 		reverse_iterator rbegin( )
 		{
 			return reverse_iterator(end_iterator);
 		}
 
+		/** 
+		 * @brief Returns an const reverse iterator to the beginning
+		 * 
+		 * @return Const reverse iterator to the first element.
+		 */
 		const_reverse_iterator rbegin( ) const
 		{
 			return reverse_iterator(end_iterator);
 		}
 
+		/** 
+		 * @brief Returns an const reverse iterator to the beginning
+		 * 
+		 * @return Const reverse iterator to the first element.
+		 */
 		const_reverse_iterator crbegin( ) const
 		{
 			return const_reverse_iterator(end_iterator);
 		}
 
+		/** 
+		 * @brief Returns an reverse iterator to the end
+		 * 
+		 * @return Reverse iterator to the element following the last element.
+		 */
 		reverse_iterator rend( )
 		{
 			return reverse_iterator(begin_iterator);
 		}
 
+		/** 
+		 * @brief Returns an const reverse iterator to the end
+		 * 
+		 * @return Const reverse iterator to the element following the last element.
+		 */
 		const_reverse_iterator rend( ) const
 		{
 			return reverse_iterator(begin_iterator);
 		}
 
+		/** 
+		 * @brief Returns an const reverse iterator to the end
+		 * 
+		 * @return Const reverse iterator to the element following the last element.
+		 */
 		const_reverse_iterator crend( ) const
 		{
 			return const_reverse_iterator(begin_iterator);
 		}
 
+		/**
+		 * @brief Checks whether the container is empty
+		 * 
+		 * @return true if the container is empty
+		 */
 		bool empty( ) const
 		{
 			return begin_iterator == end_iterator;
 		}
 
+		/** 
+		 * @brief Returns the number of elements
+		 * 
+		 * @return The number of elements in the range
+		 */
 		size_t size( ) const
 		{
 			return constant_time_size;
 		}
 
+		/** 
+		 * @brief Clears the contents
+		 */
 		void clear( )
 		{
 			parent->erase(begin_iterator, end_iterator, constant_time_size);
@@ -167,11 +326,28 @@ namespace Scheduler
 			begin_iterator     = end_iterator;
 		}
 
+		/** 
+		 * @brief Inserts single element
+		 * 
+		 * @param pos Position to insert the element to
+		 * @param value The element to insert
+		 * 
+		 * @return The iterator to the inserted element
+		 */
 		iterator insert(const_iterator pos, reference value)
 		{
 			return afterInsertionHook(pos, parent->insert(pos, value));
 		}
 
+		/** 
+		 * @brief Inserts the range of elements
+		 * 
+		 * @param pos Position to insert the elements to
+		 * @param first Iterator to the first element to insert
+		 * @param last Iterator to the last element to insert
+		 * 
+		 * @return Iterator to the first inserted element
+		 */
 		template <typename InputIterator>
 		iterator insert(const_iterator pos, InputIterator first, InputIterator last)
 		{
@@ -179,12 +355,27 @@ namespace Scheduler
 			return afterInsertionHook(pos, first);
 		}
 
+		/** 
+		 * @brief Erases single element
+		 * 
+		 * @param pos Iterator to the element to erase
+		 * 
+		 * @return Iterator to the element following the erased
+		 */
 		iterator erase(const_iterator pos)
 		{
 			beforeErasureHook(pos);
 			return parent->erase(pos);
 		}
 
+		/** 
+		 * @brief Erases a range of elements
+		 * 
+		 * @param first Iterator to the first element to erase
+		 * @param last Iterator to the element following the last element to erase
+		 * 
+		 * @return Iterator following the last erased element
+		 */
 		iterator erase(const_iterator first, const_iterator last)
 		{
 			beforeErasureHook(first, last, std::distance(first, last));
