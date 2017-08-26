@@ -6,3 +6,5 @@ conaninfo.txt
 *.kdev4
 *.PVS-Studio*
 .directory
+ThirdParty/*
+ThirdPartyPackages/*

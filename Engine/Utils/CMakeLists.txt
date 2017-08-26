@@ -21,6 +21,8 @@ add_custom_target(Utils SOURCES
 
 set_target_properties(Utils PROPERTIES FOLDER "Engine")
 
+include_directories(${BOOST_ROOT})
+
 if(CPP_SCHEDULER_TESTS)
 	add_executable(Utils_Test 
 	

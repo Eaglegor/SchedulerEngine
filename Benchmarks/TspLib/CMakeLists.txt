@@ -1,5 +1,4 @@
-FIND_PACKAGE( Boost 1.40 COMPONENTS program_options REQUIRED )
-INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+FIND_PACKAGE( Boost COMPONENTS program_options REQUIRED )
 add_executable(TspLib_Benchmark TspLib_Benchmark.cpp)
 target_link_libraries(TspLib_Benchmark Core TspLibRoutingService TspLibSceneLoader ${Boost_LIBRARIES})
 set_target_properties(TspLib_Benchmark PROPERTIES FOLDER "Benchmarks/TspLib")

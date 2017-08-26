@@ -29,7 +29,6 @@ target_link_libraries(Core
     TSPOnlyVRPSolver
 	SweepVRPSolver
 	CWSavingsVRPSolver
-	SimpleEAVRPSolver
 	AnchorInsertionVRPSolver
     
 	SimpleTwoOptTSPSolver

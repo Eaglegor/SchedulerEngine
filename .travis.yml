@@ -1,0 +1,56 @@
+dist: trusty
+sudo: required
+language: cpp
+
+addons:
+  sonarcloud:
+    organization: "eaglegor-github"
+    branches:
+      - TravisCI
+      - master
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-5
+      - g++-5
+
+install:
+  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
+  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-5 /usr/bin/g++
+  
+jobs:
+  include:
+    - stage: test
+      compiler: 
+        - gcc
+      script: 
+        - mkdir build
+        - cd build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True ../
+        - make clean all
+        - make test
+    - compiler: 
+        - clang
+      script: 
+        - mkdir build
+        - cd build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True ../
+        - make clean all
+        - make test
+    - stage: static analysis
+      compiler:
+        - clang
+      script:
+        - mkdir build
+        - cd build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True ../
+        - build-wrapper-linux-x86-64 --out-dir ../bw-output make clean all 
+        - cd ..
+        - sonar-scanner
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+    - '$HOME/ThirdPartyLibs'
+    - '$HOME/ThirdPartyLibsPackages'
