@@ -4,7 +4,7 @@ macro (UpdateDependencies)
   CheckDependencies()
   
   if(SCHEDULER_ENGINE_DEPENDENCIES_UPDATE_NEEDED)
-    #PrepareThirdPartyFolder()
+    PrepareThirdPartyFolder()
 
 	PreparePackages()
 	
