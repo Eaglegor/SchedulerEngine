@@ -24,28 +24,30 @@ jobs:
       compiler: 
         - gcc
       script: 
-        - mkdir build
-        - cd build
-        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True ../
+        - cd ..
+        - mkdir SchedulerEngine-build
+        - cd SchedulerEngine-build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
         - make clean all
         - make test
     - compiler: 
         - clang
       script: 
-        - mkdir build
-        - cd build
-        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True ../
+        - cd ..
+        - mkdir SchedulerEngine-build
+        - cd SchedulerEngine-build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
         - make clean all
         - make test
     - stage: static analysis
       compiler:
         - clang
       script:
-        - mkdir build
-        - cd build
-        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True ../
-        - build-wrapper-linux-x86-64 --out-dir ../bw-output make clean all 
         - cd ..
+        - mkdir SchedulerEngine-build
+        - cd SchedulerEngine-build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
+        - build-wrapper-linux-x86-64 --out-dir bw-output make clean all 
         - sonar-scanner
 
 cache:
