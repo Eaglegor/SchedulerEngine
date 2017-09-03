@@ -1,5 +1,5 @@
 dist: trusty
-sudo: required
+sudo: false
 language: cpp
 
 addons:
@@ -15,8 +15,10 @@ addons:
       - g++-5
 
 install:
-  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
-  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-5 /usr/bin/g++
+  - mkdir -p latest-gcc-symlinks
+  - ln -s /usr/bin/gcc-5 latest-gcc-symlinks/gcc
+  - ln -s /usr/bin/g++-5 latest-gcc-symlinks/g++
+  - export PATH=$PWD/latest-gcc-symlinks:$PATH
   
 jobs:
   include:
