@@ -6,7 +6,6 @@ addons:
   sonarcloud:
     organization: "eaglegor-github"
     branches:
-      - TravisCI
       - master
   apt:
     sources:
