@@ -40,6 +40,9 @@ jobs:
         - make clean all
         - make test
     - stage: static analysis
+      branches:
+        only:
+          - master
       compiler:
         - clang
       script:
