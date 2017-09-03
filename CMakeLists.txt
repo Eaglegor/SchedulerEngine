@@ -37,7 +37,8 @@ endif()
 
 include_directories(${CATCH_ROOT})
 include_directories(${SPDLOG_ROOT}/include)
-include_directories(${BOOST_INCLUDEDIR})
+include_directories(${BOOST_ROOT}/include)
+include_directories(${BOOST_ROOT}/${PACKAGE_BOOST_FOLDER_NAME}/boost)
 include_directories(${LIBXML2_ROOT}/include)
 include_directories(${CIMG_ROOT})
 

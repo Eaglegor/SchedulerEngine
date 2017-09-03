@@ -3,10 +3,10 @@ macro (UpdateDependencies)
   message(STATUS "Checking if dependencies have to be updated...")
   CheckDependencies()
   
+  PreparePackages()
+
   if(SCHEDULER_ENGINE_DEPENDENCIES_UPDATE_NEEDED)
     PrepareThirdPartyFolder()
-
-	PreparePackages()
 	
     if(WIN32)
 		if(MSVC)
