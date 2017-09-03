@@ -58,4 +58,5 @@ jobs:
 cache:
   directories:
     - '$HOME/.sonar/cache'
+    - '$HOME/ThirdPartyLibs'
     - '$HOME/ThirdPartyLibsPackages'
