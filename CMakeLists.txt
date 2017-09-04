@@ -41,7 +41,6 @@ include_directories(${BOOST_INCLUDEDIR})
 include_directories(${LIBXML2_ROOT}/include)
 include_directories(${CIMG_ROOT})
 
-
 if(CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY)
 	message(STATUS "Benchmarks data directory is set: ${CPP_SCHEDULER_BENCHMARK_DATA_DIRECTORY}")
 	
@@ -54,7 +53,7 @@ cmake_policy(SET CMP0054 OLD)
 cmake_policy(SET CMP0042 OLD)
 
 include_directories(${CPP_SCHEDULER_SOURCE_DIR})
-include_directories(${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/)
+include_directories(${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders)
 include_directories(${CPP_SCHEDULER_SOURCE_DIR}/Tests/IncludeGroups)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -71,8 +70,14 @@ if(CPP_SCHEDULER_TESTS)
     enable_testing()
 endif()
 
-set(EXECUTABLE_OUTPUT_PATH ${CPP_SCHEDULER_BINARY_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${CPP_SCHEDULER_BINARY_DIR}/lib)
+macro(InstallHeaders HEADER_LIST)
+	foreach(header ${HEADER_LIST})
+		message(STATUS ${header})
+		string(REGEX MATCH "(.\\\*)\\\[/\\\]" DIR ${header})
+		file(RELATIVE_PATH REL_DIR ${CPP_SCHEDULER_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+		install(FILES ${header} DESTINATION include/${REL_DIR}/${DIR})
+	endforeach()
+endmacro()
 
 if(CPP_SCHEDULER_BUILD_ENABLE_COTIRE)
 	include(${COTIRE_ROOT}/cotire.cmake)
@@ -101,3 +106,11 @@ if(CPP_SCHEDULER_TESTS_BENCHMARKS)
     add_subdirectory(Benchmarks)
 endif()
 
+if(UNIX)
+	file(GLOB SH_LIBS "${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE}/lib/*.so")
+elseif(WIN32)
+	file(GLOB SH_LIBS "${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE}/lib/*.dll")
+endif()
+
+install(FILES ${SH_LIBS} DESTINATION ${CMAKE_BUILD_TYPE}/tools)
+install(FILES ${SH_LIBS} DESTINATION ${CMAKE_BUILD_TYPE}/test)

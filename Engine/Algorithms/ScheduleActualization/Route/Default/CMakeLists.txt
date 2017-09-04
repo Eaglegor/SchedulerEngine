@@ -12,3 +12,11 @@ cotire(DefaultRouteActualizationAlgorithm)
 
 include(GenerateExportHeader)
 generate_export_header(DefaultRouteActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DefaultRouteActualizationAlgorithm_export.h)
+
+install(TARGETS DefaultRouteActualizationAlgorithm
+		RUNTIME DESTINATION ${CMAKE_BUILD_TYPE}/lib
+		ARCHIVE DESTINATION ${CMAKE_BUILD_TYPE}/lib
+		LIBRARY DESTINATION ${CMAKE_BUILD_TYPE}/lib
+)
+
+InstallHeaders(DefaultRouteActualizationAlgorithm.h)

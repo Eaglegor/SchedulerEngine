@@ -24,7 +24,7 @@ string(REGEX MATCH "^(.*)\\.[^.]*$" temp ${DLL})
 set(BOOST_STRIPPED_LIBRARY_NAME ${CMAKE_MATCH_1})
 
 if(WIN32)
-	add_custom_command(TARGET MemoryManager POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_ROOT}/lib/${BOOST_STRIPPED_LIBRARY_NAME}.dll ${EXECUTABLE_OUTPUT_PATH})
+	install(FILES ${BOOST_ROOT}/lib/${BOOST_STRIPPED_LIBRARY_NAME}.dll DESTINATION ${CMAKE_BUILD_TYPE}/lib)
 endif()
 
 include(GenerateExportHeader)

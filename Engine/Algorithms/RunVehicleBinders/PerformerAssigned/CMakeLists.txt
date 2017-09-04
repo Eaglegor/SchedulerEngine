@@ -13,6 +13,14 @@ cotire(PerformerAssignedVehicleBinder)
 include(GenerateExportHeader)
 generate_export_header(PerformerAssignedVehicleBinder EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/PerformerAssignedVehicleBinder_export.h)
 
+install(TARGETS PerformerAssignedVehicleBinder
+		LIBRARY DESTINATION ${CMAKE_BUILD_TYPE}/lib
+		RUNTIME DESTINATION ${CMAKE_BUILD_TYPE}/lib
+		ARCHIVE DESTINATION ${CMAKE_BUILD_TYPE}/lib
+)
+
+InstallHeaders(PerformerAssignedVehicleBinder.h)
+
 if(CPP_SCHEDULER_TESTS)
 	add_executable(PerformerAssignedRunVehicleBinder_Test 
 	
@@ -27,4 +35,9 @@ if(CPP_SCHEDULER_TESTS)
 	set_target_properties(PerformerAssignedRunVehicleBinder_Test PROPERTIES FOLDER "Engine/Algorithms/RunVehicleBinders/Tests/")
 	
 	cotire(PerformerAssignedRunVehicleBinder_Test)
+
+	install(TARGETS PerformerAssignedRunVehicleBinder_Test
+		RUNTIME DESTINATION ${CMAKE_BUILD_TYPE}/test
+		PERMISSIONS OWNER_READ OWNER_EXECUTE
+	)
 endif()

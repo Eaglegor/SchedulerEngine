@@ -19,8 +19,12 @@ endif()
 string(REGEX MATCH "^(.*)\\.[^.]*$" temp ${PODLL})
 set(BOOST_STRIPPED_POLIBRARY_NAME ${CMAKE_MATCH_1})
 
+install(TARGETS TspLibFormatConverter
+        RUNTIME DESTINATION ${CMAKE_BUILD_TYPE}/tools
+)
+
 if(WIN32)
-	add_custom_command(TARGET TspLibFormatConverter POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_ROOT}/lib/${BOOST_STRIPPED_POLIBRARY_NAME}.dll ${EXECUTABLE_OUTPUT_PATH})
+    install(FILES ${BOOST_ROOT}/lib/${BOOST_STRIPPED_POLIBRARY_NAME}.dll DESTINATION ${CMAKE_BUILD_TYPE}/tools)
 endif()
 
 set_target_properties(TspLibFormatConverter PROPERTIES FOLDER "Tools")
