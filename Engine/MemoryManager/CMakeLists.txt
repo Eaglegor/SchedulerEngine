@@ -27,8 +27,8 @@ if(WIN32)
 	install(FILES ${BOOST_ROOT}/lib/${BOOST_STRIPPED_LIBRARY_NAME}.dll DESTINATION ${CMAKE_BUILD_TYPE}/lib)
 endif()
 
-include(GenerateExportHeader)
-generate_export_header(MemoryManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/MemoryManager_export.h)
+
+GenerateExportHeader(MemoryManager)
 
 InstallCoreComponent(MemoryManager)
 InstallHeaders(

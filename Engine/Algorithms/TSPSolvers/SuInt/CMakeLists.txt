@@ -24,8 +24,8 @@ target_link_libraries(SuIntTSPSolver SceneManager SceneEditor LoggingManager)
 
 cotire(SuIntTSPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(SuIntTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SuIntTSPSolver_export.h)
+
+GenerateExportHeader(SuIntTSPSolver)
 
 InstallAlgorithm(SuIntTSPSolver)
 InstallHeaders(

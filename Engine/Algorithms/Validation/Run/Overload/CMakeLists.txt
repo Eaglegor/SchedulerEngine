@@ -10,8 +10,8 @@ target_link_libraries(OverloadRunValidationAlgorithm SceneManager)
 
 cotire(OverloadRunValidationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(OverloadRunValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/OverloadRunValidationAlgorithm_export.h)
+
+GenerateExportHeader(OverloadRunValidationAlgorithm)
 
 InstallAlgorithm(OverloadRunValidationAlgorithm)
 InstallHeaders(OverloadRunValidationAlgorithm.h)

@@ -10,8 +10,8 @@ target_link_libraries(DistanceLimitScheduleValidationAlgorithm SceneManager)
 
 cotire(DistanceLimitScheduleValidationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(DistanceLimitScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DistanceLimitScheduleValidationAlgorithm_export.h)
+
+GenerateExportHeader(DistanceLimitScheduleValidationAlgorithm)
 
 InstallAlgorithm(DistanceLimitScheduleValidationAlgorithm)
 InstallHeaders(DistanceLimitScheduleValidationAlgorithm.h)

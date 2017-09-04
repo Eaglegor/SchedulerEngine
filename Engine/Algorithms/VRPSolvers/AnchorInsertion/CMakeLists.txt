@@ -10,8 +10,8 @@ target_link_libraries(AnchorInsertionVRPSolver AlgorithmsManager SceneManager Sc
 
 cotire(AnchorInsertionVRPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(AnchorInsertionVRPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/AnchorInsertionVRPSolver.h)
+
+GenerateExportHeader(AnchorInsertionVRPSolver)
 
 InstallAlgorithm(AnchorInsertionVRPSolver)
 InstallHeaders(AnchorInsertionVRPSolver.h)

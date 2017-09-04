@@ -37,6 +37,7 @@ endif()
 
 include(InstallUtils.cmake)
 
+
 include_directories(${CATCH_ROOT})
 include_directories(${SPDLOG_ROOT}/include)
 include_directories(${BOOST_INCLUDEDIR})

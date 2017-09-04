@@ -26,8 +26,7 @@ target_link_libraries(SimulatedAnnealingTSPSolver SceneManager SceneEditor)
 
 cotire(SimulatedAnnealingTSPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(SimulatedAnnealingTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SimulatedAnnealingTSPSolver_export.h)
+GenerateExportHeader(SimulatedAnnealingTSPSolver)
 
 InstallAlgorithm(SimulatedAnnealingTSPSolver)
 InstallHeaders(

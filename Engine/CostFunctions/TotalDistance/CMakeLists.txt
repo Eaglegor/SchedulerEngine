@@ -10,8 +10,8 @@ set_target_properties(TotalDistanceCostFunctions PROPERTIES FOLDER "Engine/CostF
 
 cotire(TotalDistanceCostFunctions)
 
-include(GenerateExportHeader)
-generate_export_header(TotalDistanceCostFunctions EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TotalDistanceCostFunctions_export.h)
+
+GenerateExportHeader(TotalDistanceCostFunctions)
 
 InstallCostFunction(TotalDistanceCostFunctions)
 InstallHeaders(

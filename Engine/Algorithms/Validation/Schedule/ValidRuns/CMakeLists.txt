@@ -10,8 +10,8 @@ target_link_libraries(ValidRunsScheduleValidationAlgorithm SceneManager)
 
 cotire(ValidRunsScheduleValidationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(ValidRunsScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ValidRunsScheduleValidationAlgorithm_export.h)
+
+GenerateExportHeader(ValidRunsScheduleValidationAlgorithm)
 
 InstallAlgorithm(ValidRunsScheduleValidationAlgorithm)
 InstallHeaders(ValidRunsScheduleValidationAlgorithm.h)

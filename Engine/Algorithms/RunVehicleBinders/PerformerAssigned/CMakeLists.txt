@@ -10,8 +10,6 @@ target_link_libraries(PerformerAssignedVehicleBinder SceneManager)
 
 cotire(PerformerAssignedVehicleBinder)
 
-include(GenerateExportHeader)
-generate_export_header(PerformerAssignedVehicleBinder EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/PerformerAssignedVehicleBinder_export.h)
-
+GenerateExportHeader(PerformerAssignedVehicleBinder)
 InstallAlgorithm(PerformerAssignedVehicleBinder)
 InstallHeaders(PerformerAssignedVehicleBinder.h)

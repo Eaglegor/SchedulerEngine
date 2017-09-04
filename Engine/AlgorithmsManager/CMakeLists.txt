@@ -15,8 +15,8 @@ target_link_libraries(AlgorithmsManager Concepts MemoryManager)
 
 cotire(AlgorithmsManager)
 
-include(GenerateExportHeader)
-generate_export_header(AlgorithmsManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/AlgorithmsManager_export.h)
+
+GenerateExportHeader(AlgorithmsManager)
 
 InstallCoreComponent(AlgorithmsManager)
 InstallHeaders(

@@ -10,8 +10,8 @@ target_link_libraries(ChainScheduleValidationAlgorithm SceneManager)
 
 cotire(ChainScheduleValidationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(ChainScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ChainScheduleValidationAlgorithm_export.h)
+
+GenerateExportHeader(ChainScheduleValidationAlgorithm)
 
 InstallAlgorithm(ChainScheduleValidationAlgorithm)
 InstallHeaders(ChainScheduleValidationAlgorithm.h)

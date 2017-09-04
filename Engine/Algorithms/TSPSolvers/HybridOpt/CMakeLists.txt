@@ -10,8 +10,6 @@ target_link_libraries(HybridOptTSPSolver SceneManager SceneEditor)
 
 cotire(HybridOptTSPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(HybridOptTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/HybridOptTSPSolver_export.h)
-
+GenerateExportHeader(HybridOptTSPSolver)
 InstallAlgorithm(HybridOptTSPSolver)
 InstallHeaders(HybridOptTSPSolver.h)

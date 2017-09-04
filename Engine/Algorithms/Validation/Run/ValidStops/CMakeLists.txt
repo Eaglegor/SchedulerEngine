@@ -10,8 +10,8 @@ target_link_libraries(ValidStopsRunValidationAlgorithm SceneManager)
 
 cotire(ValidStopsRunValidationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(ValidStopsRunValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ValidStopsRunValidationAlgorithm_export.h)
+
+GenerateExportHeader(ValidStopsRunValidationAlgorithm)
 
 InstallAlgorithm(ValidStopsRunValidationAlgorithm)
 InstallHeaders(ValidStopsRunValidationAlgorithm.h)

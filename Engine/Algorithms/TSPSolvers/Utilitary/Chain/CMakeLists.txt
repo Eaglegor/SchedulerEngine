@@ -10,8 +10,8 @@ target_link_libraries(ChainTSPSolver SceneManager SceneEditor)
 
 cotire(ChainTSPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(ChainTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ChainTSPSolver_export.h)
+
+GenerateExportHeader(ChainTSPSolver)
 
 InstallAlgorithm(ChainTSPSolver)
 InstallHeaders(ChainTSPSolver.h)

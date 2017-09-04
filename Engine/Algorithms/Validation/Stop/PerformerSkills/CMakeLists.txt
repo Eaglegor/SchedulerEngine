@@ -10,8 +10,8 @@ target_link_libraries(PerformerSkillsStopValidationAlgorithm SceneManager)
 
 cotire(PerformerSkillsStopValidationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(PerformerSkillsStopValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/PerformerSkillsStopValidationAlgorithm_export.h)
+
+GenerateExportHeader(PerformerSkillsStopValidationAlgorithm)
 
 InstallAlgorithm(PerformerSkillsStopValidationAlgorithm)
 InstallHeaders(PerformerSkillsStopValidationAlgorithm.h)

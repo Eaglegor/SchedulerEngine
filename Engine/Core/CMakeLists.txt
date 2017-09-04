@@ -52,8 +52,8 @@ set_target_properties(Core PROPERTIES FOLDER "Core")
 
 cotire(Core)
 
-include(GenerateExportHeader)
-generate_export_header(Core EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/Core_export.h)
+
+GenerateExportHeader(Core)
 
 InstallCoreComponent(Core)
 InstallHeaders(Engine.h)

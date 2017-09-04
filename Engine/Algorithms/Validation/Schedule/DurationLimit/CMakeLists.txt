@@ -10,8 +10,8 @@ target_link_libraries(DurationLimitScheduleValidationAlgorithm SceneManager)
 
 cotire(DurationLimitScheduleValidationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(DurationLimitScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DurationLimitScheduleValidationAlgorithm_export.h)
+
+GenerateExportHeader(DurationLimitScheduleValidationAlgorithm)
 
 InstallAlgorithm(DurationLimitScheduleValidationAlgorithm)
 InstallHeaders(DurationLimitScheduleValidationAlgorithm.h)

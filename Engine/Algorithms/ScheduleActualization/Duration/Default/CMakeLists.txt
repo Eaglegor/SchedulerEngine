@@ -10,8 +10,7 @@ target_link_libraries(DefaultDurationActualizationAlgorithm SceneManager)
 
 cotire(DefaultDurationActualizationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(DefaultDurationActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DefaultDurationActualizationAlgorithm_export.h)
+GenerateExportHeader(DefaultDurationActualizationAlgorithm)
 
 InstallAlgorithm(DefaultDurationActualizationAlgorithm)
 InstallHeaders(DefaultDurationActualizationAlgorithm.h)

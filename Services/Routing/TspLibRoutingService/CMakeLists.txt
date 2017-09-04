@@ -8,8 +8,8 @@ set_target_properties(TspLibRoutingService PROPERTIES FOLDER "Services/Routing")
 
 cotire(TspLibRoutingService)
 
-include(GenerateExportHeader)
-generate_export_header(TspLibRoutingService EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TspLibRoutingService_export.h)
+
+GenerateExportHeader(TspLibRoutingService)
 
 InstallRoutingService(TspLibRoutingService)
 InstallHeaders(TspLibRoutingService.h)

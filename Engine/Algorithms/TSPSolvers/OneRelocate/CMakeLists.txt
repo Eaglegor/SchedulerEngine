@@ -10,8 +10,6 @@ target_link_libraries(OneRelocateTSPSolver SceneManager SceneEditor)
 
 cotire(OneRelocateTSPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(OneRelocateTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/OneRelocateTSPSolver_export.h)
-
+GenerateExportHeader(OneRelocateTSPSolver)
 InstallAlgorithm(OneRelocateTSPSolver)
 InstallHeaders(OneRelocateTSPSolver.h)

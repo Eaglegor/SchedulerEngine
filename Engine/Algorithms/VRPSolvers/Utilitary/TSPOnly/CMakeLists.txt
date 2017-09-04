@@ -10,8 +10,8 @@ target_link_libraries(TSPOnlyVRPSolver AlgorithmsManager SceneManager)
 
 cotire(TSPOnlyVRPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(TSPOnlyVRPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TSPOnlyVRPSolver.h)
+
+GenerateExportHeader(TSPOnlyVRPSolver)
 
 InstallAlgorithm(TSPOnlyVRPSolver)
 InstallHeaders(TSPOnlyVRPSolver.h)

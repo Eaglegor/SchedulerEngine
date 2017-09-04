@@ -21,8 +21,8 @@ target_link_libraries(SceneEditor SceneManager LoggingManager)
 
 cotire(SceneEditor)
 
-include(GenerateExportHeader)
-generate_export_header(SceneEditor EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SceneEditor_export.h)
+
+GenerateExportHeader(SceneEditor)
 
 InstallCoreComponent(SceneEditor)
 InstallHeaders(

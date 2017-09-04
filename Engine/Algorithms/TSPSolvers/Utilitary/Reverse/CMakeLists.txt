@@ -10,8 +10,8 @@ target_link_libraries(ReverseTSPSolver SceneManager SceneEditor)
 
 cotire(ReverseTSPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(ReverseTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ReverseTSPSolver_export.h)
+
+GenerateExportHeader(ReverseTSPSolver)
 
 InstallAlgorithm(ReverseTSPSolver)
 InstallHeaders(ReverseTSPSolver.h)

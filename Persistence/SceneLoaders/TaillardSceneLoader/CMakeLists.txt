@@ -8,8 +8,8 @@ set_target_properties(TaillardSceneLoader PROPERTIES FOLDER "Persistence/SceneLo
 
 cotire(TaillardSceneLoader)
 
-include(GenerateExportHeader)
-generate_export_header(TaillardSceneLoader EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TaillardSceneLoader_export.h)
+
+GenerateExportHeader(TaillardSceneLoader)
 
 InstallSerializer(TaillardSceneLoader)
 InstallHeaders(TaillardSceneLoader.h)
