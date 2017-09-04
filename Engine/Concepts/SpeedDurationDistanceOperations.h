@@ -15,7 +15,6 @@ namespace Scheduler
 	 * @param duration Duration of travelling
 	 * @return Distance the vehicle will travel over the specified duration having the specified speed
 	 */
-	CONCEPTS_EXPORT
 	Distance operator*(const Speed& speed, const Duration& duration);
 
 	/** 
@@ -24,7 +23,6 @@ namespace Scheduler
 	 * @param duration Duration of travelling
 	 * @return Distance the vehicle will travel over the specified duration having the specified speed
 	 */
-	CONCEPTS_EXPORT
 	Distance operator*(const Duration& duration, const Speed& speed);
 
 	/** 
@@ -33,7 +31,6 @@ namespace Scheduler
 	 * @param speed Speed of the vehicle
 	 * @return Duration over which the vehicle will travel the specified distance having the specified speed
 	 */
-	CONCEPTS_EXPORT
 	Duration operator/(const Distance& distance, const Speed& speed);
 
 	/** 
@@ -42,6 +39,5 @@ namespace Scheduler
 	 * @param duration Travel time
 	 * @return Speed the vehicle should have to travel specified distance over the specified duration
 	 */
-	CONCEPTS_EXPORT
 	Speed operator/(const Distance& distance, const Duration& duration);
 }
