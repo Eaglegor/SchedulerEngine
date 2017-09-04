@@ -17,10 +17,17 @@ addons:
       - g++-5
 
 install:
-  - mkdir -p latest-gcc-symlinks
+  - mkdir -p path-override
+  - wget http://www.cmake.org/files/v3.4/cmake-3.4.1.tar.gz 
+  - tar -xvzf cmake-3.4.1.tar.gz 
+  - cd cmake-3.4.1/ 
+  - ./configure --prefix=..
+  - make install
+  - cd ..
   - ln -s /usr/bin/gcc-5 latest-gcc-symlinks/gcc
   - ln -s /usr/bin/g++-5 latest-gcc-symlinks/g++
-  - export PATH=$PWD/latest-gcc-symlinks:$PATH
+  - export PATH=$PWD/path-override:$PATH
+  - cd ..
   
 jobs:
   include:
