@@ -28,3 +28,6 @@ cotire(JSONStrategyLoader)
 
 include(GenerateExportHeader)
 generate_export_header(JSONStrategyLoader EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/JSONStrategyLoader_export.h)
+
+InstallSerializer(JSONStrategyLoader)
+InstallHeaders(JSONStrategyLoader.h)

@@ -12,3 +12,6 @@ cotire(AnchorInsertionVRPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(AnchorInsertionVRPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/AnchorInsertionVRPSolver.h)
+
+InstallAlgorithm(AnchorInsertionVRPSolver)
+InstallHeaders(AnchorInsertionVRPSolver.h)

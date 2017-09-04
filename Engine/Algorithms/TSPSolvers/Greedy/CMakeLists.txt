@@ -12,3 +12,6 @@ cotire(GreedyTSPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(GreedyTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/GreedyTSPSolver_export.h)
+
+InstallAlgorithm(GreedyTSPSolver)
+InstallHeaders(GreedyTSPSolver.h)

@@ -1,4 +1,4 @@
-add_executable(TspLibFormatConverter TspLibFormatConverter)
+add_executable(TspLibFormatConverter TspLibFormatConverter.cpp)
 
 find_package(LibXml2)
 
@@ -28,3 +28,5 @@ if(WIN32)
 endif()
 
 set_target_properties(TspLibFormatConverter PROPERTIES FOLDER "Tools")
+
+InstallTool(TspLibFormatConverter)

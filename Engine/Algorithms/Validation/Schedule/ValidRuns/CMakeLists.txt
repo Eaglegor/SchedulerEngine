@@ -12,3 +12,6 @@ cotire(ValidRunsScheduleValidationAlgorithm)
 
 include(GenerateExportHeader)
 generate_export_header(ValidRunsScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ValidRunsScheduleValidationAlgorithm_export.h)
+
+InstallAlgorithm(ValidRunsScheduleValidationAlgorithm)
+InstallHeaders(ValidRunsScheduleValidationAlgorithm.h)

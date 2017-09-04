@@ -8,3 +8,6 @@ cotire(TaillardRoutingService)
 
 include(GenerateExportHeader)
 generate_export_header(TaillardRoutingService EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TaillardRoutingService_export.h)
+
+InstallRoutingService(TaillardRoutingService)
+InstallHeaders(TaillardRoutingService.h)

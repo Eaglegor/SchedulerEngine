@@ -17,3 +17,12 @@ cotire(AlgorithmsManager)
 
 include(GenerateExportHeader)
 generate_export_header(AlgorithmsManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/AlgorithmsManager_export.h)
+
+InstallCoreComponent(AlgorithmsManager)
+InstallHeaders(
+	AlgorithmsManager.h
+	Algorithm.h
+	CostFunction.h
+	TSPSolver.h
+	VRPSolver.h
+)

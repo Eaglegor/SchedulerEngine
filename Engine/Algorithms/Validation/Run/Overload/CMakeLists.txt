@@ -12,3 +12,6 @@ cotire(OverloadRunValidationAlgorithm)
 
 include(GenerateExportHeader)
 generate_export_header(OverloadRunValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/OverloadRunValidationAlgorithm_export.h)
+
+InstallAlgorithm(OverloadRunValidationAlgorithm)
+InstallHeaders(OverloadRunValidationAlgorithm.h)

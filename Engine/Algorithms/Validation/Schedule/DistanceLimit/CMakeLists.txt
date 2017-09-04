@@ -12,3 +12,6 @@ cotire(DistanceLimitScheduleValidationAlgorithm)
 
 include(GenerateExportHeader)
 generate_export_header(DistanceLimitScheduleValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DistanceLimitScheduleValidationAlgorithm_export.h)
+
+InstallAlgorithm(DistanceLimitScheduleValidationAlgorithm)
+InstallHeaders(DistanceLimitScheduleValidationAlgorithm.h)

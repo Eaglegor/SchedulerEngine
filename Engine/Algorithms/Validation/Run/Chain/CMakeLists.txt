@@ -12,3 +12,6 @@ cotire(ChainRunValidationAlgorithm)
 
 include(GenerateExportHeader)
 generate_export_header(ChainRunValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ChainRunValidationAlgorithm_export.h)
+
+InstallAlgorithm(ChainRunValidationAlgorithm)
+InstallHeaders(ChainRunValidationAlgorithm.h)

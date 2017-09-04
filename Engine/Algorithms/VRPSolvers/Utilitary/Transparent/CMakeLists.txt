@@ -10,3 +10,6 @@ cotire(TransparentVRPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(TransparentVRPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TransparentVRPSolver_export.h)
+
+InstallAlgorithm(TransparentVRPSolver)
+InstallHeaders(TransparentVRPSolver.h)

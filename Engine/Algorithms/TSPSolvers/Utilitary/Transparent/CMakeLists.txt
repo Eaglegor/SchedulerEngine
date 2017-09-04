@@ -12,3 +12,6 @@ cotire(TransparentTSPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(TransparentTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TransparentTSPSolver_export.h)
+
+InstallAlgorithm(TransparentTSPSolver)
+InstallHeaders(TransparentTSPSolver.h)

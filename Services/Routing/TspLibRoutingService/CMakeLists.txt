@@ -10,3 +10,6 @@ cotire(TspLibRoutingService)
 
 include(GenerateExportHeader)
 generate_export_header(TspLibRoutingService EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TspLibRoutingService_export.h)
+
+InstallRoutingService(TspLibRoutingService)
+InstallHeaders(TspLibRoutingService.h)

@@ -12,3 +12,6 @@ cotire(TSPOnlyVRPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(TSPOnlyVRPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TSPOnlyVRPSolver.h)
+
+InstallAlgorithm(TSPOnlyVRPSolver)
+InstallHeaders(TSPOnlyVRPSolver.h)

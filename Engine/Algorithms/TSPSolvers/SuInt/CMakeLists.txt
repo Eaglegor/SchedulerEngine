@@ -26,3 +26,10 @@ cotire(SuIntTSPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(SuIntTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SuIntTSPSolver_export.h)
+
+InstallAlgorithm(SuIntTSPSolver)
+InstallHeaders(
+    SuIntTSPSolver.h
+    EdgeSuggestorType.h
+    EdgeIntroducerType.h
+)

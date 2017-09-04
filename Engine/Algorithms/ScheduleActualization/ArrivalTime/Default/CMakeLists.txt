@@ -16,10 +16,5 @@ cotire(DefaultArrivalTimeActualizationAlgorithm)
 include(GenerateExportHeader)
 generate_export_header(DefaultArrivalTimeActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DefaultArrivalTimeActualizationAlgorithm_export.h)
 
-install(TARGETS DefaultArrivalTimeActualizationAlgorithm
-		ARCHIVE DESTINATION ${CMAKE_BUILD_TYPE}/lib
-		LIBRARY DESTINATION ${CMAKE_BUILD_TYPE}/lib
-		RUNTIME DESTINATION ${CMAKE_BUILD_TYPE}/lib
-)
-
+InstallAlgorithm(DefaultArrivalTimeActualizationAlgorithm)
 InstallHeaders(DefaultArrivalTimeActualizationAlgorithm.h)

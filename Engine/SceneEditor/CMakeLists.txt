@@ -23,3 +23,20 @@ cotire(SceneEditor)
 
 include(GenerateExportHeader)
 generate_export_header(SceneEditor EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SceneEditor_export.h)
+
+InstallCoreComponent(SceneEditor)
+InstallHeaders(
+    SceneEditor.h
+    Action.h
+    Checkpoint.h
+    Patch.h
+    Actions/SwapWorkStops.h
+    Actions/ReverseWorkStops.h
+    Actions/MoveWorkStop.h
+    Actions/ScrambleWorkStops.h
+    Actions/RotateWorkStops.h
+    Actions/MoveWorkStops.h
+    Actions/AllocateOrder.h
+    Actions/CreateRun.h
+    Actions/DestroyRun.h
+)

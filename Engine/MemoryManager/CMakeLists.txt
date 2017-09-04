@@ -29,3 +29,13 @@ endif()
 
 include(GenerateExportHeader)
 generate_export_header(MemoryManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/MemoryManager_export.h)
+
+InstallCoreComponent(MemoryManager)
+InstallHeaders(
+    MemoryManager.h
+    MemoryStore.h
+    MallocAllocator.h
+    MallocMemoryStore.h
+    PoolMemoryStore.h
+    ObjectSizes.h
+)

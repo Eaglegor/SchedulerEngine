@@ -12,3 +12,6 @@ cotire(BestOfTSPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(BestOfTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/BestOfTSPSolver_export.h)
+
+InstallAlgorithm(BestOfTSPSolver)
+InstallHeaders(BestOfTSPSolver.h)

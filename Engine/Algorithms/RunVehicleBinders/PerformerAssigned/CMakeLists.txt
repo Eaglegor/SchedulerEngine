@@ -13,10 +13,5 @@ cotire(PerformerAssignedVehicleBinder)
 include(GenerateExportHeader)
 generate_export_header(PerformerAssignedVehicleBinder EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/PerformerAssignedVehicleBinder_export.h)
 
-install(TARGETS PerformerAssignedVehicleBinder
-		LIBRARY DESTINATION ${CMAKE_BUILD_TYPE}/lib
-		RUNTIME DESTINATION ${CMAKE_BUILD_TYPE}/lib
-		ARCHIVE DESTINATION ${CMAKE_BUILD_TYPE}/lib
-)
-
+InstallAlgorithm(PerformerAssignedVehicleBinder)
 InstallHeaders(PerformerAssignedVehicleBinder.h)

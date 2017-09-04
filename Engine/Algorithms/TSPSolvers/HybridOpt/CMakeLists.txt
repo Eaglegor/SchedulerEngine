@@ -12,3 +12,6 @@ cotire(HybridOptTSPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(HybridOptTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/HybridOptTSPSolver_export.h)
+
+InstallAlgorithm(HybridOptTSPSolver)
+InstallHeaders(HybridOptTSPSolver.h)

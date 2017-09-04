@@ -12,3 +12,6 @@ cotire(OneRelocateTSPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(OneRelocateTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/OneRelocateTSPSolver_export.h)
+
+InstallAlgorithm(OneRelocateTSPSolver)
+InstallHeaders(OneRelocateTSPSolver.h)

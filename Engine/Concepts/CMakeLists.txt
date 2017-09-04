@@ -43,3 +43,19 @@ cotire(Concepts)
 
 include(GenerateExportHeader)
 generate_export_header(Concepts EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/Concepts_export.h)
+
+InstallCoreComponent(Concepts)
+InstallHeaders(
+	Capacity.h
+	Coordinate.h
+	Cost.h
+	Distance.h
+	Duration.h
+	Site.h
+	Route.h
+	RoutingProfile.h
+	Speed.h
+	SpeedDurationDistanceOperations.h
+	TimePoint.h
+	TimeWindow.h
+)

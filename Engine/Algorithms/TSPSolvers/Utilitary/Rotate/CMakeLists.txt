@@ -12,3 +12,6 @@ cotire(RotateTSPSolver)
 
 include(GenerateExportHeader)
 generate_export_header(RotateTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/RotateTSPSolver_export.h)
+
+InstallAlgorithm(RotateTSPSolver)
+InstallHeaders(RotateTSPSolver.h)
