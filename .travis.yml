@@ -10,7 +10,7 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - sourceline: 'ppa:george-edison55/cmake-3.x'
+      - sourceline: 'ppa:ppsspp/cmake'
     packages:
       - cmake
       - gcc-5
@@ -18,14 +18,8 @@ addons:
 
 install:
   - mkdir -p path-override
-  - wget http://www.cmake.org/files/v3.4/cmake-3.4.1.tar.gz 
-  - tar -xvzf cmake-3.4.1.tar.gz 
-  - cd cmake-3.4.1/ 
-  - ./configure --prefix=..
-  - make install
-  - cd ..
-  - ln -s /usr/bin/gcc-5 latest-gcc-symlinks/gcc
-  - ln -s /usr/bin/g++-5 latest-gcc-symlinks/g++
+  - ln -s /usr/bin/gcc-5 path-override/gcc
+  - ln -s /usr/bin/g++-5 path-override/g++
   - export PATH=$PWD/path-override:$PATH
   - cd ..
   
