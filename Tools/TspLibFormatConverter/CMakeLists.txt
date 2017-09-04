@@ -25,6 +25,7 @@ install(TARGETS TspLibFormatConverter
 
 if(WIN32)
     install(FILES ${BOOST_ROOT}/lib/${BOOST_STRIPPED_POLIBRARY_NAME}.dll DESTINATION ${CMAKE_BUILD_TYPE}/tools)
+	install(FILES ${LIBXML2_ROOT}/bin/libxml2.dll DESTINATION ${CMAKE_BUILD_TYPE}/tools)
 endif()
 
 set_target_properties(TspLibFormatConverter PROPERTIES FOLDER "Tools")
