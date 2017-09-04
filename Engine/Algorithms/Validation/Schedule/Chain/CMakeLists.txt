@@ -11,7 +11,7 @@ target_link_libraries(ChainScheduleValidationAlgorithm SceneManager)
 cotire(ChainScheduleValidationAlgorithm)
 
 
-GenerateExportHeader(ChainScheduleValidationAlgorithm)
+
 
 InstallAlgorithm(ChainScheduleValidationAlgorithm)
 InstallHeaders(ChainScheduleValidationAlgorithm.h)

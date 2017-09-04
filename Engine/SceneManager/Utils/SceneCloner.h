@@ -1,12 +1,12 @@
 #pragma once
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
 	class Scene;
 	class Schedule;
 
-	class SCENEMANAGER_EXPORT SceneCloner
+	class SceneCloner
 	{
 	public:
 		static void cloneScheduleProperties(const Schedule& from, Schedule& to);

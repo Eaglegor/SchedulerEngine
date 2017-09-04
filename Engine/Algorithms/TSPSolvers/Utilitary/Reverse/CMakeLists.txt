@@ -11,7 +11,7 @@ target_link_libraries(ReverseTSPSolver SceneManager SceneEditor)
 cotire(ReverseTSPSolver)
 
 
-GenerateExportHeader(ReverseTSPSolver)
+
 
 InstallAlgorithm(ReverseTSPSolver)
 InstallHeaders(ReverseTSPSolver.h)

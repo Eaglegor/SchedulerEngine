@@ -10,6 +10,6 @@ target_link_libraries(GreedyTSPSolver SceneManager SceneEditor LoggingManager)
 
 cotire(GreedyTSPSolver)
 
-GenerateExportHeader(GreedyTSPSolver)
+
 InstallAlgorithm(GreedyTSPSolver)
 InstallHeaders(GreedyTSPSolver.h)

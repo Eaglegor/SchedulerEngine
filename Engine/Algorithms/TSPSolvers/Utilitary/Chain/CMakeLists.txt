@@ -11,7 +11,7 @@ target_link_libraries(ChainTSPSolver SceneManager SceneEditor)
 cotire(ChainTSPSolver)
 
 
-GenerateExportHeader(ChainTSPSolver)
+
 
 InstallAlgorithm(ChainTSPSolver)
 InstallHeaders(ChainTSPSolver.h)

@@ -8,7 +8,7 @@ set_target_properties(LoggingManager PROPERTIES FOLDER "Engine")
 cotire(LoggingManager)
 
 
-GenerateExportHeader(LoggingManager)
+
 
 InstallCoreComponent(LoggingManager)
 InstallHeaders(

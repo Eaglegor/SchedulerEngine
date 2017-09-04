@@ -10,6 +10,6 @@ target_link_libraries(OneRelocateTSPSolver SceneManager SceneEditor)
 
 cotire(OneRelocateTSPSolver)
 
-GenerateExportHeader(OneRelocateTSPSolver)
+
 InstallAlgorithm(OneRelocateTSPSolver)
 InstallHeaders(OneRelocateTSPSolver.h)

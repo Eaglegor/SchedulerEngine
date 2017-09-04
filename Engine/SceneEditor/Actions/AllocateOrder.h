@@ -4,11 +4,11 @@
 #include <Engine/SceneManager/Run.h>
 #include <Engine/SceneManager/Schedule.h>
 #include <Engine/Utils/Optional.h>
-#include <SceneEditor_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEEDITOR_EXPORT AllocateOrder : public Action<Run::WorkStopIterator>
+	class AllocateOrder : public Action<Run::WorkStopIterator>
 	{
 	public:
 		AllocateOrder(Run& run, Run::ConstWorkStopIterator pos, const Order& order);

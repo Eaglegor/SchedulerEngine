@@ -11,7 +11,7 @@ target_link_libraries(IterativeTSPSolver SceneManager SceneEditor LoggingManager
 cotire(IterativeTSPSolver)
 
 
-GenerateExportHeader(IterativeTSPSolver)
+
 
 InstallAlgorithm(IterativeTSPSolver)
 InstallHeaders(IterativeTSPSolver.h)

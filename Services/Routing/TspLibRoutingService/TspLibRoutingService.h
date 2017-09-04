@@ -4,7 +4,7 @@
 #include <functional>
 #include <unordered_map>
 
-#include <TspLibRoutingService_export.h>
+
 
 namespace Scheduler
 {
@@ -18,7 +18,7 @@ namespace Scheduler
 	 * 
 	 * This distance matrix is filled by the TspLibSceneLoader}
 	 */
-	class TSPLIBROUTINGSERVICE_EXPORT TspLibRoutingService : public RoutingService
+	class TspLibRoutingService : public RoutingService
 	{
 	public:
 		/** 

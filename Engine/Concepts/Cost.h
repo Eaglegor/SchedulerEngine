@@ -3,14 +3,14 @@
 #include <Engine/Math/FloatEpsilon.h>
 #include <cmath>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * @brief Represents the value type for cost calculations
 	 */
-	class CONCEPTS_EXPORT Cost
+	class Cost
 	{
 	public:
 		/** 

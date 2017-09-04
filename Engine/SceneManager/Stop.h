@@ -3,7 +3,7 @@
 #include "Actualizable.h"
 #include <Engine/Concepts/Route.h>
 #include <Engine/Concepts/TimeWindow.h>
-#include <SceneManager_export.h>
+
 #include <boost/intrusive/list.hpp>
 #include <boost/intrusive/list_hook.hpp>
 #include <boost/intrusive/trivial_value_traits.hpp>
@@ -30,7 +30,7 @@ namespace Scheduler
 	class StopVisitor;
 	class ConstStopVisitor;
 
-	class SCENEMANAGER_EXPORT Stop
+	class Stop
 	{
 	public:
 		struct Context

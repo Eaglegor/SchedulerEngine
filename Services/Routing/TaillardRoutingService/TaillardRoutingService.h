@@ -2,7 +2,7 @@
 
 #include <Engine/Routing/RoutingService.h>
 
-#include <TaillardRoutingService_export.h>
+
 
 namespace Scheduler
 {
@@ -11,7 +11,7 @@ namespace Scheduler
 	 * 
 	 * @details {Euclidean distance is used in Taillard CVRP benchmark datasets}
 	 */
-	class TAILLARDROUTINGSERVICE_EXPORT TaillardRoutingService : public RoutingService
+	class TaillardRoutingService : public RoutingService
 	{
 	public:
 		/** 

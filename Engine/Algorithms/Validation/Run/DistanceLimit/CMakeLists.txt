@@ -11,7 +11,7 @@ target_link_libraries(DistanceLimitRunValidationAlgorithm SceneManager)
 cotire(DistanceLimitRunValidationAlgorithm)
 
 
-GenerateExportHeader(DistanceLimitRunValidationAlgorithm)
+
 
 InstallAlgorithm(DistanceLimitRunValidationAlgorithm)
 InstallHeaders(DistanceLimitRunValidationAlgorithm.h)

@@ -16,7 +16,7 @@ target_link_libraries(CWSavingsVRPSolver AlgorithmsManager SceneManager SceneEdi
 cotire(CWSavingsVRPSolver)
 
 
-GenerateExportHeader(CWSavingsVRPSolver)
+
 
 InstallAlgorithm(CWSavingsVRPSolver)
 InstallHeaders(CWSavingsVRPSolver.h)

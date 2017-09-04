@@ -11,7 +11,7 @@ target_link_libraries(AnchorInsertionVRPSolver AlgorithmsManager SceneManager Sc
 cotire(AnchorInsertionVRPSolver)
 
 
-GenerateExportHeader(AnchorInsertionVRPSolver)
+
 
 InstallAlgorithm(AnchorInsertionVRPSolver)
 InstallHeaders(AnchorInsertionVRPSolver.h)

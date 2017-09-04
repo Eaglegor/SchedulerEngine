@@ -10,6 +10,6 @@ target_link_libraries(PerformerAssignedVehicleBinder SceneManager)
 
 cotire(PerformerAssignedVehicleBinder)
 
-GenerateExportHeader(PerformerAssignedVehicleBinder)
+
 InstallAlgorithm(PerformerAssignedVehicleBinder)
 InstallHeaders(PerformerAssignedVehicleBinder.h)

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "OperationStopMappingQuery.h"
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT SceneQueries
+	class SceneQueries
 	{
 	public:
 		explicit SceneQueries(Scene& scene);

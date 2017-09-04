@@ -11,7 +11,7 @@ set_target_properties(TotalDistanceCostFunctions PROPERTIES FOLDER "Engine/CostF
 cotire(TotalDistanceCostFunctions)
 
 
-GenerateExportHeader(TotalDistanceCostFunctions)
+
 
 InstallCostFunction(TotalDistanceCostFunctions)
 InstallHeaders(

@@ -11,7 +11,7 @@ target_link_libraries(DistanceLimitScheduleValidationAlgorithm SceneManager)
 cotire(DistanceLimitScheduleValidationAlgorithm)
 
 
-GenerateExportHeader(DistanceLimitScheduleValidationAlgorithm)
+
 
 InstallAlgorithm(DistanceLimitScheduleValidationAlgorithm)
 InstallHeaders(DistanceLimitScheduleValidationAlgorithm.h)

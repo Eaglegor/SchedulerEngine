@@ -1,6 +1,6 @@
 #pragma once
 
-#include <JSONSceneLoader_export.h>
+
 #include <istream>
 
 namespace Scheduler
@@ -9,7 +9,7 @@ namespace Scheduler
 	class Scene;
 	class Engine;
 
-	class JSONSCENELOADER_EXPORT JSONSceneLoader
+	class JSONSceneLoader
 	{
 	public:
 		JSONSceneLoader(Engine& engine, RoutingService& rs);

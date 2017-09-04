@@ -11,7 +11,7 @@ target_link_libraries(ChainStopValidationAlgorithm SceneManager)
 cotire(ChainStopValidationAlgorithm)
 
 
-GenerateExportHeader(ChainStopValidationAlgorithm)
+
 
 InstallAlgorithm(ChainStopValidationAlgorithm)
 InstallHeaders(ChainStopValidationAlgorithm.h)

@@ -16,7 +16,7 @@ target_link_libraries(AlgorithmsManager Concepts MemoryManager)
 cotire(AlgorithmsManager)
 
 
-GenerateExportHeader(AlgorithmsManager)
+
 
 InstallCoreComponent(AlgorithmsManager)
 InstallHeaders(

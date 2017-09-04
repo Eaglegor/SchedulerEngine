@@ -9,7 +9,7 @@ set_target_properties(TransparentVRPSolver PROPERTIES FOLDER "Engine/Algorithms/
 cotire(TransparentVRPSolver)
 
 
-GenerateExportHeader(TransparentVRPSolver)
+
 
 InstallAlgorithm(TransparentVRPSolver)
 InstallHeaders(TransparentVRPSolver.h)

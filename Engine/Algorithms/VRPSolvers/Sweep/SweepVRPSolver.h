@@ -7,7 +7,7 @@ namespace Scheduler
 {
 	class TSPSolver;
 
-	class SWEEPVRPSOLVER_EXPORT SweepVRPSolver : public VRPSolver
+	class SweepVRPSolver : public VRPSolver
 	{
 	public:
 		SweepVRPSolver( );

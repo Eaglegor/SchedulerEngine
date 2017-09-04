@@ -4,7 +4,7 @@
 #include "../Run.h"
 #include <Engine/Utils/Optional.h>
 #include <Engine/Utils/ReferenceWrapper.h>
-#include <SceneManager_export.h>
+
 #include <boost/optional.hpp>
 #include <unordered_map>
 
@@ -12,7 +12,7 @@ namespace Scheduler
 {
 	class Scene;
 
-	class SCENEMANAGER_EXPORT OperationStopMappingQuery : public StructuralChangesListener
+	class OperationStopMappingQuery : public StructuralChangesListener
 	{
 	public:
 		explicit OperationStopMappingQuery(Scene& scene);

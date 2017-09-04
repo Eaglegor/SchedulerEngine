@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MallocMemoryStore.h"
-#include <MemoryManager_export.h>
+
 #include <cstddef>
 
 namespace Scheduler
@@ -17,7 +17,7 @@ namespace Scheduler
 	 * over the returned MemoryStore instance}
 	 * 
 	 */
-	class MEMORYMANAGER_EXPORT MemoryManager
+	class MemoryManager
 	{
 	public:
 		/**

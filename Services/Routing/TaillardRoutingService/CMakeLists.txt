@@ -7,7 +7,7 @@ set_target_properties(TaillardRoutingService PROPERTIES FOLDER "Services/Routing
 cotire(TaillardRoutingService)
 
 
-GenerateExportHeader(TaillardRoutingService)
+
 
 InstallRoutingService(TaillardRoutingService)
 InstallHeaders(TaillardRoutingService.h)

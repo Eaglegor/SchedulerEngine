@@ -10,7 +10,7 @@ target_link_libraries(DefaultDurationActualizationAlgorithm SceneManager)
 
 cotire(DefaultDurationActualizationAlgorithm)
 
-GenerateExportHeader(DefaultDurationActualizationAlgorithm)
+
 
 InstallAlgorithm(DefaultDurationActualizationAlgorithm)
 InstallHeaders(DefaultDurationActualizationAlgorithm.h)

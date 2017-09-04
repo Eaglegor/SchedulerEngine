@@ -86,7 +86,7 @@ target_link_libraries(SceneManager Concepts MemoryManager)
 cotire(SceneManager)
 
 
-GenerateExportHeader(SceneManager)
+
 
 InstallCoreComponent(SceneManager)
 InstallHeaders(

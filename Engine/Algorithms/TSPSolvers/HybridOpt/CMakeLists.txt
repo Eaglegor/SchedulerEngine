@@ -10,6 +10,6 @@ target_link_libraries(HybridOptTSPSolver SceneManager SceneEditor)
 
 cotire(HybridOptTSPSolver)
 
-GenerateExportHeader(HybridOptTSPSolver)
+
 InstallAlgorithm(HybridOptTSPSolver)
 InstallHeaders(HybridOptTSPSolver.h)

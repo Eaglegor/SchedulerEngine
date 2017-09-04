@@ -26,7 +26,7 @@ target_link_libraries(SimulatedAnnealingTSPSolver SceneManager SceneEditor)
 
 cotire(SimulatedAnnealingTSPSolver)
 
-GenerateExportHeader(SimulatedAnnealingTSPSolver)
+
 
 InstallAlgorithm(SimulatedAnnealingTSPSolver)
 InstallHeaders(

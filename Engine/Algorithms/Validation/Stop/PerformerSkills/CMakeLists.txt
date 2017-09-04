@@ -11,7 +11,7 @@ target_link_libraries(PerformerSkillsStopValidationAlgorithm SceneManager)
 cotire(PerformerSkillsStopValidationAlgorithm)
 
 
-GenerateExportHeader(PerformerSkillsStopValidationAlgorithm)
+
 
 InstallAlgorithm(PerformerSkillsStopValidationAlgorithm)
 InstallHeaders(PerformerSkillsStopValidationAlgorithm.h)

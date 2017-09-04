@@ -11,7 +11,7 @@ target_link_libraries(OverloadRunValidationAlgorithm SceneManager)
 cotire(OverloadRunValidationAlgorithm)
 
 
-GenerateExportHeader(OverloadRunValidationAlgorithm)
+
 
 InstallAlgorithm(OverloadRunValidationAlgorithm)
 InstallHeaders(OverloadRunValidationAlgorithm.h)

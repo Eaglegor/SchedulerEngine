@@ -11,7 +11,7 @@ target_link_libraries(ScrambleTSPSolver SceneManager SceneEditor)
 cotire(ScrambleTSPSolver)
 
 
-GenerateExportHeader(ScrambleTSPSolver)
+
 
 InstallAlgorithm(ScrambleTSPSolver)
 InstallHeaders(ScrambleTSPSolver.h)

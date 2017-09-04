@@ -28,7 +28,7 @@ if(WIN32)
 endif()
 
 
-GenerateExportHeader(MemoryManager)
+
 
 InstallCoreComponent(MemoryManager)
 InstallHeaders(

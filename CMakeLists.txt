@@ -1,5 +1,9 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.4)
 project(CPP_SCHEDULER)
+
+if(MSVC)
+	set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS True)
+endif()
 
 find_package(OpenMP)
 if (OPENMP_FOUND)
@@ -56,8 +60,6 @@ cmake_policy(SET CMP0054 OLD)
 cmake_policy(SET CMP0042 OLD)
 
 include_directories(${CPP_SCHEDULER_SOURCE_DIR})
-include_directories(${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders)
-include_directories(${CPP_SCHEDULER_SOURCE_DIR}/Tests/IncludeGroups)
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug)

@@ -9,7 +9,7 @@ set_target_properties(ChainVRPSolver PROPERTIES FOLDER "Engine/Algorithms/VRPSol
 cotire(ChainVRPSolver)
 
 
-GenerateExportHeader(ChainVRPSolver)
+
 
 InstallAlgorithm(ChainVRPSolver)
 InstallHeaders(ChainVRPSolver.h)

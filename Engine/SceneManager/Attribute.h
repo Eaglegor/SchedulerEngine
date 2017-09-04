@@ -1,12 +1,12 @@
 #pragma once
 
 #include <Engine/Utils/String.h>
-#include <SceneManager_export.h>
+
 #include <string>
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT Attribute
+	class Attribute
 	{
 	public:
 		Attribute(std::size_t id, const String& name);

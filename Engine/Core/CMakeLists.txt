@@ -53,7 +53,7 @@ set_target_properties(Core PROPERTIES FOLDER "Core")
 cotire(Core)
 
 
-GenerateExportHeader(Core)
+
 
 InstallCoreComponent(Core)
 InstallHeaders(Engine.h)

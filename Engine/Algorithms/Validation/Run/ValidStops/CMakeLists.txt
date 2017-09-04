@@ -11,7 +11,7 @@ target_link_libraries(ValidStopsRunValidationAlgorithm SceneManager)
 cotire(ValidStopsRunValidationAlgorithm)
 
 
-GenerateExportHeader(ValidStopsRunValidationAlgorithm)
+
 
 InstallAlgorithm(ValidStopsRunValidationAlgorithm)
 InstallHeaders(ValidStopsRunValidationAlgorithm.h)

@@ -13,7 +13,7 @@ target_link_libraries(DefaultArrivalTimeActualizationAlgorithm SceneManager)
 
 cotire(DefaultArrivalTimeActualizationAlgorithm)
 
-GenerateExportHeader(DefaultArrivalTimeActualizationAlgorithm)
+
 
 InstallAlgorithm(DefaultArrivalTimeActualizationAlgorithm)
 InstallHeaders(DefaultArrivalTimeActualizationAlgorithm.h)

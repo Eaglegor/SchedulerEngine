@@ -11,7 +11,7 @@ target_link_libraries(RotateTSPSolver SceneManager SceneEditor)
 cotire(RotateTSPSolver)
 
 
-GenerateExportHeader(RotateTSPSolver)
+
 
 InstallAlgorithm(RotateTSPSolver)
 InstallHeaders(RotateTSPSolver.h)

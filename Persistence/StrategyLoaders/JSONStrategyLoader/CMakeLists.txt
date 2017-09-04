@@ -27,7 +27,7 @@ set_target_properties(JSONStrategyLoader PROPERTIES FOLDER "Persistence/Strategy
 cotire(JSONStrategyLoader)
 
 
-GenerateExportHeader(JSONStrategyLoader)
+
 
 InstallSerializer(JSONStrategyLoader)
 InstallHeaders(JSONStrategyLoader.h)

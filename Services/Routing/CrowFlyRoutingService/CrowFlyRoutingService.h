@@ -2,7 +2,7 @@
 
 #include <Engine/Routing/RoutingService.h>
 
-#include <CrowFlyRoutingService_export.h>
+
 
 namespace Scheduler
 {
@@ -12,7 +12,7 @@ namespace Scheduler
 	 * @details {"As the crow flies or in a beeline is an idiom for the shortest path between two points 
 	 * (on a map, disregarding the vagaries of intervening terrain); the geodesic distance." [Wikipedia]}
 	 */
-	class CROWFLYROUTINGSERVICE_EXPORT CrowFlyRoutingService : public RoutingService
+	class CrowFlyRoutingService : public RoutingService
 	{
 	public:
 

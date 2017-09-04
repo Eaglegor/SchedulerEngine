@@ -7,7 +7,7 @@ set_target_properties(CrowFlyRoutingService PROPERTIES FOLDER "Services/Routing"
 cotire(CrowFlyRoutingService)
 
 
-GenerateExportHeader(CrowFlyRoutingService)
+
 
 InstallRoutingService(CrowFlyRoutingService)
 InstallHeaders(CrowFlyRoutingService.h)

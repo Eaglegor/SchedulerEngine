@@ -2,14 +2,14 @@
 
 #include <Engine/SceneManager/Algorithms/Actualization/RouteActualizationAlgorithm.h>
 
-#include <DefaultRouteActualizationAlgorithm_export.h>
+
 #include <Engine/Concepts/RoutingProfile.h>
 
 namespace Scheduler
 {
 	class RoutingService;
 
-	class DEFAULTROUTEACTUALIZATIONALGORITHM_EXPORT DefaultRouteActualizationAlgorithm : public RouteActualizationAlgorithm
+	class DefaultRouteActualizationAlgorithm : public RouteActualizationAlgorithm
 	{
 	public:
 		explicit DefaultRouteActualizationAlgorithm(const RoutingService& routing_service);

@@ -9,7 +9,7 @@ set_target_properties(TaillardSceneLoader PROPERTIES FOLDER "Persistence/SceneLo
 cotire(TaillardSceneLoader)
 
 
-GenerateExportHeader(TaillardSceneLoader)
+
 
 InstallSerializer(TaillardSceneLoader)
 InstallHeaders(TaillardSceneLoader.h)

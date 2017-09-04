@@ -10,7 +10,7 @@ target_link_libraries(DefaultRouteActualizationAlgorithm SceneManager)
 
 cotire(DefaultRouteActualizationAlgorithm)
 
-GenerateExportHeader(DefaultRouteActualizationAlgorithm)
+
 
 InstallAlgorithm(DefaultRouteActualizationAlgorithm)
 InstallHeaders(DefaultRouteActualizationAlgorithm.h)

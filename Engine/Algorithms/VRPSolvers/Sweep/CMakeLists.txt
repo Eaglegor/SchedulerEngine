@@ -11,7 +11,7 @@ target_link_libraries(SweepVRPSolver AlgorithmsManager SceneManager SceneEditor)
 cotire(SweepVRPSolver)
 
 
-GenerateExportHeader(SweepVRPSolver)
+
 
 InstallAlgorithm(SweepVRPSolver)
 InstallHeaders(SweepVRPSolver.h)

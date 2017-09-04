@@ -42,7 +42,7 @@ set_target_properties(Concepts PROPERTIES FOLDER "Engine")
 cotire(Concepts)
 
 
-GenerateExportHeader(Concepts)
+
 
 InstallCoreComponent(Concepts)
 InstallHeaders(

@@ -67,10 +67,3 @@ macro(InstallTest TARGET_NAME)
         RUNTIME DESTINATION ${CMAKE_BUILD_TYPE}/test
     )
 endmacro()
-
-macro(GenerateExportHeader TARGET_NAME)
-    include(GenerateExportHeader)
-    generate_export_header(${TARGET_NAME} EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/ExportHeaders/${TARGET_NAME}_export.h)
-    include_directories(${CPP_SCHEDULER_BINARY_DIR}/ExportHeaders)
-    install(FILES ${TARGET_NAME}_EXPORT_HEADER DESTINATION ${CMAKE_BUILD_TYPE}/include)
-endmacro()

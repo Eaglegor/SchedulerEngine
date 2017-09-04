@@ -18,7 +18,7 @@
 
 #include "ScheduleActualizationModel.h"
 #include "ScheduleValidationModel.h"
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
@@ -37,7 +37,7 @@ namespace Scheduler
 	/**
 		Class representing single performer's work shift.
 	*/
-	class SCENEMANAGER_EXPORT Schedule
+	class Schedule
 	{
 	private:
 		using StopsIntrusiveList = boost::intrusive::list<Stop, boost::intrusive::value_traits<Stop::IntrusiveValueTraits>>;

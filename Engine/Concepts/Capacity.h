@@ -4,14 +4,14 @@
 #include <algorithm>
 #include <cmath>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/**
 	 * @brief Represents capacity of vehicle and capacity demands of order
 	 */
-	class CONCEPTS_EXPORT Capacity
+	class Capacity
 	{
 	public:
 		/** 

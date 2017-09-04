@@ -9,7 +9,7 @@ set_target_properties(TspLibSceneLoader PROPERTIES FOLDER "Persistence/SceneLoad
 cotire(TspLibSceneLoader)
 
 
-GenerateExportHeader(TspLibSceneLoader)
+
 
 InstallSerializer(TspLibSceneLoader)
 InstallHeaders(TspLibSceneLoader.h)

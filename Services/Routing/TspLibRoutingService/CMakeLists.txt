@@ -9,7 +9,7 @@ set_target_properties(TspLibRoutingService PROPERTIES FOLDER "Services/Routing")
 cotire(TspLibRoutingService)
 
 
-GenerateExportHeader(TspLibRoutingService)
+
 
 InstallRoutingService(TspLibRoutingService)
 InstallHeaders(TspLibRoutingService.h)

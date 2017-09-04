@@ -11,7 +11,7 @@ target_link_libraries(BestOfTSPSolver SceneManager SceneEditor LoggingManager)
 cotire(BestOfTSPSolver)
 
 
-GenerateExportHeader(BestOfTSPSolver)
+
 
 InstallAlgorithm(BestOfTSPSolver)
 InstallHeaders(BestOfTSPSolver.h)

@@ -11,7 +11,7 @@ target_link_libraries(VehicleRequirementsStopValidationAlgorithm SceneManager)
 cotire(VehicleRequirementsStopValidationAlgorithm)
 
 
-GenerateExportHeader(VehicleRequirementsStopValidationAlgorithm)
+
 
 InstallAlgorithm(VehicleRequirementsStopValidationAlgorithm)
 InstallHeaders(VehicleRequirementsStopValidationAlgorithm.h)

@@ -11,7 +11,7 @@ target_link_libraries(ChainRunValidationAlgorithm SceneManager)
 cotire(ChainRunValidationAlgorithm)
 
 
-GenerateExportHeader(ChainRunValidationAlgorithm)
+
 
 InstallAlgorithm(ChainRunValidationAlgorithm)
 InstallHeaders(ChainRunValidationAlgorithm.h)

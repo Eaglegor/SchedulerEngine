@@ -41,7 +41,7 @@ set_target_properties(JSONSceneLoader PROPERTIES FOLDER "Persistence/SceneLoader
 cotire(JSONSceneLoader)
 
 
-GenerateExportHeader(JSONSceneLoader)
+
 
 InstallSerializer(JSONSceneLoader)
 InstallHeaders(JSONSceneLoader.h)

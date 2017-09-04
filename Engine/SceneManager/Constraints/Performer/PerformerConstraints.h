@@ -2,14 +2,14 @@
 
 #include "../ConstraintHolder.h"
 #include <Engine/Concepts/TimeWindow.h>
-#include <SceneManager_export.h>
+
 #include <vector>
 
 namespace Scheduler
 {
 	class Depot;
 
-	class SCENEMANAGER_EXPORT PerformerConstraints
+	class PerformerConstraints
 	{
 	public:
 		using AvailabilityWindowsConstraint = ConstraintHolder<std::vector<TimeWindow>>;

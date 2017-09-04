@@ -1,13 +1,13 @@
 #pragma once
 
-#include <ChainTSPSolver_export.h>
+
 #include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <vector>
 
 namespace Scheduler
 {
-	class CHAINTSPSOLVER_EXPORT ChainTSPSolver : public TSPSolver
+	class ChainTSPSolver : public TSPSolver
 	{
 	public:
 		ChainTSPSolver( );

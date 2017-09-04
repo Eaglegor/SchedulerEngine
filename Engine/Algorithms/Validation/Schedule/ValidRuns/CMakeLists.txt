@@ -11,7 +11,7 @@ target_link_libraries(ValidRunsScheduleValidationAlgorithm SceneManager)
 cotire(ValidRunsScheduleValidationAlgorithm)
 
 
-GenerateExportHeader(ValidRunsScheduleValidationAlgorithm)
+
 
 InstallAlgorithm(ValidRunsScheduleValidationAlgorithm)
 InstallHeaders(ValidRunsScheduleValidationAlgorithm.h)

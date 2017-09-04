@@ -1,11 +1,11 @@
 #pragma once
 
 #include <Engine/AlgorithmsManager/TSPSolver.h>
-#include <ReverseTSPSolver_export.h>
+
 
 namespace Scheduler
 {
-	class REVERSETSPSOLVER_EXPORT ReverseTSPSolver : public TSPSolver
+	class ReverseTSPSolver : public TSPSolver
 	{
 	public:
 		virtual const char* getName( ) const;

@@ -4,11 +4,11 @@
 #include <Engine/LoggingManager/LoggingManager.h>
 #include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/Utils/Optional.h>
-#include <HybridOptTSPSolver_export.h>
+
 
 namespace Scheduler
 {
-	class HYBRIDOPTTSPSOLVER_EXPORT HybridOptTSPSolver : public TSPSolver
+	class HybridOptTSPSolver : public TSPSolver
 	{
 	public:
 		HybridOptTSPSolver( );

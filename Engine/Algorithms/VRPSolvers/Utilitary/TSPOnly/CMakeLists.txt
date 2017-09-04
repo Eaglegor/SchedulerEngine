@@ -11,7 +11,7 @@ target_link_libraries(TSPOnlyVRPSolver AlgorithmsManager SceneManager)
 cotire(TSPOnlyVRPSolver)
 
 
-GenerateExportHeader(TSPOnlyVRPSolver)
+
 
 InstallAlgorithm(TSPOnlyVRPSolver)
 InstallHeaders(TSPOnlyVRPSolver.h)

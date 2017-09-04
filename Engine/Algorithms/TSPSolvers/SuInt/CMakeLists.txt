@@ -25,7 +25,7 @@ target_link_libraries(SuIntTSPSolver SceneManager SceneEditor LoggingManager)
 cotire(SuIntTSPSolver)
 
 
-GenerateExportHeader(SuIntTSPSolver)
+
 
 InstallAlgorithm(SuIntTSPSolver)
 InstallHeaders(

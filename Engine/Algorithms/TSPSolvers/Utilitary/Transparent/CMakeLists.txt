@@ -11,7 +11,7 @@ target_link_libraries(TransparentTSPSolver SceneManager)
 cotire(TransparentTSPSolver)
 
 
-GenerateExportHeader(TransparentTSPSolver)
+
 
 InstallAlgorithm(TransparentTSPSolver)
 InstallHeaders(TransparentTSPSolver.h)

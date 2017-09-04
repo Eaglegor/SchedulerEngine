@@ -12,7 +12,7 @@ target_link_libraries(PngRenderer SceneManager)
 cotire(PngRenderer)
 
 
-GenerateExportHeader(PngRenderer)
+
 
 InstallDebugRenderer(PngRenderer)
 InstallHeaders(PngRenderer.h)

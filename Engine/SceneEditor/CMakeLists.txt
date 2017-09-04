@@ -22,7 +22,7 @@ target_link_libraries(SceneEditor SceneManager LoggingManager)
 cotire(SceneEditor)
 
 
-GenerateExportHeader(SceneEditor)
+
 
 InstallCoreComponent(SceneEditor)
 InstallHeaders(

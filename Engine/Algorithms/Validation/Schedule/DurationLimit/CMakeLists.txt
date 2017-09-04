@@ -11,7 +11,7 @@ target_link_libraries(DurationLimitScheduleValidationAlgorithm SceneManager)
 cotire(DurationLimitScheduleValidationAlgorithm)
 
 
-GenerateExportHeader(DurationLimitScheduleValidationAlgorithm)
+
 
 InstallAlgorithm(DurationLimitScheduleValidationAlgorithm)
 InstallHeaders(DurationLimitScheduleValidationAlgorithm.h)
