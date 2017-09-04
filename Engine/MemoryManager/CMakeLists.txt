@@ -29,15 +29,3 @@ endif()
 
 include(GenerateExportHeader)
 generate_export_header(MemoryManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/MemoryManager_export.h)
-
-if(CPP_SCHEDULER_TESTS)
-	add_executable(MemoryManager_Test 
-		Test/MemoryManager_Test.cpp
-	)
-		
-	add_test(NAME MemoryManager_Test COMMAND $<TARGET_FILE:MemoryManager_Test>)
-	target_link_libraries(MemoryManager_Test MemoryManager)
-	set_target_properties(MemoryManager_Test PROPERTIES FOLDER "Engine/Tests/")
-	
-	cotire(MemoryManager_Test)
-endif()
