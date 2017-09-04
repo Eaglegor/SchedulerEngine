@@ -1,6 +1,5 @@
 #pragma once
 
-#include <AnchorInsertionVRPSolver.h>
 #include <Engine/AlgorithmsManager/VRPSolver.h>
 #include <Engine/Utils/Optional.h>
 #include <cstdint>

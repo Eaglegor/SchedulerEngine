@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Engine/AlgorithmsManager/VRPSolver.h>
-#include <SweepVRPSolver.h>
 
 namespace Scheduler
 {
