@@ -19,7 +19,7 @@ else()
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
-	set(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+	set(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage -std=c++11 -Wno-attributes")
 	set(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
 endif()
 
