@@ -44,18 +44,19 @@ jobs:
         - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
         - make clean all
         - make test
-    - stage: static analysis
+    - stage: analysis
       branches:
         only:
           - master
       compiler:
-        - clang
+        - gcc
       script:
         - cd ..
         - mkdir SchedulerEngine-build
         - cd SchedulerEngine-build
-        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
+        - cmake -DCMAKE_BUILD_TYPE=Coverage -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
         - build-wrapper-linux-x86-64 --out-dir bw-output make clean all 
+        - make test
         - sonar-scanner
 
 cache:

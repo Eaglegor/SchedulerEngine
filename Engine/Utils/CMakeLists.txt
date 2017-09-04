@@ -43,3 +43,9 @@ InstallHeaders(
 	Factory.h
     CallableVisitorProxy.h
 )
+
+if(CPP_SCHEDULER_TESTS)
+	add_executable(SimpleCase Test/Units_Test.cpp)
+	target_link_libraries(SimpleCase Concepts)
+	add_test(Case1 SimpleCase)
+endif()
