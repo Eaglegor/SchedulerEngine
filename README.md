@@ -11,4 +11,4 @@ Purposes:
 1. Self-education
 2. Independent scientific research in the area of optimization problems
 
-API documentation can be found [here](https://eaglegor.github.io/SchedulerEngine/html/)
+API documentation can be found [here](https://eaglegor.github.io/SchedulerEngineDocs/html/)
