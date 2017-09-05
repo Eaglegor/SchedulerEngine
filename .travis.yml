@@ -28,6 +28,10 @@ install:
   - ln -s /usr/bin/gcov-5 path-override/gcov
   - export PATH=$PWD/path-override:$PATH
   
+-env:		
+   global:		
+      - secure: "d6S91I4IVUrS6p8NrYHz6MhUn4ADilwc6Nl/HjDdPyK59rPYihhwdKj0kdPMWTxBUPGKRwfAYb6qRL4clVjr0oWPWmfRGuLX83DWrNABQE6RRoIRV1ACBPfzeEqx0qdwEImvfSHBJMq7I8xbMn9iIp21PuiGMrXHWyK8CtRzV57GC+3fR5n73QCY/9ff+qqnJwWuiRXwBx1Z9E6iuMPLjgnsvaojPhiZHQAzvj6utZloFJjNqfvaspL3zdJVKz6ElVVInhDXcIUsSVy6r9bqhJCxCzb144tAorjaRPM6irVb6mnfOLcuA60lqY8g/MNFRXlnBWcw0HTVbLoJ27Kuim9gTieDxaVsPUAZzjzmgFh1Qp2OYcx+tCzZmwIv1KxcfuNMbdwWmCUgtMKB9rQy1++Vf+aNFpSX7DxbNEqyUpOwZhbLxQLO/vJomrtB8g5nYvwgowdexqcA3yDZ4DqrOEsziuEHZOGOzKvKKa03LEkZYbDLgzM3ciCMM9CvgBvpUPREYHbQ0+8ALlMI+lOm45J0N1EoePBquovnIe+l4Z8XwUg1Plsh6TxBN/k14Bi/2qykverYE8+cskDVmbTgCzvSOIOCJxKm+hh0MCNviUCt6fuhLQSGOlxUyB37z4/S+aN4+QgANRIHMBkaNTnMskag2t6LB9Lqdzq+CaJ4hxI="
+  
 jobs:
   include:
     - stage: test
@@ -55,7 +59,7 @@ jobs:
           if [ "$TRAVIS_BRANCH" == "master" ]; then
             cd SchedulerEngine
             echo "Generating doxygen docs"
-            git clone -b gh-pages https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngine.git docs
+            git clone -b gh-pages https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngineDocs.git docs
             rm -rf docs/*
             
             git config --global push.default simple
@@ -68,7 +72,7 @@ jobs:
             if [ -d "html" ] && [ -f "html/index.html" ]; then
               git add --all
               git commit -m "Updating documentation from commit {$TRAVIS_COMMIT}"
-              git push "https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngine.git"
+              git push "https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngineDocs.git"
             fi
           fi
 
