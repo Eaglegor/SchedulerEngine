@@ -42,7 +42,7 @@ jobs:
         - cd ../SchedulerEngine
         - cp ../SchedulerEngine-build/*.gcov .
         - export SONAR_SCANNER_OPTS="-Xmx512m"
-        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then export SONAR_ADDITIONAL_OPTS=-Dsonar.analysis.mode=preview -Dsonar.github.oauth=$MAINTAINANCE_TOKEN -Dsonar.github.repository=Eaglegor/SchedulerEngine -Dsonar.github.pullRequest=$TRAVIS_PULL_REQUEST ; fi
+        - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then export SONAR_ADDITIONAL_OPTS="-Dsonar.analysis.mode=preview -Dsonar.github.oauth=$MAINTAINANCE_TOKEN -Dsonar.github.repository=Eaglegor/SchedulerEngine -Dsonar.github.pullRequest=$TRAVIS_PULL_REQUEST" ; fi
         - sonar-scanner $SONAR_ADDITIONAL_OPTS -Dsonar.projectKey=scheduler-engine -Dsonar.projectVersion=0.1 -Dsonar.cfamily.build-wrapper-output=../SchedulerEngine-build/bw-output -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.sources=. -Dsonar.projectName="Scheduler Engine"
     - compiler: 
         - clang
