@@ -4,14 +4,14 @@
 #include <istream>
 #include <string>
 
-#include <JSONStrategyLoader_export.h>
+
 
 namespace Scheduler
 {
 	class AlgorithmsManager;
 	class VRPSolver;
 
-	class JSONSTRATEGYLOADER_EXPORT JSONStrategyLoader
+	class JSONStrategyLoader
 	{
 	public:
 		explicit JSONStrategyLoader(AlgorithmsManager& strategies_manager);

@@ -4,14 +4,14 @@
 #include "Duration.h"
 #include "Site.h"
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * @brief Represents a route between two geographical locations
 	 */
-	class CONCEPTS_EXPORT Route
+	class Route
 	{
 	public:
 		/** 

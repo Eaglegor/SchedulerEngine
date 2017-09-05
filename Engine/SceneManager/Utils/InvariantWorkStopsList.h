@@ -4,11 +4,11 @@
 #include <functional>
 #include <vector>
 
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT InvariantWorkStopsList
+	class InvariantWorkStopsList
 	{
 	public:
 		class Iterator : public std::iterator<std::random_access_iterator_tag, const WorkStop>

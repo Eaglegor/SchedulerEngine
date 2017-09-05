@@ -2,11 +2,11 @@
 
 #include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <Engine/LoggingManager/LoggingManager.h>
-#include <ScrambleTSPSolver_export.h>
+
 
 namespace Scheduler
 {
-	class SCRAMBLETSPSOLVER_EXPORT ScrambleTSPSolver : public TSPSolver
+	class ScrambleTSPSolver : public TSPSolver
 	{
 	public:
 		ScrambleTSPSolver( );

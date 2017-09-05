@@ -16,7 +16,7 @@
 
 #include "Listeners/StructuralChangesObserver.h"
 
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
@@ -28,7 +28,7 @@ namespace Scheduler
 	class SceneManager;
 	class SceneQueries;
 
-	class SCENEMANAGER_EXPORT Scene
+	class Scene
 	{
 	public:
 		using SchedulesList = std::vector<ReferenceWrapper<Schedule>>;

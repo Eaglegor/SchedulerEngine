@@ -1,0 +1,23 @@
+image: Visual Studio 2017
+
+version: '{build}'
+configuration:
+    - Release
+
+cache:
+    - C:\ThirdPartyLibs\
+    - C:\ThirdPartyLibsPackages\
+
+environment:
+    matrix:
+        - generator: "Visual Studio 15 2017"
+        
+        - generator: "Visual Studio 15 2017 Win64"
+
+build_script:
+    - cd %APPVEYOR_BUILD_FOLDER%
+    - cd ..
+    - mkdir build
+    - cd build
+    - cmake -G "%generator%" -DTHIRD_PARTY_DIRECTORY="C:/ThirdPartyLibs" -DTHIRD_PARTY_PACKAGES_DIRECTORY="C:/ThirdPartyLibsPackages" %APPVEYOR_BUILD_FOLDER%
+    - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo

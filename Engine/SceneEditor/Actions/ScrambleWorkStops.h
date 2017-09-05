@@ -5,7 +5,7 @@
 #include "SwapWorkStops.h"
 #include <Engine/SceneManager/Run.h>
 #include <Engine/Utils/Collections/ImmutableVector.h>
-#include <SceneEditor_export.h>
+
 #include <cstddef>
 #include <stack>
 
@@ -15,7 +15,7 @@ namespace Scheduler
 	class Run;
 	class WorkStop;
 
-	class SCENEEDITOR_EXPORT ScrambleWorkStops : public Action<void>
+	class ScrambleWorkStops : public Action<void>
 	{
 	public:
 		ScrambleWorkStops(Run& run, Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator last);

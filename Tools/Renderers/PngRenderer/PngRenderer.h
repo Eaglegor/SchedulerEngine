@@ -5,13 +5,13 @@
 #include <Engine/Utils/String.h>
 #include <memory>
 
-#include <PngRenderer_export.h>
+
 
 namespace Scheduler
 {
 	class PngFrame;
 
-	class PNGRENDERER_EXPORT PngRenderer : public Renderer
+	class PngRenderer : public Renderer
 	{
 	public:
 		explicit PngRenderer(const String& output_path, std::size_t width = 800, std::size_t height = 600);

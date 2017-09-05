@@ -11,7 +11,7 @@ set_target_properties(MemoryManager PROPERTIES FOLDER "Engine")
 
 cotire(MemoryManager)
 
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system thread)
 target_link_libraries(MemoryManager ${Boost_LIBRARIES})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -24,20 +24,18 @@ string(REGEX MATCH "^(.*)\\.[^.]*$" temp ${DLL})
 set(BOOST_STRIPPED_LIBRARY_NAME ${CMAKE_MATCH_1})
 
 if(WIN32)
-	add_custom_command(TARGET MemoryManager POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_ROOT}/bin/${BOOST_STRIPPED_LIBRARY_NAME}.dll ${EXECUTABLE_OUTPUT_PATH})
+	install(FILES ${BOOST_ROOT}/lib/${BOOST_STRIPPED_LIBRARY_NAME}.dll DESTINATION ${CMAKE_BUILD_TYPE}/lib)
 endif()
 
-include(GenerateExportHeader)
-generate_export_header(MemoryManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/MemoryManager_export.h)
 
-if(CPP_SCHEDULER_TESTS)
-	add_executable(MemoryManager_Test 
-		Test/MemoryManager_Test.cpp
-	)
-		
-	add_test(NAME MemoryManager_Test COMMAND $<TARGET_FILE:MemoryManager_Test>)
-	target_link_libraries(MemoryManager_Test MemoryManager)
-	set_target_properties(MemoryManager_Test PROPERTIES FOLDER "Engine/Tests/")
-	
-	cotire(MemoryManager_Test)
-endif()
+
+
+InstallCoreComponent(MemoryManager)
+InstallHeaders(
+    MemoryManager.h
+    MemoryStore.h
+    MallocAllocator.h
+    MallocMemoryStore.h
+    PoolMemoryStore.h
+    ObjectSizes.h
+)

@@ -4,14 +4,14 @@
 #include <ctime>
 #include <limits>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * @brief Represents the single moment in time
 	 */
-	class CONCEPTS_EXPORT TimePoint
+	class TimePoint
 	{
 	public:
 		/** 

@@ -13,5 +13,7 @@ target_link_libraries(DefaultArrivalTimeActualizationAlgorithm SceneManager)
 
 cotire(DefaultArrivalTimeActualizationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(DefaultArrivalTimeActualizationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DefaultArrivalTimeActualizationAlgorithm_export.h)
+
+
+InstallAlgorithm(DefaultArrivalTimeActualizationAlgorithm)
+InstallHeaders(DefaultArrivalTimeActualizationAlgorithm.h)

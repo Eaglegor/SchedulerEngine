@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Engine/Utils/String.h>
-#include <SceneManager_export.h>
+
 #include <cstddef>
 #include <string>
 
@@ -9,7 +9,7 @@ namespace Scheduler
 {
 	class Location;
 
-	class SCENEMANAGER_EXPORT Depot
+	class Depot
 	{
 	public:
 		Depot(std::size_t id, const Location& location);

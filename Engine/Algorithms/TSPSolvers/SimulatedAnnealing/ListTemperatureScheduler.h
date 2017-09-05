@@ -1,7 +1,7 @@
 #pragma once
 
 #include "TemperatureScheduler.h"
-#include <SimulatedAnnealingTSPSolver_export.h>
+
 #include <cstddef>
 #include <queue>
 
@@ -9,7 +9,7 @@ namespace Scheduler
 {
 	class Cost;
 
-	class SIMULATEDANNEALINGTSPSOLVER_EXPORT ListTemperatureScheduler : public TemperatureScheduler
+	class ListTemperatureScheduler : public TemperatureScheduler
 	{
 	public:
 		ListTemperatureScheduler( );

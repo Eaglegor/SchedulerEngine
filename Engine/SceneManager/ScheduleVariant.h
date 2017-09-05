@@ -1,14 +1,14 @@
 #pragma once
 
 #include <Engine/Utils/Optional.h>
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
 	class Schedule;
 	class Scene;
 
-	class SCENEMANAGER_EXPORT ScheduleVariant
+	class ScheduleVariant
 	{
 	public:
 		ScheduleVariant( );

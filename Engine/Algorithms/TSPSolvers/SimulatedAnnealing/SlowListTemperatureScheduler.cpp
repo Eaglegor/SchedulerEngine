@@ -1,6 +1,7 @@
 #include "SlowListTemperatureScheduler.h"
 #include <algorithm>
 #include <numeric>
+#include <functional>
 
 namespace Scheduler
 {

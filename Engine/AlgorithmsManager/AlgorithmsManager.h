@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <unordered_set>
 
-#include <AlgorithmsManager_export.h>
+
 
 namespace Scheduler
 {
@@ -17,7 +17,7 @@ namespace Scheduler
 	/** 
 	 * @brief This class created the algorithms and cost functions and manages their lifetimes
 	 */
-	class ALGORITHMSMANAGER_EXPORT AlgorithmsManager
+	class AlgorithmsManager
 	{
 	public:
 		/** 

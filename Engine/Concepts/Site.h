@@ -3,14 +3,14 @@
 #include "Coordinate.h"
 #include <cmath>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * @brief Represents a pair of geographic coordinates (latitude and longitude)
 	 */
-	class CONCEPTS_EXPORT Site
+	class Site
 	{
 	public:
 		/** 

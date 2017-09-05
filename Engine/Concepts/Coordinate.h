@@ -3,14 +3,14 @@
 #include <Engine/Math/FixedPointMath.h>
 #include <cstddef>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/**
 	 * @brief Represents single geographic coordinate (latitude or longitude) as a fixed point number
 	 */
-	class CONCEPTS_EXPORT Coordinate
+	class Coordinate
 	{
 	public:
 		/**

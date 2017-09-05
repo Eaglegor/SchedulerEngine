@@ -22,7 +22,7 @@ namespace Scheduler
 	class Location;
 	class Depot;
 
-	class SCENEMANAGER_EXPORT SceneContext
+	class SceneContext
 	{
 	private:
 		template <typename T>

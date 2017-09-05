@@ -6,14 +6,14 @@
 #include <Engine/MemoryManager/MemoryManager.h>
 #include <Engine/SceneManager/SceneManager.h>
 
-#include <Core_export.h>
+
 
 
 namespace Scheduler
 {
 	struct EngineContext;
 
-	class CORE_EXPORT Engine
+	class Engine
 	{
 	public:
 		MemoryManager& getMemoryManager( );

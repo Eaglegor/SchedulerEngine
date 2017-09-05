@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Engine/Utils/ReferenceWrapper.h>
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
@@ -9,7 +9,7 @@ namespace Scheduler
 	class ArrivalTimeActualizationAlgorithm;
 	class DurationActualizationAlgorithm;
 
-	class SCENEMANAGER_EXPORT ScheduleActualizationModel
+	class ScheduleActualizationModel
 	{
 	public:
 		ScheduleActualizationModel( );

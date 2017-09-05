@@ -2,12 +2,12 @@
 
 #include "StructuralChangesListener.h"
 #include <Engine/Utils/ReferenceWrapper.h>
-#include <SceneManager_export.h>
+
 #include <unordered_set>
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT StructuralChangesObserver : public StructuralChangesListener
+	class StructuralChangesObserver : public StructuralChangesListener
 	{
 	public:
 		void addListener(StructuralChangesListener& listener);

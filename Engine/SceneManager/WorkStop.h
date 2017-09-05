@@ -4,13 +4,13 @@
 #include <Engine/Utils/Collections/RangeTypeAdapter.h>
 
 #include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
 	class WorkOperation;
 
-	class SCENEMANAGER_EXPORT WorkStop : public Stop
+	class WorkStop : public Stop
 	{
 	public:
 		WorkStop(std::size_t id, const Stop::Context& context, Run& run, const WorkOperation& operation);

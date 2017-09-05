@@ -2,14 +2,14 @@
 
 #include "Speed.h"
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * @brief Represents the rules used by the routing services during the routes calculation
 	 */
-	class CONCEPTS_EXPORT RoutingProfile
+	class RoutingProfile
 	{
 	public:
 		/** 

@@ -1,0 +1,65 @@
+dist: trusty
+sudo: false
+language: cpp
+
+addons:
+  sonarcloud:
+    organization: "eaglegor-github"
+    branches:
+      - master
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - sourceline: 'ppa:ppsspp/cmake'
+    packages:
+      - cmake
+      - gcc-5
+      - g++-5
+
+install:
+  - mkdir -p path-override
+  - ln -s /usr/bin/gcc-5 path-override/gcc
+  - ln -s /usr/bin/g++-5 path-override/g++
+  - export PATH=$PWD/path-override:$PATH
+  - cd ..
+  
+jobs:
+  include:
+    - stage: test
+      compiler: 
+        - gcc
+      script: 
+        - cd ..
+        - mkdir SchedulerEngine-build
+        - cd SchedulerEngine-build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
+        - make clean all
+        - make test
+    - compiler: 
+        - clang
+      script: 
+        - cd ..
+        - mkdir SchedulerEngine-build
+        - cd SchedulerEngine-build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
+        - make clean all
+        - make test
+    - stage: analysis
+      branches:
+        only:
+          - master
+      compiler:
+        - gcc
+      script:
+        - cd ..
+        - mkdir SchedulerEngine-build
+        - cd SchedulerEngine-build
+        - cmake -DCMAKE_BUILD_TYPE=Coverage -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
+        - build-wrapper-linux-x86-64 --out-dir bw-output make clean all test coverage
+        - sonar-scanner
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+    - '$HOME/ThirdPartyLibs'
+    - '$HOME/ThirdPartyLibsPackages'

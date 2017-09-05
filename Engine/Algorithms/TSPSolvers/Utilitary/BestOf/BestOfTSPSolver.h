@@ -1,6 +1,6 @@
 #pragma once
 
-#include <BestOfTSPSolver_export.h>
+
 #include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <Engine/LoggingManager/LoggingManager.h>
 #include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
@@ -10,7 +10,7 @@
 
 namespace Scheduler
 {
-	class BESTOFTSPSOLVER_EXPORT BestOfTSPSolver : public TSPSolver
+	class BestOfTSPSolver : public TSPSolver
 	{
 	public:
 		BestOfTSPSolver( );
