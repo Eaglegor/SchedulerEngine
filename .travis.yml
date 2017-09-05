@@ -17,11 +17,11 @@ addons:
       - g++-5
 
 install:
+  - cd ..
   - mkdir -p path-override
   - ln -s /usr/bin/gcc-5 path-override/gcc
   - ln -s /usr/bin/g++-5 path-override/g++
   - export PATH=$PWD/path-override:$PATH
-  - cd ..
   
 jobs:
   include:
@@ -29,7 +29,6 @@ jobs:
       compiler: 
         - gcc
       script: 
-        - cd ..
         - mkdir SchedulerEngine-build
         - cd SchedulerEngine-build
         - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
@@ -38,7 +37,6 @@ jobs:
     - compiler: 
         - clang
       script: 
-        - cd ..
         - mkdir SchedulerEngine-build
         - cd SchedulerEngine-build
         - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
@@ -51,7 +49,6 @@ jobs:
       compiler:
         - gcc
       script:
-        - cd ..
         - mkdir SchedulerEngine-build
         - cd SchedulerEngine-build
         - cmake -DCMAKE_BUILD_TYPE=Coverage -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
