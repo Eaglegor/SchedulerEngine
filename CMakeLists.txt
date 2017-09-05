@@ -12,15 +12,16 @@ if (OPENMP_FOUND)
 endif()
 
 if(NOT MSVC)
-	message(STATUS "Setting GCC/Clang compiler flags: -std=c++11 -Wno-attributes")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes")
 else()
 	add_definitions( "/wd4251 /wd4275" )
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
-	set(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage -std=c++11 -Wno-attributes")
+	set(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage -std=c++11 -Wno-attributes -fno-inline -fno-inline-small-functions -fno-default-inline")
 	set(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+	
+	add_custom_target(coverage COMMAND find . -iname "*.gcno" | xargs gcov -s ${CPP_SCHEDULER_SOURCE_DIR})
 endif()
 
 set(CPP_SCHEDULER_BUILD_AUTO_UPDATE_DEPENDENCIES TRUE CACHE BOOL "If enabled, dependencies will be automatically updated using the cmake script")

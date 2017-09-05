@@ -55,8 +55,7 @@ jobs:
         - mkdir SchedulerEngine-build
         - cd SchedulerEngine-build
         - cmake -DCMAKE_BUILD_TYPE=Coverage -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
-        - build-wrapper-linux-x86-64 --out-dir bw-output make clean all 
-        - make test
+        - build-wrapper-linux-x86-64 --out-dir bw-output make clean all test coverage
         - sonar-scanner
 
 cache:
