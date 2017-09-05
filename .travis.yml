@@ -5,8 +5,10 @@ language: cpp
 addons:
   sonarcloud:
     organization: "eaglegor-github"
-    branches:
-      - master
+    token:
+      secure: 'TyHSTW9Yp8yGp2ikfFoMIABdNTdk6zunttdJGHvMP8sFW4zzF1LVMyIN+FN03APsLWix2A9IQt1KbVZn2UYqYR6RY5XfenLE3heoF2j2yHlP+K/pvx38/L+vAsELET+jegp7Uo3t1Hb95PR6pbzgMFHOq5/RAcifb9pQWGrEYZJS7zx7+iyltz6inlLllE9RCmBDDky2bFxzxZP+3WkjHOPmkOwfe/4/WsZtMPdqK5DnysM/WGJnjdzhKDc2oJymGaj9Kz2vzJKD+eFGb9ALK4EzVx2jautcgWoQH4dUeGnlEEJUifFBGOQiIRRzkRt2Pkml2IY6j1pSGVkF9RWJaJKoo959blnwP07TX7y6hWDzC5iC7j96mPpS4TpwhN1ttTeHEa2F7Ae4hbN+qPSxXiBOxcJCEV0lTkjLexxYvOC7ma1cfALMqyp2DEKdeYg9xGmasbCQt4pTd44Ji9ye3S3lDTw2cL9J1vcDQOtWHtorVA2bq03uxX2lvDpr3bMpTV3SpSKTGDZfEu8TmnFY1Q+nn4glggL8VS6iwsuIFGs6IigTeiS3RFkjM+FNeXkQVpuMJB5NZdjJQUUuiOOL2mpbL2FzwVX7C242fubPocsS79XZP5/wSkdhSBUcdaEVZA7NOhYf6D3IFAKxrC1GuIpzCPvZF2BefgNCIGSXFY8='
+    github_token:
+      secure: 'LladLSKJVETzqPgIKNgd1CcxwCeMD979FxWypEtj26bPYm/7d8A/L3M7JsYhz1JxVyW59MYYaUu+n5xwYjvLfrESDNSZ8DhtwZ80tfZtDv6nIzEzVPJmmJ9BoPEev0z4RJ6DJu969Opn/fswWOJ+NsatDjgv16WxxvJbRbORL9TMOij6E08udPNpnEIHSYC6bOwWmJrpJ5mfvTxik4/evHECPU10rTVodQMgopOJ4jtvQUXgGk3vxHHKORx2SpuoudQbPibLcmRpXr5+FDMO7Icl67baS/jDfb+0ZR6gT6B9BnPiW4QcAuJvaTpATFw7exlVfTcE74KmvarL5xYpgA0hyYVtoVV88ZmPx81MaYkWzJC1cV2s0gvIkDe8lfUDa3DpCdRZkpiuNteIC0waMmF5VSBV5Oj7h3Zphlfc4RL8O+zKCAd/inlcuAPmEI8Z2BZDVvdmjsG+U3QlpVLDYJzLNC7c/8Dff5ozX1Jbwzx5PoqUM4Js8ING6wUOWqTXzjq0EISfsz/B/HrgWicVrlZOwwgZRUWd53p8vHGE22YgbpKfndYVn/2G1NEaV5v7DjiawgGOKuLB7Vtp1y1X01cSEssyiSuBXj0CBSPP5TdgJeKBy3PuPsvVuYm0z4QBosaFVTUO7AwEpFAjCzP3P8zRFWAYJ3qouafJID+X0qc='
   apt:
     sources:
       - ubuntu-toolchain-r-test
@@ -24,11 +26,6 @@ install:
   - ln -s /usr/bin/gcov-5 path-override/gcov
   - export PATH=$PWD/path-override:$PATH
   
-env:
-  global:
-    - secure: "EhgL1ronzaNdloGRqlL6cY6FPXWtvdn+Ou5K/AyJu2qdNyNGgeKDI0ST2iW695e66IlU5kNeZJHIsT7+BW805uMG7QTrr5BEdBJPG/q6nqonk5bMz4qPStQkaGcttBRhs8FgiH1dBS0c74KxMeemtmzec59M4Xe06kPHqxy9DA3qA2728NaPc5eoXTeGwPkx83KgbmhEM93nGcu8/V65ITs88UW7gdRpicsYNlVTg3JZzPd2JBZYAQlSxvDi1xwa+nyS2c492NrDIHqY/Hfmb0xqzZUiymzNqxelfgXu8gtfCgYdtXs23V4Ni7YHXHkO+7RqbtYq9xeSlnipCh7em5J2KV3rb8ZT4qpaXjZds55MclbT6SxtnHyxMEEjMV6Wt9nq6tVa8lwaw5HDJ3vydis2VW3BVeeiegoSz3qMjDgO/wg8r4ED6+GoGM8sATIufgh1JB1V3agRApYlGsRDPYFjbQ1R17S0MwPn+/ZUzcZLsHEd4xKPM0IbsW7wnqzeANyq+wQGY4JiCiqLUsWlutX1V5STQKtU3eRtvxwJAgxn3DKbqI8gzAJJEjxoacOG3EN3aPS8H9RFbcqhhu+2PBTLQ8C+FCRNW/53Sswi5vPrg0jAAoD7aj6BYGnQqlKkdyqjslqgATZydDsKK+I20GC1xScBBgeJ2Or1ZEh8aBY="
-    - secure: "d6S91I4IVUrS6p8NrYHz6MhUn4ADilwc6Nl/HjDdPyK59rPYihhwdKj0kdPMWTxBUPGKRwfAYb6qRL4clVjr0oWPWmfRGuLX83DWrNABQE6RRoIRV1ACBPfzeEqx0qdwEImvfSHBJMq7I8xbMn9iIp21PuiGMrXHWyK8CtRzV57GC+3fR5n73QCY/9ff+qqnJwWuiRXwBx1Z9E6iuMPLjgnsvaojPhiZHQAzvj6utZloFJjNqfvaspL3zdJVKz6ElVVInhDXcIUsSVy6r9bqhJCxCzb144tAorjaRPM6irVb6mnfOLcuA60lqY8g/MNFRXlnBWcw0HTVbLoJ27Kuim9gTieDxaVsPUAZzjzmgFh1Qp2OYcx+tCzZmwIv1KxcfuNMbdwWmCUgtMKB9rQy1++Vf+aNFpSX7DxbNEqyUpOwZhbLxQLO/vJomrtB8g5nYvwgowdexqcA3yDZ4DqrOEsziuEHZOGOzKvKKa03LEkZYbDLgzM3ciCMM9CvgBvpUPREYHbQ0+8ALlMI+lOm45J0N1EoePBquovnIe+l4Z8XwUg1Plsh6TxBN/k14Bi/2qykverYE8+cskDVmbTgCzvSOIOCJxKm+hh0MCNviUCt6fuhLQSGOlxUyB37z4/S+aN4+QgANRIHMBkaNTnMskag2t6LB9Lqdzq+CaJ4hxI="
-
 jobs:
   include:
     - stage: test
@@ -42,8 +39,7 @@ jobs:
         - cd ../SchedulerEngine
         - cp ../SchedulerEngine-build/*.gcov .
         - export SONAR_SCANNER_OPTS="-Xmx512m"
-        - if ["$TRAVIS_PULL_REQUEST" != "false"]; then export SONAR_ADDITIONAL_OPTS=-Dsonar.analysis.mode=preview -Dsonar.github.oauth=$MAINTAINANCE_TOKEN -Dsonar.github.repository=Eaglegor/SchedulerEngine -Dsonar.github.pullRequest=$TRAVIS_PULL_REQUEST ; fi
-        - sonar-scanner $SONAR_ADDITIONAL_OPTS -Dsonar.projectKey=scheduler-engine -Dsonar.projectVersion=0.1 -Dsonar.cfamily.build-wrapper-output=../SchedulerEngine-build/bw-output -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.sources=. -Dsonar.projectName="Scheduler Engine"
+        - sonar-scanner -Dsonar.projectKey=scheduler-engine -Dsonar.projectVersion=0.1 -Dsonar.cfamily.build-wrapper-output=../SchedulerEngine-build/bw-output -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.sources=. -Dsonar.projectName="Scheduler Engine"
     - compiler: 
         - clang
       script: 
