@@ -15,6 +15,8 @@ addons:
       - cmake
       - gcc-5
       - g++-5
+      - doxygen
+      - graphviz
 
 install:
   - cd ..
@@ -51,6 +53,29 @@ jobs:
         - cd SchedulerEngine-build
         - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
         - make -j2 clean all test
+    - stage: generating docs
+      script: 
+        - >
+          if [ "$TRAVIS_BRANCH" == "master" ]; then
+            cd SchedulerEngine
+            echo "Generating doxygen docs"
+            git clone -b gh-pages https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngine.git docs
+            rm -rf docs/*
+            
+            git config --global push.default simple
+            git config user.name "Eaglegor"
+            git config user.email "eaglegor@gmail.com"
+            
+            echo "" > docs/.nojekyll
+            doxygen
+            cd docs
+            if [ -d "html" ] && [ -f "html/index.html" ]; then
+              git add --all
+              git commit -m "Updating documentation from commit {$TRAVIS_COMMIT}"
+              git push "https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngine.git"
+            fi
+          fi
+
 
 cache:
   directories:
