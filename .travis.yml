@@ -56,7 +56,7 @@ jobs:
     - stage: generating docs
       script: 
         - >
-          if [ "$TRAVIS_BRANCH" == "master" ]; then
+          if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
             cd SchedulerEngine
             echo "Generating doxygen docs"
             git clone -b gh-pages https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngineDocs.git docs
