@@ -21,6 +21,7 @@ install:
   - mkdir -p path-override
   - ln -s /usr/bin/gcc-5 path-override/gcc
   - ln -s /usr/bin/g++-5 path-override/g++
+  - ln -s /usr/bin/gcov-5 path-override/gcov
   - export PATH=$PWD/path-override:$PATH
   
 jobs:
@@ -31,30 +32,19 @@ jobs:
       script: 
         - mkdir SchedulerEngine-build
         - cd SchedulerEngine-build
-        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
-        - make clean all
-        - make test
+        - cmake -DCMAKE_BUILD_TYPE=Coverage -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
+        - build-wrapper-linux-x86-64 --out-dir bw-output make -j2 clean all test coverage
+        - cd ../SchedulerEngine
+        - cp ../SchedulerEngine-build/*.gcov .
+        - export SONAR_SCANNER_OPTS="-Xmx512m"
+        - sonar-scanner -Dsonar.projectKey=scheduler-engine -Dsonar.projectVersion=0.1 -Dsonar.cfamily.build-wrapper-output=../SchedulerEngine-build/bw-output -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.sources=.
     - compiler: 
         - clang
       script: 
         - mkdir SchedulerEngine-build
         - cd SchedulerEngine-build
         - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
-        - make clean all
-        - make test
-    - stage: analysis
-      branches:
-        only:
-          - master
-      compiler:
-        - gcc
-      script:
-        - mkdir SchedulerEngine-build
-        - cd SchedulerEngine-build
-        - cmake -DCMAKE_BUILD_TYPE=Coverage -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
-        - build-wrapper-linux-x86-64 --out-dir bw-output make clean all test coverage
-        - cp $TRAVIS_BUILD_DIR/sonar-project.properties .
-        - sonar-scanner
+        - make -j2 clean all test
 
 cache:
   directories:
