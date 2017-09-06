@@ -1,6 +1,6 @@
 #pragma once
 
-#include <TspLibSceneLoader_export.h>
+
 #include <istream>
 
 namespace Scheduler
@@ -9,7 +9,7 @@ namespace Scheduler
 	class Engine;
 	class Scene;
 
-	class TSPLIBSCENELOADER_EXPORT TspLibSceneLoader
+	class TspLibSceneLoader
 	{
 	public:
 		enum class Format

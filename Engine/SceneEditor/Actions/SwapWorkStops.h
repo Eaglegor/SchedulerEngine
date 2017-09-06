@@ -4,7 +4,7 @@
 
 #include <Engine/SceneManager/Run.h>
 #include <Engine/Utils/Collections/ImmutableVector.h>
-#include <SceneEditor_export.h>
+
 #include <cstddef>
 
 namespace Scheduler
@@ -12,7 +12,7 @@ namespace Scheduler
 	class Schedule;
 	class WorkStop;
 
-	class SCENEEDITOR_EXPORT SwapWorkStops : public Action<void>
+	class SwapWorkStops : public Action<void>
 	{
 	public:
 		SwapWorkStops(Run& run, Run::ConstWorkStopIterator first, Run::ConstWorkStopIterator second);

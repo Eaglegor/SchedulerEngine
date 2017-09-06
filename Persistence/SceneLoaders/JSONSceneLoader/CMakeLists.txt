@@ -19,9 +19,7 @@ add_library(JSONSceneLoader SHARED
 )
 
 FIND_PACKAGE(Boost COMPONENTS REQUIRED date_time)
-IF(Boost_FOUND)
-	target_link_libraries(JSONSceneLoader ${Boost_LIBRARIES})
-ENDIF()
+target_link_libraries(JSONSceneLoader ${Boost_LIBRARIES})
 
 target_link_libraries(JSONSceneLoader Core)
 
@@ -35,13 +33,15 @@ string(REGEX MATCH "^(.*)\\.[^.]*$" temp ${DLL})
 set(BOOST_STRIPPED_LIBRARY_NAME ${CMAKE_MATCH_1})
 
 if(WIN32)
-	add_custom_command(TARGET JSONSceneLoader POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_ROOT}/bin/${BOOST_STRIPPED_LIBRARY_NAME}.dll ${EXECUTABLE_OUTPUT_PATH})
+	install(FILES ${BOOST_ROOT}/lib/${BOOST_STRIPPED_LIBRARY_NAME}.dll DESTINATION ${CMAKE_BUILD_TYPE}/lib)
 endif()
 
 set_target_properties(JSONSceneLoader PROPERTIES FOLDER "Persistence/SceneLoaders")
 
 cotire(JSONSceneLoader)
 
-include(GenerateExportHeader)
-generate_export_header(JSONSceneLoader EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/JSONSceneLoader_export.h)
 
+
+
+InstallSerializer(JSONSceneLoader)
+InstallHeaders(JSONSceneLoader.h)

@@ -11,14 +11,14 @@
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <functional>
 
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
 	class Scene;
 	class SceneContext;
 
-	class SCENEMANAGER_EXPORT SceneManager
+	class SceneManager
 	{
 	public:
 		SceneManager( );

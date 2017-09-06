@@ -3,7 +3,7 @@
 #include "TimePoint.h"
 #include <limits>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
@@ -11,7 +11,7 @@ namespace Scheduler
 	 * @brief Represents the time window
 	 * @details Time window is a period of time between 2 specified time points
 	 */
-	class CONCEPTS_EXPORT TimeWindow
+	class TimeWindow
 	{
 	public:
 		/** 

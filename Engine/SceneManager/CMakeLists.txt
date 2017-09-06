@@ -85,6 +85,57 @@ target_link_libraries(SceneManager Concepts MemoryManager)
 
 cotire(SceneManager)
 
-include(GenerateExportHeader)
-generate_export_header(SceneManager EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SceneManager_export.h)
 
+
+
+InstallCoreComponent(SceneManager)
+InstallHeaders(
+	Attribute.h
+	Operation.h
+	WorkOperation.h
+	DepotOperation.h
+	Order.h
+	Performer.h
+	Run.h 
+	Scene.h
+	SceneContext.h
+	SceneManager.h
+	Schedule.h 
+	Depot.h 
+	Location.h
+	ScheduleVariant.h
+    Actualizable.h
+    ScheduleActualizationModel.h
+	RouteActualizer.h
+    ArrivalTimeActualizer.h
+    DurationActualizer.h 
+	ScheduleValidationModel.h
+	Stop.h 
+	StopVisitor.h
+	ConstStopVisitor.h
+	DepotStop.h 
+	WorkStop.h 
+	Vehicle.h
+	SceneObjectsFactory.h
+    Constraints/ConstraintHolder.h
+	Constraints/Performer/PerformerConstraints.h 
+	Constraints/Operation/OperationConstraints.h
+	Constraints/Order/OrderConstraints.h
+	Constraints/Scene/SceneConstraints.h
+	Constraints/Schedule/ScheduleConstraints.h
+	Constraints/Vehicle/VehicleConstraints.h 
+	Utils/SceneCloner.h 
+	Utils/InvariantWorkStopsList.h 
+	Utils/StreamIO.h 
+	Algorithms/RunVehicleBinder.h
+	Algorithms/Actualization/ArrivalTimeActualizationAlgorithm.h
+    Algorithms/Actualization/DurationActualizationAlgorithm.h
+    Algorithms/Actualization/RouteActualizationAlgorithm.h
+    CostFunctions/SceneCostFunction.h
+    CostFunctions/ScheduleCostFunction.h
+    CostFunctions/RunCostFunction.h
+	Listeners/StructuralChangesListener.h
+	Listeners/StructuralChangesObserver.h 
+	Queries/SceneQueries.h 
+	Queries/OperationStopMappingQuery.h 
+)

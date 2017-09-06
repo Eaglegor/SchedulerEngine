@@ -1,6 +1,6 @@
 #pragma once
 
-#include <CWSavingsVRPSolver_export.h>
+
 #include <Engine/AlgorithmsManager/VRPSolver.h>
 #include <Engine/Routing/RoutingService.h>
 #include <Engine/Utils/Optional.h>
@@ -11,7 +11,7 @@ namespace Scheduler
 	class Stop;
 	class SceneEditor;
 
-	class CWSAVINGSVRPSOLVER_EXPORT CWSavingsVRPSolver : public VRPSolver
+	class CWSavingsVRPSolver : public VRPSolver
 	{
 	public:
 		void optimize(Scene& scene) const;

@@ -1,13 +1,13 @@
 #pragma once
 
-#include <ChainVRPSolver_export.h>
+
 #include <Engine/AlgorithmsManager/VRPSolver.h>
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <list>
 
 namespace Scheduler
 {
-	class CHAINVRPSOLVER_EXPORT ChainVRPSolver : public VRPSolver
+	class ChainVRPSolver : public VRPSolver
 	{
 	public:
 		virtual void optimize(Scene& scene) const override;

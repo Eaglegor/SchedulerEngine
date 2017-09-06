@@ -19,7 +19,7 @@ namespace Scheduler
 	 * 
 	 * @return Fixed point representation of value
 	 */
-	template <size_t PRECISION>
+	template <std::size_t PRECISION>
 	FixedPointType toFixedPoint(float value)
 	{
 		return static_cast<int32_t>(std::trunc(value * IntegerPower<10, PRECISION>::val));
@@ -33,7 +33,7 @@ namespace Scheduler
 	 * 
 	 * @return Floating point representation of value
 	 */
-	template <size_t PRECISION>
+	template <std::size_t PRECISION>
 	float fromFixedPoint(FixedPointType value)
 	{
 		return static_cast<float>(value) / static_cast<float>(IntegerPower<10, PRECISION>::val);

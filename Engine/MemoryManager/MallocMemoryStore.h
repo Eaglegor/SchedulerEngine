@@ -2,14 +2,14 @@
 
 #include "MemoryStore.h"
 
-#include <MemoryManager_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * @brief This class represents the memory store allocating memory by calling std::malloc() and std::free()
 	 */
-	class MEMORYMANAGER_EXPORT MallocMemoryStore : public MemoryStore
+	class MallocMemoryStore : public MemoryStore
 	{
 	public:
 		/** 

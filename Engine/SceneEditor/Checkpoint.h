@@ -6,11 +6,11 @@
 #include <deque>
 #include <memory>
 
-#include <SceneEditor_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEEDITOR_EXPORT Checkpoint
+	class Checkpoint
 	{
 	public:
 		explicit Checkpoint(std::size_t base_version)

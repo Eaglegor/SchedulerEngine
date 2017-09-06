@@ -2,13 +2,13 @@
 
 #include <Engine/Concepts/Site.h>
 #include <Engine/Utils/String.h>
-#include <SceneManager_export.h>
+
 #include <cstddef>
 #include <string>
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT Location
+	class Location
 	{
 	public:
 		Location(std::size_t id, const Site& site);

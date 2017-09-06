@@ -13,11 +13,11 @@
 #include <Engine/Utils/String.h>
 #include <string>
 
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT Vehicle
+	class Vehicle
 	{
 	public:
 		using Attribute     = Scheduler::Attribute;

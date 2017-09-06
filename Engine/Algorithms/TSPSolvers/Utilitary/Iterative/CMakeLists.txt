@@ -10,5 +10,8 @@ target_link_libraries(IterativeTSPSolver SceneManager SceneEditor LoggingManager
 
 cotire(IterativeTSPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(IterativeTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/IterativeTSPSolver_export.h)
+
+
+
+InstallAlgorithm(IterativeTSPSolver)
+InstallHeaders(IterativeTSPSolver.h)

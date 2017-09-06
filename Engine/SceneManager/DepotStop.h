@@ -4,14 +4,14 @@
 
 #include <Engine/Utils/Collections/ImmutableUnorderedSet.h>
 #include <Engine/Utils/ReferenceWrapper.h>
-#include <SceneManager_export.h>
+
 #include <functional>
 
 namespace Scheduler
 {
 	class DepotOperation;
 
-	class SCENEMANAGER_EXPORT DepotStop : public Stop
+	class DepotStop : public Stop
 	{
 	public:
 		using OperationsSet = std::unordered_set<ReferenceWrapper<const DepotOperation>>;

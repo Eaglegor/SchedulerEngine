@@ -7,13 +7,13 @@
 #include <Engine/Utils/ReferenceWrapper.h>
 
 #include <Engine/Concepts/TimeWindow.h>
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
 	class Attribute;
 
-	class SCENEMANAGER_EXPORT OperationConstraints
+	class OperationConstraints
 	{
 	public:
 		using TimeWindowsConstraint         = ConstraintHolder<std::vector<TimeWindow>>;

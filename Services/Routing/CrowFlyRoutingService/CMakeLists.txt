@@ -6,5 +6,8 @@ set_target_properties(CrowFlyRoutingService PROPERTIES FOLDER "Services/Routing"
 
 cotire(CrowFlyRoutingService)
 
-include(GenerateExportHeader)
-generate_export_header(CrowFlyRoutingService EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/CrowFlyRoutingService_export.h)
+
+
+
+InstallRoutingService(CrowFlyRoutingService)
+InstallHeaders(CrowFlyRoutingService.h)

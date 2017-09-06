@@ -4,7 +4,7 @@
 #include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <Engine/LoggingManager/LoggingManager.h>
 #include <Engine/Utils/Optional.h>
-#include <SimulatedAnnealingTSPSolver_export.h>
+
 #include <cstddef>
 
 namespace Scheduler
@@ -14,7 +14,7 @@ namespace Scheduler
 	class Cost;
 	class ScheduleVariant;
 
-	class SIMULATEDANNEALINGTSPSOLVER_EXPORT SimulatedAnnealingTSPSolver : public TSPSolver
+	class SimulatedAnnealingTSPSolver : public TSPSolver
 	{
 	public:
 		enum class MultithreadingType

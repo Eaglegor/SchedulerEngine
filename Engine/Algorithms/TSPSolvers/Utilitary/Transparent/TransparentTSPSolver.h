@@ -1,11 +1,11 @@
 #pragma once
 
 #include <Engine/AlgorithmsManager/TSPSolver.h>
-#include <TransparentTSPSolver_export.h>
+
 
 namespace Scheduler
 {
-	class TRANSPARENTTSPSOLVER_EXPORT TransparentTSPSolver : public TSPSolver
+	class TransparentTSPSolver : public TSPSolver
 	{
 	public:
 		virtual const char* getName( ) const;

@@ -4,11 +4,11 @@
 #include <Engine/LoggingManager/LoggingManager.h>
 #include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/Utils/Optional.h>
-#include <SimpleTwoOptTSPSolver_export.h>
+
 
 namespace Scheduler
 {
-	class SIMPLETWOOPTTSPSOLVER_EXPORT SimpleTwoOptTSPSolver : public TSPSolver
+	class SimpleTwoOptTSPSolver : public TSPSolver
 	{
 	public:
 		SimpleTwoOptTSPSolver( );

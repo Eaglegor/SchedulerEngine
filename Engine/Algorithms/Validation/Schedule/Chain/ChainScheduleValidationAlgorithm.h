@@ -1,13 +1,13 @@
 #pragma once
 
-#include <ChainScheduleValidationAlgorithm_export.h>
+
 #include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <list>
 
 namespace Scheduler
 {
-	class CHAINSCHEDULEVALIDATIONALGORITHM_EXPORT ChainScheduleValidationAlgorithm : public ScheduleValidationAlgorithm
+	class ChainScheduleValidationAlgorithm : public ScheduleValidationAlgorithm
 	{
 	public:
 		virtual void validate(const Schedule& schedule, ViolationsConsumer& violations_consumer) const override;

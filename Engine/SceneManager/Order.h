@@ -12,7 +12,7 @@
 #include <Engine/Utils/String.h>
 #include <boost/optional.hpp>
 
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
@@ -23,7 +23,7 @@ namespace Scheduler
 	class Location;
 	class Depot;
 
-	class SCENEMANAGER_EXPORT Order
+	class Order
 	{
 	public:
 		struct Context

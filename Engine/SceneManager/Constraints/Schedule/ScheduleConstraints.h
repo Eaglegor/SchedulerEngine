@@ -7,11 +7,11 @@
 #include "../ConstraintHolder.h"
 #include <Engine/Concepts/Site.h>
 #include <Engine/SceneManager/Location.h>
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT ScheduleConstraints
+	class ScheduleConstraints
 	{
 	public:
 		class LocationConstraint

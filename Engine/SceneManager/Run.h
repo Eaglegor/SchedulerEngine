@@ -16,7 +16,7 @@
 
 #include <Engine/Utils/DerivedTypeCaster.h>
 #include <Engine/Utils/Optional.h>
-#include <SceneManager_export.h>
+
 #include <boost/range/adaptor/transformed.hpp>
 
 namespace Scheduler
@@ -30,7 +30,7 @@ namespace Scheduler
 	class StructuralChangesObserver;
 	class ViolationsConsumer;
 
-	class SCENEMANAGER_EXPORT Run
+	class Run
 	{
 	private:
 		using StopsRange     = Range<Schedule::StopsList>;

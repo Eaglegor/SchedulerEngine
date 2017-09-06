@@ -2,12 +2,12 @@
 
 #include <Engine/AlgorithmsManager/TSPSolver.h>
 #include <Engine/LoggingManager/LoggingManager.h>
-#include <RotateTSPSolver_export.h>
+
 #include <cstdint>
 
 namespace Scheduler
 {
-	class ROTATETSPSOLVER_EXPORT RotateTSPSolver : public TSPSolver
+	class RotateTSPSolver : public TSPSolver
 	{
 	public:
 		RotateTSPSolver( );

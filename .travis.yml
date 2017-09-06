@@ -1,0 +1,84 @@
+dist: trusty
+sudo: false
+language: cpp
+
+addons:
+  sonarcloud:
+    organization: "eaglegor-github"
+    token:
+      secure: 'TyHSTW9Yp8yGp2ikfFoMIABdNTdk6zunttdJGHvMP8sFW4zzF1LVMyIN+FN03APsLWix2A9IQt1KbVZn2UYqYR6RY5XfenLE3heoF2j2yHlP+K/pvx38/L+vAsELET+jegp7Uo3t1Hb95PR6pbzgMFHOq5/RAcifb9pQWGrEYZJS7zx7+iyltz6inlLllE9RCmBDDky2bFxzxZP+3WkjHOPmkOwfe/4/WsZtMPdqK5DnysM/WGJnjdzhKDc2oJymGaj9Kz2vzJKD+eFGb9ALK4EzVx2jautcgWoQH4dUeGnlEEJUifFBGOQiIRRzkRt2Pkml2IY6j1pSGVkF9RWJaJKoo959blnwP07TX7y6hWDzC5iC7j96mPpS4TpwhN1ttTeHEa2F7Ae4hbN+qPSxXiBOxcJCEV0lTkjLexxYvOC7ma1cfALMqyp2DEKdeYg9xGmasbCQt4pTd44Ji9ye3S3lDTw2cL9J1vcDQOtWHtorVA2bq03uxX2lvDpr3bMpTV3SpSKTGDZfEu8TmnFY1Q+nn4glggL8VS6iwsuIFGs6IigTeiS3RFkjM+FNeXkQVpuMJB5NZdjJQUUuiOOL2mpbL2FzwVX7C242fubPocsS79XZP5/wSkdhSBUcdaEVZA7NOhYf6D3IFAKxrC1GuIpzCPvZF2BefgNCIGSXFY8='
+    github_token:
+      secure: 'LladLSKJVETzqPgIKNgd1CcxwCeMD979FxWypEtj26bPYm/7d8A/L3M7JsYhz1JxVyW59MYYaUu+n5xwYjvLfrESDNSZ8DhtwZ80tfZtDv6nIzEzVPJmmJ9BoPEev0z4RJ6DJu969Opn/fswWOJ+NsatDjgv16WxxvJbRbORL9TMOij6E08udPNpnEIHSYC6bOwWmJrpJ5mfvTxik4/evHECPU10rTVodQMgopOJ4jtvQUXgGk3vxHHKORx2SpuoudQbPibLcmRpXr5+FDMO7Icl67baS/jDfb+0ZR6gT6B9BnPiW4QcAuJvaTpATFw7exlVfTcE74KmvarL5xYpgA0hyYVtoVV88ZmPx81MaYkWzJC1cV2s0gvIkDe8lfUDa3DpCdRZkpiuNteIC0waMmF5VSBV5Oj7h3Zphlfc4RL8O+zKCAd/inlcuAPmEI8Z2BZDVvdmjsG+U3QlpVLDYJzLNC7c/8Dff5ozX1Jbwzx5PoqUM4Js8ING6wUOWqTXzjq0EISfsz/B/HrgWicVrlZOwwgZRUWd53p8vHGE22YgbpKfndYVn/2G1NEaV5v7DjiawgGOKuLB7Vtp1y1X01cSEssyiSuBXj0CBSPP5TdgJeKBy3PuPsvVuYm0z4QBosaFVTUO7AwEpFAjCzP3P8zRFWAYJ3qouafJID+X0qc='
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - sourceline: 'ppa:ppsspp/cmake'
+    packages:
+      - cmake
+      - gcc-5
+      - g++-5
+      - doxygen
+      - graphviz
+
+install:
+  - cd ..
+  - mkdir -p path-override
+  - ln -s /usr/bin/gcc-5 path-override/gcc
+  - ln -s /usr/bin/g++-5 path-override/g++
+  - ln -s /usr/bin/gcov-5 path-override/gcov
+  - export PATH=$PWD/path-override:$PATH
+  
+env:		
+ global:		
+   - secure: "d6S91I4IVUrS6p8NrYHz6MhUn4ADilwc6Nl/HjDdPyK59rPYihhwdKj0kdPMWTxBUPGKRwfAYb6qRL4clVjr0oWPWmfRGuLX83DWrNABQE6RRoIRV1ACBPfzeEqx0qdwEImvfSHBJMq7I8xbMn9iIp21PuiGMrXHWyK8CtRzV57GC+3fR5n73QCY/9ff+qqnJwWuiRXwBx1Z9E6iuMPLjgnsvaojPhiZHQAzvj6utZloFJjNqfvaspL3zdJVKz6ElVVInhDXcIUsSVy6r9bqhJCxCzb144tAorjaRPM6irVb6mnfOLcuA60lqY8g/MNFRXlnBWcw0HTVbLoJ27Kuim9gTieDxaVsPUAZzjzmgFh1Qp2OYcx+tCzZmwIv1KxcfuNMbdwWmCUgtMKB9rQy1++Vf+aNFpSX7DxbNEqyUpOwZhbLxQLO/vJomrtB8g5nYvwgowdexqcA3yDZ4DqrOEsziuEHZOGOzKvKKa03LEkZYbDLgzM3ciCMM9CvgBvpUPREYHbQ0+8ALlMI+lOm45J0N1EoePBquovnIe+l4Z8XwUg1Plsh6TxBN/k14Bi/2qykverYE8+cskDVmbTgCzvSOIOCJxKm+hh0MCNviUCt6fuhLQSGOlxUyB37z4/S+aN4+QgANRIHMBkaNTnMskag2t6LB9Lqdzq+CaJ4hxI="
+  
+jobs:
+  include:
+    - stage: test
+      compiler: 
+        - gcc
+      script: 
+        - mkdir SchedulerEngine-build
+        - cd SchedulerEngine-build
+        - cmake -DCMAKE_BUILD_TYPE=Coverage -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
+        - build-wrapper-linux-x86-64 --out-dir bw-output make -j2 clean all test coverage
+        - cd ../SchedulerEngine
+        - cp ../SchedulerEngine-build/*.gcov .
+        - export SONAR_SCANNER_OPTS="-Xmx512m"
+        - sonar-scanner -Dsonar.projectKey=scheduler-engine -Dsonar.projectVersion=0.1 -Dsonar.cfamily.build-wrapper-output=../SchedulerEngine-build/bw-output -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.sources=. -Dsonar.projectName="Scheduler Engine"
+    - compiler: 
+        - clang
+      script: 
+        - mkdir SchedulerEngine-build
+        - cd SchedulerEngine-build
+        - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
+        - make -j2 clean all test
+    - stage: generating docs
+      script:
+        - >
+          if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
+            cd SchedulerEngine
+            echo "Generating doxygen docs"
+            git clone -b gh-pages https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngineDocs.git docs
+            rm -rf docs/*
+            
+            git config --global push.default simple
+            git config user.name "Eaglegor"
+            git config user.email "eaglegor@gmail.com"
+            
+            echo "" > api/.nojekyll
+            doxygen
+            cd docs
+            if [ -d "api" ] && [ -f "api/index.html" ]; then
+              git add --all
+              git commit -m "Updating documentation from commit {$TRAVIS_COMMIT}"
+              git push "https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngineDocs.git"
+            fi
+          fi
+
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+    - '$HOME/ThirdPartyLibs'
+    - '$HOME/ThirdPartyLibsPackages'

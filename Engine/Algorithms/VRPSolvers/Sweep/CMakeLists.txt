@@ -10,5 +10,8 @@ target_link_libraries(SweepVRPSolver AlgorithmsManager SceneManager SceneEditor)
 
 cotire(SweepVRPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(SweepVRPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/SweepVRPSolver.h)
+
+
+
+InstallAlgorithm(SweepVRPSolver)
+InstallHeaders(SweepVRPSolver.h)

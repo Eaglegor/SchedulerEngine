@@ -14,11 +14,11 @@
 
 #include "Constraints/Performer/PerformerConstraints.h"
 
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT Performer
+	class Performer
 	{
 	public:
 		using Skill     = Attribute;

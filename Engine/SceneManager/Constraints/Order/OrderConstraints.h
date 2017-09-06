@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../ConstraintHolder.h"
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
 	class Depot;
 
-	class SCENEMANAGER_EXPORT OrderConstraints
+	class OrderConstraints
 	{
 	public:
 		using DepotConstraint = ConstraintHolder<const Depot&>;
