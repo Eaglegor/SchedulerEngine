@@ -69,7 +69,7 @@ jobs:
             echo "" > docs/.nojekyll
             doxygen
             cd docs
-            if [ -d "html" ] && [ -f "html/index.html" ]; then
+            if [ -f "index.html" ]; then
               git add --all
               git commit -m "Updating documentation from commit {$TRAVIS_COMMIT}"
               git push "https://${MAINTAINANCE_TOKEN}@github.com/Eaglegor/SchedulerEngineDocs.git"
