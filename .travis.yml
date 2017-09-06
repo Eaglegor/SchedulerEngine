@@ -28,9 +28,9 @@ install:
   - ln -s /usr/bin/gcov-5 path-override/gcov
   - export PATH=$PWD/path-override:$PATH
   
-- env:		
-   - global:		
-      - secure: "T4cgwzy8KsvxXAgbTZp+VTSdrcjk3UyBZ34mGUpPY/WkPPugvc0rQnfNts6SrGf/0PM+0ASXAJgpAaHBXM4UjkZ8klhyJoo+KKE+l+1vIz4WKSwo0Got2CLdW+HssV2qTW3oAeMvioKlL45K8PyIF21/3wexypTHA53cPrYfCfKD3SKGkwsGvjDzK6QlgVq2SD7PFengeK6gkIkbogkBGrOwAX0CXm9DYZAl50JAY9AwbVaqeRsWh4xFjD5guaU7sEyEcXATGQd5YO2VMHI4BdjIhyT/Zr5MIcD0Q87EnD0KfCBzEpvqzlXddZOcKZPvtCFnb+6a6+duX6WiuSfQa+iJxDEPVOC+LtHuxB65Vz5oNrO6urONIJqw7UlKfhbUX8MlhzBVMxjMPou9/lTXFJf6/jn/uSYpFMEcWztKX5UN2rjL/P2WhMCqaZDprCuIjAemvZuLJswSwg1dtIgekhQiOVTBClJd0NSEq4D8h0xcKlP6EYm7eqFWrwebx0XNMLIUUrylP2q25dBIKIsuyxoMTTofAxWYCBxAFzCtBO2FBZk9DCD7RnGl9pvk6Y7DuV0dRalG3fvhUwwWNIpZeWbfn4fCPVcFopw4GZ/0X+RmtYxvoSRV9Y3zxyaU2hzEsU1cOMzVPjH0/uszdynv8+EXKHosJKDCTDVoL0dghEY="
+env:		
+ global:		
+   - secure: "T4cgwzy8KsvxXAgbTZp+VTSdrcjk3UyBZ34mGUpPY/WkPPugvc0rQnfNts6SrGf/0PM+0ASXAJgpAaHBXM4UjkZ8klhyJoo+KKE+l+1vIz4WKSwo0Got2CLdW+HssV2qTW3oAeMvioKlL45K8PyIF21/3wexypTHA53cPrYfCfKD3SKGkwsGvjDzK6QlgVq2SD7PFengeK6gkIkbogkBGrOwAX0CXm9DYZAl50JAY9AwbVaqeRsWh4xFjD5guaU7sEyEcXATGQd5YO2VMHI4BdjIhyT/Zr5MIcD0Q87EnD0KfCBzEpvqzlXddZOcKZPvtCFnb+6a6+duX6WiuSfQa+iJxDEPVOC+LtHuxB65Vz5oNrO6urONIJqw7UlKfhbUX8MlhzBVMxjMPou9/lTXFJf6/jn/uSYpFMEcWztKX5UN2rjL/P2WhMCqaZDprCuIjAemvZuLJswSwg1dtIgekhQiOVTBClJd0NSEq4D8h0xcKlP6EYm7eqFWrwebx0XNMLIUUrylP2q25dBIKIsuyxoMTTofAxWYCBxAFzCtBO2FBZk9DCD7RnGl9pvk6Y7DuV0dRalG3fvhUwwWNIpZeWbfn4fCPVcFopw4GZ/0X+RmtYxvoSRV9Y3zxyaU2hzEsU1cOMzVPjH0/uszdynv8+EXKHosJKDCTDVoL0dghEY="
   
 jobs:
   include:
@@ -54,7 +54,7 @@ jobs:
         - cmake -DTHIRD_PARTY_DIRECTORY=$HOME/ThirdPartyLibs -DTHIRD_PARTY_PACKAGES_DIRECTORY=$HOME/ThirdPartyLibsPackages -DCPP_SCHEDULER_TESTS=True $TRAVIS_BUILD_DIR
         - make -j2 clean all test
     - stage: generating docs
-      script: 
+      script:
         - >
           if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
             cd SchedulerEngine
