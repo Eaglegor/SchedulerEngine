@@ -8,3 +8,4 @@ conaninfo.txt
 .directory
 ThirdParty/*
 ThirdPartyPackages/*
+docs/*
