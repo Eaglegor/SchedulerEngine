@@ -66,7 +66,7 @@ jobs:
             git config user.name "Eaglegor"
             git config user.email "eaglegor@gmail.com"
             
-            echo "" > docs/.nojekyll
+            echo "" > api/.nojekyll
             doxygen
             cd docs
             if [ -d "api" ] && [ -f "api/index.html" ]; then
