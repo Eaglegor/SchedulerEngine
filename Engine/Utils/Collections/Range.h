@@ -360,7 +360,7 @@ namespace Scheduler
 		 * 
 		 * @param pos Iterator to the element to erase
 		 * 
-		 * @return Iterator to the element following the erased
+		 * @return Iterator to the element following the erased one
 		 */
 		iterator erase(const_iterator pos)
 		{
@@ -371,10 +371,12 @@ namespace Scheduler
 		/** 
 		 * @brief Erases a range of elements
 		 * 
+		 * @note The method calls std::distance(first, last) to calculate the count of erased elements
+		 * 
 		 * @param first Iterator to the first element to erase
 		 * @param last Iterator to the element following the last element to erase
 		 * 
-		 * @return Iterator following the last erased element
+		 * @return Iterator to the element following the last erased element
 		 */
 		iterator erase(const_iterator first, const_iterator last)
 		{
@@ -382,33 +384,67 @@ namespace Scheduler
 			return parent->erase(first, last);
 		}
 
+		/**
+		 * @brief Erases a range of elements assuming n to be the count of removed elements
+		 * 
+		 * @warning Passsing n value not equal to the count of elements in the range [first, last) causes undefined behavior
+		 * 
+		 * @param first Iterator to the first element to erase
+		 * @param last Iterator to the element following the last element to erase
+		 * @param n Count of removed elements
+		 * 
+		 * @return Iterator to the element following the last erased element
+		 * 
+		 */
 		iterator erase(const_iterator first, const_iterator last, size_t n)
 		{
 			beforeErasureHook(first, last, n);
 			return parent->erase(first, last, n);
 		}
 
+		/**
+		 * @brief Adds an element to the end
+		 * 
+		 * @param value The value of the element to append
+		 */
 		void push_back(reference value)
 		{
 			afterInsertionHook(end_iterator, parent->insert(end_iterator, value));
 		}
 
+		/**
+		 * @brief Adds and element to the beginning
+		 * 
+		 * @param value The value of the element to prepend
+		 */
 		void push_front(reference value)
 		{
 			afterInsertionHook(begin_iterator, parent->insert(begin_iterator, value));
 		}
 
+		/**
+		 * @brief Removes the last element
+		 */
 		void pop_back( )
 		{
 			beforeErasureHook(std::prev(end_iterator));
 			parent->erase(std::prev(end_iterator));
 		}
 
+		/** 
+		 * @brief Removes the first element
+		 */
 		void pop_front( )
 		{
 			parent->erase(beforeErasureHook(begin_iterator));
 		}
 
+		/**
+		 * @brief Moves all elements from another range
+		 * 
+		 * @param pos Element before which the content will be inserted
+		 * @param rhs Another range to transfer the content from
+		 */
 		void splice(const_iterator pos, Range& rhs)
 		{
 			if(this == &rhs) return;
@@ -416,6 +452,13 @@ namespace Scheduler
 			parent->splice(pos, *rhs.parent);
 		}
 
+		/**
+		 * @brief Moves single element from another range
+		 * 
+		 * @param pos Element before which the content will be inserted
+		 * @param rhs Another range to transfer the content from
+		 * @param new_element The element to transfer from another range
+		 */
 		void splice(const_iterator pos, Range& rhs, const_iterator new_element)
 		{
 			if(new_element == pos) return;
@@ -423,6 +466,16 @@ namespace Scheduler
 			parent->splice(pos, *rhs.parent, new_element);
 		}
 
+		/**
+		 * @brief Transfer the range of elements from another range
+		 * 
+		 * @note This method calls std::distance(first, last) to calculate the count of transferred elements
+		 * 
+		 * @param pos Element before which the content will be inserted
+		 * @param rhs Another range to transfer the content from
+		 * @param first Iterator to the first element to transfer
+		 * @param last Iterator to the element after the last element to transfer
+		 */
 		void splice(const_iterator pos, Range& rhs, const_iterator first, const_iterator last)
 		{
 			if(last == pos) return;
@@ -430,6 +483,17 @@ namespace Scheduler
 			parent->splice(pos, *rhs.parent, first, last);
 		}
 
+		/**
+		 * @brief Transfers the range of elements assuming n to be the count of removed elements
+		 * 
+		 * @warning Passsing n value not equal to the count of elements in the range [first, last) causes undefined behavior
+		 * 
+		 * @param pos Element before which the content will be inserted
+		 * @param rhs Another range to transfer the content from
+		 * @param first Iterator to the first element to transfer
+		 * @param last Iterator to the element after the last element to transfer
+		 * @param n The count of transferred elements
+		 */
 		void splice(const_iterator pos, Range& rhs, const_iterator first, const_iterator last, size_t n)
 		{
 			if(last == pos) return;
@@ -437,11 +501,20 @@ namespace Scheduler
 			parent->splice(pos, *rhs.parent, first, last, n);
 		}
 
+		/**
+		 * @brief Reverses the order of the elements
+		 */
 		void reverse( )
 		{
 			reverse(begin_iterator, end_iterator);
 		}
 
+		/**
+		 * @brief Reverses the order of the elements in the range
+		 * 
+		 * @param first The iterator to the first element of range to reverse
+		 * @param last The element pointing to the element after the last element of range to reverse
+		 */
 		void reverse(const_iterator first, const_iterator last)
 		{
 			if(first == last) return;
@@ -451,11 +524,24 @@ namespace Scheduler
 			}
 		}
 
+		/**
+		 * @brief Removes all elements with specified value
+		 * 
+		 * @param value The value of elements to remove
+		 */
 		void remove(const_reference value)
 		{
 			remove_if([&value](const_reference v) { return v == value; }); // std::bind1st(std::equal_to<const_reference>(), value));
 		}
 
+		/**
+		 * @brief Removes all elements satisfying specific criteria
+		 * 
+		 * @details Removes elements for which the passed predicate has returned true
+		 * 
+		 * @tparam Predicate The type of passed predicate
+		 * @param pred The predicate to test the elements against
+		 */
 		template <typename Predicate>
 		void remove_if(Predicate pred)
 		{
@@ -471,18 +557,45 @@ namespace Scheduler
 			}
 		}
 
+		/**
+		 * @brief Adjusts the end of the range
+		 * 
+		 * @note The method calls std::distance(begin(), new_end_iterator) to calculate the new range size
+		 * 
+		 * @param new_end_iterator The iterator that must be considered as end()
+		 */
 		void setEnd(const_iterator new_end_iterator)
 		{
 			end_iterator       = removeIteratorConstness(new_end_iterator);
 			constant_time_size = std::distance(begin_iterator, end_iterator);
 		}
 
+		/**
+		 * @brief Adjusts the end of the range assuming new_size being the new range size
+		 * 
+		 * @warning Passing new_size not equal to the new range size causes the undefined behavior
+		 * 
+		 * @param new_end_iterator The iterator that must be considered as end()
+		 * @param new_size The new size of range after adjusting the end
+		 */
 		void setEnd(const_iterator new_end_iterator, size_t new_size)
 		{
 			end_iterator       = removeIteratorConstness(new_end_iterator);
 			constant_time_size = new_size;
 		}
 
+		/**
+		 * @brief Erases and disposes elements in the range [first, last) assuming n to be the count of erased elements 
+		 * 
+		 * @warning Passing n not equal to the count of erased elements causes the undefined behavior
+		 * 
+		 * @tparam Disposer The type of elements disposer
+		 * @param first Iterator to the first element to erase
+		 * @param last Iterator to the element after the lase element to erase
+		 * @param n Count of erased elements
+		 * @param disposer Functor performing elements disposal
+		 * 
+		 */
 		template <typename Disposer>
 		void erase_and_dispose(const_iterator first, const_iterator last, size_t n, Disposer disposer)
 		{
@@ -490,12 +603,30 @@ namespace Scheduler
 			parent->erase_and_dispose(first, last, disposer);
 		}
 
+
+		/**
+		 * @brief Erases and disposes elements in the range [first, last)
+		 * 
+		 * @warning This method calls std::distance(first, last) to calculate the count of erased elements
+		 * 
+		 * @tparam Disposer The type of elements disposer
+		 * @param first Iterator to the first element to erase
+		 * @param last Iterator to the element after the lase element to erase
+		 * @param disposer Functor performing elements disposal
+		 * 
+		 */
 		template <typename Disposer>
 		void erase_and_dispose(const_iterator first, const_iterator last, Disposer disposer)
 		{
 			erase_and_dispose(first, last, std::distance(first, last), disposer);
 		}
 
+		/**
+		 * @brief Removes and disposes all elements in the range
+		 * 
+		 * @tparam Disposer The type of elements disposer
+		 * @param disposer Functor performing elements disposal
+		 */
 		template <typename Disposer>
 		void clear_and_dispose(Disposer disposer)
 		{
