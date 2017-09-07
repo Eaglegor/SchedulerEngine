@@ -29,9 +29,11 @@ namespace Scheduler
 
 		/** 
 		 * @brief Creates new algorithm
-		 * @details {Algorithm is created using the underlying factory and the reference to the newly created instance is returned.
+		 * 
+		 * @details Algorithm is created using the underlying factory and the reference to the newly created instance is returned.
 		 * The lifetime of created algorithms is managed by AlgorithmsManager. Algorithms that weren't explicitly destroyed
-		 * by the call to the destroyAlgorithm method will be automatically destroyed when the AlgorithmsManager is destroyed.}
+		 * by the call to the destroyAlgorithm method will be automatically destroyed when the AlgorithmsManager is destroyed.
+		 * 
 		 * @tparam Alg Algorithm type to be created
 		 * @tparam Args Argument types that will be passed to the algorithm constructor
 		 * @param args Arguments to be passed to the algorithm constructor
@@ -48,9 +50,11 @@ namespace Scheduler
 
 		/** 
 		 * @brief Creates new cost function
-		 * @details {Cost function is created using the underlying factory and the reference to the newly created instance is returned.
+		 * 
+		 * @details Cost function is created using the underlying factory and the reference to the newly created instance is returned.
 		 * The lifetime of created cost functions is managed by AlgorithmsManager. Cost functions that weren't explicitly destroyed
-		 * by the call to the destroyCostFunction method will be automatically destroyed when the AlgorithmsManager is destroyed.}
+		 * by the call to the destroyCostFunction method will be automatically destroyed when the AlgorithmsManager is destroyed.
+		 * 
 		 * @tparam Cf Cost function type to be created
 		 * @tparam Args Argument types that will be passed to the cost function constructor
 		 * @param args Arguments to be passed to the cost function constructor
@@ -67,16 +71,22 @@ namespace Scheduler
 
 		/**
 		 * @brief Destroys algorithm
-		 * @details {The destructor will be called on the passed algorithm and then the allocated memory will be freed.}
-		 * @note {Passing the algorithm that wasn't created by this algorithms manager causes an undefined behavior}
+		 * 
+		 * @details The destructor will be called on the passed algorithm and then the allocated memory will be freed.
+		 * 
+		 * @note Passing the algorithm that wasn't created by this algorithms manager causes an undefined behavior
+		 * 
 		 * @param algorithm Algorithm to be destroyed
 		 */
 		void destroyAlgorithm(Algorithm& algorithm);
 
 		/**
 		 * @brief Destroys cost function
-		 * @details {The destructor will be called on the passed cost function and then the allocated memory will be freed.}
-		 * @note {Passing the cost function that wasn't created by this algorithms manager causes an undefined behavior}
+		 * 
+		 * @details The destructor will be called on the passed cost function and then the allocated memory will be freed.
+		 * 
+		 * @note Passing the cost function that wasn't created by this algorithms manager causes an undefined behavior
+		 * 
 		 * @param cf Cost function to be destroyed
 		 */
 		void destroyCostFunction(CostFunction& cf);

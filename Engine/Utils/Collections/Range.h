@@ -8,15 +8,15 @@ namespace Scheduler
 	/** 
 	 * @brief Represents range between 2 iterators in the container
 	 * 
-	 * @details {Range is a part of the container limited by 2 iterators. It behaves like the 
+	 * @details Range is a part of the container limited by 2 iterators. It behaves like the 
 	 * standalone container and all structural changes (insertions, removals) are automatically forwarded 
 	 * to the underlying container. Since range itself behaves as another container, nested ranges may be introduced where the 
-	 * changes are forwarded in the cascade way.}
+	 * changes are forwarded in the cascade way.
 	 * 
-	 * @warning {Since the structure of the underlying container isn't known the size() operation can't be performed 
+	 * @warning Since the structure of the underlying container isn't known the size() operation can't be performed 
 	 * in constant time using only the iterators. The size variable is used to avoid the slow linear operations.
 	 * This variable is updated on all modifying operations made through the range interface. But the direct modifications
-	 * of the underlying container aren't mirrored in the range and may leave it in the inconsistend state}
+	 * of the underlying container aren't mirrored in the range and may leave it in the inconsistend state
 	 * 	 
 	 */
 	template <typename BaseContainer>
@@ -83,9 +83,8 @@ namespace Scheduler
 		 * @param end_iterator The right exclusive bound of range
 		 * @param n The distance between begin_iterator and end_iterator
 		 * 
-		 * @warning {The value of n isn't checked.
-		 * Passing the value not matching the distance between begin_iterator and end_iterator will
-		 * create the range with inconsistent state that causes the undefined behavior}
+		 * @warning Passing the value not equal to the distance between begin_iterator and end_iterator will
+		 * create the range with inconsistent state that causes the undefined behavior
 		 * 
 		 */
 		Range(base_container* parent, iterator begin_iterator, iterator end_iterator, size_t n)

@@ -7,7 +7,7 @@ namespace Scheduler
 	/**
 	 * @brief The sublist of LinkedPointersList
 	 * 
-	 * @deprecated {boost::intrusive and Range classed are used instead}
+	 * @deprecated boost::intrusive and Range classes are used instead
 	 */
 	template <typename T, typename BackendCollection = LinkedPointersList<T>>
 	class LinkedPointersSublist

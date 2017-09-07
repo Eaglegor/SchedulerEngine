@@ -11,12 +11,12 @@ namespace Scheduler
 	/** 
 	 * @brief Routing service providing routes from the custom distance matrix
 	 * 
-	 * @details {This routing service is intended to be used in the TSPLIB benchmarks encoded in XML format 
+	 * @details This routing service is intended to be used in the TSPLIB benchmarks encoded in XML format 
 	 * (https://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/XML-TSPLIB/instances).
 	 * There are no real coordinates of the orders but only a distance matrix provided so for the 
 	 * from and end points only latitude coordinate is used and it's encoding the order index (not real latitude).
 	 * 
-	 * This distance matrix is filled by the TspLibSceneLoader}
+	 * This distance matrix is filled by the TspLibSceneLoader
 	 */
 	class TspLibRoutingService : public RoutingService
 	{
@@ -37,8 +37,8 @@ namespace Scheduler
 		/** 
 		 * @brief Returns a route information from the stored distance matrix
 		 * 
-		 * @details {Route distance is taken from the distance matrix. Route duration is calculated
-		 * as distance / average speed taken from the vehicle routing profile}
+		 * @details Route distance is taken from the distance matrix. Route duration is calculated
+		 * as distance / average speed taken from the vehicle routing profile
 		 * 
 		 * @param from Start point of the route (latitude is used as index, longitude is ignored)
 		 * @param from End point of the route (latitude is used as index, longitude is ignored)

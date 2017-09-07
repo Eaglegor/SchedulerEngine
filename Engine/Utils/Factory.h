@@ -14,11 +14,11 @@ namespace Scheduler
 	/** 
 	 * @brief Templated factory class used to create the objects inside the scheduler engine
 	 * 
-	 * @details {Internally this factory uses pool allocator to allocate memory so the size of create objects is limited by a 
-	 * fixed number passed on factory construction}
+	 * @details Internally this factory uses pool allocator to allocate memory so the size of create objects is limited by a 
+	 * fixed number passed on factory construction
 	 * 
-	 * @tparam BaseClass {The type of base class for the objects created by this factory. 
-	 * Base class and the classes derived from base class can be instantiated using this factory}
+	 * @tparam BaseClass The type of base class for the objects created by this factory. 
+	 * Base class and the classes derived from base class can be instantiated using this factory
 	 */
 	template <typename BaseClass>
 	class Factory

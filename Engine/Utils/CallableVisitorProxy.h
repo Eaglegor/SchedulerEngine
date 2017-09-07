@@ -14,7 +14,7 @@ namespace Scheduler
 		/** 
 		 * @brief Constructs the specified visitor, passes it to the object and returns the result of the operation store inside the visitor
 		 * 
-		 * @details {The visitor type must meet the following requirements:
+		 * @details{ The visitor type must meet the following requirements:
 		 * 		- The type of operation result must be declared as VisitorType::ReturnType
 		 * 		- The visitor must define the getRetVal() method returning VisitorType::ReturnType
 		 * 

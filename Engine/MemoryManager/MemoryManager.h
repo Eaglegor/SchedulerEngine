@@ -12,9 +12,9 @@ namespace Scheduler
 	/**
 	 * @brief This class manages memory allocations inside the engine
 	 * 
-	 * @details {This class provides 2 memory allocation strategies: direct malloc call and pool allocator. To use the provided strategy,
+	 * @details This class provides 2 memory allocation strategies: direct malloc call and pool allocator. To use the provided strategy,
 	 * the user has to create the corresponding memory store (either MallocMemoryStore or PoolMemoryStore) and then request memory allocations
-	 * over the returned MemoryStore instance}
+	 * over the returned MemoryStore instance
 	 * 
 	 */
 	class MemoryManager
@@ -23,8 +23,8 @@ namespace Scheduler
 		/**
 		 * @brief Creates malloc memory store
 		 * 
-		 * @details {Requesting memory from resulting memory store implies syscall to malloc(). Freeing memory implies syscall to free().
-		 * Since the underlying memory store is completely stateless, the single shared instance pointer is always returned by this method}
+		 * @details Requesting memory from resulting memory store implies syscall to malloc(). Freeing memory implies syscall to free().
+		 * Since the underlying memory store is completely stateless, the single shared instance pointer is always returned by this method
 		 * 
 		 * @return Shared instance of MallocMemoryStore
 		 */
@@ -33,7 +33,7 @@ namespace Scheduler
 		/**
 		 * @brief Creates pool memory store
 		 * 
-		 * @details {Resulting memory store uses the pre-allocated memory pool of fixed-sized chunks. When new memory allocation is requested,
+		 * @details{ Resulting memory store uses the pre-allocated memory pool of fixed-sized chunks. When new memory allocation is requested,
 		 * a pointer to the next free chunk is returned and the chunk is removed from the pool. When the memory is released, the chunk is returned
 		 * to the pool and becomes available for the next memory allocations. The pool size starts from the passed initial capacity and automatically
 		 * grows by allocating new memory areas if there are no more free chunks left.

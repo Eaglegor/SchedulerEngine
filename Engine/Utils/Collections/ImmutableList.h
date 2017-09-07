@@ -4,7 +4,9 @@
 
 namespace Scheduler
 {
-	/// Represents the unmodifiable list
+	/**
+	 * @brief Represents the unmodifiable list
+	 */ 
 	template <typename T>
 	using ImmutableList = const std::list<T>;
 }

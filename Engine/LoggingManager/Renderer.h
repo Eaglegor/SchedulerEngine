@@ -79,8 +79,8 @@ namespace Scheduler
 	/** 
 	 * @brief Represents debug renderer intefrace
 	 * 
-	 * @details {This class is passed to the algorithms for debugging purposes. The algorithms
-	 * can request the animation frames and draw their current state to simplify debugging process}
+	 * @details This class is passed to the algorithms for debugging purposes. The algorithms
+	 * can request the animation frames and draw their current state to simplify debugging process
 	 */
 	class Renderer
 	{

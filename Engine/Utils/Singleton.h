@@ -6,8 +6,8 @@ namespace Scheduler
 	/** 
 	 * @brief This class is a base for the singleton classes
 	 * 
-	 * @details {Deriving from this class defines the basic singleton methods and the singleton instance.
-	 * Static singleton instance pointer Singleton<T>::instance must be explicitly instantiated somewhere}
+	 * @details Deriving from this class defines the basic singleton methods and the singleton instance.
+	 * Static singleton instance pointer Singleton<T>::instance must be explicitly instantiated somewhere
 	 * 
 	 */
 	template <typename T>

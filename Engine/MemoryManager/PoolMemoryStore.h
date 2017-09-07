@@ -12,8 +12,8 @@ namespace Scheduler
 	/** 
 	 * @brief This class represents the memory store allocating memory by returning fixed-sized blocks stored in the memory pool
 	 * 
-	 * @details {This class uses boost::pool as the underlying memory storage. Since boost::pool implementation isn't thread-safe,
-	 * the external synchronization mechanism using boost::mutex is provided by this class.}
+	 * @details This class uses boost::pool as the underlying memory storage. Since boost::pool implementation isn't thread-safe,
+	 * the external synchronization mechanism using boost::mutex is provided by this class.
 	 */
 	class PoolMemoryStore : public MemoryStore
 	{
