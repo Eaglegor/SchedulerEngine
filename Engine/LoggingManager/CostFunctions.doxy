@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup logging_manager Logging manager
+ * 
+ * This module contains logging functions
+ */

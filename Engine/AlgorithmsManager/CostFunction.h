@@ -5,8 +5,8 @@ namespace Scheduler
 	/** 
 	 * @brief Represents abstract cost function interface
 	 * 
-	 * @details {Cost function is a function that takes a part of solution or the entire solution and returns
-	 * a value of Cost type}
+	 * @details Cost function is a function that takes a part of solution or the entire solution and returns
+	 * a value of Cost type
 	 */
 	class CostFunction
 	{

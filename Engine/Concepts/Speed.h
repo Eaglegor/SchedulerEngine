@@ -61,32 +61,36 @@ namespace Scheduler
 		/** 
 		 * @brief Comparison operator
 		 * @param rhs Another speed
-		 * @return {true if the distance value of this is greater than distance value of rhs 
-		 * considering the same time units}
+		 * 
+		 * @return true if the distance value of this is greater than distance value of rhs 
+		 * considering the same time units
 		 */
 		bool operator>(const Speed& rhs) const;
 
 		/** 
 		 * @brief Comparison operator
 		 * @param rhs Another speed
-		 * @return {true if the distance value of this is less than distance value of rhs 
-		 * considering the same time units}
+		 * 
+		 * @return true if the distance value of this is less than distance value of rhs 
+		 * considering the same time units
 		 */
 		bool operator<(const Speed& rhs) const;
 
 		/** 
 		 * @brief Comparison operator
 		 * @param rhs Another speed
-		 * @return {true if the distance value of this is greater than or equal to the distance value of rhs 
-		 * considering the same time units}
+		 * 
+		 * @return true if the distance value of this is greater than or equal to the distance value of rhs 
+		 * considering the same time units
 		 */
 		bool operator>=(const Speed& rhs) const;
 
 		/** 
 		 * @brief Comparison operator
 		 * @param rhs Another speed
-		 * @return {true if the distance value of this is less than or equal to the distance value of rhs 
-		 * considering the same time units}
+		 * 
+		 * @return true if the distance value of this is less than or equal to the distance value of rhs 
+		 * considering the same time units
 		 */
 		bool operator<=(const Speed& rhs) const;
 

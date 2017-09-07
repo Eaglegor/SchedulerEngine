@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup algorithms_manager Algorithms manager
+ * 
+ * This module contains the algorithmic interfaces for VRP and TSP solvers and cost functions and the management classes for different algorithms
+ */

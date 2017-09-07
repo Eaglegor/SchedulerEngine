@@ -7,6 +7,11 @@
 
 namespace Scheduler
 {
+	/** 
+	 * @brief Intrusive linked list of pointers
+	 * 
+	 * @deprecated boost::intrusive implementation is used instead of this one
+	 */
 	template <typename T>
 	class LinkedPointersList
 	{

@@ -3,6 +3,11 @@
 
 namespace Scheduler
 {
+	/** 
+	 * @brief Optional class to use inside the scheduler
+	 * 
+	 * @details boost::optional is used as the implementation
+	 */ 
 	template <typename T>
 	using Optional = boost::optional<T>;
 

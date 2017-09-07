@@ -1,0 +1,8 @@
+/**
+* @ingroup algorithms
+* @{
+*   @defgroup run_vehicle_binders Run vehicle binders
+*   
+*   This module contains algorithms that look for and assign the vehicle suitable to perform the specified run in the specifier schedule
+* @}
+*/

@@ -28,11 +28,11 @@ namespace Scheduler
 		static Logger& getLogger(const char* name);
 
 		/** 
-		 * @briefs Configures the logging system using the specified config file
+		 * @brief Configures the logging system using the specified config file
 		 * 
-		 * @note {This method must be called before requesting any loggers to initialize
+		 * @note This method must be called before requesting any loggers to initialize
 		 * the logging system. Config file isn't used in the current implementation so any
-		 * value may be passed as a parameter}
+		 * value may be passed as a parameter
 		 * 
 		 * @param config_filename The name of config file to configure the logging system from
 		 */
@@ -63,12 +63,12 @@ namespace Scheduler
 /** 
  * @brief Starts a traceable section
  * 
- * @details {Traceable section is a section of code for which the entrance and leaving is logged.
+ * @details Traceable section is a section of code for which the entrance and leaving is logged.
  * When this macro is called the RAII variable is created and the entrance message containing the section title is logged 
  * using the specified logger. When the control flow exits current scope, the destructor of the variable is called and 
- * the exit message containing the section title is logged using the specified logger.}
+ * the exit message containing the section title is logged using the specified logger.
  * 
- * @note {Does nothing if debug logging is disabled}
+ * @note Does nothing if debug logging is disabled
  * 
  * @param name The name of the variable
  * @param title The title of traceable section
@@ -101,12 +101,12 @@ namespace Scheduler
 /** 
  * @brief Starts a traceable section
  * 
- * @details {Traceable section is a section of code for which the entrance and leaving is logged.
+ * @details Traceable section is a section of code for which the entrance and leaving is logged.
  * When this macro is called the RAII variable is created and the entrance message containing the section title is logged 
  * using the specified logger. When the control flow exits current scope, the destructor of the variable is called and 
- * the exit message containing the section title is logged using the specified logger.}
+ * the exit message containing the section title is logged using the specified logger.
  * 
- * @note {Does nothing if debug logging is disabled}
+ * @note Does nothing if debug logging is disabled
  * 
  * @param name The name of the variable
  * @param title The title of traceable section

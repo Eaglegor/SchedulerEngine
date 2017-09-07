@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup utils Utils
+ * 
+ * This module contains common utilities used by another engine parts
+ */

@@ -1,0 +1,5 @@
+/**
+ * @defgroup persistence Persistence
+ * 
+ * This module contains serializers / deserializers of solutions and algorithmic strategies
+ */

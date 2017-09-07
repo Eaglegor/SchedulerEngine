@@ -10,9 +10,9 @@ namespace Scheduler
 	/**	
 	 * @brief Represents the abstract routing service interface
 	 * 
-	 * @details {Routing service takes 2 geolocations (route start and end points) and the routing profile of vehicle
+	 * @details Routing service takes 2 geolocations (route start and end points) and the routing profile of vehicle
 	 * and returns the route information (distance and driving time). It abstracts the distance matrix concept used
-	 * in the logistics optimization problems.}
+	 * in the logistics optimization problems.
 	 */
 	class RoutingService
 	{

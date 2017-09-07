@@ -1,0 +1,8 @@
+/** 
+ * @ingroup engine
+ * @defgroup concepts Concepts
+ *
+ * This module contains common concepts such as time points, time windows, duration, speed, distance, capacity etc.
+ * It doesn't contain domain-specific concepts like orders, vehicles, schedules etc.
+ *
+ */

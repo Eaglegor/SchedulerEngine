@@ -1,0 +1,5 @@
+/**
+ * @defgroup tools Tools
+ * 
+ * This module contains various tools useful for debugging, data generation etc.
+ */

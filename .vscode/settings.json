@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "iterator": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "xutility": "cpp",
+        "chrono": "cpp",
+        "xhash": "cpp",
+        "xtree": "cpp"
+    }
+}

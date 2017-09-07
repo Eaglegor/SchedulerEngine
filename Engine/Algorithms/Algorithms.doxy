@@ -1,0 +1,7 @@
+/** 
+ * @ingroup engine
+ * @defgroup algorithms Algorithms
+ *
+ * This module contains algorithms used to optimize solutions
+ *
+ */

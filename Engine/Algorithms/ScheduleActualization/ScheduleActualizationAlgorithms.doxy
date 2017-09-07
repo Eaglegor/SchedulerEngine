@@ -1,0 +1,8 @@
+/**
+* @ingroup algorithms
+* @{
+*   @defgroup actualization_algorithms Schedule actualization algorithms
+*   
+*   This module contains algorithms solving the Vehicle Routing Problem
+* @}
+*/
