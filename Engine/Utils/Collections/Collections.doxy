@@ -1,0 +1,8 @@
+/**
+ * @ingroup utils
+ * @{
+ * @defgroup collections Collections
+ * 
+ * This module defines containers used inside the engine
+ * @}
+ */

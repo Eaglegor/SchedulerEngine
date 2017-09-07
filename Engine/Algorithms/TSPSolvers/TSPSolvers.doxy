@@ -1,0 +1,8 @@
+/**
+* @ingroup algorithms
+* @{
+*   @defgroup tsp_solvers TSP solvers
+*   
+*   This module contains algorithms solving the Travelling Salesman Problem
+* @}
+*/

@@ -1,0 +1,8 @@
+/**
+* @ingroup algorithms
+* @{
+*   @defgroup validation_algorithms Validation algorithms
+*   
+*   This module contains validation algorithms for solutions
+* @}
+*/

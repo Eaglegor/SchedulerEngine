@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup routing Routing
+ * 
+ * This module contains interfaces used to retrieve routing data inside the scheduler engine
+ */

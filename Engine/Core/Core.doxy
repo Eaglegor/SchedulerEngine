@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup core Core
+ * 
+ * This module defines the facade for the scheduler engine
+ */

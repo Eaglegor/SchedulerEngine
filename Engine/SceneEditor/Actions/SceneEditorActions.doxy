@@ -1,0 +1,6 @@
+/**
+ * @ingroup scene_editor
+ * @defgroup scene_editor_actions Actions
+ * 
+ * This module contains the implementations of default actions available using scene editor
+ */

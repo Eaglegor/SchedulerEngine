@@ -5,7 +5,12 @@
 namespace Scheduler
 {
 	/**
-	 * @defgroup IntegerPower Collection of templates for integer power calculation in the compile-time
+	 * @ingroup math 
+	 * @{
+	 * @defgroup integer_power Compile-time integer power 
+	 *
+	 * This is a collection of templates for integer power calculation at the compile-time
+	 *
 	 * @{
 	 */
 
@@ -30,5 +35,8 @@ namespace Scheduler
 		static const unsigned long long val = 1;
 	};
 
-	/**@}*/
+	/**
+	 * @}
+	 * @}
+	 */
 }

@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup memory_manager Memory manager
+ * 
+ * This module contains memory management algorithms
+ */

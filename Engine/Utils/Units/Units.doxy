@@ -1,0 +1,8 @@
+/**
+ * @ingroup utils
+ * @{
+ * @defgroup units Units
+ * 
+ * This module contains functions constructing the measurable concept objects using different human-readable units
+ * @}
+ */

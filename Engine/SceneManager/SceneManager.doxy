@@ -1,0 +1,7 @@
+/** 
+ * @ingroup engine
+ * @defgroup scene_manager Scene manager
+ *
+ * This module contains domain-specific concepts such as vehicles, schedules, orders, constraints and their management classes
+ *
+ */

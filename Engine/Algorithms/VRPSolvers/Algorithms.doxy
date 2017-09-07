@@ -1,0 +1,8 @@
+/**
+* @ingroup algorithms
+* @{
+*   @defgroup vrp_solvers VRP solvers
+*   
+*   This module contains algorithms solving the Vehicle Routing Problem
+* @}
+*/

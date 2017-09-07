@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup cost_functions Cost functions
+ * 
+ * This module contains functions that calculate the costs of solutions
+ */

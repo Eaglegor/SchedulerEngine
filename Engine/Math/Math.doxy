@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup math Math
+ * 
+ * This module contains math functions used by algorithms
+ */

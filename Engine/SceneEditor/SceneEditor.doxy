@@ -1,0 +1,6 @@
+/**
+ * @ingroup engine
+ * @defgroup scene_editor Scene editor
+ * 
+ * This module contains the scene editor tool that organizes solution changes into the chain with checkpoints and rollbacks. It is useful in algorithms that are written using the template "try" -> "check" -> "commit / rollback"
+ */
