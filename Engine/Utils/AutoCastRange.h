@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup utils
+	 * 
 	 * @brief Creates an autocast range, i.e. container adapter that casts all elements to T on retrieving
 	 * 
 	 * @tparam T The type to cast the container elements to

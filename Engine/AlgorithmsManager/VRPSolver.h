@@ -7,6 +7,8 @@ namespace Scheduler
 	class Scene;
 
 	/** 
+	 * @ingroup algorithms_manager
+	 * 
 	 * @brief Represents abstract VRP solver interface
 	 * 
 	 * @details VRP (Vehicle Routing Problem) solver is an algorithm that takes the information about the orders 

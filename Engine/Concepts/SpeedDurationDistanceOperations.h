@@ -9,6 +9,12 @@
 
 namespace Scheduler
 {
+
+	/**
+	 * @ingroup concepts
+	 * @{
+	 */
+
 	/** 
 	 * @brief Calculates the route distance value based on speed and duration
 	 * @param speed Speed of vehicle
@@ -40,4 +46,8 @@ namespace Scheduler
 	 * @return Speed the vehicle should have to travel specified distance over the specified duration
 	 */
 	Speed operator/(const Distance& distance, const Duration& duration);
+
+	/**
+	 * @}
+	 */
 }

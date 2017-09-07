@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup collections
+	 * 
 	 * @brief This class wraps the container object and casts the elements of underlying container to the specified type on retrieval
 	 * 
 	 * @tparam CollectionType Type of the container

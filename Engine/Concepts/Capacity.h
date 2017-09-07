@@ -9,6 +9,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents capacity of vehicle and capacity demands of order
 	 */
 	class Capacity

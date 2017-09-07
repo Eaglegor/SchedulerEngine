@@ -8,6 +8,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents the distance value
 	 */
 	class Distance

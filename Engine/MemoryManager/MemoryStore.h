@@ -5,6 +5,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup memory_manager
+	 * 
 	 * @brief This class represents the abstract memory store interface
 	 * 
 	 * @details Memory store is a class that provides the methods to allocate and release memory blocks

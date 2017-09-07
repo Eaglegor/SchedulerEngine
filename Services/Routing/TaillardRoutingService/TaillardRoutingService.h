@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup services
+	 * 
 	 * @brief Routing service providing the routes calculated as described in the Taillard CVRP benchmark
 	 * 
 	 * @details Euclidean distance is used in Taillard CVRP benchmark datasets

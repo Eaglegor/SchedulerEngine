@@ -5,6 +5,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup logging_manager
+	 * 
 	 * @brief The type representing logger
 	 * 
 	 * @note spdlog::logger is used as the backend implementation

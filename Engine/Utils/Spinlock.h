@@ -4,6 +4,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup utils
+	 * 
 	 * @brief Fast synchronization primitive based on CAS operation
 	 */
 	class Spinlock

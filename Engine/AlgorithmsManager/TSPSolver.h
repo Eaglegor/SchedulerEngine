@@ -8,6 +8,8 @@ namespace Scheduler
 	class Schedule;
 
 	/** 
+	 * @ingroup algorithms_manager
+	 * 
 	 * @brief Represents abstract TSP solver interface
 	 * 
 	 * @details TSP (Travelling Salesman Problem) solver is an algorithm that takes the single run or the entire schedule and transforms

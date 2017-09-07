@@ -8,6 +8,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup utils
+	 * 
 	 * @brief Calculates the total duration of the run stops subsequence
 	 * @deprecated This class is inefficient. There is much more simplier way to calculate the total stops subsequence duration
 	 */

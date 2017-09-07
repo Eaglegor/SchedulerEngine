@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup memory_manager
+	 * 
 	 * @brief This class represents the memory store allocating memory by calling std::malloc() and std::free()
 	 */
 	class MallocMemoryStore : public MemoryStore

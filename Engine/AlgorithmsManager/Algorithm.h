@@ -3,6 +3,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup algorithms_manager
+	 * 
 	 * @brief Represents the abstract algorithm interface
 	 */
 	class Algorithm

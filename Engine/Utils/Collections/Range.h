@@ -6,6 +6,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup collections
+	 * 
 	 * @brief Represents range between 2 iterators in the container
 	 * 
 	 * @details Range is a part of the container limited by 2 iterators. It behaves like the 

@@ -9,6 +9,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents a route between two geographical locations
 	 */
 	class Route

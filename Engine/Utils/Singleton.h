@@ -4,6 +4,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup utils
+	 * 
 	 * @brief This class is a base for the singleton classes
 	 * 
 	 * @details Deriving from this class defines the basic singleton methods and the singleton instance.

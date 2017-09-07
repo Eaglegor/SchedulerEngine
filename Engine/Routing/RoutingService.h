@@ -8,6 +8,8 @@ namespace Scheduler
 	class RoutingProfile;
 
 	/**	
+	 * @ingroup routing
+	 * 
 	 * @brief Represents the abstract routing service interface
 	 * 
 	 * @details Routing service takes 2 geolocations (route start and end points) and the routing profile of vehicle

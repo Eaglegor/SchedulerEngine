@@ -10,6 +10,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup memory_manager
+	 * 
 	 * @brief This class represents the memory store allocating memory by returning fixed-sized blocks stored in the memory pool
 	 * 
 	 * @details This class uses boost::pool as the underlying memory storage. Since boost::pool implementation isn't thread-safe,

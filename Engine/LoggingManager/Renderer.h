@@ -10,6 +10,8 @@ namespace Scheduler
 	class Site;
 
 	/** 
+	 * @ingroup logging_manager
+	 * 
 	 * @brief Represents the single animation frame interface where the algorithms can draw their current state
 	 */
 	class Frame

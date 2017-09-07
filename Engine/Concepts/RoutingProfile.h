@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents the rules used by the routing services during the routes calculation
 	 */
 	class RoutingProfile

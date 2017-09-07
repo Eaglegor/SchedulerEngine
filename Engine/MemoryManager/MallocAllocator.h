@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup memory_manager
+	 * 
 	 * @brief This class represents the memory allocator suitable for the STL containers using the provided MallocMemoryStore to perform allocations
 	 */
 	template <typename T>

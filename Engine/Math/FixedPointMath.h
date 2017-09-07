@@ -6,6 +6,11 @@
 
 namespace Scheduler
 {
+	/**
+	 * @ingroup math
+	 * @{
+	 */
+
 	/** 
 	 * @brief Type capable to store the fixed point values used by the engine
 	 */
@@ -38,4 +43,8 @@ namespace Scheduler
 	{
 		return static_cast<float>(value) / static_cast<float>(IntegerPower<10, PRECISION>::val);
 	}
+
+	/**
+	 * @}
+	 */
 }

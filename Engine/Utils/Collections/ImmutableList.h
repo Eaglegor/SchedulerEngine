@@ -5,6 +5,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup collections
+	 * 
 	 * @brief Represents the unmodifiable list
 	 */ 
 	template <typename T>

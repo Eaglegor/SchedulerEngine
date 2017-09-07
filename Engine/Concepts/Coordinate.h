@@ -8,6 +8,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents single geographic coordinate (latitude or longitude) as a fixed point number
 	 */
 	class Coordinate
