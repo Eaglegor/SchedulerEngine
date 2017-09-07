@@ -15,6 +15,8 @@ target_link_libraries(CWSavingsVRPSolver AlgorithmsManager SceneManager SceneEdi
 
 cotire(CWSavingsVRPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(CWSavingsVRPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/CWSavingsVRPSolver_export.h)
 
+
+
+InstallAlgorithm(CWSavingsVRPSolver)
+InstallHeaders(CWSavingsVRPSolver.h)

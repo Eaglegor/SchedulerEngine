@@ -10,5 +10,8 @@ target_link_libraries(DurationLimitRunValidationAlgorithm SceneManager)
 
 cotire(DurationLimitRunValidationAlgorithm)
 
-include(GenerateExportHeader)
-generate_export_header(DurationLimitRunValidationAlgorithm EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/DurationLimitRunValidationAlgorithm_export.h)
+
+
+
+InstallAlgorithm(DurationLimitRunValidationAlgorithm)
+InstallHeaders(DurationLimitRunValidationAlgorithm.h)

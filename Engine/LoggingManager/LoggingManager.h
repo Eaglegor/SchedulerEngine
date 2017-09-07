@@ -1,5 +1,5 @@
 #pragma once
-#include <LoggingManager_export.h>
+
 #include <spdlog/logger.h>
 
 namespace Scheduler
@@ -15,7 +15,7 @@ namespace Scheduler
 	/** 
 	 * @brief This class provides loggers and manages their lifetime
 	 */
-	class LOGGINGMANAGER_EXPORT LoggingManager
+	class LoggingManager
 	{
 	public:
 		/** 

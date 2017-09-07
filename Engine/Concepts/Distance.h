@@ -3,14 +3,14 @@
 #include <Engine/Math/FloatEpsilon.h>
 #include <cmath>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * @brief Represents the distance value
 	 */
-	class CONCEPTS_EXPORT Distance
+	class Distance
 	{
 	public:
 		/**

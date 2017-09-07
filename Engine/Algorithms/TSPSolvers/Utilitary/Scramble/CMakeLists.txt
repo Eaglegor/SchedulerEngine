@@ -10,5 +10,8 @@ target_link_libraries(ScrambleTSPSolver SceneManager SceneEditor)
 
 cotire(ScrambleTSPSolver)
 
-include(GenerateExportHeader)
-generate_export_header(ScrambleTSPSolver EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/ScrambleTSPSolver_export.h)
+
+
+
+InstallAlgorithm(ScrambleTSPSolver)
+InstallHeaders(ScrambleTSPSolver.h)

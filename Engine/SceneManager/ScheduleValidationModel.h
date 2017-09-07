@@ -2,11 +2,11 @@
 
 #include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 #include <Engine/Utils/ReferenceWrapper.h>
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT ScheduleValidationModel
+	class ScheduleValidationModel
 	{
 	public:
 		ScheduleValidationModel( );

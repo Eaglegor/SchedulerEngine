@@ -10,11 +10,11 @@
 #include <exception>
 #include <utility>
 
-#include <SceneEditor_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEEDITOR_EXPORT SceneEditor
+	class SceneEditor
 	{
 	public:
 		enum class State

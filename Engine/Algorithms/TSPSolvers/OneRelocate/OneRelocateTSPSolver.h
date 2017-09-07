@@ -4,11 +4,11 @@
 #include <Engine/LoggingManager/LoggingManager.h>
 #include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/Utils/Optional.h>
-#include <OneRelocateTSPSolver_export.h>
+
 
 namespace Scheduler
 {
-	class ONERELOCATETSPSOLVER_EXPORT OneRelocateTSPSolver : public TSPSolver
+	class OneRelocateTSPSolver : public TSPSolver
 	{
 	public:
 		OneRelocateTSPSolver( );

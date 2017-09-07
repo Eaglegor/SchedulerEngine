@@ -5,12 +5,12 @@
 #include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/Utils/Optional.h>
 #include <Engine/Utils/ReferenceWrapper.h>
-#include <IterativeTSPSolver_export.h>
+
 #include <vector>
 
 namespace Scheduler
 {
-	class ITERATIVETSPSOLVER_EXPORT IterativeTSPSolver : public TSPSolver
+	class IterativeTSPSolver : public TSPSolver
 	{
 	public:
 		IterativeTSPSolver(const TSPSolver& backend_solver, const ScheduleCostFunction& schedule_cost_function);

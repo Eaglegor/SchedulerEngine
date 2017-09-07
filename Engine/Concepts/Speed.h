@@ -3,14 +3,14 @@
 #include <Engine/Concepts/Distance.h>
 #include <Engine/Math/FloatEpsilon.h>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * Represents the vehicle speed (distance travelled over the single time unit)
 	 */
-	class CONCEPTS_EXPORT Speed
+	class Speed
 	{
 	public:
 		/** 

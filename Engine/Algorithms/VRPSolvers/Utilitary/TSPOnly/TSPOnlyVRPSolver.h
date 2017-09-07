@@ -1,13 +1,12 @@
 #pragma once
 
 #include <Engine/AlgorithmsManager/VRPSolver.h>
-#include <TSPOnlyVRPSolver.h>
 
 namespace Scheduler
 {
 	class TSPSolver;
 
-	class TSPONLYVRPSOLVER_EXPORT TSPOnlyVRPSolver : public VRPSolver
+	class TSPOnlyVRPSolver : public VRPSolver
 	{
 	public:
 		explicit TSPOnlyVRPSolver(const TSPSolver& tsp_solver);

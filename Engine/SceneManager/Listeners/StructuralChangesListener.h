@@ -2,11 +2,11 @@
 
 #include "../Run.h"
 #include "../Schedule.h"
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT StructuralChangesListener
+	class StructuralChangesListener
 	{
 	public:
 		virtual ~StructuralChangesListener( )

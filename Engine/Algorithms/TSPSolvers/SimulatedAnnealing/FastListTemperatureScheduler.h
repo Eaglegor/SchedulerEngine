@@ -5,7 +5,7 @@
 namespace Scheduler
 {
 
-	class SIMULATEDANNEALINGTSPSOLVER_EXPORT FastListTemperatureScheduler : public ListTemperatureScheduler
+	class FastListTemperatureScheduler : public ListTemperatureScheduler
 	{
 	public:
 		FastListTemperatureScheduler( );

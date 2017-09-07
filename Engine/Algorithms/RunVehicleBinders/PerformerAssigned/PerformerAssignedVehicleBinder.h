@@ -4,7 +4,7 @@
 #include <Engine/Utils/ReferenceWrapper.h>
 #include <unordered_map>
 
-#include <PerformerAssignedVehicleBinder_export.h>
+
 
 namespace Scheduler
 {
@@ -12,7 +12,7 @@ namespace Scheduler
 	class Vehicle;
 	class Scene;
 
-	class PERFORMERASSIGNEDVEHICLEBINDER_EXPORT PerformerAssignedVehicleBinder : public RunVehicleBinder
+	class PerformerAssignedVehicleBinder : public RunVehicleBinder
 	{
 	public:
 		PerformerAssignedVehicleBinder( );

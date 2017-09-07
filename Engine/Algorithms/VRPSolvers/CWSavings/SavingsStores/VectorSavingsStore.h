@@ -1,6 +1,6 @@
 #pragma once
 
-#include <CWSavingsVRPSolver_export.h>
+
 #include <algorithm>
 #include <functional>
 #include <utility>
@@ -9,7 +9,7 @@
 namespace Scheduler
 {
 	template <typename Saving>
-	class CWSAVINGSVRPSOLVER_EXPORT VectorSavingsStore
+	class VectorSavingsStore
 	{
 	public:
 		using iterator       = typename std::vector<Saving>::iterator;

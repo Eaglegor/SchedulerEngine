@@ -2,7 +2,7 @@
 
 #include <Engine/LoggingManager/LoggingManager.h>
 #include <Engine/MemoryManager/MallocAllocator.h>
-#include <SceneEditor_export.h>
+
 #include <assert.h>
 #include <cstddef>
 #include <deque>
@@ -12,7 +12,7 @@ namespace Scheduler
 {
 	class ActionBase;
 
-	class SCENEEDITOR_EXPORT Patch
+	class Patch
 	{
 	public:
 		enum class State

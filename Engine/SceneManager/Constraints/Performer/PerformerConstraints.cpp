@@ -11,4 +11,15 @@ namespace Scheduler
 	{
 		return availability_windows_constraint;
 	}
+
+	const PerformerConstraints::DepotConstraint & PerformerConstraints::depot() const
+	{
+		return depot_constraint;
+	}
+
+	PerformerConstraints::DepotConstraint & PerformerConstraints::depot()
+	{
+		return depot_constraint;
+	}
+
 }

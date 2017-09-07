@@ -174,7 +174,7 @@ namespace Scheduler
 		const std::size_t T = std::min(threads_number, population_size);
 		(void) T;
 #pragma omp parallel for num_threads(T) if(T > 1)
-		for(std::size_t i = 0; i < N; ++i)
+		for(int i = 0; i < N; ++i)
 		{
 			auto& solution_generator = generators[i];
 			for(const auto mutation : allowed_mutations)
@@ -243,7 +243,7 @@ namespace Scheduler
 		std::mt19937_64 random_engine(random_device( ));
 
 #pragma omp parallel for num_threads(T) if(T > 1)
-		for(std::size_t j = 0; j < T; ++j)
+		for(int j = 0; j < T; ++j)
 		{
 			while(!tsc_finish(j))
 			{
@@ -298,7 +298,7 @@ namespace Scheduler
 		while(!tsc_finish( ))
 		{
 #pragma omp parallel for num_threads(T) if(T > 1)
-			for(std::size_t i = 0; i < N; ++i)
+			for(int i = 0; i < N; ++i)
 			{
 				step(runs[i],
 				     random_engine,

@@ -11,11 +11,11 @@
 #include <boost/optional.hpp>
 #include <string>
 
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
-	class SCENEMANAGER_EXPORT Operation
+	class Operation
 	{
 	public:
 		Operation(std::size_t id, const Order& order);

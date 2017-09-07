@@ -10,12 +10,12 @@
 #include <Engine/SceneManager/CostFunctions/ScheduleCostFunction.h>
 #include <Engine/Utils/Factory.h>
 #include <Engine/Utils/Optional.h>
-#include <SuIntTSPSolver_export.h>
+
 #include <memory>
 
 namespace Scheduler
 {
-	class SUINTTSPSOLVER_EXPORT SuIntTSPSolver : public TSPSolver
+	class SuIntTSPSolver : public TSPSolver
 	{
 	public:
 		SuIntTSPSolver( );

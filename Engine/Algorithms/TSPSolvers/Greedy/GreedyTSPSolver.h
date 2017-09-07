@@ -4,11 +4,11 @@
 #include <Engine/LoggingManager/LoggingManager.h>
 #include <Engine/Routing/RoutingService.h>
 #include <Engine/Utils/Optional.h>
-#include <GreedyTSPSolver_export.h>
+
 
 namespace Scheduler
 {
-	class GREEDYTSPSOLVER_EXPORT GreedyTSPSolver : public TSPSolver
+	class GreedyTSPSolver : public TSPSolver
 	{
 	public:
 		GreedyTSPSolver( );

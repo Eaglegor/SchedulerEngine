@@ -1,13 +1,12 @@
 #pragma once
 
 #include <Engine/AlgorithmsManager/VRPSolver.h>
-#include <SweepVRPSolver.h>
 
 namespace Scheduler
 {
 	class TSPSolver;
 
-	class SWEEPVRPSOLVER_EXPORT SweepVRPSolver : public VRPSolver
+	class SweepVRPSolver : public VRPSolver
 	{
 	public:
 		SweepVRPSolver( );

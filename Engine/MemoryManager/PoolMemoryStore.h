@@ -5,7 +5,7 @@
 #include <boost/thread/mutex.hpp>
 #include <list>
 
-#include <MemoryManager_export.h>
+
 
 namespace Scheduler
 {
@@ -15,7 +15,7 @@ namespace Scheduler
 	 * @details {This class uses boost::pool as the underlying memory storage. Since boost::pool implementation isn't thread-safe,
 	 * the external synchronization mechanism using boost::mutex is provided by this class.}
 	 */
-	class MEMORYMANAGER_EXPORT PoolMemoryStore : public MemoryStore
+	class PoolMemoryStore : public MemoryStore
 	{
 	public:
 		/** 

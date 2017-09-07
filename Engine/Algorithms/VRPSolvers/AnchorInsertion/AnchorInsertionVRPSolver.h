@@ -1,6 +1,5 @@
 #pragma once
 
-#include <AnchorInsertionVRPSolver.h>
 #include <Engine/AlgorithmsManager/VRPSolver.h>
 #include <Engine/Utils/Optional.h>
 #include <cstdint>
@@ -14,7 +13,7 @@ namespace Scheduler
 	class SceneCostFunction;
 	class RoutingService;
 
-	class ANCHORINSERTIONVRPSOLVER_EXPORT AnchorInsertionVRPSolver : public VRPSolver
+	class AnchorInsertionVRPSolver : public VRPSolver
 	{
 	public:
 		AnchorInsertionVRPSolver( );

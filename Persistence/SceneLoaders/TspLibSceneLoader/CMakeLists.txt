@@ -8,5 +8,8 @@ set_target_properties(TspLibSceneLoader PROPERTIES FOLDER "Persistence/SceneLoad
 
 cotire(TspLibSceneLoader)
 
-include(GenerateExportHeader)
-generate_export_header(TspLibSceneLoader EXPORT_FILE_NAME ${CPP_SCHEDULER_BINARY_DIR}/SharedLibrariesExportHeaders/TspLibSceneLoader_export.h)
+
+
+
+InstallSerializer(TspLibSceneLoader)
+InstallHeaders(TspLibSceneLoader.h)

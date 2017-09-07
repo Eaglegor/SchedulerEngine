@@ -3,14 +3,14 @@
 #include <ctime>
 #include <limits>
 
-#include <Concepts_export.h>
+
 
 namespace Scheduler
 {
 	/** 
 	 * @brief Represents duration value
 	 */
-	class CONCEPTS_EXPORT Duration
+	class Duration
 	{
 	public:
 		/** 

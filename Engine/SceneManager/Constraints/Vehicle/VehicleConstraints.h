@@ -4,14 +4,14 @@
 
 #include "../ConstraintHolder.h"
 #include <Engine/Concepts/TimeWindow.h>
-#include <SceneManager_export.h>
+
 
 namespace Scheduler
 {
 	class Capacity;
 	class Depot;
 
-	class SCENEMANAGER_EXPORT VehicleConstraints
+	class VehicleConstraints
 	{
 	public:
 		using CapacityConstraint            = ConstraintHolder<Capacity>;

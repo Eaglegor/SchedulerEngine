@@ -1,11 +1,11 @@
 #pragma once
 
 #include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
-#include <ValidRunsScheduleValidationAlgorithm_export.h>
+
 
 namespace Scheduler
 {
-	class VALIDRUNSSCHEDULEVALIDATIONALGORITHM_EXPORT ValidRunsScheduleValidationAlgorithm : public ScheduleValidationAlgorithm
+	class ValidRunsScheduleValidationAlgorithm : public ScheduleValidationAlgorithm
 	{
 	public:
 		virtual void validate(const Schedule& schedule, ViolationsConsumer& violations_consumer) const override;

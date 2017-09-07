@@ -7,7 +7,7 @@ namespace Scheduler
 	{
 	}
 
-	Distance::Distance(value_type value)
+	Distance::Distance(Distance::value_type value)
 	    : value(value)
 	{
 	}
@@ -17,12 +17,12 @@ namespace Scheduler
 	{
 	}
 
-	value_type Distance::getValue( ) const
+	Distance::value_type Distance::getValue( ) const
 	{
 		return value;
 	}
 
-	void Distance::setValue(value_type value)
+	void Distance::setValue(Distance::value_type value)
 	{
 		this->value = value;
 	}
@@ -90,23 +90,23 @@ namespace Scheduler
 		return Distance(-value);
 	}
 
-	Distance Distance::operator*(value_type multiplier) const
+	Distance Distance::operator*(Distance::value_type multiplier) const
 	{
 		return Distance(this->value * multiplier);
 	}
 
-	Distance& Distance::operator*=(value_type multiplier)
+	Distance& Distance::operator*=(Distance::value_type multiplier)
 	{
 		this->value *= multiplier;
 		return *this;
 	}
 
-	Distance Distance::operator/(value_type divider) const
+	Distance Distance::operator/(Distance::value_type divider) const
 	{
 		return Distance(this->value / divider);
 	}
 
-	Distance& Distance::operator/=(value_type divider)
+	Distance& Distance::operator/=(Distance::value_type divider)
 	{
 		this->value /= divider;
 		return *this;

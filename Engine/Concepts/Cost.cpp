@@ -17,12 +17,12 @@ namespace Scheduler
 	{
 	}
 
-	value_type Cost::getValue( ) const
+	Cost::value_type Cost::getValue( ) const
 	{
 		return value;
 	}
 
-	void Cost::setValue(value_type value)
+	void Cost::setValue(Cost::value_type value)
 	{
 		this->value = value;
 	}
@@ -33,7 +33,7 @@ namespace Scheduler
 		return *this;
 	}
 
-	Cost& Cost::operator=(const value_type& rhs)
+	Cost& Cost::operator=(const Cost::value_type& rhs)
 	{
 		this->value = rhs;
 		return *this;
@@ -96,23 +96,23 @@ namespace Scheduler
 		return Cost(-value);
 	}
 
-	Cost Cost::operator*(value_type multiplier) const
+	Cost Cost::operator*(Cost::value_type multiplier) const
 	{
 		return Cost(this->value * multiplier);
 	}
 
-	Cost& Cost::operator*=(value_type multiplier)
+	Cost& Cost::operator*=(Cost::value_type multiplier)
 	{
 		this->value *= multiplier;
 		return *this;
 	}
 	
-	Cost Cost::operator/(value_type divider) const
+	Cost Cost::operator/(Cost::value_type divider) const
 	{
 		return Cost(this->value / divider);
 	}
 
-	Cost& Cost::operator/=(value_type divider)
+	Cost& Cost::operator/=(Cost::value_type divider)
 	{
 		this->value /= divider;
 		return *this;

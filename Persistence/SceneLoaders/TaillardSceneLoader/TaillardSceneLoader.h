@@ -1,6 +1,6 @@
 #pragma once
 
-#include <TaillardSceneLoader_export.h>
+
 #include <istream>
 
 namespace Scheduler
@@ -9,7 +9,7 @@ namespace Scheduler
 	class Scene;
 	class Engine;
 
-	class TAILLARDSCENELOADER_EXPORT TaillardSceneLoader
+	class TaillardSceneLoader
 	{
 	public:
 		TaillardSceneLoader(Engine& engine, RoutingService& rs);

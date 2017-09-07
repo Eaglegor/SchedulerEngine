@@ -1,12 +1,12 @@
 #pragma once
 
-#include <DurationLimitRunValidationAlgorithm_export.h>
+
 #include <Engine/Concepts/Duration.h>
 #include <Engine/SceneManager/Algorithms/Validation/ValidationAlgorithm.h>
 
 namespace Scheduler
 {
-	class DURATIONLIMITRUNVALIDATIONALGORITHM_EXPORT DurationLimitRunValidationAlgorithm : public RunValidationAlgorithm
+	class DurationLimitRunValidationAlgorithm : public RunValidationAlgorithm
 	{
 	public:
 		virtual void validate(const Run& run, ViolationsConsumer& violations_consumer) const override;
