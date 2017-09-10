@@ -23,6 +23,8 @@ namespace Scheduler
 	class Depot;
 
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Vehicle Routing Problem task definition
 	 * 
 	 * @details Scene context is a shared immutable part of VRP solution.

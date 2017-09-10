@@ -31,6 +31,8 @@ namespace Scheduler
 	class ViolationsConsumer;
 
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Part of resource schedule
 	 * 
 	 * @details Run is the part of resource schedule consisting of:

@@ -29,6 +29,8 @@ namespace Scheduler
 	class SceneQueries;
 
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Solution of Vehicle Routing Problem
 	 * 
 	 * @details Scene contains schedules for the resources, i.e. a set
