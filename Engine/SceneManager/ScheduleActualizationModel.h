@@ -10,6 +10,8 @@ namespace Scheduler
 	class DurationActualizationAlgorithm;
 
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Algorithms used to perform schedule actualization after the structural changes
 	 * 
 	 * @details There are multiple problems that need to be solved during the scheduling process

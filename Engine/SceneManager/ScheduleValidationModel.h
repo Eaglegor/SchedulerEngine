@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Algorithm used to detect the constraints violations
 	 * 
 	 * @details Rich VRP instances contain many different constraints. There are different contexts 
