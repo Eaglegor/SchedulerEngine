@@ -1,0 +1,7 @@
+/** 
+ * @ingroup scene_manager
+ * @defgroup constraints Constraints
+ *
+ * This module contains supported constraints
+ *
+ */

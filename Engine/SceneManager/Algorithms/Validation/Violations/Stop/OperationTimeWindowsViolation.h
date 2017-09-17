@@ -8,6 +8,8 @@ namespace Scheduler
 	class Stop;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Violation of the operation time windows constraint
 	 * 
 	 * @sa @ref supported_constraints

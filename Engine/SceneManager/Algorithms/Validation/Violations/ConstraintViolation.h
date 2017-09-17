@@ -3,6 +3,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Type of the constraint violation
 	 * 
 	 * @sa @ref supported_constraints
@@ -31,6 +33,8 @@ namespace Scheduler
 	};
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Base class for the constraint violations
 	 */
 	class ConstraintViolation

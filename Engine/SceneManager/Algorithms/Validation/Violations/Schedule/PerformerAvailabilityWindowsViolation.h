@@ -7,6 +7,8 @@ namespace Scheduler
 	class Schedule;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Violation of the performer availability time windows constraint
 	 * 
 	 * @sa @ref supported_constraints

@@ -8,6 +8,8 @@ namespace Scheduler
 	class Run;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Violation of the run driving time limit constraint
 	 * 
 	 * @sa @ref supported_constraints

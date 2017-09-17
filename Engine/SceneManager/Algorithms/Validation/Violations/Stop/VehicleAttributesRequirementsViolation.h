@@ -9,6 +9,8 @@ namespace Scheduler
 	class Stop;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Violation of the required vehicle attribute order constraint
 	 * 
 	 * @sa @ref supported_constraints

@@ -8,6 +8,8 @@ namespace Scheduler
 	class Schedule;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Violation of the schedule distance limit constraint
 	 * 
 	 * @sa @ref supported_constraints

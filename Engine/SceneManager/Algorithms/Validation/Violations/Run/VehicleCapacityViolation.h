@@ -6,6 +6,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Violation of the vehicle capacity constraint
 	 * 
 	 * @sa @ref supported_constraints

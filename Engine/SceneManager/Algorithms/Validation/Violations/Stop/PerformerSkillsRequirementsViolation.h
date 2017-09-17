@@ -9,6 +9,8 @@ namespace Scheduler
 	class Attribute;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Violation of the required performer skill order constraint
 	 * 
 	 * @sa @ref supported_constraints
