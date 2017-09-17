@@ -31,6 +31,8 @@ namespace Scheduler
 	 * 
 	 * Schedule actualization model contains a set of these algorithms and is used by scene
 	 * manager to actualize the mentioned state-sensitive data.
+	 * 
+	 * @sa @ref schedule_actualization
 	 */
 	class ScheduleActualizationModel
 	{

@@ -65,4 +65,5 @@
  * Each run starts with the start depot stop (even if there are no start operations), then the sequence of work stops is following and then
  * the run is finished by the end depot stop (even if there are no end operations).
  * 
+ * @sa SceneContext, Scene
  */
