@@ -4,6 +4,11 @@
 
 namespace Scheduler
 {
+	/**
+	 * @ingroup constraints
+	 * 
+	 * @brief Simple validator class that detects if the object has any violations
+	 */
 	class Validator : public ViolationsConsumer
 	{
 	public:
@@ -19,6 +24,12 @@ namespace Scheduler
 			return ValidationContinuancePolicy::INTERRUPT;
 		}
 
+		/**
+		 * @brief Returns the validation result
+		 * 
+		 * @return ValidationResult::VALID if there were no violations reported,
+		 * ValidationResult::INVALID otherwise
+		 */
 		ValidationResult getValidationResult( ) const
 		{
 			return result;
