@@ -40,6 +40,8 @@ namespace Scheduler
 		 * 
 		 * @param violation Violation to consume
 		 * 
+		 * @todo Extract into the GenericViolationsConsumer class
+		 * 
 		 * @return ValidationContinuancePolicy::CONTINUE, if validation algorithm should continue validation,
 		 * ValidationContinuancePolicy::INTERRUPT otherwise
 		 */

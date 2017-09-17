@@ -102,6 +102,11 @@ namespace Scheduler
 			return backend.supportsViolationType(type);
 		}
 
+		/**
+		 * @brief Returns the continuance policy returned by the last call to the backend consumer
+		 * 
+		 * @return Continuance policy returned by the last call to the backend consumer
+		 */
 		ValidationContinuancePolicy getCurrentContinuancePolicy( ) const
 		{
 			return policy;
