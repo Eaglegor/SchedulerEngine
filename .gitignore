@@ -10,3 +10,4 @@ ThirdParty/*
 ThirdPartyPackages/*
 docs/*
 .vscode
+build
