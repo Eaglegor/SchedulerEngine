@@ -9,3 +9,4 @@ conaninfo.txt
 ThirdParty/*
 ThirdPartyPackages/*
 docs/*
+.vscode
