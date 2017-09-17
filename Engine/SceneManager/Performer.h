@@ -25,6 +25,8 @@ namespace Scheduler
 	 * 
 	 * @details The resource concept is divided into 2 parts in this engine: performer and vehicle.
 	 * Performer has the associated schedule (plan of actions for a workday) and may use different vehicles during his workday.
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class Performer
 	{

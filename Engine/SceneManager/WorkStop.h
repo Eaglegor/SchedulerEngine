@@ -14,6 +14,8 @@ namespace Scheduler
 	 * @ingroup scene_manager
 	 * 
 	 * @brief Represents work at customer
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class WorkStop : public Stop
 	{

@@ -45,6 +45,8 @@ namespace Scheduler
 	 * Single resource can have multiple runs per schedule, e.g. if it's capacity isn't enough to deliver
 	 * all orders in a single run. Different runs inside the single schedule may use different vehicles if
 	 * there is such business requirement and the selected algorithms support such vehicles assignment.
+	 * 
+	 * @sa @ref scene_structure
 	 *
 	 */
 	class Run

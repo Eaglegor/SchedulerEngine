@@ -22,6 +22,8 @@ namespace Scheduler
 	 * 
 	 * @details Operation is something that has to be done by the performer to complete the order. This can be
 	 * delivering thing to the customer, collecting a package, servicing customer etc.
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class Operation
 	{

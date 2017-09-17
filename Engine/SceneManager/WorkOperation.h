@@ -8,6 +8,8 @@ namespace Scheduler
 	 * @ingroup scene_manager
 	 * 
 	 * @brief Operation performed at customer's location
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class WorkOperation : public Operation
 	{

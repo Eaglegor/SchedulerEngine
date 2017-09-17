@@ -12,6 +12,8 @@ namespace Scheduler
 	 * @brief String-based object representing attribute of vehicle or performer
 	 * 
 	 * @details Attribute can represent driver/performer skills, equipment of vehicle or other resource feature
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class Attribute
 	{

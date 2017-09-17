@@ -13,6 +13,8 @@ namespace Scheduler
 	 * @ingroup scene_manager
 	 * 
 	 * @brief Represents the distribution base (warehouse, headquarter etc.)
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class Depot
 	{

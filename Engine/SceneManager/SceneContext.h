@@ -32,7 +32,7 @@ namespace Scheduler
 	 * Scene context doesn't contain any assignments of orders to the resources so it doesn't
 	 * represent the solution.
 	 * 
-	 * @sa Scene
+	 * @sa Scene, @ref scene_structure
 	 */
 	class SceneContext
 	{

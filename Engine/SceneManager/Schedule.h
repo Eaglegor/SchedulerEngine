@@ -43,7 +43,7 @@ namespace Scheduler
 	 * orders that are assigned to the resource along with their corresponding planned arrival times and
 	 * inter-location route information. Schedule consists of zero, one or multiple runs.
 	 * 
-	 * @sa Run
+	 * @sa Run, @ref scene_structure
 	 */
 	class Schedule
 	{

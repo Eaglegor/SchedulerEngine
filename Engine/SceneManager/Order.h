@@ -35,6 +35,8 @@ namespace Scheduler
 	 *   -# start operation (optional) - base operation that has to be perfomed before starting the run
 	 *   -# work operation (mandatory) - field operation that has to be performed at the customer's location
 	 *   -# end operation (optional) - base operation that has to be perfomed after finishing the run
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class Order
 	{

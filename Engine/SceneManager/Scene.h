@@ -38,7 +38,7 @@ namespace Scheduler
 	 * by the scene context. Single scene context can have multiple associated scenes 
 	 * (e.g. different solutions for the same set of input data).
 	 * 
-	 * @sa SceneContext
+	 * @sa SceneContext, @ref scene_structure
 	 */
 	class Scene
 	{

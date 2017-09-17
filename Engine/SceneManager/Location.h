@@ -12,6 +12,8 @@ namespace Scheduler
 	 * @ingroup scene_manager
 	 * 
 	 * @brief Geographic location
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class Location
 	{

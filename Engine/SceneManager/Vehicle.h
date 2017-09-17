@@ -20,6 +20,8 @@ namespace Scheduler
 	 * @ingroup scene_manager
 	 * 
 	 * @brief Vehicle used to perform the run
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class Vehicle
 	{

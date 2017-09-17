@@ -15,6 +15,8 @@ namespace Scheduler
 	 * @ingroup scene_manager
 	 * 
 	 * @brief Represents being in depot in the beginning or in the end of vehicle's run
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class DepotStop : public Stop
 	{

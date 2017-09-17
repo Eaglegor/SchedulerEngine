@@ -12,6 +12,8 @@ namespace Scheduler
 	 * @brief Operation that has to be performed in depot
 	 * 
 	 * @details Depot operations are performed before the vehicle left it's depot or after the vehicle has returned to it's depot
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class DepotOperation : public Operation
 	{

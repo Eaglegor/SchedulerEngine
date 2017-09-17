@@ -34,6 +34,8 @@ namespace Scheduler
 	 * @ingroup scene_manager
 	 * 
 	 * @brief Planned operation performance (servicing order, loading at depot, unloading at depot)
+	 * 
+	 * @sa @ref scene_structure
 	 */
 	class Stop
 	{

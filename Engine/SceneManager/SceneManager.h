@@ -22,6 +22,7 @@ namespace Scheduler
 	 * @ingroup scene_manager
 	 * 
 	 * @brief Scene manager is a class that creates and owns scenes and scene contexts
+	 * 
 	 */
 	class SceneManager
 	{
