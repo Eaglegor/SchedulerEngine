@@ -8,6 +8,8 @@ namespace Scheduler
 
 	/**
 	 * @brief Violation of the vehicle availability time windows constraint
+	 * 
+	 * @sa @ref supported_constraints
 	 */
 	class VehicleAvailabilityWindowsViolation : public ConstraintViolation
 	{

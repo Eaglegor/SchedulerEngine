@@ -9,6 +9,8 @@ namespace Scheduler
 
 	/**
 	 * @brief Violation of the run driving time limit constraint
+	 * 
+	 * @sa @ref supported_constraints
 	 */
 	class RunDrivingTimeLimitViolation : public ConstraintViolation
 	{

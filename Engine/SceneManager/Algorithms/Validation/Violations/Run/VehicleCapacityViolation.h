@@ -7,6 +7,8 @@ namespace Scheduler
 {
 	/**
 	 * @brief Violation of the vehicle capacity constraint
+	 * 
+	 * @sa @ref supported_constraints
 	 */
 	class VehicleCapacityViolation : public ConstraintViolation
 	{

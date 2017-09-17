@@ -9,6 +9,8 @@ namespace Scheduler
 
 	/**
 	 * @brief Violation of the run working time limit constraint
+	 * 
+	 * @sa @ref supported_constraints
 	 */
 	class RunWorkingTimeLimitViolation : public ConstraintViolation
 	{
