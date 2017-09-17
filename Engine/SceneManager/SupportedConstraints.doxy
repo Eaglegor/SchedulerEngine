@@ -1,0 +1,98 @@
+/**
+ * @page supported_constraints Supported constraints
+ * 
+ * Rich VRP tasks may include many constraints on different values. Based on the level where these values
+ * are defined and checked the following classes of constraints may be defined.
+ * 
+ * @tableofcontents
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @section stop_constraints Stop constraints
+ * 
+ * @subsection operation_time_windows_constraint Operation time windows constraint
+ * In most cases the order can't be serviced at any time. For example in the b2b delivery model the supplies
+ * can be delivered to the store only when the store is open. The periods when the customer is ready for the service
+ * are called "time windows" and are defined per-operation. Not only the work operations can have the time windows.
+ * Start and end operations can also have time windows e.g. if the performer starts his work outside the depot and is
+ * allowed to enter the depot only in it's working hours.
+ * 
+ * There may be multiple time windows e.g. the store accepts supplies on the morning or in the evening. The stop
+ * allocation time has to fit into any of the defined time window.
+ * 
+ * 
+ * 
+ * @subsection required_attribute_constraint Required performer skill / vehicle feature constraints
+ * Some orders require the specific skills or the specific type of the vehicle to be serviced. For example,
+ * the frozen food must be transported using the refrigerator car or the electric issues can only be fixed by
+ * the electrician. The skills and features requirements are defined per-operation and are matched with the
+ * skills and features of the performer and vehicle selected to service the order. All required skills/features
+ * have to be present on the resources skills/features set.
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @section run_constraints Run constraints
+ * 
+ * @subsection run_limit_constraint Run distance/driving time/working time limits constraints
+ * Based on the driver safety laws or on the economical needs some run metrics can be limited to the specific value.
+ * Such values can be:
+ * - Total run distance
+ * - Total run duration (total working time)
+ * - Total run driving time i.e. sum of all inter-stop route durations
+ * 
+ * @note Run working time considers all the time from the start time of the first stop to the end time of 
+ * the last stop in the run. This implies that the driving time is also included in the working time.
+ * 
+ * These metrics have to be lower than the specified limit.
+ * 
+ * 
+ * 
+ * @subsection vehicle_availability_windows_constraint Vehicle availability windows constraint
+ * The resources may have their availability windows. For the vehicle defining such constraint
+ * may mean that the vehicle has to be returned to the garage until it's closed. There may be multiple availability windows
+ * for the single vehicle e.g. it may have to be returned in the evening or on the morning if driver's working hours
+ * allow to do so.
+ * 
+ * 
+ * 
+ * @subsection vehicle_capacity_constraint Vehicle capacity constraint
+ * In the real-world tasks the capacity of the vehicle is often considered as limited. The capacity for each vehicle
+ * is defined as a multi-dimensional vector. For each operation there is a demand change amount defined. 
+ * Positive values in the demand (pickup) mean that the capacity will be occupied and so the rest
+ * capacity will be reduced. Negative values in the demand (delivery) mean that the capacity will be freed 
+ * and so the rest capacity will be increased.
+ * 
+ * Since pickups and deliveries can be mixed in the run to reach the optimality, the total demand of orders has to
+ * be controlled for every serviced operation to check if new pickup doesn't violate the total vehicle capacity.
+ * If the value of any dimension of total demand is larger than the corresponding value of the vehicle capacity
+ * it is considered as vehicle overload.
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @section schedule_constraints Schedule constraints
+ * 
+ * @subsection schedule_limit_constraint Schedule distance/driving time/working time limits constraints
+ * Based on the driver safety laws or on the economical needs some schedule metrics can be limited to the specific value.
+ * Such values can be:
+ * - Total schedule distance
+ * - Total schedule working time
+ * - Total schedule driving time i.e. sum of all inter-stop route durations
+ * 
+ * @note Schedule working time considers all the time from the start time of the first stop in the first run to the end time of 
+ * the last stop in the last run. This implies that the driving time is also included in the working time.
+ * 
+ * These metrics have to be lower than the specified limit.
+ * 
+ * 
+ * 
+ * @subsection performer_availability_windows_constraint Performer availability windows constraint
+ * The resources may have their availability windows. For the performer the availability windows
+ * define the period during which he can work. Performer's schedule has not to contain any actions outside
+ * the performer's availability time.
+ */
