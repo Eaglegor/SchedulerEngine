@@ -12,6 +12,8 @@ namespace Scheduler
 	class Depot;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Vehicle constraints set
 	 */
 	class VehicleConstraints

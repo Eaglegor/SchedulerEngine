@@ -10,6 +10,8 @@ namespace Scheduler
 	class Depot;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Performer constraints set
 	 */
 	class PerformerConstraints

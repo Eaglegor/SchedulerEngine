@@ -8,6 +8,8 @@ namespace Scheduler
 	class Depot;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Order constraints set
 	 */
 	class OrderConstraints

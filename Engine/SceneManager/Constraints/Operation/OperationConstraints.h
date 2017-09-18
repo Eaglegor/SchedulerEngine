@@ -14,6 +14,8 @@ namespace Scheduler
 	class Attribute;
 
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Operation constraints set
 	 */
 	class OperationConstraints

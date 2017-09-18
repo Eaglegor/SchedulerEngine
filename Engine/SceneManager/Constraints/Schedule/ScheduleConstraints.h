@@ -12,6 +12,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup constraints
+	 * 
 	 * @brief Schedule constraints set
 	 */
 	class ScheduleConstraints
