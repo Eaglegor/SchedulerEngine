@@ -1,0 +1,56 @@
+/**
+ * @page scene_validation Scene validation
+ * 
+ * There are different cases when we want to know if there are any constraints violations for the
+ * scene objects. There are also many constraints each of them has it's own definition and checking rules.
+ * 
+ * To not implement the giant god class having all violation rules in one place and to make it possible
+ * for the user to override the constraints satisfaction checks the algorithms validating the scene objects
+ * are implemented separately from the scene manager.
+ * 
+ * To prevent the performance issues the validation algorithms have to be interruptible, e.g. when we want
+ * to know if there are any violations we can return on first found violaion. From the other side, not all
+ * violations have to be checked in all contexts, e.g. we may have to check only the soft violations 
+ * supported by the cost function to calculate the cost.
+ * 
+ * To provide the variability, the validation process is implemented using the producer-consumer pattern.
+ * Validation algorithm is considered as the violations producer and reports every violation immediately, when
+ * it's found, to the violations processing code. 
+ * 
+ * The code processing the violations should be implemented by deriving from the ViolationsConsumer class and 
+ * overriding it's violation processing methods. It can manage the validation process in 2 ways:
+ * -# Consumer can tell if it wants to check the particular violations so that the algorithms that do not report
+ *    these violations can be skipped. This is done implementing the supportsViolationType.
+ * -# Consumer can tell if it has all the information it needs and the validation process should be interrupted.
+ *    This is done returning the particular continuation policy (CONTIMUE or INTERRUPT) from the violation processing
+ *    method
+ * 
+ * 
+ * The validation algorithm implementation principles are following:
+ * - Before performing any actions check if the consumer supports the violation which the algorithm will report.
+ *   If the consumer doesn't support the violation, just return
+ * - After reporting the violation to the consumer, check the returned value of the consumeXXX method. If it's
+ *   INTERRUPT then just return
+ * 
+ * To simplify the API, the code of TSP and VRP solvers doesn't know about how the violations are checked and reported.
+ * Instead the particular set of algorithms is gathered in a concept called "schedule validation model".
+ * 
+ * It contains 3 algorithms based on the level of validaion:
+ * -# Algorithm validating the single stop
+ * -# Algorithm validating the whole run
+ * -# Algorithm validating the whole schedule
+ * 
+ * It's obvious that there may be different constraints for each stop/run/schedule and a dedicated algorithm can
+ * be defined for each of them. In this cases the chain validation algorithm has to be used gathering all the
+ * algorithms for each validation level.
+ * 
+ * To start the validation process there are 2 different ways:
+ * -# Call the isValid() method of the stop/run/schedule/scene. In this case the boolean value is returned
+ *    to indicate if there are any hard constraints violations
+ * -# Call the validate() method of the stop/run/schedule/scene passing the specified violations consumer. 
+ *    The violations will be reported to this consumer.
+ * 
+ * The validation is performed in a cascade way, i.e. the validation algorithm is implicitly called for all 
+ * stops of the run when the run itself is validated. This implies that if run.isValid() is true then stop.isValid() 
+ * is also true for all stops of this run.
+ */
