@@ -7,6 +7,8 @@ namespace Scheduler
 	class Stop;
 	
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Algorithm used to update next route for the stop
 	 * 
 	 * @sa @ref schedule_actualization

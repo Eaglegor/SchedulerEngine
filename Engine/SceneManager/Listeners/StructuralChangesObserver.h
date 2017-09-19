@@ -8,6 +8,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Observer notifying subscribed listeners about the structural change in the scene
 	 * 
 	 * @sa @ref changes_listeners

@@ -7,6 +7,8 @@ namespace Scheduler
 	class Run;
 
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Algorithm used to update the durations of the stops in the run
 	 * 
 	 * @sa @ref schedule_actualization

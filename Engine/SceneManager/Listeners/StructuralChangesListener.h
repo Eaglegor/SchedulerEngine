@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Listener of the structural changes in the scene
 	 * 
 	 * @todo Merge work/start/end operations methods into the order methods

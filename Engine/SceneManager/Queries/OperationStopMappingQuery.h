@@ -13,6 +13,8 @@ namespace Scheduler
 	class Scene;
 
 	/**
+	 * @ingroup scene_queries
+	 * 
 	 * @brief Query interface searching the allocated stop iterator for the specified operation
 	 * 
 	 * @details This query uses caching inside. The cache is initialized on the query creation and

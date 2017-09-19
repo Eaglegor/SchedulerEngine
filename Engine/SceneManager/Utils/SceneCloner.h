@@ -7,6 +7,8 @@ namespace Scheduler
 	class Schedule;
 
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Utilitary class used to copy the state from one scene to another
 	 * 
 	 * @note Scenes have to share the same scene context

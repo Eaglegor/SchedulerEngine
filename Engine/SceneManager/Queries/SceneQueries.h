@@ -6,6 +6,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup scene_queries
+	 * 
 	 * @brief Interface to perform the scene queries
 	 * 
 	 * @details Scene queries help to extract calculations of some information from the

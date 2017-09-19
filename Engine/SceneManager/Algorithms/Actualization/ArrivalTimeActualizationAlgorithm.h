@@ -7,6 +7,8 @@ namespace Scheduler
 	class Schedule;
 
 	/**
+	 * @ingroup scene_manager
+	 * 
 	 * @brief Algorithm used to update the arrival times of the stops in the schedule
 	 * 
 	 * @sa @ref schedule_actualization
