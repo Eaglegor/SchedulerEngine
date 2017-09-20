@@ -8,6 +8,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents a pair of geographic coordinates (latitude and longitude)
 	 */
 	class Site

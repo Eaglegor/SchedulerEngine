@@ -9,6 +9,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents the single moment in time
 	 */
 	class TimePoint

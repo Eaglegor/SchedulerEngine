@@ -1,0 +1,46 @@
+/**
+ * @page schedule_actualization Schedule actualization
+ * 
+ * There are 3 large classes of the tasks needed to be solved when solving VRP:
+ * -# Distribution of orders over the resources (VRP itself)
+ * -# Determination of the optimal sequence of orders (TSP)
+ * -# Calculation of arrival times for the given sequence of orders (schedule actualization)
+ * 
+ * Solution of the third task is needed if arrival times of the stops are important for cost evaluation
+ * (e.g. working time of the resource is considered by the cost function) or for constraints satisfaction check
+ * (e.g. if there are time window constraints).
+ * 
+ * Arrival times of all stops in the schedule are invalidated every time when the structural change is
+ * introduced into this schedule.
+ * Such changes are:
+ * - Allocation of the new orders
+ * - Removal of the orders
+ * - Changing orders sequence
+ * 
+ * Arrival/departure times of the stops depend on the stops duration and the routes between the stops. 
+ * 
+ * The duration of servicing the same order operation may change depending on some contextual factors e.g. 
+ * if some dynamically calculable additional time is considered to park the vehicle, sign documents etc.
+ * 
+ * The algorithms used to actualize the schedule are gathered together into the concept called 
+ * "schedule actualization model" that can be assigned to the schedule. There are 3 types of such algorithms:
+ * -# Next route actualization algorithm
+ * -# Duration actualization algorithm
+ * -# Arrival times actualization algorithm
+ * 
+ * The common workflow of solving VRP/TSP can be expressed in the following scheme:
+ * -# Calculate and remember cost of the current solution and check constraints satisfaction
+ * -# Introduce changes into the solution
+ * -# Recalculate the next routes for the stops
+ * -# Recalculate the durations of the stops
+ * -# Recalculate the arrival times of the stops 
+ * -# Calculate cost of the new solution and check constraints satisfaction
+ * -# Accept or reject new solution
+ * 
+ * To simplify the algorithmic code, performing steps 3-5 is automatically managed by the scene manager, i.e.
+ * when the change is introduced the values are recalculated automatically. To improve the computational efficiency 
+ * these recalculations are made using the lazy calculations paradigm. When the change is introduced the sensitive
+ * data are marked as dirty and are updated on the first try to retrieve these dirty data.
+ * 
+ * @sa ScheduleActualizationModel
+ */

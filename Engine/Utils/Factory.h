@@ -12,6 +12,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup utils
+	 * 
 	 * @brief Templated factory class used to create the objects inside the scheduler engine
 	 * 
 	 * @details Internally this factory uses pool allocator to allocate memory so the size of create objects is limited by a 

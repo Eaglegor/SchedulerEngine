@@ -5,6 +5,8 @@
 namespace Scheduler
 {
 	/**
+	 * @ingroup collections
+	 * 
 	 * @brief The sublist of LinkedPointersList
 	 * 
 	 * @deprecated boost::intrusive and Range classes are used instead

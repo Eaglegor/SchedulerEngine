@@ -8,6 +8,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents duration value
 	 */
 	class Duration

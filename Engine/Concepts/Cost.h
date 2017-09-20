@@ -8,6 +8,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup concepts
+	 * 
 	 * @brief Represents the value type for cost calculations
 	 */
 	class Cost

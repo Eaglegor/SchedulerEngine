@@ -2,6 +2,13 @@
 
 namespace Scheduler
 {
+	/**
+	 * @ingroup constraints
+	 * 
+	 * @brief Type of the constraint violation
+	 * 
+	 * @sa @ref supported_constraints
+	 */
 	enum class ConstraintViolationType
 	{
 		// Stop violations
@@ -20,13 +27,16 @@ namespace Scheduler
 		PERFORMER_AVAILABILITY_WINDOWS_VIOLATION,
 		SCHEDULE_DISTANCE_LIMIT_VIOLATION,
 		SCHEDULE_DRIVING_TIME_LIMIT_VIOLATION,
-		SCHEDULE_SHIFT_END_LOCATION_VIOLATION,
-		SCHEDULE_SHIFT_START_LOCATION_VIOLATION,
 		SCHEDULE_WORKING_TIME_LIMIT_VIOLATION
 
 		// Scene violations
 	};
 
+	/**
+	 * @ingroup constraints
+	 * 
+	 * @brief Base class for the constraint violations
+	 */
 	class ConstraintViolation
 	{
 	public:
@@ -34,6 +44,11 @@ namespace Scheduler
 		{
 		}
 
+		/**
+		 * @brief Returns the type of the violation
+		 * 
+		 * @return Type of the violation
+		 */
 		virtual ConstraintViolationType getType( ) const = 0;
 	};
 };

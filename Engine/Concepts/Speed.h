@@ -8,7 +8,9 @@
 namespace Scheduler
 {
 	/** 
-	 * Represents the vehicle speed (distance travelled over the single time unit)
+	 * @ingroup concepts
+	 * 
+	 * @brief Represents the vehicle speed (distance travelled over the single time unit)
 	 */
 	class Speed
 	{

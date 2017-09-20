@@ -1,0 +1,7 @@
+/** 
+ * @ingroup scene_manager
+ * @defgroup scene_queries Scene queries
+ *
+ * This module contains provided scene queries
+ *
+ */

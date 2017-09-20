@@ -3,6 +3,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup utils
+	 * 
 	 * @brief This class performs the static_cast of base class pointer/reference to the derived class pointer/reference
 	 * 
 	 * @tparam Base Base class to cast from

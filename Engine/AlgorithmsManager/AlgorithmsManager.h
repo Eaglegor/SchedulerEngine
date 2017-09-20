@@ -15,6 +15,8 @@ namespace Scheduler
 	class Strategy;
 
 	/** 
+	 * @ingroup algorithms_manager
+	 * 
 	 * @brief This class created the algorithms and cost functions and manages their lifetimes
 	 */
 	class AlgorithmsManager

@@ -7,6 +7,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup services
+	 * 
 	 * @brief Routing service providing the routes based on "as the crow flies" distance metric
 	 * 
 	 * @details "As the crow flies or in a beeline is an idiom for the shortest path between two points 

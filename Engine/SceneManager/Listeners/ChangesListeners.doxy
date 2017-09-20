@@ -1,0 +1,27 @@
+/**
+ * @page changes_listeners Structural changes listeners
+ * 
+ * In some cases we want to get the information about the changes introduced into the scene. For example, we may want to update
+ * some cached values without recalculating the whole cache. Scene manager provides specific API for these purposes.
+ * 
+ * Each structured scene object (run, schedule, scene) holds the set of listeners that are notified about the structural changes related
+ * to this scene object. Changes are propagated up over the hierarchy so listener subscribed for the schedule changes will get the changes
+ * from each run of the schedule and listener subscribed for the scene changes will get the changes from all runs of all schedules of this scene.
+ * 
+ * The following changes are considered as structural and so are reported to the listeners:
+ * - Allocating new order (Run::allocateOrder)
+ * - Unallocating the order (Run::unallocateOrder)
+ * - Creating new run (Schedule::createRun)
+ * - Destroying the run (Schedule::destroyRun)
+ * - Swapping stops in the run (Run::swapWorkStops)
+ * - Reversing stops subsequence in the run (Run::reverseWorkStops)
+ * - Splicing the sequence of stops from/into the run (Run::spliceWorkStops)
+ * 
+ * There are no other ways to change the structure of the scene so all more complex changes are expressed as a combination of these actions.
+ * 
+ * To subscribe for the scene changes the class derived from the StructuralChangesListener has to be implemented and the reference to the
+ * instance of this class has to be passed to the addStructuralChangesListener method of the desired scene object. To unsubscribe the same reference
+ * has to be passes to the removeStructuralChangesListener method of the same scene object.
+ * 
+ * @note As usually, the listener must not be destroyed when it's subscribed for some living scene object.
+ */

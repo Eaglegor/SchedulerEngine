@@ -7,7 +7,9 @@
 
 namespace Scheduler
 {
-	/** 
+	/**
+	 * @ingroup utils 
+	 * 
 	 * @brief Sums the passed distance and the passed stop's next route distance
 	 */
 	class DistanceAccumulator

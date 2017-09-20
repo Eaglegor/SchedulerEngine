@@ -6,9 +6,26 @@
 
 namespace Scheduler
 {
+	/**
+	 * @ingroup constraints
+	 * 
+	 * @brief Utilitary class redirecting the violations to another consumer and storing the
+	 * returned continuation policy
+	 * 
+	 * @details This utilitary class is used by the chain validation algorithms that have to
+	 * know if they need to be interrupted after the last called nested validation algorith.
+	 * 
+	 * This class redirects the violation to the passed consumer and stores the continuation
+	 * policy returned by it. This policy value may later be retrieved using the getter.
+	 */
 	class ProxyViolationsConsumer : public ViolationsConsumer
 	{
 	public:
+		/**
+		 * @brief Constructor
+		 * 
+		 * @param backend The violations consumer doing actual work
+		 */
 		ProxyViolationsConsumer(ViolationsConsumer& backend)
 		    : backend(backend)
 		{
@@ -36,16 +53,6 @@ namespace Scheduler
 		}
 
 		virtual ValidationContinuancePolicy consumeViolation(const ScheduleWorkingTimeLimitViolation& violation) override
-		{
-			return policy = backend.consumeViolation(violation);
-		}
-
-		virtual ValidationContinuancePolicy consumeViolation(const ScheduleShiftEndLocationViolation& violation) override
-		{
-			return policy = backend.consumeViolation(violation);
-		}
-
-		virtual ValidationContinuancePolicy consumeViolation(const ScheduleShiftStartLocationViolation& violation) override
 		{
 			return policy = backend.consumeViolation(violation);
 		}
@@ -95,6 +102,11 @@ namespace Scheduler
 			return backend.supportsViolationType(type);
 		}
 
+		/**
+		 * @brief Returns the continuance policy returned by the last call to the backend consumer
+		 * 
+		 * @return Continuance policy returned by the last call to the backend consumer
+		 */
 		ValidationContinuancePolicy getCurrentContinuancePolicy( ) const
 		{
 			return policy;

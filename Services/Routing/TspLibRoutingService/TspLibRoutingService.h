@@ -9,6 +9,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup services
+	 * 
 	 * @brief Routing service providing routes from the custom distance matrix
 	 * 
 	 * @details This routing service is intended to be used in the TSPLIB benchmarks encoded in XML format 

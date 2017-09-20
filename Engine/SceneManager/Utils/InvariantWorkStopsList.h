@@ -8,6 +8,13 @@
 
 namespace Scheduler
 {
+	/**
+	 * @ingroup scene_manager
+	 * 
+	 * @brief The stops list wrapper that preserves the order of the iterators in the list until it's explicitly updated
+	 * 
+	 * @todo Get rid of this class
+	 */
 	class InvariantWorkStopsList
 	{
 	public:

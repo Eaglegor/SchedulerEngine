@@ -7,6 +7,9 @@ namespace Scheduler
 {
 	class Run;
 
+	/**
+	 * @todo We actually don't need this cost function
+	 */
 	class RunCostFunction : public CostFunction
 	{
 	public:

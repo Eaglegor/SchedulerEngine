@@ -4,6 +4,11 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup utils
+	 * @{
+	 */
+
+	/*
 	 * @brief Optional class to use inside the scheduler
 	 * 
 	 * @details boost::optional is used as the implementation
@@ -18,4 +23,8 @@ namespace Scheduler
 	}
 
 	static const boost::none_t& None = boost::none;
+
+	/**
+	 * @}
+	 */
 }

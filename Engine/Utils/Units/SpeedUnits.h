@@ -5,6 +5,11 @@
 
 namespace Scheduler
 {
+	/**
+	 * @ingroup units
+	 * @{
+	 */
+
 	namespace Units
 	{
 		/** 
@@ -31,4 +36,8 @@ namespace Scheduler
 			return Speed(Distance(distance) / 3600.0f);
 		}
 	}
+
+	/**
+	 * @}
+	 */
 }

@@ -1,0 +1,69 @@
+/**
+ * @page scene_structure Scene structure
+ * 
+ * The VRP task is defined by the set of objects:
+ * - Orders that are waiting for service
+ * - Resources that can be used to service the orders:
+ *   - Performers who can perform the service
+ *   - Vehicles that can be used by the performers
+ * 
+ * Each order contains the three operation slots:
+ * -# Start operation (has to be performed before leaving the depot)
+ * -# Work operation (has to be performed by the customer)
+ * -# End operation (has to be performed after returning to the depot)
+ * 
+ * Work operation is mandatory, the rest are optional so that the following types of orders may be defined:
+ * - Delivery (start operation + work operation)
+ * - Pickup (work operation + end operation)
+ * - Field service (only work operation)
+ * 
+ * Each vehicle and performer can have the attributes. For the performers they are called "skills" (e.g. "weight-lifting", "electrics" etc.).
+ * For the vehicles they are called "features" (e.g. "crane", "refrigerator" etc.). Order constraints may contain the requirements
+ * to the skills or features set of performers and vehicles and so the compatibility between orders and resources is defined.
+ * 
+ * Vehicle, performers and orders can also be bound to the particular depot so that the areas of influence can be defined.
+ * Orders bound to the depot can be only serviced by the resources bound to the same depot.
+ * 
+ * These objects are given to the algorithm and are independent from the particular VRP solution. They are
+ * considered as a context for the VRP solution process and are therefore called "scene context".
+ * 
+ * Along with the orders and resources the objects they depend on are defined by the context:
+ * - Locations
+ * - Attributes (performers' skills and vehicles' features)
+ * - Depots
+ * 
+ * Solving the VRP task means to compose the schedules for the resources so that the value of the cost function is minimized.
+ * 
+ * Single VRP solution is called "scene" and consists of schedules. Each schedule contains the sequence 
+ * of order assignments with their planned arrival and departure times. The immutable part of VRP task is considered by
+ * referencing the scene context (so each scene has to reference the corresponding scene context).
+ * 
+ * There can be a set of hard and soft constraints in the scene. Soft constraints (e.g. time windows) 
+ * are considered in the cost function and may be violated (being late still allows to service the order). 
+ * The minimization of such constraints is naturally integrated into the cost function value minimization process. 
+ * Hard constraints (e.g. capacity) are not allowed to be violated (can't load more goods than the vehicle can carry) 
+ * and so the solution variants with hard constraints violations have to be rejected by the algorithms. 
+ * Considering this it's obvious that not all orders can always be planned.
+ * 
+ * @note If some orders can't be planned without hard constraints violations, they have to be left unplanned 
+ * (so that there are no assignments for them in the scene).
+ * 
+ * In the real cases the capacity of a vehicle often has to be considered as limited and that's why the vehicle may have to perform
+ * multiple routes per day, i.e.:
+ * -# Load the part of orders in depot
+ * -# Deliver the orders to customers
+ * -# Return to depot
+ * -# Load the rest of orders
+ * -# Deliver the orders to customers
+ * -# Return to depot
+ * 
+ * Delivering the part of the orders is called "run" and so the schedule always consists of zero, one or multiple runs.
+ * 
+ * Servicing the single order operation at the customer's location is called "work stop". Servicing the set of start operations or the
+ * set of end operations at depot is called "depot stop".
+ * 
+ * Each run starts with the start depot stop (even if there are no start operations), then the sequence of work stops is following and then
+ * the run is finished by the end depot stop (even if there are no end operations).
+ * 
+ * @sa SceneContext, Scene
+ */

@@ -8,6 +8,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup collections
+	 * 
 	 * @brief Intrusive linked list of pointers
 	 * 
 	 * @deprecated boost::intrusive implementation is used instead of this one

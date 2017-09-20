@@ -6,6 +6,8 @@
 namespace util
 {
 	/**
+	 * @ingroup collections
+	 * 
 	 * @brief Checks if the collection contains the specified key
 	 * 
 	 * @param collection The collection to search in

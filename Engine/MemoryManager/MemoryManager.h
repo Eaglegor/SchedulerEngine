@@ -10,6 +10,8 @@ namespace Scheduler
 	class PoolMemoryStore;
 
 	/**
+	 * @ingroup memory_manager
+	 * 
 	 * @brief This class manages memory allocations inside the engine
 	 * 
 	 * @details This class provides 2 memory allocation strategies: direct malloc call and pool allocator. To use the provided strategy,

@@ -3,6 +3,8 @@
 namespace Scheduler
 {
 	/** 
+	 * @ingroup algorithms_manager
+	 * 
 	 * @brief Represents abstract cost function interface
 	 * 
 	 * @details Cost function is a function that takes a part of solution or the entire solution and returns
